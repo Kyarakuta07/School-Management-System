@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mediterranean of Egypt</title>
+    <!-- Impor Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Impor Ikon (untuk sosial media) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Menghubungkan ke File CSS Eksternal -->
+    <link rel="stylesheet" href="assets/css/landing-style.css">
+</head>
+<body>
+    
+    <div class="background-container"></div>
+
+    <div class="page-wrapper">
+
+        <header class="main-header">
+            <!-- GANTI DENGAN LOGO ANDA -->
+            <img src="assets/landing/logo.png" alt="MOE Logo" class="logo">
+            
+            <!-- Navigasi dipindahkan ke sini -->
+            <nav class="main-nav">
+                <ul>
+                    <!-- [PERUBAHAN]: Navigasi menggunakan Anchor Links -->
+                    <li><a href="#home-section">Home</a></li>
+                    <li><a href="#staff-section">Staff</a></li>
+                    <li><a href="#class-section">Class</a></li>
+                </ul>
+            </nav>
+
+            <!-- TOMBOL LOGIN & SIGNUP -->
+            <div class="header-buttons">
+                <a href="signup.php" class="signup-btn">Sign Up</a>
+                <a href="index.php" class="login-btn">Login</a>
+            </div>
+        </header>
+
+        <!-- [PERUBAHAN]: HOME SECTION (sebelumnya <main>) -->
+        <section id="home-section" class="hero-section">
+            <!-- Kolom Kiri: Judul & About -->
+            <div class="hero-left">
+                <div class="title-container">
+                    <img src="assets/landing/7.png" alt="MOE" class="moe-text-img">
+                    <h1>Mediterranean of Egypt</h1>
+                </div>
+
+                <div class="about-section">
+                    <h2>ABOUT</h2>
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam mattis purus tortor, sit amet laoreet arcu interdum ut. Curabitur tempus facilisis nunc et laoreet. Proin vel vestibulum ex, semper lacinia velit. Morbi sed tempus risus. Duis ac dui ante. Sed dignissim tellus tellus, in aliquet ante aliquet in.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Kolom Kanan: Karakter & Foto -->
+            <div class="hero-right">
+                <div class="character-container">
+                    
+                    <!-- WRAPPER BARU: Diperlukan untuk efek "keluar layar" -->
+                    <div class="main-character-wrapper">
+                        <img src="assets/landing/4.png" alt="Pharaoh character" class="main-character">
+                    </div>
+                    
+                    <img src="assets/landing/5.png" alt="Pharaoh photo 1" class="photo photo-1">
+                    <img src="assets/landing/6.png" alt="Pharaoh photo 2" class="photo photo-2">
+                </div>
+            </div>
+        </section> <!-- Penutup Home Section -->
+        
+    </div> <!-- Penutup Page Wrapper -->
+
+    <!-- [TAMBAHAN]: STAFF SECTION -->
+    <section id="staff-section" class="content-section staff-section">
+        <h2 class="section-title">OUR STAFF & COUNCIL</h2>
+        <p class="section-subtitle">Meet the keepers of the ancient wisdom and guardians of the Nile's legacy.</p>
+        
+        <div class="staff-grid">
+            <!-- Contoh Kartu Staff -->
+            <div class="staff-card">
+                <img src="assets/landing/staff-1.png" alt="Staff 1" class="staff-photo">
+                <h3>Amon-Ra</h3>
+                <p class="staff-title">The Pharaoh (Lead Instructor)</p>
+                <div class="staff-socials">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+            <div class="staff-card">
+                <img src="assets/landing/staff-2.png" alt="Staff 2" class="staff-photo">
+                <h3>Hathor</h3>
+                <p class="staff-title">Goddess of Music (Arts Director)</p>
+            </div>
+            <div class="staff-card">
+                <img src="assets/landing/staff-3.png" alt="Staff 3" class="staff-photo">
+                <h3>Thoth</h3>
+                <p class="staff-title">God of Knowledge (Curriculum Head)</p>
+            </div>
+            <!-- Tambahkan lebih banyak kartu di sini -->
+        </div>
+    </section>
+
+    <!-- [TAMBAHAN]: CLASS SECTION -->
+    <section id="class-section" class="content-section class-section">
+        <h2 class="section-title">ANCIENT KNOWLEDGE CLASSES</h2>
+        <p class="section-subtitle">Unlock the mysteries of the Mediterranean of Egypt through our curated courses.</p>
+        
+        <div class="class-grid">
+            <div class="class-card">
+                <h3>Oceanology</h3>
+                <p>Master the sacred script of the gods and decipher ancient texts.</p>
+                <a href="#" class="class-btn">Enroll Now</a>
+            </div>
+            <div class="class-card">
+                <h3>Herbology</h3>
+                <p>An introduction to the mathematics and logistics behind monumental construction.</p>
+                <a href="#" class="class-btn">Enroll Now</a>
+            </div>
+            <div class="class-card">
+                <h3>History</h3>
+                <p>Explore the spiritual world, from the journey of the sun god Ra to the trial of Osiris.</p>
+                <a href="#" class="class-btn">Enroll Now</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="main-footer">
+        <!-- GAMBAR FOOTER: Div ini akan memuat 8.png melalui CSS -->
+        <div class="footer-bg-image"></div>
+        
+        <!-- KONTEN SOSIAL MEDIA: Diposisikan di atas gambar footer -->
+        <div class="footer-content">
+            <div class="running-text">
+                <span>MEDITERRANEAN OF EGYPT</span>
+            </div>
+            <div class="socials">
+                <span>moegypt.id</span>
+                <!-- GANTI DENGAN LINK SOSIAL MEDIA ANDA -->
+                <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

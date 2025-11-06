@@ -1,0 +1,173 @@
+/* --- GAYA DASAR UNTUK KARTU & TABEL --- */
+
+.card.full-width-card {
+    grid-column: 1 / -1; /* Membuat kartu ini memenuhi seluruh lebar grid */
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto; /* Memastikan tabel bisa di-scroll di layar kecil */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 24px;
+}
+
+thead {
+    background-color: var(--hover-bg-color);
+}
+
+th, td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    white-space: nowrap; /* Mencegah teks turun baris */
+}
+
+th {
+    font-family: 'Cinzel', serif;
+    font-size: 0.9rem;
+    color: var(--subtle-text-color);
+    text-transform: uppercase;
+}
+
+tbody tr:hover {
+    background-color: var(--hover-bg-color);
+}
+
+
+/* --- BAGIAN TOMBOL AKSI --- */
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.action-buttons .btn-edit,
+.action-buttons .btn-view,
+.action-buttons .btn-delete { /* Ditambahkan .btn-delete */
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-edit {
+    background-color: #E0B913;
+    color: #2b2b2b;
+}
+.btn-edit:hover {
+    background-color: #C7A510;
+    color: #000;
+}
+
+.btn-view {
+    background-color: var(--hover-bg-color);
+    color: var(--text-color);
+}
+.btn-view:hover {
+    background-color: var(--border-color);
+    color: #fff;
+}
+
+/* Style untuk tombol delete */
+.btn-delete {
+    background-color: #582121; /* Merah gelap */
+    color: #ff8282; /* Ikon merah terang */
+}
+.btn-delete:hover {
+    background-color: var(--color-status-out); /* Merah lebih terang saat hover */
+    color: #fff;
+}
+
+
+/* --- STYLE UNTUK SEMUA FORM --- */
+
+.form-container {
+    margin-top: 24px;
+}
+.form-group {
+    margin-bottom: 20px;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-family: 'Cinzel', serif;
+    font-size: 0.9rem;
+    color: var(--subtle-text-color);
+}
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group input[type="file"],
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background-color: var(--sidebar-bg-color);
+    color: var(--text-color);
+    font-size: 1rem;
+    font-family: 'Lato', sans-serif;
+    transition: border-color 0.2s ease;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+.btn-save {
+    padding: 12px 24px;
+    background-color: var(--accent-color);
+    color: var(--accent-text-color);
+    font-weight: 700;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border: none;
+}
+.btn-save:hover {
+    background-color: #c7a510;
+}
+
+
+/* --- STYLE UNTUK SEARCH BAR (DIPERBARUI) --- */
+
+.search-container {
+    position: relative;
+}
+.search-input {
+    width: 250px;
+    padding: 8px 12px 8px 35px; /* Tambah padding kiri untuk ikon */
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-color); /* Pastikan var(--bg-color) terdefinisi di style.css */
+    color: var(--text-color);
+    font-size: 0.9rem;
+}
+.search-input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+.search-container i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--subtle-text-color);
+}
+
