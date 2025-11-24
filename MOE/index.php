@@ -18,7 +18,7 @@
             <h3>Enter your credentials</h3>
             <?php
             if (isset($_GET['pesan']) && $_GET['pesan'] == 'gagal') {
-                echo "<p class='error-message'>Login failed! Incorrect name or password.</p>";
+                echo "<p class='error-message'>Login failed! Incorrect name or password.</p>"
             }
             ?>
             <form class="login-form" action="proses_login.php" method="POST">
