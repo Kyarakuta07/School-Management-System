@@ -158,13 +158,15 @@ body {
 /* --- Home Section (Hero) --- */
 .hero-section {
     position: relative; 
-    min-height: 80vh; 
+    height: 100vh;        /* [UBAH] Paksa tinggi sepenuh layar */
+    min-height: 100vh;    /* [UBAH] Pastikan minimal setinggi layar */
     display: grid;
     grid-template-columns: 1fr 1fr;
-    align-items: center;
+    align-items: center;  /* Vertically center untuk teks kiri */
     gap: 2rem;
     margin-top: -50px;
-    padding-bottom: 50px; 
+    padding-bottom: 0;    /* [PENTING] Ubah jadi 0 agar tidak ada ganjalan di bawah */
+    overflow: hidden;     /* [PENTING] Potong gambar jika kebesaran melebihi layar */
 }
 
 .hero-left {
@@ -180,9 +182,8 @@ body {
     max-width: 1250px; 
     user-select: none;
     position: absolute; 
-    top: -250px;         
-    right: -750px;      
-    width: 1250px;       
+    top: -250px;
+    width: 1250px;
     opacity: 0.15; 
     z-index: -3; 
 }
@@ -245,30 +246,38 @@ body {
 
 /* Bagian kanan dengan karakter */
 .hero-right {
-    position: relative;
-    height: 100%;
-    /* [Perubahan] Karakter diposisikan di bawah kontainer agar bisa menempel footer */
-    display: flex;
-    align-items: flex-end; 
-    justify-content: center;
+    position: relative;   /* Jangkar untuk absolute positioning anak */
+    height: 100%;         /* Full height mengikuti hero-section */
+    width: 100%;
+    /* Flexbox dihapus/disederhanakan karena kita akan pakai absolute di anaknya */
 }
 
 .character-container {
-    position: relative;
-    transform: scale(1.1);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    /* [Tambahan] Z-index tinggi agar karakter utama muncul di atas elemen lain */
+    position: absolute;    /* [PENTING] Lepas dari aliran normal */
+    bottom: 0;             /* [PENTING] Tempel mentok ke bawah */
+    left: 0;
+    width: 100%;           /* Lebar penuh agar bisa ditengahin pake flex */
+    height: auto;          
+    display: flex;         /* Gunakan flex untuk menengahkan gambar secara horizontal */
+    justify-content: center; 
+    align-items: flex-end; /* Pastikan item di dalamnya rata bawah */
     z-index: 100; 
+    
+    /* Transform scale bawaan kamu tetap dipertahankan, tapi hati-hati */
+    transform-origin: bottom center; /* Pastikan membesar dari bawah, bukan dari tengah */
+    transform: scale(1.1); 
 }
 
 .character-container .main-character {
+    display: block;        /* [PENTING] Hapus gap default image inline */
     position: relative;
     z-index: 2;
-    width: 100%; 
-    max-width: 1200px; 
-    transform: translateY(-10px);
+    width: auto;           /* Biarkan lebar menyesuaikan tinggi */
+    max-height: 85vh;      /* Atur tinggi maksimal agar tidak menutupi logo di atas */
+    
+    /* [PENTING] Hapus translateY(-10px) yang lama, ganti jadi 0 atau hapus barisnya */
+    transform: translateY(0); 
+    
     filter: drop-shadow(5px 5px 20px rgba(0,0,0,0.6));
 }
 
