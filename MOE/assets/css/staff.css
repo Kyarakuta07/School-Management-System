@@ -1,0 +1,284 @@
+/* =========================================
+   UNLOCK SCROLL (Khusus Halaman Staff)
+   ========================================= */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+/* =========================================
+   NAVBAR KHUSUS STAFF (Sticky / Ikut Turun)
+   ========================================= */
+/* =========================================
+   NAVBAR KHUSUS STAFF (Transparent Sticky)
+   ========================================= */
+.main-header {
+    /* --- POSISI & LOGIKA --- */
+    position: relative !important; /* Tetap melayang (Sticky) */
+    width: 100%;
+    max-width: 100%;
+    z-index: 9999;
+    
+    /* --- TAMPILAN CLEAN (Sama seperti Home) --- */
+    background: transparent;
+    backdrop-filter: none;
+    border: none;
+    box-shadow: none;
+    
+    /* --- PENEMPATAN (PADDING) --- */
+    /* Ini kuncinya agar sama dengan Home Page.
+       Angka '2rem' adalah jarak dari Atas.
+       Angka '4rem' adalah jarak dari Kiri & Kanan (sesuai perbaikan page-wrapper sebelumnya).
+    */
+    padding: 2rem 4rem; 
+    
+    /* Pastikan padding tidak membuat navbar melebar keluar layar */
+    box-sizing: border-box;
+
+    /* --- LAYOUT (Tetap) --- */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* RESPONSIVE (HP) */
+/* Di HP biasanya padding kiri-kanan lebih kecil, kita samakan juga */
+@media (max-width: 992px) {
+    .main-header {
+        padding: 1rem 2rem; /* Sesuaikan dengan tampilan mobile Home */
+    }
+}
+
+/* OPSI TAMBAHAN: Background Gradient Halus di Atas */
+/* Supaya teks menu tetap terbaca tapi tidak ada kotak kasar */
+.main-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    /* Gradasi dari hitam pudar ke transparan (biar logo jelas) */
+    background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* =========================================
+   STAFF SECTION LAYOUT
+   ========================================= */
+.staff-section {
+    position: relative;
+    
+    /* UPDATE: Padding atas diperbesar jadi 160px 
+       agar Judul tidak tertutup Navbar yang sekarang melayang (fixed) */
+    padding: 0rem 2rem 5rem 2rem; 
+    
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    margin-top: -60px;
+    z-index: 10; /* Pastikan di atas background */
+}
+
+/* JUDUL HALAMAN */
+.section-title {
+    font-family: 'Cinzel', serif;
+    font-size: 3rem;
+    color: #DAA520; /* Gold */
+    text-align: center;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 10px rgba(218, 165, 32, 0.3);
+}
+
+.section-subtitle {
+    font-family: 'Lato', sans-serif;
+    text-align: center;
+    color: #E0E0E0;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-size: 1rem;
+    margin-bottom: 4rem;
+    opacity: 0.8;
+}
+
+/* =========================================
+   GROUPING LAYOUT (New)
+   ========================================= */
+
+/* Wrapper per Divisi (Vasiki, Sen, dll) */
+.group-wrapper {
+    margin-bottom: 5rem; /* Jarak antar kelompok */
+    position: relative;
+    width: 100%;
+}
+
+/* Judul Divisi (Misal: VASIKI) */
+.group-title {
+    font-family: 'Cinzel', serif;
+    font-size: 2.2rem;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 2rem;
+    position: relative;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+}
+
+/* Garis Hiasan di bawah Judul */
+.group-title::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 3px;
+    background: #DAA520; /* Gold */
+    margin: 15px auto 0;
+    border-radius: 2px;
+    box-shadow: 0 0 10px rgba(218,165,32,0.8);
+}
+
+/* Grid Pintar (Flexbox) - Agar sisa kartu di tengah */
+.staff-grid {
+    display: flex;
+    flex-wrap: wrap; /* Kalau layar sempit, turun ke bawah */
+    justify-content: center; /* KUNCI: Membuat kartu selalu rata tengah */
+    gap: 3rem; /* Jarak antar kartu */
+    width: 100%;
+}
+
+/* =========================================
+   WARNA KHUSUS PER DIVISI
+   ========================================= */
+
+/* VASIKI (Gold) */
+.theme-vasiki .group-title { color: #DAA520; }
+.theme-vasiki .staff-card { border-bottom-color: #DAA520; }
+.theme-vasiki .staff-photo { border-color: #DAA520; }
+.theme-vasiki .staff-title { color: #DAA520; }
+
+/* SEN (Silver/Blueish) */
+.theme-sen .group-title { color: #C0C0C0; }
+.theme-sen .group-title::after { background: #C0C0C0; box-shadow: 0 0 10px rgba(192,192,192,0.8); }
+.theme-sen .staff-card { border-bottom-color: #C0C0C0; }
+.theme-sen .staff-photo { border-color: #C0C0C0; }
+.theme-sen .staff-title { color: #C0C0C0; }
+
+/* MEMBERS (Bronze/Greenish) */
+.theme-member .group-title { color: #cd7f32; }
+.theme-member .group-title::after { background: #cd7f32; box-shadow: 0 0 10px rgba(205,127,50,0.8); }
+.theme-member .staff-card { border-bottom-color: #cd7f32; }
+.theme-member .staff-photo { border-color: #cd7f32; }
+.theme-member .staff-title { color: #cd7f32; }
+
+/* =========================================
+   CARD DESIGN (Style Mewah)
+   ========================================= */
+.staff-card {
+    /* --- UKURAN FIXED (Supaya Rapi) --- */
+    width: 300px;
+    height: 420px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 2rem 1.5rem;
+    margin: 0;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+
+    /* --- BAGIAN WARNA TRANSPARAN --- */
+    background: linear-gradient(145deg, rgba(40, 30, 20, 0.5), rgba(20, 10, 5, 0.6));
+    
+    /* Efek Kaca Buram (Wajib ada biar teks jelas) */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+
+    /* Border Tipis Emas */
+    border: 1px solid rgba(218, 165, 32, 0.2);
+    border-bottom: 4px solid #DAA520; /* Aksen bawah tebal */
+    
+    /* Bayangan Halus */
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Hover Effect: Kartu naik & bersinar */
+.staff-card:hover {
+    transform: translateY(-10px);
+    background: linear-gradient(145deg, rgba(40, 30, 20, 0.75), rgba(20, 10, 5, 0.85));
+    box-shadow: 0 10px 40px rgba(218, 165, 32, 0.2);
+    border-color: #DAA520;
+}
+
+/* FOTO STAFF */
+.staff-photo {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1.5rem;
+    border: 3px solid #DAA520; /* Bingkai foto gold */
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+}
+
+/* NAMA & JABATAN */
+.staff-card h3 {
+    font-family: 'Cinzel', serif;
+    color: #fff;
+    font-size: 1.25rem;
+    line-height: 1.4;
+    margin-bottom: 0.5rem;
+    
+    /* KUNCI: Area nama harus punya tinggi tetap */
+    min-height: 60px; /* Cukup untuk 2 baris teks */
+    display: flex;
+    align-items: center; 
+    justify-content: center; 
+    width: 100%;
+}
+
+.staff-title {
+    font-family: 'Lato', sans-serif;
+    color: #DAA520;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+}
+
+/* ICON SOSMED (Opsional) */
+.staff-socials {
+    margin-top: auto; /* Dorong ke paling bawah */
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    width: 100%;
+}
+
+.staff-socials a {
+    color: #888;
+    margin: 0 10px;
+    font-size: 1.2rem;
+    transition: 0.3s;
+}
+
+.staff-socials a:hover {
+    color: #DAA520;
+    transform: scale(1.2);
+}
+
+/* =========================================
+   RESPONSIVE (HP)
+   ========================================= */
+@media (max-width: 768px) {
+    .staff-section {
+        padding-top: 150px; /* Jarak lebih jauh di HP karena navbar numpuk */
+    }
+    .section-title {
+        font-size: 2rem;
+    }
+    .staff-grid {
+        gap: 2rem;
+    }
+}

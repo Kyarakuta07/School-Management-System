@@ -1,0 +1,184 @@
+/* =========================================
+   1. GLOBAL & NAVBAR FIX (Wajib Ada)
+   ========================================= */
+html, body {
+    overflow-y: auto !important; /* Unlock Scroll */
+    overflow-x: hidden;
+    height: auto !important;
+    min-height: 100vh;
+}
+
+/* Navbar Sticky & Transparan (Clean) */
+.main-header {
+    /* --- UBAH DARI FIXED JADI RELATIVE --- */
+    position: relative !important; /* Diam di tempat (flow normal) */
+    width: 100%;
+    z-index: 9999;
+    
+    /* Style tetap bersih/transparan */
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 2rem 4rem; 
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Responsive HP */
+@media (max-width: 992px) {
+    .main-header {
+        padding: 1rem 2rem;
+    }
+}
+
+/* =========================================
+   2. CLASS LAYOUT
+   ========================================= */
+.class-section {
+    position: relative;
+    padding-top: 5rem; /* Jarak judul dari atas */
+    padding-bottom: 5rem;
+    padding-left: 2rem; 
+    padding-right: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    text-align: center;
+    z-index: 10;
+}
+
+.section-title {
+    font-family: 'Cinzel', serif;
+    font-size: 3rem;
+    color: #DAA520;
+    text-shadow: 0 0 20px rgba(218, 165, 32, 0.4);
+    margin-bottom: 0.5rem;
+}
+
+.section-subtitle {
+    font-family: 'Lato', sans-serif;
+    color: #ccc;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    margin-bottom: 5rem;
+    opacity: 0.8;
+}
+
+/* =========================================
+   3. DESIGN KARTU BARU (Dark Glass Luxury)
+   ========================================= */
+.class-grid {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 3rem;
+}
+
+.class-card {
+    position: relative;
+    width: 350px;
+    min-height: 480px; /* Kartu tinggi agar elegan */
+    
+    /* Background: Kaca Gelap Hitam */
+    background: rgba(10, 10, 10, 0.6);
+    backdrop-filter: blur(12px); /* Blur background belakangnya */
+    -webkit-backdrop-filter: blur(12px);
+    
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Border halus */
+    border-radius: 20px;
+    padding: 3rem 2rem;
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
+}
+
+/* --- ICON BULAT --- */
+.card-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.5rem;
+    color: #666; /* Warna mati sebelum hover */
+    margin-bottom: 2rem;
+    transition: all 0.4s ease;
+    z-index: 2;
+}
+
+/* --- TYPOGRAPHY --- */
+.card-content h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.8rem;
+    color: #fff;
+    margin-bottom: 1rem;
+    z-index: 2;
+    position: relative;
+}
+
+.card-content p {
+    font-family: 'Lato', sans-serif;
+    font-size: 1rem;
+    color: #aaa;
+    line-height: 1.6;
+    margin-bottom: 3rem;
+    z-index: 2;
+    position: relative;
+}
+
+/* --- BUTTON (Ghost Style) --- */
+.class-btn {
+    margin-top: auto; /* Dorong ke paling bawah */
+    padding: 12px 30px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    text-decoration: none;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    letter-spacing: 2px;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+    z-index: 2;
+    position: relative;
+}
+
+/* =========================================
+   4. HOVER EFFECTS & COLOR THEMES
+   ========================================= */
+
+/* A. OCEANOLOGY (Blue) */
+.class-card.ocean:hover { border-color: #00BFFF; transform: translateY(-15px); }
+.class-card.ocean:hover .card-icon { color: #00BFFF; border-color: #00BFFF; box-shadow: 0 0 30px rgba(0, 191, 255, 0.4); }
+.class-card.ocean:hover .class-btn { background: #00BFFF; border-color: #00BFFF; color: #000; box-shadow: 0 0 20px rgba(0, 191, 255, 0.4); }
+
+/* B. HERBOLOGY (Green) */
+.class-card.herb:hover { border-color: #00fa9a; transform: translateY(-15px); }
+.class-card.herb:hover .card-icon { color: #00fa9a; border-color: #00fa9a; box-shadow: 0 0 30px rgba(0, 250, 154, 0.4); }
+.class-card.herb:hover .class-btn { background: #00fa9a; border-color: #00fa9a; color: #000; box-shadow: 0 0 20px rgba(0, 250, 154, 0.4); }
+
+/* C. ASTRONOMY (Purple/Gold) */
+.class-card.astro:hover { border-color: #9370DB; transform: translateY(-15px); }
+.class-card.astro:hover .card-icon { color: #9370DB; border-color: #9370DB; box-shadow: 0 0 30px rgba(147, 112, 219, 0.4); }
+.class-card.astro:hover .class-btn { background: #9370DB; border-color: #9370DB; color: #000; box-shadow: 0 0 20px rgba(147, 112, 219, 0.4); }
+
+/* --- BACKGROUND GLOW ANIMATION (Optional Pemanis) --- */
+.card-glow {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: 0;
+    pointer-events: none;
+}
+.class-card:hover .card-glow { opacity: 0.2; }

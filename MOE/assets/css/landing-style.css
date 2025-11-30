@@ -1,33 +1,38 @@
-/* --- Variabel Warna dan Font --- */
+/* ================================================
+   GLOBAL LANDING STYLE (Navbar, Wrapper, Layout)
+   ================================================ */
+
+/* --- Variables --- */
 :root {
-    --font-display: 'Cinzel', serif; /* Font untuk judul/display */
-    --font-body: 'Lato', sans-serif; /* Font untuk teks biasa */
-    --color-red: #9B2B2B; /* Merah tua (Aksen) */
-    --color-text: #E0E0E0; /* Teks terang */
-    --color-gold: #DAA520; /* Emas (Aksen utama) */
-    --color-dark: #1a1a1a; /* Latar Belakang utama */
-    --color-darker: #0c0c0c; /* [Tambahan] Latar Belakang bagian Staff */
+    --font-display: 'Cinzel', serif;
+    --font-body: 'Lato', sans-serif;
+
+    --color-red: #9B2B2B;
+    --color-text: #E0E0E0;
+    --color-gold: #DAA520;
+
+    --color-dark: #1a1a1a;
+    --color-darker: #0c0c0c;
 }
 
-/* Reset CSS Dasar */
+/* Reset */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    /* [Tambahan] Memastikan scroll smooth untuk one-page site */
     scroll-behavior: smooth;
 }
 
 body {
     font-family: var(--font-body);
-    color: var(--color-text);
     background-color: var(--color-dark);
+    color: var(--color-text);
     overflow-x: hidden;
-    /* [Perubahan] min-height diubah untuk one-page scroll */
-    min-height: auto; 
 }
 
-/* --- Latar Belakang Tetap --- */
+/* ------------------------------------
+   BACKGROUND FIXED (global)
+------------------------------------- */
 .background-container {
     position: fixed;
     top: 0;
@@ -39,26 +44,31 @@ body {
     z-index: -1;
 }
 
+/* ------------------------------------
+   WRAPPER (dipakai semua halaman)
+------------------------------------- */
 .page-wrapper {
     position: relative;
     width: 100%;
     max-width: 1400px;
     margin: 0 auto;
     padding: 2rem;
-    /* [Perubahan] min-height diubah untuk one-page scroll */
-    min-height: auto; 
+    min-height: auto;
     display: flex;
     flex-direction: column;
+    padding-bottom: 0;       /* default */
 }
 
-/* --- Header --- */
+/* ------------------------------------
+   NAVBAR GLOBAL
+------------------------------------- */
 .main-header {
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: relative; 
-    z-index: 50; /* Z-index tinggi untuk navbar */
+    position: relative;
+    z-index: 9999;
 }
 
 .main-header .logo {
@@ -66,56 +76,52 @@ body {
     height: 150px;
     border-radius: 50%;
     object-fit: cover;
-    box-shadow: 0 0 25px rgba(218, 165, 32, 0.3);
+    box-shadow: 0 0 25px rgba(218,165,32,0.3);
 }
 
-/* Navigasi Utama */
+/* NAV MENU */
 .main-nav {
     display: flex;
     margin-left: 2rem;
     margin-right: auto;
-    flex-grow: 0;
 }
 .main-nav ul {
     list-style: none;
-    padding: 0;
-    margin: 0;
     display: flex;
-    justify-content: center;
     gap: 3rem;
 }
 .main-nav ul li a {
+    font-family: var(--font-display);
     color: var(--color-text);
     text-decoration: none;
-    font-family: var(--font-display);
     font-size: 1.1rem;
     text-transform: uppercase;
     letter-spacing: 1.5px;
     padding: 0.5rem 0;
     position: relative;
-    transition: color 0.3s ease;
+    transition: .3s;
 }
 .main-nav ul li a:hover {
     color: var(--color-gold);
 }
 .main-nav ul li a::after {
     content: '';
-    position: absolute;
     width: 100%;
     height: 2px;
+    background: var(--color-gold);
+    position: absolute;
     bottom: 0;
     left: 0;
-    background-color: var(--color-gold);
     transform: scaleX(0);
     transform-origin: bottom right;
-    transition: transform 0.3s ease-out;
+    transition: .3s;
 }
 .main-nav ul li a:hover::after {
     transform: scaleX(1);
     transform-origin: bottom left;
 }
 
-
+/* Buttons */
 .header-buttons {
     display: flex;
     gap: 1rem;
@@ -125,401 +131,67 @@ body {
     font-family: var(--font-display);
     font-weight: 700;
     font-size: 1rem;
-    padding: 0.75rem 1.5rem;
+    padding: .75rem 1.5rem;
     text-decoration: none;
     text-transform: uppercase;
     letter-spacing: 1px;
     border-radius: 4px;
-    transition: all 0.3s ease;
     border: 2px solid var(--color-gold);
+    transition: .3s;
 }
 
 .login-btn {
-    background-color: var(--color-gold);
+    background: var(--color-gold);
     color: var(--color-dark);
 }
-
 .login-btn:hover {
-    background-color: transparent;
+    background: transparent;
     color: var(--color-gold);
-    box-shadow: 0 0 15px rgba(218, 165, 32, 0.5);
+    box-shadow: 0 0 15px rgba(218,165,32,0.5);
 }
 
 .signup-btn {
-    background-color: transparent;
+    background: transparent;
     color: var(--color-gold);
 }
-
 .signup-btn:hover {
-    background-color: var(--color-gold);
+    background: var(--color-gold);
     color: var(--color-dark);
 }
 
-/* --- Home Section (Hero) --- */
-.hero-section {
-    position: relative; 
-    height: 100vh;        /* [UBAH] Paksa tinggi sepenuh layar */
-    min-height: 100vh;    /* [UBAH] Pastikan minimal setinggi layar */
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    align-items: center;  /* Vertically center untuk teks kiri */
-    gap: 2rem;
-    margin-top: -50px;
-    padding-bottom: 0;    /* [PENTING] Ubah jadi 0 agar tidak ada ganjalan di bawah */
-    overflow: hidden;     /* [PENTING] Potong gambar jika kebesaran melebihi layar */
-}
-
-.hero-left {
-    padding-right: 0rem; 
-}
-
-/* Kontainer untuk tulisan "MOE" */
-.title-container {
-    position: relative;
-}
-
-.title-container .moe-text-img {
-    max-width: 1250px; 
-    user-select: none;
-    position: absolute; 
-    top: -250px;
-    width: 1250px;
-    opacity: 0.15; 
-    z-index: -3; 
-}
-
-.title-container h1 {
-    font-family: var(--font-body);
-    font-weight: 700;
-    font-size: 1.2rem;
-    color: #fff;
-    letter-spacing: 2px;
-    position: absolute;
-    bottom: 25%;
-    left: 5%;
-    z-index: 3;
-}
-
-/* Bagian About */
-.about-section {
-    margin-top: 2rem;
-    position: relative;
-    padding: 1.5rem;
-    max-width: 800px; 
-    z-index: 100; /* Layer teratas */
-}
-
-.about-section h2 {
-    font-family: var(--font-display);
-    font-size: 2.5rem;
-    font-weight: 900;
-    color: #fff;
-    margin-bottom: 1rem;
-}
-
-.about-section p {
-    font-size: 0.95rem;
-    line-height: 1.6;
-    text-align: justify;
-}
-
-/* Border unik untuk "About" */
-.about-section::before,
-.about-section::after {
-    content: '';
-    position: absolute;
-    width: 80px;
-    height: 80px;
-    border-color: rgba(255, 255, 255, 0.5);
-    border-style: solid;
-}
-.about-section::before {
-    top: 0;
-    left: 0;
-    border-width: 2px 0 0 2px;
-}
-.about-section::after {
-    bottom: 0;
-    right: 0;
-    border-width: 0 2px 2px 0;
-}
-
-/* Bagian kanan dengan karakter */
-.hero-right {
-    position: relative;   /* Jangkar untuk absolute positioning anak */
-    height: 100%;         /* Full height mengikuti hero-section */
-    width: 100%;
-    /* Flexbox dihapus/disederhanakan karena kita akan pakai absolute di anaknya */
-}
-
-.character-container {
-    position: absolute;    /* [PENTING] Lepas dari aliran normal */
-    bottom: 0;             /* [PENTING] Tempel mentok ke bawah */
-    left: 0;
-    width: 100%;           /* Lebar penuh agar bisa ditengahin pake flex */
-    height: auto;          
-    display: flex;         /* Gunakan flex untuk menengahkan gambar secara horizontal */
-    justify-content: center; 
-    align-items: flex-end; /* Pastikan item di dalamnya rata bawah */
-    z-index: 100; 
-    
-    /* Transform scale bawaan kamu tetap dipertahankan, tapi hati-hati */
-    transform-origin: bottom center; /* Pastikan membesar dari bawah, bukan dari tengah */
-    transform: scale(1.1); 
-}
-
-.character-container .main-character {
-    display: block;        /* [PENTING] Hapus gap default image inline */
-    position: relative;
-    z-index: 2;
-    width: auto;           /* Biarkan lebar menyesuaikan tinggi */
-    max-height: 85vh;      /* Atur tinggi maksimal agar tidak menutupi logo di atas */
-    
-    /* [PENTING] Hapus translateY(-10px) yang lama, ganti jadi 0 atau hapus barisnya */
-    transform: translateY(0); 
-    
-    filter: drop-shadow(5px 5px 20px rgba(0,0,0,0.6));
-}
-
-.character-container .photo {
-    /* [Perubahan] Dipertahankan gaya lama sebelum permintaan box card */
-    position: absolute;
-    width: 380px;
-    filter: drop-shadow(0 8px 20px rgba(0,0,0,0.5));
-    z-index: 1;
-    transition: all 0.3s ease;
-}
-.character-container .photo-1 {
-    top: 50%;
-    left: -130px;
-    transform: translateY(-50%) rotate(-10deg);
-}
-.character-container .photo-2 {
-    top: 50%;
-    right: -130px;
-    transform: translateY(-50%) rotate(10deg);
-}
-
-/* --- Gaya Umum Section Baru (Staff & Class) --- */
-.content-section {
-    padding: 4rem 2rem;
-    text-align: center;
-    position: relative;
-    z-index: 5;
-    max-width: 1400px;
-    margin: 0 auto;
-}
-
-.section-title {
-    font-family: var(--font-display);
-    font-size: 3rem;
-    font-weight: 900;
-    color: var(--color-gold);
-    margin-bottom: 0.5rem;
-    text-transform: uppercase;
-}
-
-.section-subtitle {
-    font-family: var(--font-body);
-    font-size: 1.1rem;
-    color: rgba(255, 255, 255, 0.7);
-    margin-bottom: 3rem;
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-/* --- Staff Section --- */
-.staff-section {
-    background-color: var(--color-darker);
-    padding-top: 5rem;
-}
-
-.staff-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2.5rem;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.staff-card {
-    background-color: #282828;
-    padding: 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border-bottom: 4px solid var(--color-gold);
-}
-
-.staff-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(218, 165, 32, 0.2);
-}
-
-.staff-photo {
-    /* [Perubahan] Dipertahankan gaya foto staff sebelumnya (bulat) */
-    width: 150px;
-    height: 150px;
-    border-radius: 50%; 
-    object-fit: cover;
-    margin-bottom: 1rem;
-    border: 3px solid var(--color-gold);
-}
-
-.staff-card h3 {
-    font-family: var(--font-display);
-    font-size: 1.5rem;
-    color: #fff;
-    margin-bottom: 0.2rem;
-}
-
-.staff-title {
-    color: var(--color-gold);
-    font-style: italic;
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
-}
-
-.staff-socials a {
-    color: var(--color-text);
-    margin: 0 0.5rem;
-    font-size: 1.2rem;
-    transition: color 0.3s;
-}
-
-.staff-socials a:hover {
-    color: var(--color-gold);
-}
-
-/* --- Class Section --- */
-.class-section {
-    background-color: var(--color-dark);
-}
-
-.class-grid {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 3rem;
-    margin-top: 2rem;
-}
-
-.class-card {
-    background-color: var(--color-red);
-    padding: 2rem;
-    max-width: 350px;
-    border-radius: 8px;
-    text-align: left;
-    transition: transform 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 8px 25px rgba(155, 43, 43, 0.4);
-}
-
-.class-card::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: rgba(255, 255, 255, 0.05);
-    transform: rotate(45deg);
-    transition: transform 0.5s;
-}
-
-.class-card:hover::before {
-    transform: rotate(45deg) scale(1.1);
-}
-
-.class-card h3 {
-    font-family: var(--font-display);
-    font-size: 1.8rem;
-    color: #fff;
-    margin-bottom: 1rem;
-    position: relative;
-    z-index: 2;
-}
-
-.class-card p {
-    font-size: 1rem;
-    line-height: 1.5;
-    margin-bottom: 1.5rem;
-    position: relative;
-    z-index: 2;
-}
-
-.class-btn {
-    display: inline-block;
-    padding: 0.6rem 1.5rem;
-    background-color: var(--color-gold);
-    color: var(--color-dark);
-    text-decoration: none;
-    font-family: var(--font-display);
-    font-weight: 700;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-    position: relative;
-    z-index: 2;
-}
-
-.class-btn:hover {
-    background-color: #ffd700;
-}
-
-
-/* --- Footer (One-Page Scroll) --- */
+/* ------------------------------------
+FOOTER GLOBAL (pakai PNG)
+------------------------------------- */
 .main-footer {
-    position: relative; /* [KUNCI PERUBAHAN] Dibuat statis agar dapat di-scroll */
-    bottom: 0;
-    left: 0;
     width: 100%;
-    height: 100px; /* Tinggi diberikan untuk memuat 8.png */
-    background-color: transparent;
+    aspect-ratio: 16 / 9; /* sesuai rasio asli 3840 × 2160 */
+    background: url('../landing/8.png') no-repeat center center;
+    background-size: cover; /* supaya rapi dan tidak distorsi */
+    margin: -850px 0 0 0;
     padding: 0;
-    z-index: 5;
+    display: block;
 }
 
-.footer-bg-image {
-    position: absolute;
-    top: 0;
-    left: 0;
+/* FOOTER IMAGE AUTOSCALE */
+.footer-image {
     width: 100%;
-    height: 100%;
-    background: url('../landing/8.png') no-repeat center center/cover; 
-    z-index: 1;
+    height: auto;
+    max-height: 300px; /* Sesuaikan bebas */
+    object-fit: cover; /* menjaga tampilan tetap rapi */
+    object-position: center;
+    display: block;
+    margin-top: 0;
+    margin-bottom: 0;
+    position: absolute; 
+    z-index: 50;
+    bottom: 0; 
+    left: 0;
+    pointer-events: none;
 }
 
-.footer-content {
-    position: relative;
-    z-index: 2; 
-    height: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem 2rem;
-    font-weight: 700;
-    font-size: 0.9rem;
-}
-
-.socials {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.socials a {
-    color: #fff;
-    font-size: 1.2rem;
-    transition: color 0.3s;
-}
-
-.socials a:hover {
-    color: var(--color-gold);
-}
-
-/* --- Responsive Design --- */
+/* ------------------------------------
+RESPONSIVE
+------------------------------------- */
 @media (max-width: 992px) {
     .main-header {
         flex-wrap: wrap;
@@ -530,85 +202,23 @@ body {
         width: 100%;
         margin-top: 1rem;
     }
-    .hero-section {
-        grid-template-columns: 1fr;
-        text-align: center;
-        margin-top: 2rem;
-        padding-bottom: 100px;
-    }
-    .hero-left {
-        padding-right: 0;
-        order: 2;
-    }
-    .hero-right {
-        order: 1;
-        margin-bottom: 2rem;
-    }
-    .main-character-wrapper {
-        bottom: -50px;
-    }
-    .title-container h1 {
-        left: 50%;
-        transform: translateX(-50%);
-        width: 100%;
-    }
-    .about-section {
-        margin-left: auto;
-        margin-right: auto;
-        max-width: 90%; 
-    }
-    .character-container {
-        transform: scale(0.9);
-    }
-    .character-container .photo {
-        width: 120px;
-    }
-    .main-footer {
-        height: 80px;
-    }
-    .footer-content {
-        flex-direction: column;
-        gap: 0.25rem;
-        padding: 0.5rem 1rem;
-    }
-    .login-btn, .signup-btn {
-        padding: 0.5rem 1rem;
-        font-size: 0.9rem;
-    }
     .main-nav ul {
         gap: 1.5rem;
     }
     .main-nav ul li a {
         font-size: 1rem;
     }
-    
-    .section-title {
-        font-size: 2.2rem;
-    }
-    .staff-grid, .class-grid {
-        gap: 1.5rem;
+    .login-btn, .signup-btn {
+        padding: 0.5rem 1rem;
+        font-size: .9rem;
     }
 }
+
 @media (max-width: 768px) {
-     .character-container .photo {
-        width: 120px;
-     }
-     .main-footer {
-        height: 80px;
-     }
-     .footer-content {
-        flex-direction: column;
-        gap: 0.25rem;
-        padding: 0.5rem 1rem;
-     }
-     .login-btn, .signup-btn {
-        padding: 0.5rem 1rem;
-        font-size: 0.9rem;
-     }
-     .main-nav ul {
-        gap: 1.5rem;
-     }
-     .main-nav ul li a {
-        font-size: 1rem;
-     }
+    .main-nav ul {
+        gap: 1rem;
+    }
+    .main-nav ul li a {
+        font-size: .95rem;
+    }
 }
