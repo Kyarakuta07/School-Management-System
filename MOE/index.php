@@ -28,7 +28,7 @@
                 <button type="submit">LOGIN</button>
             </form>
         </div>
-        <img src="camels.svg" alt="Walking camels caravan" class="walking-camels">
+        <img src="../MOE/admin/image/camels.svg" alt="Walking camels caravan" class="walking-camels">
     </div>
 </body>
 </html>

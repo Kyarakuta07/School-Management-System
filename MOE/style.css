@@ -17,7 +17,7 @@ body {
 body {
     margin: 0;
     /* !!! IMPORTANT: REPLACE WITH YOUR BACKGROUND IMAGE !!! */
-    background-image: url('layered-peaks-haikei.svg');
+    background-image: url('../MOE/admin/image/layered-peaks-haikei.svg');
     background-repeat: no-repeat;
     background-size: cover;
     font-family: "Lato", sans-serif;

@@ -31,7 +31,7 @@ body {
     margin: 0;
     font-family: "Lato", sans-serif;
     color: var(--text-color);
-    background-image: url(../../layered-peaks-haikei.svg);
+    background-image: url(../image/layered-peaks-haikei.svg);
     background-size: cover;
     background-position: center;
     background-attachment: fixed; 
@@ -84,11 +84,11 @@ body.open .sidebar {
     height: 60px;
     display: grid;
     place-items: center;
-    background: url(../../icon-burger.svg) no-repeat center center;
+    background: url(../image/icon-burger.svg) no-repeat center center;
 }
 
 body.open .sidebar-burger {
-    background: url(../../icon-close.svg) no-repeat center center;
+    background: url(../image/icon-close.svg) no-repeat center center;
 }
 
 .sidebar-logo {
