@@ -1,173 +1,221 @@
-/* --- GAYA DASAR UNTUK KARTU & TABEL --- */
+/* =========================================================
+   CARD & TABLE STYLES (THEME: DARK LUXURY)
+   ========================================================= */
 
-.card.full-width-card {
-    grid-column: 1 / -1; /* Membuat kartu ini memenuhi seluruh lebar grid */
+/* Pastikan variabel utama terdefinisi untuk keamanan */
+:root {
+    --gold: #DAA520;
+    --gold-hover: #FFD700;
+    --glass-border: rgba(218, 165, 32, 0.3);
+    --input-bg: rgba(0, 0, 0, 0.3);
+    --font-head: 'Cinzel', serif;
+    --font-body: 'Lato', sans-serif;
 }
 
+/* --- LAYOUT KARTU --- */
+.card.full-width-card {
+    grid-column: 1 / -1; 
+    min-height: 500px; 
+}
+
+/* --- TABEL GLASSMORPHISM --- */
 .table-container {
     width: 100%;
-    overflow-x: auto; /* Memastikan tabel bisa di-scroll di layar kecil */
+    overflow-x: auto; /* Wajib: Scroll samping jika tabel kepanjangan */
+    padding-bottom: 20px;
+    
+    /* Scrollbar Emas Tipis */
+    scrollbar-width: thin;
+    scrollbar-color: var(--gold) transparent;
 }
 
+.table-container::-webkit-scrollbar { height: 8px; }
+.table-container::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
+.table-container::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+
 table {
+    /* Memaksa lebar minimum untuk memunculkan scrollbar horizontal */
+    min-width: 1000px; 
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 24px;
+    border-collapse: separate; 
+    border-spacing: 0;
+    margin-top: 1rem;
 }
 
 thead {
-    background-color: var(--hover-bg-color);
-}
-
-th, td {
-    padding: 12px 16px;
-    text-align: left;
-    border-bottom: 1px solid var(--border-color);
-    white-space: nowrap; /* Mencegah teks turun baris */
+    background-color: rgba(218, 165, 32, 0.1); /* Emas sangat transparan */
 }
 
 th {
-    font-family: 'Cinzel', serif;
-    font-size: 0.9rem;
-    color: var(--subtle-text-color);
+    font-family: var(--font-head);
+    font-size: 0.85rem;
+    color: var(--gold);
     text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 18px 20px; /* Padding lebih besar biar lega */
+    text-align: left;
+    border-bottom: 2px solid var(--glass-border);
+    white-space: nowrap; 
 }
 
+td {
+    padding: 15px 20px; /* Jarak antar teks lebih lega */
+    color: #ddd;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.95rem;
+    vertical-align: middle;
+    white-space: nowrap !important; /* KUNCI: Mencegah teks turun baris */
+}
+
+/* Hover Baris */
+tbody tr { transition: background 0.2s; }
 tbody tr:hover {
-    background-color: var(--hover-bg-color);
+    background-color: rgba(255, 255, 255, 0.05); /* Highlight saat mouse lewat */
 }
 
+/* --- STATUS BADGES --- */
+.status-badge {
+    font-size: 0.7rem;
+    padding: 6px 12px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    display: inline-block;
+    text-align: center;
+    min-width: 80px;
+}
 
-/* --- BAGIAN TOMBOL AKSI --- */
+.status-Aktif { /* Hijau Outline */
+    background: rgba(50, 205, 50, 0.1);
+    color: #32cd32;
+    border: 1px solid #32cd32;
+}
 
+.status-OUT, .status-Tidak-Lulus { /* Merah Outline */
+    background: rgba(220, 20, 60, 0.15);
+    color: #ff6b6b;
+    border: 1px solid #ff6b6b;
+}
+
+.status-Hiatus, .status-Pending { /* Oranye Outline */
+    background: rgba(255, 165, 0, 0.15);
+    color: #ffa500;
+    border: 1px solid #ffa500;
+}
+
+/* --- TOMBOL AKSI (ACTION BUTTONS) --- */
 .action-buttons {
     display: flex;
-    gap: 8px;
+    gap: 10px;
+    align-items: center;
 }
 
-.action-buttons .btn-edit,
-.action-buttons .btn-view,
-.action-buttons .btn-delete { /* Ditambahkan .btn-delete */
-    display: grid;
-    place-items: center;
-    width: 36px;
-    height: 36px;
+.action-buttons button,
+.action-buttons a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 35px;
+    height: 35px;
     border-radius: 8px;
-    font-size: 1.2rem;
-    transition: all 0.2s ease;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
     text-decoration: none;
-    border: none;
+    border: 1px solid transparent;
     cursor: pointer;
+    background: transparent;
 }
 
+/* Edit (Emas) */
 .btn-edit {
-    background-color: #E0B913;
-    color: #2b2b2b;
+    border-color: var(--gold);
+    color: var(--gold);
 }
 .btn-edit:hover {
-    background-color: #C7A510;
+    background: var(--gold);
     color: #000;
+    box-shadow: 0 0 10px rgba(218, 165, 32, 0.4);
 }
 
-.btn-view {
-    background-color: var(--hover-bg-color);
-    color: var(--text-color);
-}
-.btn-view:hover {
-    background-color: var(--border-color);
-    color: #fff;
-}
-
-/* Style untuk tombol delete */
+/* Delete (Merah) */
 .btn-delete {
-    background-color: #582121; /* Merah gelap */
-    color: #ff8282; /* Ikon merah terang */
+    border-color: #ff6b6b;
+    color: #ff6b6b;
 }
 .btn-delete:hover {
-    background-color: var(--color-status-out); /* Merah lebih terang saat hover */
+    background: #ff6b6b;
     color: #fff;
+    box-shadow: 0 0 10px rgba(255, 107, 107, 0.4);
 }
 
 
-/* --- STYLE UNTUK SEMUA FORM --- */
-
+/* --- FORM CONTAINER STYLING (Dipertahankan untuk Layout) --- */
 .form-container {
-    margin-top: 24px;
+    margin-top: 20px;
+    max-width: 800px; 
+    margin-left: auto; 
+    margin-right: auto; 
 }
+
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 }
+
 .form-group label {
     display: block;
-    margin-bottom: 8px;
-    font-family: 'Cinzel', serif;
-    font-size: 0.9rem;
-    color: var(--subtle-text-color);
+    margin-bottom: 10px;
+    font-family: var(--font-head);
+    font-size: 0.85rem;
+    color: var(--gold);
+    letter-spacing: 1px;
 }
-.form-group input[type="text"],
-.form-group input[type="number"],
-.form-group input[type="file"],
-.form-group select,
-.form-group textarea {
-    width: 100%;
-    padding: 12px 16px;
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-    background-color: var(--sidebar-bg-color);
-    color: var(--text-color);
-    font-size: 1rem;
-    font-family: 'Lato', sans-serif;
-    transition: border-color 0.2s ease;
-}
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-    outline: none;
-    border-color: var(--accent-color);
-}
-.form-group textarea {
-    resize: vertical;
-    min-height: 80px;
-}
+
+/* Tombol Save/Submit Form (DI SINI, KARENA TOMBOL INI UTAMA) */
 .btn-save {
-    padding: 12px 24px;
-    background-color: var(--accent-color);
-    color: var(--accent-text-color);
+    padding: 12px 30px;
+    background: linear-gradient(45deg, #b8860b, #DAA520);
+    color: #000;
+    font-family: var(--font-head);
     font-weight: 700;
     font-size: 1rem;
     border-radius: 8px;
+    border: none !important;
     cursor: pointer;
-    transition: background-color 0.2s ease;
-    border: none;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: inline-block;
+    text-decoration: none;
 }
+
 .btn-save:hover {
-    background-color: #c7a510;
+    transform: translateY(-2px);
+    background: #fff;
+    color: #b8860b;
+    box-shadow: 0 0 15px rgba(218, 165, 32, 0.5);
 }
 
-
-/* --- STYLE UNTUK SEARCH BAR (DIPERBARUI) --- */
-
+/* --- SEARCH BAR (Dark Theme Fix) --- */
 .search-container {
     position: relative;
-}
-.search-input {
-    width: 250px;
-    padding: 8px 12px 8px 35px; /* Tambah padding kiri untuk ikon */
-    border-radius: 6px;
-    border: 1px solid var(--border-color);
-    background-color: var(--bg-color); /* Pastikan var(--bg-color) terdefinisi di style.css */
-    color: var(--text-color);
-    font-size: 0.9rem;
-}
-.search-input:focus {
-    outline: none;
-    border-color: var(--accent-color);
-}
-.search-container i {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--subtle-text-color);
+    display: inline-block;
+    margin-bottom: 1rem; 
 }
 
+.search-input {
+    /* INI SELEKTORNYA: */
+    width: 300px;
+    padding: 10px 15px 10px 40px; 
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    
+    /* Warna Gelap Transparan */
+    background-color: rgba(0, 0, 0, 0.5); 
+    color: #fff;
+    
+    font-size: 0.9rem;
+    font-family: var(--font-body);
+    transition: all 0.3s ease;
+}
+/* ... (dilanjutkan dengan :focus state dan icon styling) ... */
