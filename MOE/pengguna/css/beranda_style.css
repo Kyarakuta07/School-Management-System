@@ -1,0 +1,183 @@
+/* =======================================================
+   NETHERA DASHBOARD STYLES (COMMAND HUB - DESKTOP FINAL)
+   ======================================================= */
+:root {
+    --gold: #DAA520;
+    --dark-bg: #0c0c0c;
+    --card-bg: rgba(18, 18, 18, 0.95);
+    --glass-border: rgba(218, 165, 32, 0.2);
+    --font-head: 'Cinzel', serif;
+    --font-body: 'Lato', sans-serif;
+    --red-alert: #ff6b6b;
+    --sidebar-width: 300px; /* Lebar kolom kiri */
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background-color: var(--dark-bg);
+    color: #fff;
+    min-height: 100vh;
+    padding: 0;
+    margin: 0;
+    font-family: var(--font-body);
+}
+
+/* --- BACKGROUND --- */
+.bg-fixed, .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; }
+
+/* --- MAIN WRAPPER --- */
+.main-dashboard-wrapper {
+    padding: 20px 40px 60px 40px; 
+    max-width: 1400px;
+    margin: 0 auto;
+    z-index: 10;
+    position: relative;
+}
+
+/* ==================================
+   1. TOP HEADER & NAVIGATION
+   ================================== */
+.top-user-header {
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.main-h1 { font-family: var(--font-head); color: var(--gold); font-size: 2.5rem; margin: 0; }
+.main-h2 { font-size: 1rem; color: #ccc; font-weight: 400; margin-top: 5px; }
+
+
+.top-nav-menu {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+.nav-btn {
+    display: flex; align-items: center; gap: 8px;
+    text-decoration: none; color: #aaa; padding: 8px 12px;
+    border-radius: 4px; transition: 0.3s; font-size: 0.9rem;
+}
+.nav-btn:hover { background: rgba(218, 165, 32, 0.1); color: var(--gold); }
+.logout-btn-header { color: var(--red-alert) !important; margin-left: auto; }
+
+
+/* ==================================
+   2. MAIN CONTENT GRID (DESKTOP)
+   ================================== */
+.profile-main-grid {
+    display: grid;
+    grid-template-columns: var(--sidebar-width) 1fr; /* 300px fixed column & flexible column */
+    gap: 40px;
+}
+
+/* --- KOLOM KIRI: PROFILE DETAIL --- */
+.profile-sidebar-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 25px; /* Jarak antar kotak di kolom kiri */
+    align-content: flex-start; /* Pastikan konten rapat ke atas */
+}
+
+.profile-avatar-box {
+    text-align: center; 
+    padding: 20px;
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    background: var(--card-bg);
+}
+
+.profile-avatar-lg {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 4px solid var(--gold);
+    box-shadow: 0 0 20px rgba(218, 165, 32, 0.5);
+    margin-bottom: 15px;
+    object-fit: cover;
+}
+
+.user-name-title { font-family: var(--font-head); font-size: 1.2rem; color: #fff; margin: 0; }
+.profile-link { color: #aaa; font-size: 0.9rem; margin-bottom: 10px;}
+.sanctuary-info-large { color: var(--gold); font-size: 0.8rem; letter-spacing: 1px; }
+
+/* FUNFACT CARD */
+.funfact-card {
+    padding: 20px;
+    border-radius: 12px;
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    min-height: 150px; /* Tambahkan tinggi minimum untuk visual */
+}
+.funfact-card p { color: #aaa; margin-top: 10px; font-size: 0.9rem; line-height: 1.6; }
+
+/* QUICK STATS GRID */
+.quick-stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.stat-box {
+    padding: 20px;
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+}
+.stat-box strong { font-family: var(--font-head); font-size: 1.5rem; color: var(--gold); display: block; margin-top: 5px;}
+.stat-box small { color: #fff; font-size: 0.8rem; }
+
+
+/* --- KOLOM KANAN: INFO COMMAND CENTER --- */
+.info-command-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* CARD NEWS/SANCTUARY */
+.profile-card {
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.6);
+    text-align: left;
+    transition: transform 0.3s;
+    min-height: 150px;
+}
+
+.card-title {
+    font-family: var(--font-head);
+    font-size: 0.95rem; 
+    color: var(--gold);
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+}
+
+.card-content p { color: #aaa; margin-top: 10px; line-height: 1.6; }
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+    .profile-main-grid {
+        grid-template-columns: 1fr; /* Stack kolom menjadi satu */
+        gap: 20px;
+    }
+}
+/* Tambahkan di akhir file beranda_style.css */
+.sanctuary-icon {
+    font-size: 2rem; /* Membuat ikon lebih besar */
+    color: var(--gold);
+    display: block;
+    margin-bottom: 10px;
+}
+
+.sanctuary-card .card-content {
+    /* Menyesuaikan layout content di kartu sanctuary */
+    display: flex;
+    flex-direction: column;
+}

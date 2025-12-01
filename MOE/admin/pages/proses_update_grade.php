@@ -12,16 +12,21 @@ if (!isset($_SESSION['status_login']) || $_SESSION['role'] != 'Vasiki') {
 // 1. Pastikan data dikirim melalui method POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    // 2. Ambil semua data dari form
-    $id_grade     = $_POST['id_grade'];
-    $class_name   = $_POST['class_name'];
-    $english      = $_POST['english'];
-    $herbology    = $_POST['herbology'];
-    $oceanology   = $_POST['oceanology'];
-    $astronomy    = $_POST['astronomy'];
-    $total_pp     = $_POST['total_pp'];
+    // 2. Ambil dan bersihkan data
+    $id_grade = (int)$_POST['id_grade']; // Harus integer
+    $class_name = trim($_POST['class_name']);
+    
+    // Ambil nilai mata pelajaran (Wajib dikonversi ke INT)
+    $english = (int)$_POST['english'];
+    $herbology = (int)$_POST['herbology'];
+    $oceanology = (int)$_POST['oceanology'];
+    $astronomy = (int)$_POST['astronomy'];
+    
+    // 3. KALKULASI KRITIS: Hitung ulang Total PP
+    $new_total_pp = $english + $herbology + $oceanology + $astronomy;
 
-    // 3. Siapkan query SQL UPDATE yang aman
+    // 4. Siapkan query SQL UPDATE yang aman
+    // Kolom yang di-update: class_name, 4 scores, dan total_pp
     $sql = "UPDATE class_grades SET 
                 class_name = ?, 
                 english = ?, 
@@ -35,12 +40,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt = mysqli_prepare($conn, $sql);
 
     if ($stmt) {
-        // 4. Ikat parameter ke query (s = string, i = integer)
-        mysqli_stmt_bind_param($stmt, "siiiiii", $class_name, $english, $herbology, $oceanology, $astronomy, $total_pp, $id_grade);
+        // 5. Ikat parameter ke query (s = string, 6x i = integer, 1x i = ID)
+        // Format String: s, i, i, i, i, i, i (Total 7 parameter)
+        // NOTE: Kita tidak menggunakan $total_pp dari $_POST, tapi menggunakan $new_total_pp
+        mysqli_stmt_bind_param($stmt, "siiiiii", 
+            $class_name,
+            $english,
+            $herbology,
+            $oceanology,
+            $astronomy,
+            $new_total_pp, // <-- Hasil Kalkulasi Baru
+            $id_grade
+        );
 
-        // 5. Eksekusi query
+        // 6. Eksekusi query
         if (mysqli_stmt_execute($stmt)) {
-            // Jika berhasil, kembalikan ke halaman manage_classes dengan pesan sukses
             header("Location: manage_classes.php?status=update_sukses");
             exit();
         } else {
@@ -52,7 +66,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
 } else {
-    // Jika halaman ini diakses langsung tanpa mengirim form, kembalikan
     header("Location: manage_classes.php");
     exit();
 }

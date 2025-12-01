@@ -39,7 +39,7 @@ body {
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background: radial-gradient(circle at center, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.95) 100%);
+    background: radial-gradient(circle at center, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.65) 100%);
     z-index: -1;
 }
 
@@ -228,18 +228,106 @@ h1 {
     transform: translateY(-2px); /* Naik dikit */
 }
 
-/* Alert Style */
-.alert-error {
-    background: rgba(50, 0, 0, 0.6);
-    border: 1px solid #800000;
-    color: #ffcccc;
-    padding: 8px;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    margin-bottom: 1rem;
+/* =========================================
+   ALERT & STATUS MESSAGES (Global Component)
+   ========================================= */
+
+/* Gaya Dasar untuk semua tipe Alert */
+.alert-error, 
+.alert-success, 
+.alert-warning {
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 10px;
+    width: 100%;
 }
 
+/* 1. ALERT ERROR (Gagal Login / OTP Salah) */
+.alert-error {
+    /* Menggunakan warna yang mewah dan elegan (emas transparan) */
+    background: rgba(184, 138, 27, 0.2); 
+    border: 1px solid #DAA520; 
+    color: #DAA520;
+    box-shadow: 0 0 10px rgba(218, 165, 32, 0.1);
+}
+
+/* 2. ALERT SUCCESS (Misalnya, Logout Berhasil) */
+.alert-success {
+    background: rgba(50, 205, 50, 0.2);
+    border: 1px solid #32cd32;
+    color: #98fb98;
+}
+
+/* 3. ALERT WARNING (Misalnya, Akun Menunggu Persetujuan) */
+.alert-warning {
+    background: rgba(255, 165, 0, 0.15);
+    border: 1px solid #ffa500;
+    color: #ffa500;
+}
+
+/* --- TOAST/POPUP NOTIFICATION (Baru) --- */
+
+.notification-container {
+    position: fixed;
+    top: 20px; /* Jarak awal dari atas */
+    left: 50%;
+    transform: translateX(-50%); /* Pusatkan secara horizontal */
+    z-index: 1000;
+    width: 90%;
+    max-width: 450px;
+    opacity: 0; /* Mulai tersembunyi */
+    visibility: hidden;
+    transition: all 0.4s ease-in-out;
+}
+
+.notification-container.show {
+    opacity: 1;
+    visibility: visible;
+    top: 30px; /* Turunkan sedikit saat muncul */
+}
+
+.toast-alert {
+    padding: 15px 20px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Gaya Warna Spesifik */
+.toast-error { 
+    background-color: rgba(150, 0, 0, 0.9); /* Merah gelap */
+    border: 1px solid #ff4444; 
+    color: #fff;
+}
+.toast-warning { 
+    /* Emas Gelap/Cokelat */
+    background-color: rgba(184, 138, 27, 0.9); 
+    border: 1px solid var(--gold); 
+    color: var(--dark-bg); /* Teks hitam agar kontras */
+}
+.toast-success { 
+    background-color: rgba(0, 100, 0, 0.9); 
+    border: 1px solid #32cd32; 
+    color: #fff;
+}
+
+/* --- Tambahkan blok ini ke style.css global di bagian bawah --- */
+
+.bg-fixed { 
+    position: fixed; 
+    top: 0; left: 0; 
+    width: 100%; height: 100%;
+    /* Path harus dari root ke folder assets */
+    background: url('assets/landing/2.png') no-repeat center center/cover; 
+    z-index: -2; 
+    opacity: 0.4; 
+}
