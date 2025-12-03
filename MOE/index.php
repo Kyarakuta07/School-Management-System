@@ -57,7 +57,7 @@ if (isset($_SESSION['status_login']) && $_SESSION['status_login'] == 'berhasil')
             <button type="submit" class="btn-login">LOGIN</button>
 
             <div class="footer-links">
-                <a href="#">Forgot Password?</a>
+                <a href="forgot_password.php">Forgot Password?</a>
                 <a href="register.php">Create Account</a>
             </div>
         </form>

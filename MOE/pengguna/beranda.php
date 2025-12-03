@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '../connection.php'; 
+include '../connection.php';
 
 // 1. CEK AUTENTIKASI DASAR
 if (!isset($_SESSION['status_login']) || $_SESSION['role'] != 'Nethera') {
@@ -8,10 +8,10 @@ if (!isset($_SESSION['status_login']) || $_SESSION['role'] != 'Nethera') {
     exit();
 }
 
-$id_user = $_SESSION['id_nethera']; 
+$id_user = $_SESSION['id_nethera'];
 
 // 2. QUERY: CEK STATUS DAN AMBIL NAMA SANCTUARY (Security dan Title Data)
-$sql_info = "SELECT n.status_akun, s.nama_sanctuary 
+$sql_info = "SELECT n.status_akun, s.nama_sanctuary
              FROM nethera n
              JOIN sanctuary s ON n.id_sanctuary = s.id_sanctuary
              WHERE n.id_nethera = ?";
@@ -20,7 +20,7 @@ $stmt_info = mysqli_prepare($conn, $sql_info);
 
 // --- PERBAIKAN KRITIS: CHECK JIKA QUERY GAGAL ---
 if (!$stmt_info) {
-    die("Error Database. Hubungi Admin: " . mysqli_error($conn)); 
+    die("Error Database. Hubungi Admin: " . mysqli_error($conn));
 }
 // --- END PERBAIKAN KRITIS ---
 
@@ -31,16 +31,16 @@ $user_info_data = mysqli_fetch_assoc($result_info);
 mysqli_stmt_close($stmt_info);
 
 // 3. PEMBERSIHAN DATA DAN ENFORCEMENT
-$user_status = trim($user_info_data['status_akun']); 
+$user_status = trim($user_info_data['status_akun']);
 $sanctuary_name = htmlspecialchars($user_info_data['nama_sanctuary']);
 $nama_pengguna = htmlspecialchars($_SESSION['nama_lengkap']);
 
 // ENFORCEMENT: Cek status harus SAMA PERSIS dengan string 'Aktif'
 if ($user_status !== 'Aktif') {
-    session_destroy(); 
+    session_destroy();
     
     $redirect_message = 'access_denied';
-    if ($user_status === 'Pending') { 
+    if ($user_status === 'Pending') {
         $redirect_message = 'pending_approval';
     }
     
@@ -61,9 +61,9 @@ $fun_fact = htmlspecialchars($fun_fact_data['fun_fact'] ?? 'Belum ada funfact.')
     
     <title>Beranda - <?php echo htmlspecialchars($sanctuary_name); ?> Sanctuary</title>
     
-    <link rel="stylesheet" href="../style.css" /> 
-    <link rel="stylesheet" href="../assets/css/landing-style.css" /> 
-    <link rel="stylesheet" href="css/beranda_style.css" /> 
+    <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="../assets/css/landing-style.css" />
+    <link rel="stylesheet" href="css/beranda_style.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
 </head>

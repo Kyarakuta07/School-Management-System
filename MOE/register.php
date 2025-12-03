@@ -12,13 +12,17 @@ if (!$sanctuaries_query) {
 }
 // Logic untuk menampilkan pesan error jika ada redirect dari proses_register.php
 $error_message = '';
+$alert_class = 'alert-error'; // Default error class
 if (isset($_GET['error'])) {
-    if ($_GET['error'] == 'db_error') {
+    $error_code = $_GET['error'];
+    if ($error_code == 'db_error') {
         $error_message = 'Pendaftaran gagal. Terjadi kesalahan pada database.';
-    } else if ($_GET['error'] == 'email_fail') {
-        $error_message = 'Pendaftaran berhasil, tetapi gagal mengirimkan kode verifikasi. Coba lagi.';
-    } else if ($_GET['error'] == 'sql_prepare') {
-        $error_message = 'Sistem sedang sibuk. Coba beberapa saat lagi.';
+    } else if ($error_code == 'duplicate_entry') {
+        $error_message = 'Nickname atau alamat email ini sudah terdaftar. Silakan coba login atau gunakan data lain.';
+    } else if ($error_code == 'email_fail') {
+        $error_message = 'Pendaftaran berhasil, tetapi gagal mengirimkan kode verifikasi. Akun Anda telah terdaftar, mohon segera hubungi Admin.';
+    } else if ($error_code == 'expired') {
+        $error_message = 'Verifikasi OTP kadaluarsa. Anda harus mendaftar ulang.';
     }
 }
 ?>

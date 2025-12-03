@@ -182,3 +182,57 @@ html, body {
     pointer-events: none;
 }
 .class-card:hover .card-glow { opacity: 0.2; }
+
+/* =========================================
+   RESPONSIVE LANDING PAGE (Max Width 992px)
+   ========================================= */
+
+@media (max-width: 992px) {
+    /* 1. Collapse Grid Utama */
+    .hero-section {
+        grid-template-columns: 1fr; /* Ubah dari 2 kolom menjadi 1 kolom */
+        padding: 4rem 20px; /* Kurangi padding samping */
+        gap: 0;
+    }
+
+    /* 2. Sembunyikan/Kecilkan Elemen Besar */
+    /* Hapus background teks besar yang merusak layout mobile */
+    .title-container .moe-text-img {
+        display: none;
+    }
+    
+    /* Posisikan Karakter agar tidak keluar batas */
+    .character-container {
+        transform: scale(0.8); /* Kecilkan karakter agar muat */
+        margin-top: -50px;
+    }
+    
+    /* Rapatkan Menu Navbar */
+    .main-nav ul {
+        gap: 1.5rem;
+    }
+    .main-nav ul li a {
+        font-size: 0.9rem;
+    }
+}
+
+/* =========================================
+   RESPONSIVE STAFF LISTING
+   ========================================= */
+
+@media (max-width: 992px) {
+    .staff-section {
+        padding: 80px 15px 5rem 15px; /* Kurangi padding samping */
+    }
+    .group-title {
+        font-size: 1.8rem;
+    }
+    .staff-grid {
+        gap: 1.5rem; /* Kurangi jarak antar kartu */
+    }
+    /* Biarkan kartu mengambil seluruh lebar yang tersedia */
+    .staff-card {
+        width: 100%; 
+        max-width: 350px; 
+    }
+}

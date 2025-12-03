@@ -68,7 +68,7 @@ body {
     justify-content: space-between;
     align-items: center;
     position: relative;
-    z-index: 9999;
+    z-index: 50;
 }
 
 .main-header .logo {

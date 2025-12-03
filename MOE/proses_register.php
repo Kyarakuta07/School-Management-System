@@ -2,13 +2,13 @@
 session_start();
 include 'connection.php'; 
 
-// --- GANTI PATH INI AGAR SESUAI DENGAN STRUKTUR BARU ---
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require 'phpmailer/src/Exception.php'; // PATH BARU
-require 'phpmailer/src/PHPMailer.php'; // PATH BARU
-require 'phpmailer/src/SMTP.php'; // PATH BARU
+// PASTIKAN PATH PHPMailer BENAR
+require 'phpmailer/src/Exception.php'; 
+require 'phpmailer/src/PHPMailer.php';
+require 'phpmailer/src/SMTP.php'; 
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: register.php");
@@ -24,52 +24,64 @@ $password_input = $_POST['password'];
 $id_sanctuary = (int)$_POST['id_sanctuary'];
 $periode_masuk = (int)$_POST['periode_masuk'];
 
-// --- 2. SECURITY: HASHING PASSWORD ---
+// --- 2. CHECK DUPLIKASI (Jika duplikat, redirect) ---
+$sql_check_exist = "SELECT id_nethera FROM nethera WHERE nickname = ? OR email = ?";
+$stmt_check_exist = mysqli_prepare($conn, $sql_check_exist);
+
+if ($stmt_check_exist) {
+    mysqli_stmt_bind_param($stmt_check_exist, "ss", $nickname, $email);
+    mysqli_stmt_execute($stmt_check_exist);
+    mysqli_stmt_store_result($stmt_check_exist);
+
+    if (mysqli_stmt_num_rows($stmt_check_exist) > 0) {
+        header("Location: register.php?error=duplicate_entry");
+        exit();
+    }
+    mysqli_stmt_close($stmt_check_exist);
+}
+
+
+// --- 3. SECURITY: HASHING PASSWORD ---
 $hashed_password = password_hash($password_input, PASSWORD_DEFAULT);
 
-// --- 3. STATUS & OTP GENERATION ---
+// --- 4. STATUS & OTP GENERATION ---
 $default_role = 'Nethera';
 $default_status = 'Pending'; 
 $otp_code = rand(100000, 999999); 
-$otp_expires = date("Y-m-d H:i:s", time() + 300); // 5 menit
+$otp_expires = date("Y-m-d H:i:s", time() + 300);
 
-// 4. SQL INSERT (TAMBAHKAN KOLOM EMAIL)
-// Perhatian: Jumlah 's' harus disesuaikan dengan jumlah kolom string (s,s,s,i,i,s,s,s,s,s)
+// 5. SQL INSERT (11 kolom)
 $sql = "INSERT INTO nethera 
         (nama_lengkap, nickname, email, noHP, id_sanctuary, periode_masuk, password, role, status_akun, otp_code, otp_expires) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"; 
 
 $stmt = mysqli_prepare($conn, $sql);
 
 if ($stmt) {
-// Bind Parameter: s (nama), s (nick), s (email), s (noHP), i (sanct), i (periode), s (pass), s (role), s (status), s (otp), s (expires)
-    mysqli_stmt_bind_param($stmt, "sssiississs", // <-- Diperbarui!
-        $nama_lengkap,
-        $nickname,
-        $email,
-        $noHP, // <-- VARIABEL BARU
-        $id_sanctuary,
-        $periode_masuk,
-        $hashed_password, 
-        $default_role,
-        $default_status,
-        $otp_code, 
-        $otp_expires
+    // Bind Parameter: s, s, s, s, i, i, s, s, s, s, s (Total 11)
+mysqli_stmt_bind_param($stmt, "ssssiisssss",
+        $nama_lengkap,        // s (1)
+        $nickname,            // s (2)
+        $email,               // s (3)
+        $noHP,                // s (4)
+        $id_sanctuary,        // i (5 - INT)
+        $periode_masuk,       // i (6 - INT)
+        $hashed_password,     // s (7 - KRITIS: Password)
+        $default_role,        // s (8 - KRITIS: Role)
+        $default_status,      // s (9)
+        $otp_code,            // s (10)
+        $otp_expires          // s (11)
     );
 
     if (mysqli_stmt_execute($stmt)) {
         
-        // --- 5. LOGIKA PENGIRIMAN EMAIL OTP MENGGUNAKAN PHPMailer ---
+        // --- 6. LOGIKA PENGIRIMAN EMAIL OTP MENGGUNAKAN PHPMailer ---
         $mail = new PHPMailer(true);
         try {
-            // GANTI DENGAN SETTING SERVER EMAIL ANDA
-            $mail->isSMTP();                                            
-            $mail->Host       = 'smtp.gmail.com';    // CONTOH: Untuk Gmail
-            $mail->SMTPAuth   = true;                                   
-            $mail->Username   = 'mediterraneanofegypt@gmail.com';  // GANTI: Alamat Email Pengirim
-            $mail->Password   = 'pdyn gyem ljzk odcc';   // GANTI: Password Aplikasi/Email
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            
-            $mail->Port       = 465;                                    
+            // Server settings (KREDENSIAL ASLI)
+            $mail->isSMTP(); $mail->Host = 'smtp.gmail.com'; $mail->SMTPAuth = true;                                   
+            $mail->Username = 'mediterraneanofegypt@gmail.com'; $mail->Password = 'pdyn gyem ljzk odcc';   
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; $mail->Port = 465;                                    
 
             // Recipients
             $mail->setFrom('mediterraneanofegypt@gmail.com', 'MOE Registration');
@@ -78,7 +90,7 @@ if ($stmt) {
             // Content
             $mail->isHTML(true);                                  
             $mail->Subject = 'Kode Verifikasi Akun Mediterranean of Egypt (OTP)';
-            $mail->Body    = "
+            $mail->Body = <<<EMAIL_BODY
                 <html>
                 <body style='font-family: Lato, sans-serif; background-color: #0d0d0d; color: #fff; padding: 20px; text-align: center;'>
                     <div style='max-width: 500px; margin: auto; padding: 20px; background-color: rgba(255, 255, 255, 0.1); border-radius: 10px; border: 1px solid #DAA520;'>
@@ -93,29 +105,31 @@ if ($stmt) {
                     </div>
                 </body>
                 </html>
-            ";
-            
+EMAIL_BODY;
+
             $mail->send();
             
-            // Redirect ke halaman verifikasi OTP (Tahap 2)
+            // Redirect ke halaman verifikasi OTP
             header("Location: verify_otp.php?user=" . urlencode($nickname));
             exit();
 
         } catch (Exception $e) {
-            // Gagal Kirim Email: Hapus data yang baru dimasukkan 
+            // Gagal Kirim Email: Hapus data yang baru dimasukkan (Fail-Safe)
             $last_id = mysqli_insert_id($conn);
             mysqli_query($conn, "DELETE FROM nethera WHERE id_nethera = $last_id");
-            error_log("PHPMailer Error: " . $mail->ErrorInfo); // Log error
+            error_log("PHPMailer Error: " . $mail->ErrorInfo); 
             
             header("Location: register.php?error=email_fail");
             exit();
         }
 
     } else {
-        header("Location: register.php?error=db_error");
+        // Gagal Eksekusi INSERT SQL
+        header("Location: register.php?error=db_error"); // Ganti die() dengan redirect yang benar
         exit();
     }
 } else {
+    // Error saat prepare query
     die("Error SQL: " . mysqli_error($conn));
 }
 ?>

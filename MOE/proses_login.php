@@ -1,56 +1,58 @@
 <?php
-// Mengaktifkan session PHP, ini wajib ada di paling atas
 session_start();
+include 'connection.php'; // Pastikan path koneksi Anda benar
 
-// Menghubungkan ke file koneksi database
-include 'connection.php';
-
-// --- BAGIAN INI SUDAH DISESUAIKAN DENGAN DATABASE ANDA ---
-
-// 1. Ambil data dari form login yang dikirimkan (method POST)
 $username_input = $_POST['username'];
-$password_input = $_POST['password'];
+$password_input = $_POST['password']; 
 
-$sql = "SELECT id_nethera, nama_lengkap, nickname, role,
-password FROM nethera WHERE (nama_lengkap = ? OR nickname = ?) AND password = ?";
+// 1. Ambil data user, termasuk HASHED PASSWORD dan STATUS
+// Kunci keamanan: Kita ambil hash dari DB dan memverifikasinya di PHP
+$sql = "SELECT id_nethera, nama_lengkap, nickname, role, status_akun, password 
+        FROM nethera 
+        WHERE nama_lengkap = ? OR nickname = ?";
 
 $stmt = mysqli_prepare($conn, $sql);
+
 if ($stmt) {
-    mysqli_stmt_bind_param($stmt, "sss", $username_input, $username_input, $password_input);
+    mysqli_stmt_bind_param($stmt, "ss", $username_input, $username_input);
     mysqli_stmt_execute($stmt);
 
-    // Ambil hasilnya
     $result = mysqli_stmt_get_result($stmt);
+    $data = mysqli_fetch_assoc($result);
 
-    // 4. Cek apakah pengguna ditemukan (jika ada 1 baris data yang cocok)
-    if (mysqli_num_rows($result) > 0) {
-        $data = mysqli_fetch_assoc($result);
+    // 2. CEK PENGGUNA DITEMUKAN DAN VERIFIKASI PASSWORD
+    // Gunakan password_verify() untuk membandingkan input (plaintext) dengan hash (DB)
+    if ($data && password_verify($password_input, $data['password'])) {
+        
+        // 3. CEK STATUS AKTIF (BUSINESS RULE)
+        if ($data['status_akun'] !== 'Aktif') {
+            // Arahkan ke halaman login dengan pesan penolakan
+            header("Location: index.php?pesan=pending_approval");
+            exit();
+        }
 
-        // 5. Simpan data pengguna yang penting ke dalam session
+        // 4. LOGIN SUKSES, BUAT SESSION
         $_SESSION['id_nethera'] = $data['id_nethera'];
         $_SESSION['nama_lengkap'] = $data['nama_lengkap'];
         $_SESSION['role'] = $data['role'];
-        $_SESSION['status_login'] = "berhasil"; // Penanda bahwa sudah login
+        $_SESSION['status_login'] = "berhasil";
 
-        // 6. Arahkan (redirect) pengguna berdasarkan rolenya
+        // Redirect pengguna berdasarkan rolenya
         if ($data['role'] == 'Vasiki') {
-            // Jika rolenya 'Vasiki', arahkan ke folder admin
             header("Location: admin/index.php");
             exit();
         } else {
-            // Jika rolenya 'Nethera', arahkan ke folder pengguna
             header("Location: pengguna/beranda.php");
             exit();
         }
 
     } else {
-        // Jika tidak ada data yang cocok (login gagal)
-        // Arahkan kembali ke halaman login dengan pesan error
+        // Login Gagal (Username tidak ditemukan atau password tidak cocok)
         header("Location: index.php?pesan=gagal");
         exit();
     }
 } else {
-    // Jika query SQL sendiri gagal dipersiapkan (misalnya karena salah ketik nama kolom)
-    die("Error pada persiapan query: " . mysqli_error($conn));
+    // Error saat prepare statement
+    die("Query error: " . mysqli_error($conn));
 }
 ?>

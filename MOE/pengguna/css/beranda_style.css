@@ -181,3 +181,49 @@ body {
     display: flex;
     flex-direction: column;
 }
+
+/* =========================================
+   RESPONSIVE NETHERA DASHBOARD (Max Width 900px)
+   ========================================= */
+
+@media (max-width: 900px) {
+    
+    /* 1. Stack Kolom Utama */
+    .profile-main-grid {
+        /* Kolom kiri dan kanan menumpuk penuh */
+        grid-template-columns: 1fr; 
+        gap: 30px;
+    }
+
+    /* 2. Stack Kartu Statistik Cepat */
+    .quick-stats-grid {
+        grid-template-columns: 1fr; /* Ubah dari 2 kolom menjadi 1 kolom penuh */
+        gap: 15px;
+    }
+    
+    /* 3. Atur Ulang PADDING */
+    .main-dashboard-wrapper {
+        padding: 20px 15px 40px 15px; /* Padding samping diperkecil */
+    }
+    
+    /* Rapatkan Avatar Box */
+    .profile-avatar-box {
+        flex-direction: row;
+        align-items: center;
+        text-align: left;
+    }
+    .profile-avatar-lg {
+        margin-bottom: 0;
+    }
+    
+    /* Rapatkan Navigasi Horizontal */
+    .top-nav-menu {
+        flex-wrap: wrap; /* Biar tombolnya turun baris */
+        justify-content: center;
+        gap: 10px 15px;
+    }
+    
+    .logout-btn-header {
+        margin-left: 0; /* Hapus margin dorong ke kanan */
+    }
+}

@@ -351,3 +351,12 @@ body {
         grid-column: span 1;
     }
 }
+
+@media (max-width: 1200px) {
+    /* ... (Grid 2 kolom untuk tablet/laptop kecil) ... */
+}
+@media (max-width: 768px) {
+    /* ... (Grid 1 kolom untuk HP, dan menghilangkan sidebar fixed) ... */
+    .dashboard-grid { grid-template-columns: 1fr; } 
+    .main-content { margin-left: 0; width: 100%; } 
+}

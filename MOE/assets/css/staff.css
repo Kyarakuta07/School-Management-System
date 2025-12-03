@@ -282,3 +282,60 @@ html, body {
         gap: 2rem;
     }
 }
+
+/* =========================================
+   RESPONSIVE LANDING PAGE (Max Width 992px)
+   ========================================= */
+
+@media (max-width: 992px) {
+    /* 1. Collapse Grid Utama */
+    .hero-section {
+        grid-template-columns: 1fr; /* Ubah dari 2 kolom menjadi 1 kolom */
+        padding: 4rem 20px; /* Kurangi padding samping */
+        gap: 0;
+    }
+
+    /* 2. Sembunyikan/Kecilkan Elemen Besar */
+    /* Hapus background teks besar yang merusak layout mobile */
+    .title-container .moe-text-img {
+        display: none;
+    }
+    
+    /* Posisikan Karakter agar tidak keluar batas */
+    .character-container {
+        transform: scale(0.8); /* Kecilkan karakter agar muat */
+        margin-top: -50px;
+    }
+    
+    /* Rapatkan Menu Navbar */
+    .main-nav ul {
+        gap: 1.5rem;
+    }
+    .main-nav ul li a {
+        font-size: 0.9rem;
+    }
+}
+
+/* =========================================
+   RESPONSIVE (HP)
+   ========================================= */
+@media (max-width: 768px) {
+    .staff-section {
+padding-top: 100px; /* Jarak lebih jauh di HP karena navbar numpuk */
+        padding-left: 15px;
+        padding-right: 15px;
+}
+.section-title {
+font-size: 2rem;
+}
+.staff-grid {
+gap: 1.5rem;
+}
+    /* Agar kartu mengambil lebar penuh di HP */
+    .staff-card {
+        width: 100%;
+        max-width: 400px; 
+    }
+}
+
+/* --- (Sisa kode responsif landing page tetap di bawah) --- */

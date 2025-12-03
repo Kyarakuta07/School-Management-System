@@ -86,9 +86,15 @@ mysqli_stmt_close($stmt_check);
             <button type="submit" class="btn-login" style="margin-top: 1.5rem;">Konfirmasi & Selesaikan</button>
         </form>
 
-        <a href="register.php" class="back-link">
-            Belum menerima kode? Cek Folder Spam atau Daftar Ulang.
-        </a>
+        <div style="margin-top: 1rem; font-size: 0.9rem;">
+            <a href="resend_otp.php?user=<?php echo urlencode($nickname); ?>" style="color: #DAA520; text-decoration: none;">
+                Kirim Ulang Kode OTP
+            </a>
+            <span style="color: #555; margin: 0 10px;">|</span>
+            <a href="register.php" class="back-link">
+                Daftar Ulang
+            </a>
+        </div>
     </div>
 </body>
 </html>
