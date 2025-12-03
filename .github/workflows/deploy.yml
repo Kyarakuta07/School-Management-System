@@ -21,7 +21,7 @@ jobs:
           passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}
 
           script: |
-            cd /home/akevyrfm/repositories/School-Management-System/MOE
+            cd /home/akevyrfm/public_html
             git pull origin main
             echo "Kode terbaru berhasil di-pull ke repositori aman."
 
