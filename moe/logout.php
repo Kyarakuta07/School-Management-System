@@ -9,10 +9,10 @@ $_SESSION = array();
 // Hancurkan sesi di server
 session_destroy();
 
-// --- PENAMBAHAN DI SINI ---
+// --- PENAMBAHAN DI SINI ---l
 // Redirect ke halaman login dengan parameter pesan logout
 header("Location: index.php?pesan=logout");
 
 // PENTING: Menghentikan eksekusi script untuk memastikan redirect berjalan
-exit(); 
+exit();
 ?>
