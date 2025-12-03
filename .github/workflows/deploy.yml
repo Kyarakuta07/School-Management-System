@@ -3,7 +3,7 @@ name: Deployment Otomatis ke cPanel
 on:
   push:
     branches:
-      - main # Ganti dengan nama branch utama Anda (master/main)
+      - main # Pastikan ini nama branch yang benar
 
 jobs:
   deploy:
@@ -12,47 +12,17 @@ jobs:
       - name: Checkout Kode
         uses: actions/checkout@v4
       
-      # (Opsional: Tambahkan langkah CI seperti pengujian kode di sini)
-
       - name: Deploy via SSH dan Git Pull
         uses: appleboy/ssh-action@v1.0.1
         with:
-          # Ambil 4 secrets yang sudah Anda simpan
-          host: ${{ 103.146.63.26 }}
-          username: ${{ akevyrfm }}
-          key: ${{ -----BEGIN OPENSSH PRIVATE KEY-----
-b3BlbnNzaC1rZXktdjEAAAAACmFlczI1Ni1jdHIAAAAGYmNyeXB0AAAAGAAAABA5BEpNrZ
-msFphoEnAP/f/AAAAAEAAAAAEAAAEXAAAAB3NzaC1yc2EAAAADAQABAAABAQClhlfnMTaC
-C1bzh67cRTMkvX/QZbu9NOyD4MwnH8lU6/Kd9hynJeLFrZrz66scpzMJRHV6fjLtVDj/+0
-Iq7p+N4HSgR5dLszhqK0P0YG3mDvTDV/ph+J6CYc58m6IIPkj4NZi0ZyU08BoMlMqdKVlU
-4oeN01DZS/SImR6aB4XcFPjFYQXrudJ9xtRx9z5pssr8bQWFqUS8ro/EyXwnQInEIM3nBX
-YFfy/03W5DjzhvCCqYryyMxYpkRIxAFgjjkoOCqGuCQd5Q5PAcvBu/nGfSKb3/OnBIamLd
-p6OiDlmgkJseaM8JP/uEh+rZsskXpKAdsBmogVg1F0HYA2Wqx7BjAAADwEXYQZ/v19tnJl
-wbGcs84H0AyL4cfWP4QkFmXN2gjpUMq50+f6InU4FrDuog/QZox6GFnkit3vyiBrHoBlKg
-Ae0WYZrmaHDVZSudP4AIJ0HowIcQ6jn40TGL4ukyO+PPZh2Z394kKXL1UJcEEO3qRw6pNm
-ArN5nZqW0lE21T82abixRVAD8TdWD9KFId16rGGbNCM0LZIDQr73UgB7qya2Z0DVFi06my
-ARpu2VW5+bX/L/vm9caWvP9kZsGY3Ht43zYgljocTe0lq2w4NZJQ73owUOFy0ZlcErEEHY
-ikkDAE+2UY54nviRCV8madIjb8OGmp3QctqI/h8HhJN6IacjzFsaj/Ka7GSwbdRwMP+PuN
-OcGd/GQ3Ro4tXJ0hymITGmSU36cNL1jTXZrXGSAniJ4e65o/ix4ctPmZcXmr6rmJwYrKry
-G9+D/3z5ybeKgmdRULvoSGeC9p+2DtDupSdeZBp2ti78ojOpWAMqJmeMtG8ifmkNxFxOa+
-Q7MQ8q1cSGHwPoXBYeiVQMyl0sRYGEs6pqyWemALD/kUW7Nm+R6TJ8giOuUa6XUH0Zwrxy
-osDzr3Yzcpcp2rj0NvWK2Fae6iAQz2jNn4l55S5WSaI/YYZFTxfnQnyiLcUenLJH2mpsiq
-oDwfdXsqr2A8BnlorQTv5smCR9HjmDxmC0PDQgs2DLhY+a9Xyn7qUVl7t17xVq1iZ/OF3R
-I8FvxAguk4Q7MUCloSby+kOl6PL8l6zItGYiE+CC2HcguRzI5wTZyhHBn8gl1Hz5+nnX4s
-iHqPydMaFmmG3y05PZIsuTyA1YY22agMnZJlawRKsaeOZ7HMR8Jx2fYbYwcHL2aWMVWPlp
-VJmlVvDHrdKa+q9KPtlyq5EcJ5nrh1nU6jOC7YofmU2k9f8gdYm94rXETEnZMf3g4X6tRQ
-bdxnvS8XKLdx1CmswyI3DacU1FrGzEjB38ST1l+iu9hCNbSHlmIqXdkEg1PDXJcpv5iSKw
-bUK5VtK5EhJPhDzIx94t3CimS9kz9Kv/6u4yCsN663XIXaMmHWlb0V1oSP0L8echt3FXNF
-7I0rKIgkMnbyxYsxlCCp7QqVPk9OoG718mWP4/5aBfqnBE+SCgCdNjZqC+rfTcXv+g3FGu
-VgyDUiJmWnwotPpAziSyLaM1VoY1Rmo7S29xKY4CoODCc6jTYOLQfOXNi6q4AZT86TY28G
-cWBs3AmEFskjczKkK8KzphshI+AditSLDe/Pp090eCT8j5q4hKg76jwFWWUhE8zpwSCjOV
-Mb7soMDg==
------END OPENSSH PRIVATE KEY----- }}
-          passphrase: '${{ #Mandala1968 }}'
+          # HARUS menggunakan nama Secret, BUKAN nilai mentah
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          # Pastikan nilai SSH_KEY_PASSPHRASE di GitHub adalah #Mandala1968
+          passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}
 
           # Perintah yang dijalankan di server Anda
-          script: |
-            # GANTI JALUR INI dengan Repository Path Anda!
-            cd /home/akevyrfm/public_html 
-            git pull origin main
-            echo "Deployment Selesai!"
+          script: cd /home/akevyrfm/public_html/
+          git pull origin main
+          echo "Deployment Selesai!"
