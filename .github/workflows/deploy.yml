@@ -9,28 +9,28 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      # 1. Checkout Kode (Wajib)
+      
       - name: Checkout Kode
         uses: actions/checkout@v4
       
-      # --- KOREKSI DIMULAI DI SINI ---
       
-      # 2. Deploy menggunakan SCP/SFTP (Lebih Sederhana & Langsung)
+      
+      
       - name: 🚀 Deploy File Langsung ke public_html
-        uses: appleboy/scp-action@v0.1.7 # Menggunakan Action SCP
+        uses: appleboy/scp-action@v0.1.7 
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }} # Hapus jika tidak ada passphrase
+          passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }} 
           port: 3759
           
-          # Lokasi file yang akan dikirim dari GitHub Runner
-          # Mengirim SEMUA file di root repositori
+          
+          
           source: "*" 
           
-          # Lokasi TUJUAN di cPanel (Wajib Benar!)
-          # GANTI JIKA PERLU: Jika proyek Anda adalah Laravel/PHP, 
-          # Anda mungkin harus menambahkan 'public/' di depan. 
-          # Contoh ini mengasumsikan file proyek Anda adalah file statis
+          
+          
+          
+          
           target: "/home/akevyrfm/public_html"
