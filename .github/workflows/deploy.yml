@@ -25,11 +25,9 @@ jobs:
           command_timeout: 10m
           
           script: |
-            cd /home/akevyrfm/public_html
+            cd /home/akevyrfm/repositories/School-Management-System
             git pull origin main
             echo "Kode terbaru berhasil di-pull ke repositori aman."
-
             rsync -avz --delete /home/akevyrfm/repositories/School-Management-System/ /home/akevyrfm/public_html
-            
             echo "File berhasil di-sync ke folder publik!"
             echo "Deployment Selesai!"
