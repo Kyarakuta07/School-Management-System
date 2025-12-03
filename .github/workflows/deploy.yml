@@ -29,8 +29,16 @@ jobs:
           
           source: "*" 
           
+<<<<<<< HEAD
           
           
           
           
           target: "/home/akevyrfm/public_html"
+=======
+          # Lokasi TUJUAN di cPanel (Wajib Benar!)
+          # GANTI JIKA PERLU: Jika proyek Anda adalah Laravel/PHP, 
+          # Anda mungkin harus menambahkan 'public/' di depan. 
+          # Contoh ini mengasumsikan file proyek Anda adalah file statis
+          target: "/home/akevyrfm/public_html"
+>>>>>>> 5183a691354dc07cf79ded1539421ae2a859e345
