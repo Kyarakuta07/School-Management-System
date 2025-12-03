@@ -1,4 +1,3 @@
-#sa
 name: Deployment Otomatis ke cPanel
 
 on:
@@ -21,6 +20,10 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}
 
+          port: 3759
+          timeout: 30s
+          command_timeout: 10m
+          
           script: |
             cd /home/akevyrfm/public_html
             git pull origin main
@@ -30,5 +33,3 @@ jobs:
             
             echo "File berhasil di-sync ke folder publik!"
             echo "Deployment Selesai!"
-
-            
