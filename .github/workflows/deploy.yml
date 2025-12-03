@@ -1,3 +1,4 @@
+#sda
 name: Deployment Otomatis ke cPanel
 
 on:
@@ -29,3 +30,5 @@ jobs:
             
             echo "File berhasil di-sync ke folder publik!"
             echo "Deployment Selesai!"
+
+            
