@@ -54,12 +54,7 @@
 
             <div class="hero-right">
                 <div class="character-container">
-                    <div class="main-character-wrapper">
-                        <img src="assets/landing/3.png" alt="Character" class="main-character">
-                    </div>
-
-                    <img src="assets/landing/5.png" class="photo photo-1">
-                    <img src="assets/landing/6.png" class="photo photo-2">
+                    <img src="assets/landing/nyatuin.png" alt="Main Character" class="main-combined">
                 </div>
             </div>
         </section>
@@ -67,9 +62,21 @@
     </div>
 
     <!-- FOOTER -->
-    <footer class="main-footer">
-        <img src="assets/landing/8.png" alt="Footer Image" class="footer-image">
-    </footer>
+    <footer class="marquee-footer">
+    <div class="marquee-track">
+        <span class="marquee-item">MEDITERRANEAN OF EGYPT &nbsp; ✦</span>
+        <span class="marquee-item">MEDITERRANEAN OF EGYPT &nbsp; ✦</span>
+        <span class="marquee-item">MEDITERRANEAN OF EGYPT &nbsp; ✦</span>
+        <span class="marquee-item">MEDITERRANEAN OF EGYPT &nbsp; ✦</span>
+    </div>
+
+    <div class="marquee-track">
+        <span class="marquee-item">MEDITERRANEAN OF EGYPT &nbsp; ✦</span>
+        <span class="marquee-item">MEDITERRANEAN OF EGYPT &nbsp; ✦</span>
+        <span class="marquee-item">MEDITERRANEAN OF EGYPT &nbsp; ✦</span>
+        <span class="marquee-item">MEDITERRANEAN OF EGYPT &nbsp; ✦</span>
+    </div>
+</footer>
 
 </body>
 </html>

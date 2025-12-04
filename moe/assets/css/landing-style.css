@@ -52,39 +52,78 @@ body {
     width: 100%;
     max-width: 1400px;
     margin: 0 auto;
-    padding: 2rem;
-    min-height: auto;
+    padding: 0 !important;
+    min-height: 100vh;
+    max-height: 100vh;
     display: flex;
     flex-direction: column;
     padding-bottom: 0;       /* default */
 }
 
 /* ------------------------------------
-FOOTER GLOBAL (pakai PNG)
+   FOOTER GLOBAL (IMPERIAL THEME MARQUEE)
 ------------------------------------- */
-.main-footer {
+.marquee-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
     width: 100%;
-    aspect-ratio: 16 / 9; /* sesuai rasio asli 3840 × 2160 */
-    background: url('../landing/8.png') no-repeat center center;
-    background-size: cover; /* supaya rapi dan tidak distorsi */
-    margin: -850px 0 0 0;
-    padding: 0;
-    display: block;
+    
+    /* GANTI BACKGROUND:
+       Dari merah menjadi gradasi gelap (hitam ke coklat tua)
+       agar menyatu dengan nuansa gelap website */
+    background: linear-gradient(to bottom, #5b4035, #000000);
+    
+    /* BORDER EMAS: Memberikan kesan bingkai mewah */
+    border-top: 1px solid var(--color-gold);
+    border-bottom: 1px solid var(--color-gold); /* Opsional: garis bawah juga */
+    
+    color: var(--color-gold); /* Teks jadi warna emas */
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 12px 0; /* Sedikit lebih tebal */
+    z-index: 100;
+    display: flex;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.8); /* Bayangan gelap ke atas */
 }
 
-/* FOOTER IMAGE AUTOSCALE */
-.footer-image {
-    width: 100%;
-    height: auto;
-    max-height: 300px; /* Sesuaikan bebas */
-    object-fit: cover; /* menjaga tampilan tetap rapi */
-    object-position: center;
-    display: block;
-    margin-top: 0;
-    margin-bottom: 0;
-    position: absolute; 
-    z-index: 50;
-    bottom: 0; 
-    left: 0;
-    pointer-events: none;
+.marquee-track {
+    display: flex;
+    /* Sedikit diperlambat (25s) agar lebih megah/elegan */
+    animation: scroll-text 25s linear infinite; 
+}
+
+.marquee-item {
+    /* GANTI FONT: Pakai Cinzel (font-display) biar sama dengan judul */
+    font-family: var(--font-display), serif; 
+    font-weight: 700; /* Bold tapi elegan */
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 4px; /* Jarak antar huruf diperlebar (style cinematic) */
+    
+    padding-right: 80px; /* Jarak antar kalimat lebih jauh */
+    
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    
+    /* Efek Glow Emas samar pada teks */
+    text-shadow: 0 0 5px rgba(218, 165, 32, 0.3);
+}
+
+/* Simbol pemisah antar teks (Opsional, jika di HTML kamu tambah simbol) */
+.marquee-separator {
+    color: #ffffff; /* Warna putih atau biarkan emas */
+    margin: 0 20px;
+    font-size: 10px;
+    opacity: 0.5;
+}
+
+@keyframes scroll-text {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
 }

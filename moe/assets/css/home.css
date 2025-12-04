@@ -1,23 +1,30 @@
 /* ========= HOME SECTION ONLY ========= */
 
+/* PENTING: Tambahkan ini di landing-style.css untuk .page-wrapper */
+/* .page-wrapper {
+    padding: 0 !important;
+    min-height: 100vh;
+    max-height: 100vh;
+} */
+
 html, body {
     margin: 0;
     padding: 0;
     width: 100%;
-    height: auto;
-    overflow-x: hidden; /* hanya cegah scroll horizontal */
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: hidden; /* TAMBAHKAN INI - cegah scroll vertikal */
 }
 
 /* HERO WRAPPER */
 .hero-section {
     position: relative;
-    min-height: 100vh;
+    height: calc(100vh - 60px); /* Sesuaikan dengan tinggi navbar + footer */
     width: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr;
     align-items: center;
-    padding: 0 5%;
-    margin-top: 90px; /* BIKIN JARAK AGAR NAVBAR TIDAK MENUTUP */
+    padding: 0;                 /* Hilangkan padding horizontal */
     overflow: hidden;
     background-size: cover;
     background-position: center;
@@ -25,25 +32,27 @@ html, body {
 
 /* LEFT CONTENT */
 .hero-left {
-    padding-top: 40px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     z-index: 10;
+    height: 100%;
+    padding-left: 3rem;         /* Padding hanya untuk konten teks */
 }
 
 /* BIG MOE BACKGROUND TEXT */
 .title-container {
     position: relative;
     width: 100%;
+    overflow: hidden;
 }
 
 .title-container .moe-text-img {
     position: absolute;
-    width: 1350px;
-    opacity: 0.8;
-    top: -200px;
-    right: -600px;
+    width: 900px;               /* Dikecilkan agar muat */
+    opacity: 0.15;              /* Lebih transparan agar tidak mengalahkan konten */
+    top: -100px;
+    right: -150px;              /* Digeser lebih ke kiri agar terlihat */
     z-index: 1;
     pointer-events: none;
     user-select: none;
@@ -56,13 +65,13 @@ html, body {
     font-size: 1.1rem;
     color: #fff;
     letter-spacing: 2px;
-    margin-top: 140px;
+    margin-top: 20px;
     z-index: 20;
 }
 
 /* ABOUT BOX */
 .about-section {
-    margin-top: 140px;
+    margin-top: 25px;
     position: relative;
     padding: 1.5rem;
     max-width: 600px;
@@ -104,53 +113,57 @@ html, body {
     border-width: 0 2px 2px 0;
 }
 
-/* RIGHT SIDE CHARACTER & IMAGES */
+/* RIGHT SIDE CHARACTER */
 .hero-right {
     position: relative;
     height: 100%;
     display: flex;
-    justify-content: center;
-    align-items: flex-end;
+    justify-content: flex-end;  /* Dorong ke kanan */
+    align-items: center;
     z-index: 50;
+    margin-right: -5%;          /* Geser keluar layar 5% untuk efek dramatic */
+}
+
+/* BACKGROUND MOE TEXT di belakang karakter */
+.hero-right::before {
+    content: '';
+    position: absolute;
+    width: 800px;
+    /*Diperbesardari600px*/height: 800px;
+    background: url('../landing/7.png') no-repeat center center;
+    background-size: contain;
+    opacity: 0.5;
+    /*Sedikitlebihterlihat*/z-index: 1;
+    pointer-events: none;
+    transform: scale(1.2) translateX(-90px);
+    -webkit-transform: scale(1.2) translateX(-90px);
+    -moz-transform: scale(1.2) translateX(-90px);
+    -ms-transform: scale(1.2) translateX(-90px);
+    -o-transform: scale(1.2) translateX(-90px);
 }
 
 .character-container {
     position: relative;
-    transform: scale(2.3) translateX(-10%);
     width: 100%;
-    max-width: 650px;
+    max-width: 900px;           /* Diperbesar dari 750px */
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;      /* Posisi ke bawah agar kaki tetap di bawah */
     z-index: 50;
+    transform: scale(1.3);      /* Zoom 130% */
+    transform-origin: bottom center; /* Pivot dari bawah tengah */
 }
 
-.character-container .main-character {
+/* Combined image */
+.main-combined {
     width: 100%;
-    max-width: 1200px;
+    height: 100%;
+    object-fit: contain;
+    object-position: bottom;
     z-index: 10;
-    filter: drop-shadow(5px 5px 20px rgba(0,0,0,0.6));
-    transform: translateY(-70px);
-    -webkit-transform: translateY(-70px);
-    -moz-transform: translateY(-70px);
-    -ms-transform: translateY(-70px);
-    -o-transform: translateY(-70px);
-}
-
-.character-container .photo {
-    position: absolute;
-    width: 380px;
-    z-index: 2;
-    filter: drop-shadow(0 8px 20px rgba(0,0,0,0.5));
-}
-
-.photo-1 {
-    top: 20%;
-    left: 30px;
-    transform: translateY(-50%) rotate(-10deg);
-}
-
-.photo-2 {
-    top: 30%;
-    right: 30px;
-    transform: translateY(-50%) rotate(10deg);
+    filter: drop-shadow(5px 5px 20px rgba(0,0,0,0.6)); 
 }
 
 /* =========================================
@@ -159,40 +172,44 @@ html, body {
 
 @media (max-width: 992px) {
 
+    html, body {
+        overflow-y: auto; /* Izinkan scroll di mobile */
+    }
+
     .hero-section {
         grid-template-columns: 1fr;
-        padding: 2rem 20px;
-        margin-top: 70px;
-        gap: 0;
         height: auto;
+        min-height: 100vh;
+        padding: 2rem 20px;
+        padding-top: 90px;
+        gap: 0;
         overflow: visible;
     }
 
     .hero-right {
         order: 1;
-        height: 48vh;
+        height: auto;
         padding-top: 40px;
+        padding-bottom: 20px;
     }
 
     .character-container {
-        transform: scale(1.2) translateX(0) !important;
+        transform: none !important;
         max-width: 100%;
+        height: auto;
+        max-height: 500px;
     }
 
-    .photo-1 {
-        left: -30px;
-        width: 280px;
-    }
-
-    .photo-2 {
-        right: -30px;
-        width: 280px;
+    .main-combined {
+        max-width: 80%;
+        height: auto;
     }
 
     .hero-left {
         order: 2;
         text-align: center;
         padding-top: 0;
+        height: auto;
     }
 
     .about-section {
@@ -201,7 +218,6 @@ html, body {
         text-align: left;
     }
 
-    /* Sembunyikan MOE background di HP */
     .moe-text-img {
         display: none;
     }
