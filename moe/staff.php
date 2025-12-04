@@ -118,7 +118,7 @@
 
                 <div class="staff-grid">
                     <div class="staff-card">
-                        <img src="assets/landing/staff-1.png" class="staff-photo">
+                        <img src="assets/landing/Azura.jpeg" class="staff-photo">
                         <h3>Azura Lexy Dexton</h3>
                         <p class="staff-title">Staff</p>
                     </div>
@@ -136,13 +136,13 @@
                     </div>
 
                     <div class="staff-card">
-                        <img src="assets/landing/staff-1.png" class="staff-photo">
+                        <img src="assets/landing/nada.jpeg" class="staff-photo">
                         <h3>Nada Kaleria</h3>
                         <p class="staff-title">Staff</p>
                     </div>
 
                     <div class="staff-card">
-                        <img src="assets/landing/staff-2.png" class="staff-photo">
+                        <img src="assets/landing/lune.jpeg" class="staff-photo">
                         <h3>Lunne Demore</h3>
                         <p class="staff-title">Staff</p>
                     </div>
