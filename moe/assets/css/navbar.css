@@ -131,31 +131,86 @@
     color: var(--color-dark);
 }
 
-/* Responsive */
+/* ------------------------------------
+   RESPONSIVE - TABLET
+------------------------------------- */
 @media (max-width: 992px) {
     .main-header {
         flex-wrap: wrap;
         justify-content: center;
         gap: 1rem;
+        padding: 1rem 1.5rem;
+    }
+
+    .main-header .logo {
+        width: 80px;
+        height: 80px;
     }
 
     .main-nav {
         order: 3;
         width: 100%;
         margin-top: 1rem;
+        margin-left: 0;
+        justify-content: center;
     }
 
     .main-nav ul {
         gap: 1.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .main-nav ul li a {
+        font-size: 1rem;
+    }
+
+    .header-buttons {
+        order: 2;
     }
 }
 
+/* ------------------------------------
+   RESPONSIVE - MOBILE
+------------------------------------- */
 @media (max-width: 768px) {
+    .main-header {
+        padding: 0.75rem 1rem;
+    }
+
+    .main-header .logo {
+        width: 70px;
+        height: 70px;
+    }
+
     .main-nav ul {
         gap: 1rem;
     }
 
     .main-nav ul li a {
-        font-size: 0.95rem;
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+    }
+
+    .login-btn,
+    .signup-btn {
+        font-size: 0.9rem;
+        padding: 0.6rem 1.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-nav ul {
+        gap: 0.75rem;
+    }
+
+    .main-nav ul li a {
+        font-size: 0.85rem;
+    }
+
+    .login-btn,
+    .signup-btn {
+        font-size: 0.85rem;
+        padding: 0.5rem 1rem;
     }
 }

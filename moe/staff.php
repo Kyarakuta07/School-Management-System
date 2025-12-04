@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Staff & Council</title>
+    <title>Our Staff & Council - Mediterranean of Egypt</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -30,7 +30,7 @@
         <!-- NAVBAR -->
         <?php include 'navbar.html'; ?>
 
-        <!-- STAFF HEADER SECTION -->
+        <!-- STAFF SECTION -->
         <section class="content-section staff-section">
 
             <div style="text-align: center; margin-bottom: 4rem;">
@@ -38,128 +38,137 @@
                 <p class="section-subtitle">The Guardians of Mediterranean</p>
             </div>
 
-            <!-- ======================
-                 VASIKI GROUP
-            ======================= -->
+            <!-- VASIKI GROUP -->
             <div class="group-wrapper theme-vasiki">
                 <h3 class="group-title">VASIKI</h3>
 
                 <div class="staff-grid">
                     <div class="staff-card">
-                        <img src="assets/landing/jason.jpeg" class="staff-photo">
+                        <img src="assets/landing/jason.jpeg" alt="Jason" class="staff-photo">
                         <h3>Jason Alekhenako Momoa</h3>
                         <p class="staff-title">Vasiki</p>
                     </div>
 
                     <div class="staff-card">
-                        <img src="assets/landing/cheva.jpeg" class="staff-photo">
+                        <img src="assets/landing/cheva.jpeg" alt="Cheva" class="staff-photo">
                         <h3>Cheva Asenath Nefreti</h3>
                         <p class="staff-title">Vasiki</p>
                     </div>
 
                     <div class="staff-card">
-                        <img src="assets/landing/matthew.jpeg" class="staff-photo">
+                        <img src="assets/landing/matthew.jpeg" alt="Matthew" class="staff-photo">
                         <h3>Matthew Djoser Akenatem</h3>
                         <p class="staff-title">Vasiki</p>
                     </div>
 
                     <div class="staff-card">
-                        <img src="assets/landing/calix.jpeg" class="staff-photo">
+                        <img src="assets/landing/calix.jpeg" alt="Calix" class="staff-photo">
                         <h3>Calix Djedefre Thannyros</h3>
                         <p class="staff-title">Vasiki</p>
                     </div>
 
                     <div class="staff-card">
-                        <img src="assets/landing/hector.jpeg" class="staff-photo">
+                        <img src="assets/landing/hector.jpeg" alt="Hector" class="staff-photo">
                         <h3>Hector Nicholas Theodore</h3>
                         <p class="staff-title">Vasiki</p>
                     </div>
 
                     <div class="staff-card">
-                        <img src="assets/landing/nio.jpeg" class="staff-photo">
+                        <img src="assets/landing/nio.jpeg" alt="Athynio" class="staff-photo">
                         <h3>Athynio Victoria Eleanor</h3>
                         <p class="staff-title">Vasiki</p>
                     </div>
                 </div>
             </div>
 
-            <!-- ======================
-                 SEN GROUP
-            ======================= -->
+            <!-- SEN GROUP -->
             <div class="group-wrapper theme-sen">
                 <h3 class="group-title">SEN</h3>
 
                 <div class="staff-grid">
                     <div class="staff-card">
-                        <img src="assets/landing/staff-1.png" class="staff-photo">
+                        <img src="assets/landing/staff-1.png" alt="Cho Chang" class="staff-photo">
                         <h3>Cho Chang</h3>
                         <p class="staff-title">SEN</p>
                     </div>
 
                     <div class="staff-card">
-                        <img src="assets/landing/staff-2.png" class="staff-photo">
+                        <img src="assets/landing/staff-2.png" alt="Sheren" class="staff-photo">
                         <h3>Sheren Altheda</h3>
                         <p class="staff-title">SEN</p>
                     </div>
 
                     <div class="staff-card">
-                        <img src="assets/landing/staff-3.png" class="staff-photo">
+                        <img src="assets/landing/staff-3.png" alt="Nathaniel" class="staff-photo">
                         <h3>Nathaniel Vorthalos</h3>
                         <p class="staff-title">SEN</p>
                     </div>
                 </div>
             </div>
 
-            <!-- ======================
-                 OTHER STAFF
-            ======================= -->
+            <!-- OTHER STAFF -->
             <div class="group-wrapper theme-member">
                 <h3 class="group-title">OTHER STAFF</h3>
 
                 <div class="staff-grid">
                     <div class="staff-card">
-                        <img src="assets/landing/Azura.jpeg" class="staff-photo">
+                        <img src="assets/landing/Azura.jpeg" alt="Azura" class="staff-photo">
                         <h3>Azura Lexy Dexton</h3>
                         <p class="staff-title">Staff</p>
                     </div>
 
                     <div class="staff-card">
-                        <img src="assets/landing/staff-2.png" class="staff-photo">
+                        <img src="assets/landing/staff-2.png" alt="Carina" class="staff-photo">
                         <h3>Carina de Agler Obelia</h3>
                         <p class="staff-title">Staff</p>
                     </div>
 
                     <div class="staff-card">
-                        <img src="assets/landing/staff-3.png" class="staff-photo">
+                        <img src="assets/landing/staff-3.png" alt="Loressa" class="staff-photo">
                         <h3>Loressa Aglenar</h3>
                         <p class="staff-title">Staff</p>
                     </div>
 
                     <div class="staff-card">
-                        <img src="assets/landing/nada.jpeg" class="staff-photo">
+                        <img src="assets/landing/nada.jpeg" alt="Nada" class="staff-photo">
                         <h3>Nada Kaleria</h3>
                         <p class="staff-title">Staff</p>
                     </div>
 
                     <div class="staff-card">
-                        <img src="assets/landing/lune.jpeg" class="staff-photo">
+                        <img src="assets/landing/lune.jpeg" alt="Lunne" class="staff-photo">
                         <h3>Lunne Demore</h3>
                         <p class="staff-title">Staff</p>
                     </div>
 
                     <div class="staff-card">
-                        <img src="assets/landing/tom.jpeg" class="staff-photo">
+                        <img src="assets/landing/tom.jpeg" alt="Thomas" class="staff-photo">
                         <h3>Thomas El</h3>
                         <p class="staff-title">Staff</p>
                     </div>
                 </div>
             </div>
 
-            <div style="height: 60px;"></div>
-
         </section>
 
     </div>
+
+    <!-- FOOTER (Sama seperti home.php) -->
+    <footer class="marquee-footer">
+        <div class="marquee-track">
+            <span class="marquee-item">MEDITERRANEAN OF EGYPT &nbsp; ✦</span>
+            <span class="marquee-item">MEDITERRANEAN OF EGYPT &nbsp; ✦</span>
+            <span class="marquee-item">MEDITERRANEAN OF EGYPT &nbsp; ✦</span>
+            <span class="marquee-item">MEDITERRANEAN OF EGYPT &nbsp; ✦</span>
+        </div>
+
+        <div class="marquee-track">
+            <span class="marquee-item">MEDITERRANEAN OF EGYPT &nbsp; ✦</span>
+            <span class="marquee-item">MEDITERRANEAN OF EGYPT &nbsp; ✦</span>
+            <span class="marquee-item">MEDITERRANEAN OF EGYPT &nbsp; ✦</span>
+            <span class="marquee-item">MEDITERRANEAN OF EGYPT &nbsp; ✦</span>
+        </div>
+    </footer>
 
 </body>
 </html>

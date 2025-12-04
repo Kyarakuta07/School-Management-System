@@ -46,18 +46,25 @@ body {
 
 /* ------------------------------------
    WRAPPER (dipakai semua halaman)
+   UPDATED: Hapus max-height untuk staff & class page
 ------------------------------------- */
 .page-wrapper {
     position: relative;
     width: 100%;
     max-width: 1400px;
     margin: 0 auto;
-    padding: 0 !important;
+    padding: 0;
     min-height: 100vh;
-    max-height: 100vh;
     display: flex;
     flex-direction: column;
-    padding-bottom: 0;       /* default */
+    
+    /* REMOVED: max-height: 100vh - ini yang bikin scroll bermasalah */
+}
+
+/* Khusus Home Page - tetap lock height */
+body.home-page .page-wrapper {
+    max-height: 100vh;
+    overflow: hidden;
 }
 
 /* ------------------------------------
@@ -69,51 +76,45 @@ body {
     left: 0;
     width: 100%;
     
-    /* GANTI BACKGROUND:
-       Dari merah menjadi gradasi gelap (hitam ke coklat tua)
-       agar menyatu dengan nuansa gelap website */
-    background: linear-gradient(to bottom, #5b4035, #000000);
+    /* Background gelap dengan gradasi */
+    background: linear-gradient(to bottom, #3d2f26, #000000);
     
-    /* BORDER EMAS: Memberikan kesan bingkai mewah */
+    /* Border emas */
     border-top: 1px solid var(--color-gold);
-    border-bottom: 1px solid var(--color-gold); /* Opsional: garis bawah juga */
     
-    color: var(--color-gold); /* Teks jadi warna emas */
+    color: var(--color-gold);
     overflow: hidden;
     white-space: nowrap;
-    padding: 12px 0; /* Sedikit lebih tebal */
+    padding: 12px 0;
     z-index: 100;
     display: flex;
-    box-shadow: 0 -5px 20px rgba(0,0,0,0.8); /* Bayangan gelap ke atas */
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.8);
 }
 
 .marquee-track {
     display: flex;
-    /* Sedikit diperlambat (25s) agar lebih megah/elegan */
     animation: scroll-text 25s linear infinite; 
 }
 
 .marquee-item {
-    /* GANTI FONT: Pakai Cinzel (font-display) biar sama dengan judul */
     font-family: var(--font-display), serif; 
-    font-weight: 700; /* Bold tapi elegan */
+    font-weight: 700;
     font-size: 16px;
     text-transform: uppercase;
-    letter-spacing: 4px; /* Jarak antar huruf diperlebar (style cinematic) */
+    letter-spacing: 4px;
     
-    padding-right: 80px; /* Jarak antar kalimat lebih jauh */
+    padding-right: 80px;
     
     flex-shrink: 0;
     display: flex;
     align-items: center;
     
-    /* Efek Glow Emas samar pada teks */
+    /* Efek Glow Emas */
     text-shadow: 0 0 5px rgba(218, 165, 32, 0.3);
 }
 
-/* Simbol pemisah antar teks (Opsional, jika di HTML kamu tambah simbol) */
 .marquee-separator {
-    color: #ffffff; /* Warna putih atau biarkan emas */
+    color: #ffffff;
     margin: 0 20px;
     font-size: 10px;
     opacity: 0.5;
@@ -125,5 +126,33 @@ body {
     }
     100% {
         transform: translateX(-100%);
+    }
+}
+
+/* ------------------------------------
+   RESPONSIVE ADJUSTMENTS
+------------------------------------- */
+
+@media (max-width: 992px) {
+    .page-wrapper {
+        max-width: 100%;
+    }
+    
+    .marquee-item {
+        font-size: 14px;
+        letter-spacing: 3px;
+        padding-right: 60px;
+    }
+}
+
+@media (max-width: 768px) {
+    .marquee-footer {
+        padding: 10px 0;
+    }
+    
+    .marquee-item {
+        font-size: 12px;
+        letter-spacing: 2px;
+        padding-right: 50px;
     }
 }

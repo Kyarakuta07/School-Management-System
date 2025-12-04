@@ -1,35 +1,22 @@
 /* =========================================
-   UNLOCK SCROLL (Khusus Halaman Staff)
+   STAFF PAGE STYLING
    ========================================= */
-html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    overflow-x: hidden;
-}
 
-/* =========================================
-   STAFF SECTION LAYOUT
-   ========================================= */
+/* Override page-wrapper untuk staff page */
 .staff-section {
     position: relative;
-    
-    /* UPDATE: Padding atas diperbesar jadi 160px 
-       agar Judul tidak tertutup Navbar yang sekarang melayang (fixed) */
-    padding: 0rem 2rem 5rem 2rem; 
-    
+    padding: 140px 2rem 80px 2rem; /* Top: spacing dari navbar, Bottom: spacing untuk footer */
     width: 100%;
     max-width: 1400px;
     margin: 0 auto;
-    margin-top: -60px;
-    z-index: 10; /* Pastikan di atas background */
+    z-index: 10;
 }
 
 /* JUDUL HALAMAN */
 .section-title {
     font-family: 'Cinzel', serif;
     font-size: 3rem;
-    color: #DAA520; /* Gold */
+    color: #DAA520;
     text-align: center;
     margin-bottom: 0.5rem;
     text-shadow: 0 0 10px rgba(218, 165, 32, 0.3);
@@ -47,47 +34,44 @@ html, body {
 }
 
 /* =========================================
-   GROUPING LAYOUT (New)
+   GROUPING LAYOUT
    ========================================= */
-
-/* Wrapper per Divisi (Vasiki, Sen, dll) */
 .group-wrapper {
-    margin-bottom: 5rem; /* Jarak antar kelompok */
+    margin-bottom: 5rem;
     position: relative;
     width: 100%;
 }
 
-/* Judul Divisi (Misal: VASIKI) */
 .group-title {
     font-family: 'Cinzel', serif;
     font-size: 2.2rem;
     color: #fff;
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
     position: relative;
     letter-spacing: 5px;
     text-transform: uppercase;
 }
 
-/* Garis Hiasan di bawah Judul */
 .group-title::after {
     content: '';
     display: block;
     width: 80px;
     height: 3px;
-    background: #DAA520; /* Gold */
+    background: #DAA520;
     margin: 15px auto 0;
     border-radius: 2px;
     box-shadow: 0 0 10px rgba(218,165,32,0.8);
 }
 
-/* Grid Pintar (Flexbox) - Agar sisa kartu di tengah */
+/* Grid dengan Flexbox - Center Alignment */
 .staff-grid {
     display: flex;
-    flex-wrap: wrap; /* Kalau layar sempit, turun ke bawah */
-    justify-content: center; /* KUNCI: Membuat kartu selalu rata tengah */
-    gap: 3rem; /* Jarak antar kartu */
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2.5rem;
     width: 100%;
+    padding: 0 1rem;
 }
 
 /* =========================================
@@ -95,32 +79,64 @@ html, body {
    ========================================= */
 
 /* VASIKI (Gold) */
-.theme-vasiki .group-title { color: #DAA520; }
-.theme-vasiki .staff-card { border-bottom-color: #DAA520; }
-.theme-vasiki .staff-photo { border-color: #DAA520; }
-.theme-vasiki .staff-title { color: #DAA520; }
+.theme-vasiki .group-title { 
+    color: #DAA520; 
+}
+.theme-vasiki .staff-card { 
+    border-bottom-color: #DAA520; 
+}
+.theme-vasiki .staff-photo { 
+    border-color: #DAA520; 
+    box-shadow: 0 0 20px rgba(218, 165, 32, 0.3);
+}
+.theme-vasiki .staff-title { 
+    color: #DAA520; 
+}
 
-/* SEN (Silver/Blueish) */
-.theme-sen .group-title { color: #C0C0C0; }
-.theme-sen .group-title::after { background: #C0C0C0; box-shadow: 0 0 10px rgba(192,192,192,0.8); }
-.theme-sen .staff-card { border-bottom-color: #C0C0C0; }
-.theme-sen .staff-photo { border-color: #C0C0C0; }
-.theme-sen .staff-title { color: #C0C0C0; }
+/* SEN (Silver) */
+.theme-sen .group-title { 
+    color: #C0C0C0; 
+}
+.theme-sen .group-title::after { 
+    background: #C0C0C0; 
+    box-shadow: 0 0 10px rgba(192,192,192,0.8); 
+}
+.theme-sen .staff-card { 
+    border-bottom-color: #C0C0C0; 
+}
+.theme-sen .staff-photo { 
+    border-color: #C0C0C0; 
+    box-shadow: 0 0 20px rgba(192, 192, 192, 0.3);
+}
+.theme-sen .staff-title { 
+    color: #C0C0C0; 
+}
 
-/* MEMBERS (Bronze/Greenish) */
-.theme-member .group-title { color: #cd7f32; }
-.theme-member .group-title::after { background: #cd7f32; box-shadow: 0 0 10px rgba(205,127,50,0.8); }
-.theme-member .staff-card { border-bottom-color: #cd7f32; }
-.theme-member .staff-photo { border-color: #cd7f32; }
-.theme-member .staff-title { color: #cd7f32; }
+/* OTHER STAFF (Bronze) */
+.theme-member .group-title { 
+    color: #cd7f32; 
+}
+.theme-member .group-title::after { 
+    background: #cd7f32; 
+    box-shadow: 0 0 10px rgba(205,127,50,0.8); 
+}
+.theme-member .staff-card { 
+    border-bottom-color: #cd7f32; 
+}
+.theme-member .staff-photo { 
+    border-color: #cd7f32; 
+    box-shadow: 0 0 20px rgba(205, 127, 50, 0.3);
+}
+.theme-member .staff-title { 
+    color: #cd7f32; 
+}
 
 /* =========================================
    CARD DESIGN (Style Mewah)
    ========================================= */
 .staff-card {
-    /* --- UKURAN FIXED (Supaya Rapi) --- */
     width: 300px;
-    height: 420px;
+    min-height: 420px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -128,29 +144,38 @@ html, body {
     padding: 2rem 1.5rem;
     margin: 0;
     box-sizing: border-box;
-    transition: all 0.3s ease;
-
-    /* --- BAGIAN WARNA TRANSPARAN --- */
-    background: linear-gradient(145deg, rgba(40, 30, 20, 0.5), rgba(20, 10, 5, 0.6));
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     
-    /* Efek Kaca Buram (Wajib ada biar teks jelas) */
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-
-    /* Border Tipis Emas */
+    /* Glass Effect Background */
+    background: linear-gradient(145deg, 
+        rgba(40, 30, 20, 0.5), 
+        rgba(20, 10, 5, 0.6));
+    
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    
+    /* Border dengan Accent */
     border: 1px solid rgba(218, 165, 32, 0.2);
-    border-bottom: 4px solid #DAA520; /* Aksen bawah tebal */
+    border-bottom: 4px solid #DAA520;
+    border-radius: 8px;
     
-    /* Bayangan Halus */
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    /* Shadow */
+    box-shadow: 
+        0 4px 30px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
-/* Hover Effect: Kartu naik & bersinar */
+/* Hover Effect */
 .staff-card:hover {
-    transform: translateY(-10px);
-    background: linear-gradient(145deg, rgba(40, 30, 20, 0.75), rgba(20, 10, 5, 0.85));
-    box-shadow: 0 10px 40px rgba(218, 165, 32, 0.2);
-    border-color: #DAA520;
+    transform: translateY(-12px) scale(1.02);
+    background: linear-gradient(145deg, 
+        rgba(40, 30, 20, 0.75), 
+        rgba(20, 10, 5, 0.85));
+    box-shadow: 
+        0 15px 50px rgba(218, 165, 32, 0.3),
+        0 0 30px rgba(218, 165, 32, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    border-color: rgba(218, 165, 32, 0.6);
 }
 
 /* FOTO STAFF */
@@ -160,124 +185,185 @@ html, body {
     border-radius: 50%;
     object-fit: cover;
     margin-bottom: 1.5rem;
-    border: 3px solid #DAA520; /* Bingkai foto gold */
-    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    border: 3px solid #DAA520;
+    box-shadow: 
+        0 0 15px rgba(0,0,0,0.5),
+        0 0 20px rgba(218, 165, 32, 0.3);
+    transition: all 0.4s ease;
 }
 
-/* NAMA & JABATAN */
+.staff-card:hover .staff-photo {
+    transform: scale(1.08);
+    box-shadow: 
+        0 0 25px rgba(218, 165, 32, 0.5),
+        0 0 35px rgba(218, 165, 32, 0.2);
+}
+
+/* NAMA STAFF */
 .staff-card h3 {
     font-family: 'Cinzel', serif;
     color: #fff;
     font-size: 1.25rem;
-    line-height: 1.4;
+    line-height: 1.5;
     margin-bottom: 0.5rem;
-    
-    /* KUNCI: Area nama harus punya tinggi tetap */
-    min-height: 60px; /* Cukup untuk 2 baris teks */
+    text-align: center;
+    min-height: 70px;
     display: flex;
-    align-items: center; 
-    justify-content: center; 
+    align-items: center;
+    justify-content: center;
     width: 100%;
+    transition: color 0.3s ease;
 }
 
+.staff-card:hover h3 {
+    color: #FFD700;
+}
+
+/* JABATAN */
 .staff-title {
     font-family: 'Lato', sans-serif;
     color: #DAA520;
     font-size: 0.9rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
     margin-bottom: 1rem;
+    text-align: center;
+    transition: all 0.3s ease;
 }
 
-/* ICON SOSMED (Opsional) */
+.staff-card:hover .staff-title {
+    letter-spacing: 2px;
+}
+
+/* SOCIAL MEDIA ICONS (Optional) */
 .staff-socials {
-    margin-top: auto; /* Dorong ke paling bawah */
+    margin-top: auto;
     padding-top: 1rem;
     border-top: 1px solid rgba(255,255,255,0.1);
     width: 100%;
+    text-align: center;
 }
 
 .staff-socials a {
     color: #888;
     margin: 0 10px;
     font-size: 1.2rem;
-    transition: 0.3s;
+    transition: all 0.3s ease;
+    display: inline-block;
 }
 
 .staff-socials a:hover {
     color: #DAA520;
-    transform: scale(1.2);
+    transform: scale(1.2) translateY(-2px);
 }
 
 /* =========================================
-   RESPONSIVE (HP)
+   RESPONSIVE - TABLET
    ========================================= */
-@media (max-width: 768px) {
+@media (max-width: 992px) {
     .staff-section {
-        padding-top: 150px; /* Jarak lebih jauh di HP karena navbar numpuk */
+        padding: 120px 1.5rem 60px 1.5rem;
     }
+    
     .section-title {
+        font-size: 2.5rem;
+    }
+    
+    .group-title {
         font-size: 2rem;
     }
+    
     .staff-grid {
         gap: 2rem;
     }
+    
+    .staff-card {
+        width: 280px;
+        min-height: 400px;
+    }
 }
 
 /* =========================================
-   RESPONSIVE LANDING PAGE (Max Width 992px)
+   RESPONSIVE - MOBILE
    ========================================= */
-
-@media (max-width: 992px) {
-    /* 1. Collapse Grid Utama */
-    .hero-section {
-        grid-template-columns: 1fr; /* Ubah dari 2 kolom menjadi 1 kolom */
-        padding: 4rem 20px; /* Kurangi padding samping */
-        gap: 0;
-    }
-
-    /* 2. Sembunyikan/Kecilkan Elemen Besar */
-    /* Hapus background teks besar yang merusak layout mobile */
-    .title-container .moe-text-img {
-        display: none;
-    }
-    
-    /* Posisikan Karakter agar tidak keluar batas */
-    .character-container {
-        transform: scale(0.8); /* Kecilkan karakter agar muat */
-        margin-top: -50px;
-    }
-    
-    /* Rapatkan Menu Navbar */
-    .main-nav ul {
-        gap: 1.5rem;
-    }
-    .main-nav ul li a {
-        font-size: 0.9rem;
-    }
-}
-
-/* =========================================
-   RESPONSIVE (HP)
-   ========================================= */
 @media (max-width: 768px) {
     .staff-section {
-padding-top: 100px; /* Jarak lebih jauh di HP karena navbar numpuk */
-        padding-left: 15px;
-        padding-right: 15px;
-}
-.section-title {
-font-size: 2rem;
-}
-.staff-grid {
-gap: 1.5rem;
-}
-    /* Agar kartu mengambil lebar penuh di HP */
+        padding: 180px 1rem 60px 1rem; /* Lebih banyak top padding karena navbar wrap */
+    }
+    
+    .section-title {
+        font-size: 2rem;
+        margin-bottom: 0.3rem;
+    }
+    
+    .section-subtitle {
+        font-size: 0.85rem;
+        margin-bottom: 3rem;
+    }
+    
+    .group-wrapper {
+        margin-bottom: 4rem;
+    }
+    
+    .group-title {
+        font-size: 1.75rem;
+        letter-spacing: 3px;
+        margin-bottom: 2rem;
+    }
+    
+    .staff-grid {
+        gap: 1.5rem;
+        padding: 0;
+    }
+    
     .staff-card {
         width: 100%;
-        max-width: 400px; 
+        max-width: 350px;
+        min-height: 380px;
+        padding: 1.75rem 1.25rem;
+    }
+    
+    .staff-photo {
+        width: 120px;
+        height: 120px;
+        margin-bottom: 1.25rem;
+    }
+    
+    .staff-card h3 {
+        font-size: 1.15rem;
+        min-height: 60px;
+    }
+    
+    .staff-title {
+        font-size: 0.85rem;
     }
 }
 
-/* --- (Sisa kode responsif landing page tetap di bawah) --- */
+/* =========================================
+   RESPONSIVE - SMALL MOBILE
+   ========================================= */
+@media (max-width: 480px) {
+    .staff-section {
+        padding: 160px 0.75rem 50px 0.75rem;
+    }
+    
+    .section-title {
+        font-size: 1.75rem;
+    }
+    
+    .group-title {
+        font-size: 1.5rem;
+        letter-spacing: 2px;
+    }
+    
+    .staff-card {
+        max-width: 100%;
+        padding: 1.5rem 1rem;
+    }
+    
+    .staff-photo {
+        width: 110px;
+        height: 110px;
+    }
+}
