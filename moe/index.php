@@ -62,7 +62,7 @@ if (isset($_SESSION['status_login']) && $_SESSION['status_login'] == 'berhasil')
             </div>
         </form>
 
-        <a href="index.html" class="back-link">
+        <a href="home.php" class="back-link">
             <i class="fa-solid fa-arrow-left"></i> BACK TO HOME
         </a>
     </div>

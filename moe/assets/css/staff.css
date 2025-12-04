@@ -9,64 +9,6 @@ html, body {
 }
 
 /* =========================================
-   NAVBAR KHUSUS STAFF (Sticky / Ikut Turun)
-   ========================================= */
-/* =========================================
-   NAVBAR KHUSUS STAFF (Transparent Sticky)
-   ========================================= */
-.main-header {
-    /* --- POSISI & LOGIKA --- */
-    position: relative !important; /* Tetap melayang (Sticky) */
-    width: 100%;
-    max-width: 100%;
-    z-index: 9999;
-    
-    /* --- TAMPILAN CLEAN (Sama seperti Home) --- */
-    background: transparent;
-    backdrop-filter: none;
-    border: none;
-    box-shadow: none;
-    
-    /* --- PENEMPATAN (PADDING) --- */
-    /* Ini kuncinya agar sama dengan Home Page.
-       Angka '2rem' adalah jarak dari Atas.
-       Angka '4rem' adalah jarak dari Kiri & Kanan (sesuai perbaikan page-wrapper sebelumnya).
-    */
-    padding: 2rem 4rem; 
-    
-    /* Pastikan padding tidak membuat navbar melebar keluar layar */
-    box-sizing: border-box;
-
-    /* --- LAYOUT (Tetap) --- */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-/* RESPONSIVE (HP) */
-/* Di HP biasanya padding kiri-kanan lebih kecil, kita samakan juga */
-@media (max-width: 992px) {
-    .main-header {
-        padding: 1rem 2rem; /* Sesuaikan dengan tampilan mobile Home */
-    }
-}
-
-/* OPSI TAMBAHAN: Background Gradient Halus di Atas */
-/* Supaya teks menu tetap terbaca tapi tidak ada kotak kasar */
-.main-header::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100px;
-    /* Gradasi dari hitam pudar ke transparan (biar logo jelas) */
-    background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
-    z-index: -1;
-    pointer-events: none;
-}
-
-/* =========================================
    STAFF SECTION LAYOUT
    ========================================= */
 .staff-section {

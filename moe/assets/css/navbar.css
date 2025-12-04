@@ -1,0 +1,161 @@
+/* ===========================
+   NAVBAR MODULE STYLING
+=========================== */
+
+/* Import variables (jika mau gunakan yang sama) */
+:root {
+    --font-display: 'Cinzel', serif;
+    --font-body: 'Lato', sans-serif;
+
+    --color-red: #9B2B2B;
+    --color-text: #E0E0E0;
+    --color-gold: #DAA520;
+
+    --color-dark: #1a1a1a;
+}
+
+/* RESET NAVBAR AREA */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ------------------------------------
+   NAVBAR WRAPPER
+------------------------------------- */
+.main-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    padding: 1rem 2rem;
+    z-index: 50;
+}
+
+/* Logo */
+.main-header .logo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 0 25px rgba(218,165,32,0.3);
+}
+
+/* Navigation Menu */
+.main-nav {
+    display: flex;
+    margin-left: 2rem;
+    margin-right: auto;
+}
+
+.main-nav ul {
+    list-style: none;
+    display: flex;
+    gap: 3rem;
+}
+
+.main-nav ul li a {
+    font-family: var(--font-display);
+    color: var(--color-text);
+    text-decoration: none;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 0.5rem 0;
+    position: relative;
+    transition: 0.3s;
+}
+
+.main-nav ul li a:hover {
+    color: var(--color-gold);
+}
+
+.main-nav ul li a::after {
+    content: "";
+    width: 100%;
+    height: 2px;
+    background: var(--color-gold);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: 0.3s;
+}
+
+.main-nav ul li a:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+/* Buttons */
+.header-buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+.login-btn,
+.signup-btn {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 4px;
+    border: 2px solid var(--color-gold);
+    transition: 0.3s;
+}
+
+.login-btn {
+    background: var(--color-gold);
+    color: var(--color-dark);
+}
+
+.login-btn:hover {
+    background: transparent;
+    color: var(--color-gold);
+    box-shadow: 0 0 15px rgba(218, 165, 32, 0.5);
+}
+
+.signup-btn {
+    background: transparent;
+    color: var(--color-gold);
+}
+
+.signup-btn:hover {
+    background: var(--color-gold);
+    color: var(--color-dark);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .main-header {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .main-nav {
+        order: 3;
+        width: 100%;
+        margin-top: 1rem;
+    }
+
+    .main-nav ul {
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-nav ul {
+        gap: 1rem;
+    }
+
+    .main-nav ul li a {
+        font-size: 0.95rem;
+    }
+}

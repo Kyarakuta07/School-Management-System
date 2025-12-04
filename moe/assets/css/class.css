@@ -8,31 +8,6 @@ html, body {
     min-height: 100vh;
 }
 
-/* Navbar Sticky & Transparan (Clean) */
-.main-header {
-    /* --- UBAH DARI FIXED JADI RELATIVE --- */
-    position: relative !important; /* Diam di tempat (flow normal) */
-    width: 100%;
-    z-index: 9999;
-    
-    /* Style tetap bersih/transparan */
-    background: transparent;
-    border: none;
-    box-shadow: none;
-    padding: 2rem 4rem; 
-
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-/* Responsive HP */
-@media (max-width: 992px) {
-    .main-header {
-        padding: 1rem 2rem;
-    }
-}
-
 /* =========================================
    2. CLASS LAYOUT
    ========================================= */
