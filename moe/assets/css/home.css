@@ -7,24 +7,28 @@
     max-height: 100vh;
 } */
 
-html, body {
+html,
+body {
     margin: 0;
     padding: 0;
     width: 100%;
     height: 100%;
     overflow-x: hidden;
-    overflow-y: hidden; /* TAMBAHKAN INI - cegah scroll vertikal */
+    overflow-y: hidden;
+    /* TAMBAHKAN INI - cegah scroll vertikal */
 }
 
 /* HERO WRAPPER */
 .hero-section {
     position: relative;
-    height: calc(100vh - 60px); /* Sesuaikan dengan tinggi navbar + footer */
+    height: calc(100vh - 60px);
+    /* Sesuaikan dengan tinggi navbar + footer */
     width: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr;
     align-items: center;
-    padding: 0;                 /* Hilangkan padding horizontal */
+    padding: 0;
+    /* Hilangkan padding horizontal */
     overflow: hidden;
     background-size: cover;
     background-position: center;
@@ -37,7 +41,8 @@ html, body {
     justify-content: center;
     z-index: 10;
     height: 100%;
-    padding-left: 3rem;         /* Padding hanya untuk konten teks */
+    padding-left: 3rem;
+    /* Padding hanya untuk konten teks */
 }
 
 /* BIG MOE BACKGROUND TEXT */
@@ -49,10 +54,13 @@ html, body {
 
 .title-container .moe-text-img {
     position: absolute;
-    width: 900px;               /* Dikecilkan agar muat */
-    opacity: 0.15;              /* Lebih transparan agar tidak mengalahkan konten */
+    width: 900px;
+    /* Dikecilkan agar muat */
+    opacity: 0.15;
+    /* Lebih transparan agar tidak mengalahkan konten */
     top: -100px;
-    right: -150px;              /* Digeser lebih ke kiri agar terlihat */
+    right: -150px;
+    /* Digeser lebih ke kiri agar terlihat */
     z-index: 1;
     pointer-events: none;
     user-select: none;
@@ -69,48 +77,71 @@ html, body {
     z-index: 20;
 }
 
-/* ABOUT BOX */
-.about-section {
+/* ABOUT CONTAINER */
+.about-container {
     margin-top: 25px;
     position: relative;
-    padding: 1.5rem;
     max-width: 600px;
     z-index: 20;
 }
 
-.about-section h2 {
+.about-title {
     font-family: var(--font-display);
     font-size: 3rem;
     font-weight: 900;
     color: #fff;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    /* Space between title and box */
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
-.about-section p {
+.about-box {
+    position: relative;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    /* Subtle border for box */
+    background: rgba(0, 0, 0, 0.3);
+    /* Slight darkening */
+}
+
+.about-box p {
     font-size: 1rem;
     line-height: 1.4;
     text-align: justify;
+    color: #ddd;
 }
 
-/* ABOUT CORNERS */
-.about-section::before,
-.about-section::after {
+/* ABOUT CORNERS (Applied to .about-box) */
+.about-box::before,
+.about-box::after {
     content: '';
     position: absolute;
-    width: 80px;
-    height: 80px;
+    width: 30px;
+    /* Smaller corners */
+    height: 30px;
     border-color: rgba(255, 255, 255, 0.5);
     border-style: solid;
+    transition: 0.3s;
 }
-.about-section::before {
-    top: 0;
-    left: 0;
+
+.about-box::before {
+    top: -1px;
+    left: -1px;
     border-width: 2px 0 0 2px;
 }
-.about-section::after {
-    bottom: 0;
-    right: 0;
+
+.about-box::after {
+    bottom: -1px;
+    right: -1px;
     border-width: 0 2px 2px 0;
+}
+
+.about-box:hover::before,
+.about-box:hover::after {
+    width: 100%;
+    height: 100%;
+    border-color: var(--color-gold);
+    /* Gold glow on hover */
 }
 
 /* RIGHT SIDE CHARACTER */
@@ -118,10 +149,12 @@ html, body {
     position: relative;
     height: 100%;
     display: flex;
-    justify-content: flex-end;  /* Dorong ke kanan */
+    justify-content: flex-end;
+    /* Dorong ke kanan */
     align-items: center;
     z-index: 50;
-    margin-right: -5%;          /* Geser keluar layar 5% untuk efek dramatic */
+    margin-right: -5%;
+    /* Geser keluar layar 5% untuk efek dramatic */
 }
 
 /* BACKGROUND MOE TEXT di belakang karakter */
@@ -129,11 +162,13 @@ html, body {
     content: '';
     position: absolute;
     width: 800px;
-    /*Diperbesardari600px*/height: 800px;
+    /*Diperbesardari600px*/
+    height: 800px;
     background: url('../landing/7.png') no-repeat center center;
     background-size: contain;
     opacity: 0.5;
-    /*Sedikitlebihterlihat*/z-index: 1;
+    /*Sedikitlebihterlihat*/
+    z-index: 1;
     pointer-events: none;
     transform: scale(1.2) translateX(-90px);
     -webkit-transform: scale(1.2) translateX(-90px);
@@ -145,15 +180,19 @@ html, body {
 .character-container {
     position: relative;
     width: 100%;
-    max-width: 900px;           /* Diperbesar dari 750px */
+    max-width: 900px;
+    /* Diperbesar dari 750px */
     height: 100%;
     overflow: hidden;
     display: flex;
     justify-content: center;
-    align-items: flex-end;      /* Posisi ke bawah agar kaki tetap di bawah */
+    align-items: flex-end;
+    /* Posisi ke bawah agar kaki tetap di bawah */
     z-index: 50;
-    transform: scale(1.3);      /* Zoom 130% */
-    transform-origin: bottom center; /* Pivot dari bawah tengah */
+    transform: scale(1.3);
+    /* Zoom 130% */
+    transform-origin: bottom center;
+    /* Pivot dari bawah tengah */
 }
 
 /* Combined image */
@@ -163,7 +202,7 @@ html, body {
     object-fit: contain;
     object-position: bottom;
     z-index: 10;
-    filter: drop-shadow(5px 5px 20px rgba(0,0,0,0.6)); 
+    filter: drop-shadow(5px 5px 20px rgba(0, 0, 0, 0.6));
 }
 
 /* =========================================
@@ -172,8 +211,10 @@ html, body {
 
 @media (max-width: 992px) {
 
-    html, body {
-        overflow-y: auto; /* Izinkan scroll di mobile */
+    html,
+    body {
+        overflow-y: auto;
+        /* Izinkan scroll di mobile */
     }
 
     .hero-section {
@@ -212,7 +253,7 @@ html, body {
         height: auto;
     }
 
-    .about-section {
+    .about-container {
         margin-top: 30px;
         max-width: 100%;
         text-align: left;

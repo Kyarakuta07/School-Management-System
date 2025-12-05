@@ -1,15 +1,30 @@
 <header class="main-header">
-    <img src="assets/landing/logo.png" alt="Logo" class="logo">
+    <div class="logo-container">
+        <img src="assets/landing/logo.png" alt="Logo" class="logo">
+    </div>
+
+    <!-- Hamburger Menu Toggle (Checkbox Hack) -->
+    <input type="checkbox" id="nav-toggle" class="nav-toggle">
+    <label for="nav-toggle" class="nav-toggle-label">
+        <span></span>
+        <span></span>
+        <span></span>
+    </label>
 
     <nav class="main-nav">
         <ul>
             <li><a href="home.php">Home</a></li>
             <li><a href="staff.php">Staff</a></li>
             <li><a href="class.php">Class</a></li>
+            <!-- Mobile Only Buttons -->
+            <li class="mobile-buttons">
+                <a href="index.php" class="login-btn">Login</a>
+                <a href="register.php" class="signup-btn">Sign Up</a>
+            </li>
         </ul>
     </nav>
 
-    <div class="header-buttons">
+    <div class="header-buttons desktop-buttons">
         <a href="index.php" class="login-btn">Login</a>
         <a href="register.php" class="signup-btn">Sign Up</a>
     </div>

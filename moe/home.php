@@ -39,15 +39,17 @@
                     <h1>Mediterranean of Egypt</h1>
                 </div>
 
-                <div class="about-section">
-                    <h2>ABOUT</h2>
-                    <p>
-                        nyoba aja bang Welcome to the Mediterranean of Egypt, a premier virtual academy bridging the gap 
-                        between ancient sands and the digital realm. Inspired by the lore of Moon Knight and the mystic 
-                        corners of the DC Universe, MOE offers a structured curriculum for those seeking knowledge beyond 
-                        the veil. From Oceanology to the Dark Arts, our halls are open to all scholars ready to embrace 
-                        their destiny and ascend the ranks of our order.
-                    </p>
+                <div class="about-container">
+                    <h2 class="about-title">ABOUT</h2>
+                    <div class="about-box">
+                        <p>
+                            Welcome to the Mediterranean of Egypt, a premier virtual academy bridging the gap 
+                            between ancient sands and the digital realm. Inspired by the lore of Moon Knight and the mystic 
+                            corners of the DC Universe, MOE offers a structured curriculum for those seeking knowledge beyond 
+                            the veil. From Oceanology to the Dark Arts, our halls are open to all scholars ready to embrace 
+                            their destiny and ascend the ranks of our order.
+                        </p>
+                    </div>
                 </div>
 
             </div>

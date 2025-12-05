@@ -2,16 +2,13 @@
    NAVBAR MODULE STYLING
 =========================== */
 
-/* Import variables (jika mau gunakan yang sama) */
+/* Import variables */
 :root {
     --font-display: 'Cinzel', serif;
     --font-body: 'Lato', sans-serif;
-
-    --color-red: #9B2B2B;
-    --color-text: #E0E0E0;
     --color-gold: #DAA520;
-
     --color-dark: #1a1a1a;
+    --color-text: #E0E0E0;
 }
 
 /* RESET NAVBAR AREA */
@@ -26,41 +23,49 @@
 ------------------------------------- */
 .main-header {
     width: 100%;
+    height: 90px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: relative;
-    padding: 1rem 2rem;
-    z-index: 50;
+    padding: 0 5%;
+    z-index: 100;
+    background: transparent; /* Or rgba(0,0,0,0.8) if needed */
 }
 
 /* Logo */
-.main-header .logo {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-    box-shadow: 0 0 25px rgba(218,165,32,0.3);
+.logo-container {
+    flex-shrink: 0;
 }
 
-/* Navigation Menu */
+.main-header .logo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 0 15px rgba(218,165,32,0.3);
+    border: 2px solid var(--color-gold);
+}
+
+/* Navigation Menu (Desktop) */
 .main-nav {
+    flex-grow: 1;
     display: flex;
-    margin-left: 2rem;
-    margin-right: auto;
+    justify-content: center;
 }
 
 .main-nav ul {
     list-style: none;
     display: flex;
     gap: 3rem;
+    align-items: center;
 }
 
 .main-nav ul li a {
     font-family: var(--font-display);
     color: var(--color-text);
     text-decoration: none;
-    font-size: 1.1rem;
+    font-size: 1rem;
     text-transform: uppercase;
     letter-spacing: 1.5px;
     padding: 0.5rem 0;
@@ -90,7 +95,7 @@
     transform-origin: bottom left;
 }
 
-/* Buttons */
+/* Buttons (Desktop) */
 .header-buttons {
     display: flex;
     gap: 1rem;
@@ -100,14 +105,15 @@
 .signup-btn {
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: 1rem;
-    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
+    padding: 0.6rem 1.2rem;
     text-decoration: none;
     text-transform: uppercase;
     letter-spacing: 1px;
     border-radius: 4px;
-    border: 2px solid var(--color-gold);
+    border: 1px solid var(--color-gold);
     transition: 0.3s;
+    white-space: nowrap;
 }
 
 .login-btn {
@@ -118,7 +124,7 @@
 .login-btn:hover {
     background: transparent;
     color: var(--color-gold);
-    box-shadow: 0 0 15px rgba(218, 165, 32, 0.5);
+    box-shadow: 0 0 10px rgba(218, 165, 32, 0.5);
 }
 
 .signup-btn {
@@ -131,86 +137,133 @@
     color: var(--color-dark);
 }
 
+/* Toggle Checkbox (Hidden) */
+.nav-toggle {
+    display: none;
+}
+
+.nav-toggle-label {
+    display: none;
+    cursor: pointer;
+}
+
+/* Mobile Buttons (Hidden on Desktop) */
+.mobile-buttons {
+    display: none;
+}
+
 /* ------------------------------------
-   RESPONSIVE - TABLET
+   RESPONSIVE - TABLET & MOBILE (< 768px)
 ------------------------------------- */
 @media (max-width: 992px) {
-    .main-header {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 1rem;
-        padding: 1rem 1.5rem;
-    }
-
-    .main-header .logo {
-        width: 80px;
-        height: 80px;
-    }
-
-    .main-nav {
-        order: 3;
-        width: 100%;
-        margin-top: 1rem;
-        margin-left: 0;
-        justify-content: center;
-    }
-
     .main-nav ul {
         gap: 1.5rem;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    .main-nav ul li a {
-        font-size: 1rem;
-    }
-
-    .header-buttons {
-        order: 2;
     }
 }
 
-/* ------------------------------------
-   RESPONSIVE - MOBILE
-------------------------------------- */
 @media (max-width: 768px) {
     .main-header {
-        padding: 0.75rem 1rem;
+        padding: 0 1.5rem;
+        height: 90px;
+        
+        /* --- PERBAIKAN DI SINI (AGAR NYATU DENGAN BAWAH) --- */
+        background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
+        backdrop-filter: blur(10px);            /* Samakan blurnya (10px) */
+        -webkit-backdrop-filter: blur(10px);
+        border-bottom: none;                    /* Pastikan tidak ada garis pemisah */
+        /* --------------------------------------------------- */
+
+        box-shadow: none;
+        border: none;
     }
 
     .main-header .logo {
-        width: 70px;
-        height: 70px;
+        width: 50px;
+        height: 50px;
+    }
+
+    /* Hide Desktop Buttons */
+    .desktop-buttons {
+        display: none;
+    }
+
+    /* Show Hamburger Menu Icon */
+    .nav-toggle-label {
+        display: block;
+        width: 30px;
+        height: 25px;
+        position: relative;
+    }
+
+    .nav-toggle-label span {
+        display: block;
+        width: 100%;
+        height: 3px;
+        background: var(--color-gold);
+        margin-bottom: 5px;
+        border-radius: 2px;
+        transition: 0.3s;
+    }
+
+    /* Transform Hamburger to X when Checked */
+    .nav-toggle:checked + .nav-toggle-label span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 6px);
+    }
+    .nav-toggle:checked + .nav-toggle-label span:nth-child(2) {
+        opacity: 0;
+    }
+    .nav-toggle:checked + .nav-toggle-label span:nth-child(3) {
+        transform: rotate(-45deg) translate(5px, -6px);
+    }
+
+    /* Mobile Navigation Dropdown */
+    .main-nav {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+
+        /* Ini sudah benar (sama dengan header di atas) */
+        background: rgba(0, 0, 0, 0.7); 
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(10px);
+        
+        border-top: none; /* PENTING: Hapus garis atas biar nyambung sama header */
+
+        overflow: hidden;
+        max-height: 0;
+        transition: max-height 0.4s ease-in-out;
+        flex-direction: column;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Show Nav when toggled */
+    .nav-toggle:checked ~ .main-nav {
+        max-height: 400px;
     }
 
     .main-nav ul {
+        flex-direction: column;
+        padding: 2rem 0;
+        gap: 1.5rem;
+        width: 100%;
+        align-items: center;
+    }
+
+    /* Mobile Buttons inside Nav */
+    .mobile-buttons {
+        display: flex;
+        flex-direction: column;
         gap: 1rem;
+        width: 100%;
+        align-items: center;
+        margin-top: 1rem;
+        border-top: 1px solid rgba(218, 165, 32, 0.3);
+        padding-top: 1.5rem;
     }
 
-    .main-nav ul li a {
-        font-size: 0.9rem;
-        letter-spacing: 1px;
-    }
-
-    .login-btn,
-    .signup-btn {
-        font-size: 0.9rem;
-        padding: 0.6rem 1.2rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .main-nav ul {
-        gap: 0.75rem;
-    }
-
-    .main-nav ul li a {
-        font-size: 0.85rem;
-    }
-
-    .login-btn,
-    .signup-btn {
-        font-size: 0.85rem;
-        padding: 0.5rem 1rem;
+    .mobile-buttons a {
+        width: 80%;
+        text-align: center;
     }
 }
