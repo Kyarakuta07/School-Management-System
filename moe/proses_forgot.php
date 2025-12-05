@@ -22,7 +22,7 @@ $expiry_time = date("Y-m-d H:i:s", time() + 1800); // Token berlaku 30 menit
 $reset_link = "http://" . $_SERVER['HTTP_HOST'] . "/reset_password.php?token=" . $token; // GANTI /reset_password.php JIKA PATH BEDA!
 
 // --- 1. CEK APAKAH EMAIL TERDAFTAR & AMBIL DATA USER ---
-$sql_check = "SELECT id_nethera, nickname FROM nethera WHERE email = ?";
+$sql_check = "SELECT id_nethera, username FROM nethera WHERE email = ?";
 $stmt_check = mysqli_prepare($conn, $sql_check);
 
 if ($stmt_check) {
@@ -39,7 +39,7 @@ if ($stmt_check) {
     }
     
     $user_id = $user_data['id_nethera'];
-    $nickname = $user_data['nickname'];
+    $username = $user_data['username'];
 
 
     // --- 2. UPDATE DATABASE DENGAN TOKEN RESET BARU ---
@@ -61,7 +61,7 @@ if ($stmt_check) {
 
                 // Recipients
                 $mail->setFrom('mediterraneanofegypt@gmail.com', 'MOE Password Reset');
-                $mail->addAddress($user_email, $nickname);     
+                $mail->addAddress($user_email, $username);     
 
                 // Content
                 $mail->isHTML(true);                                  
@@ -71,7 +71,7 @@ if ($stmt_check) {
                     <body style='font-family: Lato, sans-serif; background-color: #0d0d0d; color: #fff; padding: 20px;'>
                         <div style='max-width: 500px; margin: auto; padding: 20px; background-color: rgba(255, 255, 255, 0.1); border-radius: 10px; border: 1px solid #DAA520;'>
                             <h2 style='color: #DAA520; font-family: Cinzel;'>Reset Password</h2>
-                            <p>Halo <strong>{$nickname}</strong>,</p>
+                            <p>Halo <strong>{$username}</strong>,</p>
                             <p>Anda telah meminta tautan reset password. Klik tombol di bawah ini:</p>
                             
                             <a href='{$reset_link}' style='display: inline-block; padding: 10px 20px; background-color: #DAA520; color: #000; text-decoration: none; border-radius: 5px; font-weight: bold; margin-top: 20px;'>

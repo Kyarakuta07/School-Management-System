@@ -8,7 +8,7 @@ if (isset($_POST['search'])) {
     $search_term = mysqli_real_escape_string($conn, $_POST['search']);
 }
 
-$sql = "SELECT n.nama_lengkap, n.nickname, s.nama_sanctuary, cg.*
+$sql = "SELECT n.nama_lengkap, n.username, s.nama_sanctuary, cg.*
         FROM class_grades cg
         JOIN nethera n ON cg.id_nethera = n.id_nethera
         LEFT JOIN sanctuary s ON n.id_sanctuary = s.id_sanctuary

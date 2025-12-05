@@ -4,7 +4,7 @@ session_start();
 include 'connection.php'; 
 
 // File ini dipanggil dari proses_register.php dengan parameter user
-$nickname = isset($_GET['user']) ? $_GET['user'] : '';
+$username = isset($_GET['user']) ? $_GET['user'] : '';
 
 // Logic untuk menampilkan pesan status (misal: kode salah/kadaluarsa)
 $status_message = '';
@@ -23,22 +23,22 @@ if (isset($_GET['status'])) {
 // ===============================================
 
 // 1. Cek apakah user ada dan masih memiliki kode OTP yang harus diverifikasi
-if (empty($nickname)) {
-    // Jika tidak ada nickname di URL, redirect ke halaman daftar
+if (empty($username)) {
+    // Jika tidak ada username di URL, redirect ke halaman daftar
     header("Location: register.php");
     exit();
 }
 
-$sql_check = "SELECT otp_code FROM nethera WHERE nickname = ? AND otp_code IS NOT NULL";
+$sql_check = "SELECT otp_code FROM nethera WHERE username = ? AND otp_code IS NOT NULL";
 $stmt_check = mysqli_prepare($conn, $sql_check);
-mysqli_stmt_bind_param($stmt_check, "s", $nickname);
+mysqli_stmt_bind_param($stmt_check, "s", $username);
 mysqli_stmt_execute($stmt_check);
 mysqli_stmt_store_result($stmt_check);
 
 if (mysqli_stmt_num_rows($stmt_check) == 0) {
     // Jika user tidak ditemukan ATAU kolom OTP-nya sudah NULL (berarti sudah diverifikasi)
     // Langsung arahkan ke halaman tunggu persetujuan
-    header("Location: success_page.php?nickname=" . urlencode($nickname));
+    header("Location: success_page.php?username=" . urlencode($username));
     exit();
 }
 
@@ -75,7 +75,7 @@ mysqli_stmt_close($stmt_check);
 
         <form action="proses_verify.php" method="POST">
             
-            <input type="hidden" name="nickname" value="<?php echo htmlspecialchars($nickname); ?>">
+            <input type="hidden" name="username" value="<?php echo htmlspecialchars($username); ?>">
             
             <div class="input-group">
                 <label for="otp">Kode Verifikasi (OTP)</label>
@@ -87,7 +87,7 @@ mysqli_stmt_close($stmt_check);
         </form>
 
         <div style="margin-top: 1rem; font-size: 0.9rem;">
-            <a href="resend_otp.php?user=<?php echo urlencode($nickname); ?>" style="color: #DAA520; text-decoration: none;">
+            <a href="resend_otp.php?user=<?php echo urlencode($username); ?>" style="color: #DAA520; text-decoration: none;">
                 Kirim Ulang Kode OTP
             </a>
             <span style="color: #555; margin: 0 10px;">|</span>

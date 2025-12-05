@@ -2,7 +2,7 @@
 session_start();
 // Halaman ini tidak perlu koneksi DB, hanya view
 
-$nickname = isset($_GET['nickname']) ? $_GET['nickname'] : 'Anggota Baru';
+$username = isset($_GET['username']) ? $_GET['username'] : 'Anggota Baru';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -103,7 +103,7 @@ $nickname = isset($_GET['nickname']) ? $_GET['nickname'] : 'Anggota Baru';
         <h1 class="success-title">SUCCESS</h1>
 
         <div class="success-message">
-            <p>Welcome, <strong><?php echo htmlspecialchars($nickname); ?></strong>.</p>
+            <p>Welcome, <strong><?php echo htmlspecialchars($username); ?></strong>.</p>
             <p style="font-size: 0.9rem; color: #888; margin-top: 5px;">Your account is pending approval by Vasiki.</p>
         </div>
 

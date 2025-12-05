@@ -9,10 +9,10 @@ require 'phpmailer/src/Exception.php';
 require 'phpmailer/src/PHPMailer.php';
 require 'phpmailer/src/SMTP.php'; 
 
-// 1. Ambil Nickname dan Cek Otentikasi
-$nickname = isset($_GET['user']) ? $_GET['user'] : '';
+// 1. Ambil username dan Cek Otentikasi
+$username = isset($_GET['user']) ? $_GET['user'] : '';
 
-if (empty($nickname)) {
+if (empty($username)) {
     header("Location: register.php");
     exit();
 }
@@ -22,18 +22,18 @@ $otp_code = rand(100000, 999999);
 $otp_expires = date("Y-m-d H:i:s", time() + 300); // 5 menit
 
 // 2. Update Database (Generate OTP dan Expiry Baru)
-$sql_update = "UPDATE nethera SET otp_code = ?, otp_expires = ? WHERE nickname = ? AND status_akun = ?";
+$sql_update = "UPDATE nethera SET otp_code = ?, otp_expires = ? WHERE username = ? AND status_akun = ?";
 $stmt_update = mysqli_prepare($conn, $sql_update);
 
 if ($stmt_update) {
-    mysqli_stmt_bind_param($stmt_update, "ssss", $otp_code, $otp_expires, $nickname, $default_status);
+    mysqli_stmt_bind_param($stmt_update, "ssss", $otp_code, $otp_expires, $username, $default_status);
     
     if (mysqli_stmt_execute($stmt_update)) {
         
         // 3. Ambil Email User untuk Pengiriman
-        $sql_fetch_email = "SELECT email FROM nethera WHERE nickname = ?";
+        $sql_fetch_email = "SELECT email FROM nethera WHERE username = ?";
         $stmt_email = mysqli_prepare($conn, $sql_fetch_email);
-        mysqli_stmt_bind_param($stmt_email, "s", $nickname);
+        mysqli_stmt_bind_param($stmt_email, "s", $username);
         mysqli_stmt_execute($stmt_email);
         $result_email = mysqli_stmt_get_result($stmt_email);
         $user_data = mysqli_fetch_assoc($result_email);
@@ -49,7 +49,7 @@ if ($stmt_update) {
 
             // Recipients
             $mail->setFrom('mediterraneanofegypt@gmail.com', 'MOE Registration');
-            $mail->addAddress($user_email, $nickname);     
+            $mail->addAddress($user_email, $username);     
 
             // Content - FIX: Menggunakan Heredoc untuk mencegah korupsi HTML
             $mail->isHTML(true);                                  
@@ -63,11 +63,11 @@ EMAIL_BODY;
             $mail->send();
             
             // 5. Berhasil: Redirect kembali ke halaman verifikasi dengan pesan sukses resend
-            header("Location: verify_otp.php?user=" . urlencode($nickname) . "&status=resend_success");
+            header("Location: verify_otp.php?user=" . urlencode($username) . "&status=resend_success");
             exit();
 
         } catch (Exception $e) {
-            header("Location: verify_otp.php?user=" . urlencode($nickname) . "&status=email_fail");
+            header("Location: verify_otp.php?user=" . urlencode($username) . "&status=email_fail");
             exit();
         }
     } else {

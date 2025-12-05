@@ -12,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $id_nethera       = $_POST['id_nethera'];
     $nama_lengkap     = $_POST['nama_lengkap'];
-    $nickname         = $_POST['nickname'];
+    $username         = $_POST['username'];
     $no_registrasi    = $_POST['no_registrasi'];
     $id_sanctuary     = $_POST['id_sanctuary'];
     $periode_masuk    = $_POST['periode_masuk'];
@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $sql = "UPDATE nethera SET 
                 nama_lengkap = ?, 
-                nickname = ?, 
+                username = ?, 
                 no_registrasi = ?, 
                 id_sanctuary = ?, 
                 periode_masuk = ?, 
@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt = mysqli_prepare($conn, $sql);
 
     if ($stmt) {
-        mysqli_stmt_bind_param($stmt, "sssissi", $nama_lengkap, $nickname, $no_registrasi, $id_sanctuary, $periode_masuk, $status_akun, $id_nethera);
+        mysqli_stmt_bind_param($stmt, "sssissi", $nama_lengkap, $username, $no_registrasi, $id_sanctuary, $periode_masuk, $status_akun, $id_nethera);
 
 
         if (mysqli_stmt_execute($stmt)) {

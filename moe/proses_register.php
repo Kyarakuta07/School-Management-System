@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // 1. Ambil dan bersihkan data
 $nama_lengkap = trim($_POST['nama_lengkap']);
-$nickname = trim($_POST['nickname']);
+$username = trim($_POST['username']);
 $email = trim($_POST['email']); 
 $noHP = trim($_POST['noHP']);
 $password_input = $_POST['password'];
@@ -25,11 +25,11 @@ $id_sanctuary = (int)$_POST['id_sanctuary'];
 $periode_masuk = (int)$_POST['periode_masuk'];
 
 // --- 2. CHECK DUPLIKASI (Jika duplikat, redirect) ---
-$sql_check_exist = "SELECT id_nethera FROM nethera WHERE nickname = ? OR email = ?";
+$sql_check_exist = "SELECT id_nethera FROM nethera WHERE username = ? OR email = ?";
 $stmt_check_exist = mysqli_prepare($conn, $sql_check_exist);
 
 if ($stmt_check_exist) {
-    mysqli_stmt_bind_param($stmt_check_exist, "ss", $nickname, $email);
+    mysqli_stmt_bind_param($stmt_check_exist, "ss", $username, $email);
     mysqli_stmt_execute($stmt_check_exist);
     mysqli_stmt_store_result($stmt_check_exist);
 
@@ -52,7 +52,7 @@ $otp_expires = date("Y-m-d H:i:s", time() + 300);
 
 // 5. SQL INSERT (11 kolom)
 $sql = "INSERT INTO nethera 
-        (nama_lengkap, nickname, email, noHP, id_sanctuary, periode_masuk, password, role, status_akun, otp_code, otp_expires) 
+        (nama_lengkap, username, email, noHP, id_sanctuary, periode_masuk, password, role, status_akun, otp_code, otp_expires) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"; 
 
 $stmt = mysqli_prepare($conn, $sql);
@@ -61,7 +61,7 @@ if ($stmt) {
     // Bind Parameter: s, s, s, s, i, i, s, s, s, s, s (Total 11)
 mysqli_stmt_bind_param($stmt, "ssssiisssss",
         $nama_lengkap,        // s (1)
-        $nickname,            // s (2)
+        $username,            // s (2)
         $email,               // s (3)
         $noHP,                // s (4)
         $id_sanctuary,        // i (5 - INT)
@@ -85,7 +85,7 @@ mysqli_stmt_bind_param($stmt, "ssssiisssss",
 
             // Recipients
             $mail->setFrom('mediterraneanofegypt@gmail.com', 'MOE Registration');
-            $mail->addAddress($email, $nickname);     
+            $mail->addAddress($email, $username);     
 
             // Content
             $mail->isHTML(true);                                  
@@ -95,7 +95,7 @@ mysqli_stmt_bind_param($stmt, "ssssiisssss",
                 <body style='font-family: Lato, sans-serif; background-color: #0d0d0d; color: #fff; padding: 20px; text-align: center;'>
                     <div style='max-width: 500px; margin: auto; padding: 20px; background-color: rgba(255, 255, 255, 0.1); border-radius: 10px; border: 1px solid #DAA520;'>
                         <h2 style='color: #DAA520; font-family: Cinzel;'>Verifikasi Akun Nethera Anda</h2>
-                        <p>Halo <strong>{$nickname}</strong>,</p>
+                        <p>Halo <strong>{$username}</strong>,</p>
                         <p>Berikut adalah kode 6 digit Anda:</p>
                         <h1 style='color: #DAA520; font-size: 3rem; letter-spacing: 5px; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 5px;'>
                             {$otp_code}
@@ -110,7 +110,7 @@ EMAIL_BODY;
             $mail->send();
             
             // Redirect ke halaman verifikasi OTP
-            header("Location: verify_otp.php?user=" . urlencode($nickname));
+            header("Location: verify_otp.php?user=" . urlencode($username));
             exit();
 
         } catch (Exception $e) {

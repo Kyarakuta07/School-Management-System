@@ -11,7 +11,7 @@ if (!isset($_SESSION['status_login']) || $_SESSION['role'] != 'Vasiki') {
 }
 
 // Query Data Nethera
-$query_all_nethera = "SELECT n.id_nethera, n.no_registrasi, n.nama_lengkap, n.nickname, s.nama_sanctuary, n.periode_masuk, n.status_akun
+$query_all_nethera = "SELECT n.id_nethera, n.no_registrasi, n.nama_lengkap, n.username, s.nama_sanctuary, n.periode_masuk, n.status_akun
                       FROM nethera n
                       LEFT JOIN sanctuary s ON n.id_sanctuary = s.id_sanctuary
                       ORDER BY n.id_nethera ASC";
@@ -91,7 +91,7 @@ $result_all_nethera = mysqli_query($conn, $query_all_nethera);
                         <tr>
                             <th>No. Reg</th>
                             <th>Full Name</th>
-                            <th>Nickname</th>
+                            <th>Username</th>
                             <th>Sanctuary</th>
                             <th>Period</th>
                             <th>Status</th>
@@ -107,7 +107,7 @@ $result_all_nethera = mysqli_query($conn, $query_all_nethera);
                                 <td>
                                     <strong><?php echo htmlspecialchars($nethera['nama_lengkap']); ?></strong>
                                 </td>
-                                <td><?php echo htmlspecialchars($nethera['nickname']); ?></td>
+                                <td><?php echo htmlspecialchars($nethera['username']); ?></td>
                                 <td><?php echo htmlspecialchars($nethera['nama_sanctuary']); ?></td>
                                 <td><?php echo htmlspecialchars($nethera['periode_masuk']); ?></td>
                                 
