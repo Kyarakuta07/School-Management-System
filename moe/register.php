@@ -68,7 +68,7 @@ if (isset($_GET['error'])) {
 
             <div class="input-group">
                 <label for="username">Username</label>
-                <input type="text" name="username" class="form-control" placeholder="Create a unique username" required
+                <input type="text" name="username" class="form-control" placeholder="Username yang unik" required
                     autocomplete="off">
                 <i class="fa-solid fa-user-tag input-icon"></i>
             </div>
