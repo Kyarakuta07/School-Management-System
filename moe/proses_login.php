@@ -7,9 +7,9 @@ $password_input = $_POST['password'];
 
 // 1. Ambil data user, termasuk HASHED PASSWORD dan STATUS
 // Kunci keamanan: Kita ambil hash dari DB dan memverifikasinya di PHP
-$sql = "SELECT id_nethera, nama_lengkap, nickname, role, status_akun, password 
+$sql = "SELECT id_nethera, nama_lengkap, username, role, status_akun, password 
         FROM nethera 
-        WHERE nama_lengkap = ? OR nickname = ?";
+        WHERE nama_lengkap = ? OR username = ?";
 
 $stmt = mysqli_prepare($conn, $sql);
 
