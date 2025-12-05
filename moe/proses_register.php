@@ -21,7 +21,7 @@ $username = trim($_POST['username']);
 $email = trim($_POST['email']); 
 $noHP = trim($_POST['noHP']);
 $password_input = $_POST['password'];
-$id_sanctuary = (int)$_POST['id_sanctuary'];
+$id_sanctuary = null;
 $periode_masuk = (int)$_POST['periode_masuk'];
 
 // --- 2. CHECK DUPLIKASI (Jika duplikat, redirect) ---
