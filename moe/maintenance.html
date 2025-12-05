@@ -1,89 +1,307 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Site Under Maintenance</title>
-  <style>
-    /* Font — pakai font serif klasik supaya feel kuno/ancient */
-    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;700&display=swap');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site Under Maintenance</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Quattrocento:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #e3d6b0; /* pasir / kuning lembut */
-      color: #3e2a12; /* cokelat gelap: hieroglyphic vibe */
-      font-family: 'Cormorant Garamond', serif;
-      text-align: center;
-      line-height: 1.6;
-    }
+        body {
+            font-family: 'Quattrocento', serif;
+            background: linear-gradient(135deg, #c9a961 0%, #d4af6a 25%, #e8d4a0 50%, #d4af6a 75%, #c9a961 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
 
-    /* Jika kamu ada background image piramida, bisa pakai ini */
-    .bg {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: url('pyramids.jpg') no-repeat center center;
-      background-size: cover;
-      opacity: 0.15; /* samar agar teks tetap terbaca */
-      z-index: -1;
-    }
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px),
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+            pointer-events: none;
+        }
 
-    .container {
-      padding: 100px 20px;
-    }
+        .pyramids {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            opacity: 0.15;
+        }
 
-    h1 {
-      font-size: 3em;
-      margin-bottom: 10px;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-    }
+        .pyramid {
+            position: absolute;
+            bottom: 0;
+        }
 
-    p {
-      font-size: 1.2em;
-      margin-bottom: 40px;
-    }
+        .pyramid-1 {
+            left: 10%;
+            width: 0;
+            height: 0;
+            border-left: 100px solid transparent;
+            border-right: 100px solid transparent;
+            border-bottom: 150px solid #8b6914;
+        }
 
-    .symbol {
-      font-size: 4em;
-      margin-bottom: 30px;
-    }
+        .pyramid-2 {
+            right: 15%;
+            width: 0;
+            height: 0;
+            border-left: 80px solid transparent;
+            border-right: 80px solid transparent;
+            border-bottom: 120px solid #9d7518;
+        }
 
-    .footer {
-      margin-top: 60px;
-      font-size: 0.9em;
-      color: #5b472a;
-    }
+        .pyramid-3 {
+            right: 35%;
+            width: 0;
+            height: 0;
+            border-left: 60px solid transparent;
+            border-right: 60px solid transparent;
+            border-bottom: 90px solid #8b6914;
+        }
 
-    a {
-      color: #8b6c3f;
-      text-decoration: none;
-      border-bottom: 1px solid #8b6c3f;
-    }
+        .container {
+            background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(250,245,235,0.95));
+            border: 3px solid #d4af37;
+            border-radius: 15px;
+            padding: 60px 50px;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 
+                0 20px 60px rgba(0,0,0,0.3),
+                inset 0 1px 0 rgba(255,255,255,0.6),
+                0 0 0 1px rgba(212,175,55,0.3);
+            position: relative;
+            z-index: 10;
+            animation: fadeIn 0.8s ease-out;
+        }
 
-    a:hover {
-      color: #6d4a1e;
-      border-bottom-color: #6d4a1e;
-    }
-  </style>
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            bottom: 15px;
+            border: 1px solid #d4af37;
+            border-radius: 10px;
+            pointer-events: none;
+        }
+
+        .icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 30px;
+            position: relative;
+        }
+
+        .ankh {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .ankh-circle {
+            width: 40px;
+            height: 40px;
+            border: 6px solid #d4af37;
+            border-radius: 50%;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #ffd700, #d4af37);
+            box-shadow: 0 4px 15px rgba(212,175,55,0.5);
+        }
+
+        .ankh-cross {
+            width: 6px;
+            height: 60px;
+            background: linear-gradient(180deg, #d4af37, #b8942c);
+            margin: -3px auto 0;
+            box-shadow: 0 4px 15px rgba(212,175,55,0.5);
+        }
+
+        .ankh-arms {
+            width: 60px;
+            height: 6px;
+            background: linear-gradient(90deg, #d4af37, #b8942c, #d4af37);
+            margin: -30px auto 0;
+            position: relative;
+            top: 0;
+            box-shadow: 0 4px 15px rgba(212,175,55,0.5);
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            color: #8b6914;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-family: 'Cinzel', serif;
+            color: #b8942c;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        p {
+            color: #6b5c3f;
+            font-size: 1.1em;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #d4af37, #ffd700);
+            color: #4a3f1f;
+            padding: 12px 30px;
+            border-radius: 50px;
+            margin: 30px 0;
+            font-weight: bold;
+            box-shadow: 0 6px 20px rgba(212,175,55,0.4);
+            border: 2px solid #b8942c;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(74,63,31,0.3);
+            border-top-color: #4a3f1f;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .divider {
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #d4af37, transparent);
+            margin: 25px auto;
+        }
+
+        .contact {
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 2px solid rgba(212,175,55,0.3);
+        }
+
+        .contact p {
+            font-size: 0.95em;
+            color: #8b7355;
+        }
+
+        .hieroglyphics {
+            position: absolute;
+            font-size: 40px;
+            color: rgba(212,175,55,0.15);
+            user-select: none;
+            pointer-events: none;
+        }
+
+        .h1 { top: 20px; left: 20px; }
+        .h2 { top: 20px; right: 20px; }
+        .h3 { bottom: 20px; left: 30px; }
+        .h4 { bottom: 20px; right: 30px; }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 40px 30px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .subtitle {
+                font-size: 1em;
+            }
+
+            .pyramids {
+                height: 150px;
+            }
+        }
+    </style>
 </head>
 <body>
-
-  <!-- Jika ingin background: aktifkan elemen ini, dan taruh file “pyramids.jpg” di /moe/ folder -->
-  <!-- <div class="bg"></div> -->
-
-  <div class="container">
-    <div class="symbol">✦ ✦ ✦</div>
-    <h1>Temple Under Restoration</h1>
-    <p>Our website is undergoing maintenance rituals.<br>
-       We shall return soon — with renewed glory.</p>
-
-    <div class="footer">
-      &mdash; Vasiki’s Webmaster &mdash;<br>
-      &nbsp; &nbsp; | 2025 |
+    <div class="pyramids">
+        <div class="pyramid pyramid-1"></div>
+        <div class="pyramid pyramid-2"></div>
+        <div class="pyramid pyramid-3"></div>
     </div>
-  </div>
 
+    <div class="container">
+        <span class="hieroglyphics h1">𓂀</span>
+        <span class="hieroglyphics h2">𓁹</span>
+        <span class="hieroglyphics h3">𓋹</span>
+        <span class="hieroglyphics h4">𓆣</span>
+
+        <div class="icon">
+            <div class="ankh">
+                <div class="ankh-circle"></div>
+                <div class="ankh-arms"></div>
+                <div class="ankh-cross"></div>
+            </div>
+        </div>
+
+        <h1>UNDER MAINTENANCE</h1>
+        <div class="subtitle">Restoration in Progress</div>
+
+        <div class="divider"></div>
+
+        <p>Like the ancient temples preserved through centuries, our website is undergoing careful restoration to serve you better.</p>
+
+        <div class="status">
+            <div class="spinner"></div>
+            <span>Work in Progress</span>
+        </div>
+
+        <p>We're making improvements to enhance your experience. Our digital sanctuary will reopen soon with renewed features.</p>
+
+        <div class="contact">
+            <p><strong>Thank you for your patience</strong></p>
+            <p>We'll be back shortly with something magnificent.</p>
+        </div>
+    </div>
 </body>
 </html>
