@@ -1,7 +1,7 @@
 /**
  * MOE Pet System - Frontend JavaScript
  * Mediterranean of Egypt Virtual Pet Companion
- * * Handles all UI interactions and API communication
+ * Handles all UI interactions and API communication
  */
 
 // ================================================
@@ -251,7 +251,7 @@ function renderCollection() {
         const deadClass = pet.status === 'DEAD' ? 'dead' : '';
         const shinyStyle = pet.is_shiny ? `filter: hue-rotate(${pet.shiny_hue}deg);` : '';
 
-        // --- UPDATE 1: TAMPILKAN TOMBOL RETRIEVE ---
+        // --- UPDATE: TAMPILKAN TOMBOL RETRIEVE JIKA SHELTER ---
         let actionButtonHTML = '';
         if (pet.status === 'SHELTER') {
             actionButtonHTML = `
@@ -277,7 +277,7 @@ function renderCollection() {
 }
 
 // ================================================
-// ACTION LOGIC (UPDATED WITH CONFIRM)
+// ACTION LOGIC (UPDATED WITH CONFIRM & SHELTER HANDLING)
 // ================================================
 async function selectPet(petId) {
     const pet = userPets.find(p => p.id === petId);
@@ -288,7 +288,7 @@ async function selectPet(petId) {
         return;
     }
 
-    // --- UPDATE 2: KONFIRMASI PENGAMBILAN ---
+    // --- UPDATE: KONFIRMASI PENGAMBILAN DARI SHELTER ---
     if (pet.status === 'SHELTER') {
         if(confirm(`Retrieve ${pet.nickname || pet.species_name} from shelter?`)) {
             toggleShelter(petId);
@@ -320,7 +320,7 @@ async function selectPet(petId) {
 }
 
 // ================================================
-// ACTION BUTTONS
+// ACTION BUTTONS & UTILITIES
 // ================================================
 function initActionButtons() {
     document.getElementById('btn-feed').addEventListener('click', () => openItemModal('food'));
@@ -334,7 +334,7 @@ async function playWithPet() {
     showToast('You played with ' + (activePet.nickname || activePet.species_name) + '! 🎵', 'success');
 }
 
-// --- UPDATE 3: FLEXIBLE TOGGLE SHELTER ---
+// --- UPDATE: FLEXIBLE TOGGLE SHELTER (Supports ID param) ---
 async function toggleShelter(targetPetId = null) {
     const petId = targetPetId || (activePet ? activePet.id : null);
     if (!petId) return;
@@ -359,10 +359,9 @@ async function toggleShelter(targetPetId = null) {
         console.error('Error toggling shelter:', error);
     }
 }
-// ------------------------------------------
 
 // ================================================
-// ITEM MODAL
+// ITEM MODAL & INVENTORY HANDLER
 // ================================================
 function openItemModal(type) {
     if (!activePet) return;
@@ -382,7 +381,7 @@ function openItemModal(type) {
         `;
     } else {
         list.innerHTML = items.map(item => `
-            <div class="item-option" onclick="useItem(${item.item_id})">
+            <div class="item-option" onclick="useItem(${item.item_id}, ${activePet.id})">
                 <img src="${ASSETS_BASE}${item.img_path}" alt="${item.name}"
                      onerror="this.src='../assets/placeholder.png'">
                 <div class="item-option-name">${item.name}</div>
@@ -399,47 +398,34 @@ function closeItemModal() {
     selectedItemType = null;
 }
 
-// GANTI function handleInventoryClick DENGAN INI
-
+// --- UPDATE: HANDLE KLIK INVENTORY (Agar bisa pakai item) ---
 async function handleInventoryClick(itemId, type, itemName) {
-    // KITA HAPUS PENGALIHAN KE TAB GACHA.
-    // Biarkan Ticket diproses seperti item biasa (dikonsumsi).
-
-    // Khusus Gacha Ticket, kita tidak butuh Active Pet
-    // Jadi kita bypass pengecekan activePet kalau tipenya gacha_ticket
-    if (type !== 'gacha_ticket') {
-        if (!activePet) {
-            showToast('Kamu butuh Active Pet untuk menggunakan item ini!', 'warning');
-            return;
-        }
-        if (type !== 'revive' && activePet.status === 'DEAD') {
-            showToast('Pet mati. Hidupkan dulu dengan item Revive!', 'error');
-            return;
-        }
-    }
-
-    // Tentukan pesan konfirmasi yang pas
-    let confirmMsg = `Gunakan ${itemName} pada ${activePet ? (activePet.nickname || activePet.species_name) : 'pet'}?`;
-    
+    // 1. TIKET GACHA (Tidak butuh Active Pet)
     if (type === 'gacha_ticket') {
-        confirmMsg = `Apakah kamu ingin menetaskan ${itemName} sekarang?`;
-    }
-
-    if (!confirm(confirmMsg)) {
+        if (confirm(`Apakah kamu ingin menetaskan ${itemName} sekarang?`)) {
+            useItem(itemId, 0); // ID 0 untuk gacha
+        }
         return;
     }
 
-    // Kirim ID pet (kalau ada) atau 0 (kalau gacha ticket)
-    const targetPetId = activePet ? activePet.id : 0;
-    useItem(itemId, targetPetId);
+    // 2. ITEM KONSUMSI (Butuh Active Pet)
+    if (!activePet) {
+        showToast('Kamu butuh Active Pet untuk menggunakan item ini!', 'warning');
+        return;
+    }
+
+    if (type !== 'revive' && activePet.status === 'DEAD') {
+        showToast('Pet mati. Hidupkan dulu dengan item Revive!', 'error');
+        return;
+    }
+
+    if (confirm(`Gunakan ${itemName} pada ${activePet.nickname || activePet.species_name}?`)) {
+        useItem(itemId, activePet.id);
+    }
 }
 
-// GANTI function useItem DENGAN INI
-
+// --- UPDATE: USE ITEM (Support Gacha Animation) ---
 async function useItem(itemId, targetPetId = 0) {
-    // Kalau targetPetId 0, berarti item ini tidak butuh target (seperti Egg)
-    // Tapi API kita mungkin butuh parameter pet_id, jadi kirim 0 aman.
-
     try {
         const response = await fetch(`${API_BASE}?action=use_item`, {
             method: 'POST',
@@ -450,20 +436,19 @@ async function useItem(itemId, targetPetId = 0) {
         const data = await response.json();
 
         if (data.success) {
-            // CEK APAKAH INI HASIL GACHA?
+            // KHUSUS GACHA: Tampilkan animasi hasil jika server mengirim data gacha
             if (data.is_gacha && data.gacha_data) {
-                // Tampilkan Modal Gacha Result (Animasi Pet Baru)
                 showGachaResult(data.gacha_data);
-                showToast('Egg Hatched!', 'success');
+                showToast('Telur berhasil menetas!', 'success');
             } else {
-                // Item biasa (makan/potion)
+                // ITEM BIASA
                 showToast(data.message, 'success');
             }
 
             closeItemModal();
             loadActivePet();
             loadInventory();
-            loadPets(); // Refresh collection karena mungkin nambah pet baru
+            loadPets(); 
         } else {
             showToast(data.error || 'Failed to use item', 'error');
         }
@@ -647,6 +632,7 @@ async function loadInventory() {
     }
 }
 
+// --- UPDATE: RENDER INVENTORY AGAR BISA DIKLIK ---
 function renderInventory() {
     const grid = document.getElementById('inventory-grid');
 
@@ -656,7 +642,10 @@ function renderInventory() {
     }
 
     grid.innerHTML = userInventory.map(item => `
-        <div class="inventory-item" title="${item.name}">
+        <div class="inventory-item" title="${item.name}" 
+             onclick="handleInventoryClick(${item.item_id}, '${item.effect_type}', '${item.name.replace(/'/g, "\\'")}')"
+             style="cursor: pointer;">
+             
             <img src="${ASSETS_BASE}${item.img_path}" alt="${item.name}" class="inventory-item-img"
                  onerror="this.src='../assets/placeholder.png'">
             <span class="inventory-item-qty">${item.quantity}</span>
