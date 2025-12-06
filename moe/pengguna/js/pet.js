@@ -1,0 +1,827 @@
+/**
+ * MOE Pet System - Frontend JavaScript
+ * Mediterranean of Egypt Virtual Pet Companion
+ * 
+ * Handles all UI interactions and API communication
+ */
+
+// ================================================
+// CONFIGURATION
+// ================================================
+const API_BASE = 'pet_api.php';
+const ASSETS_BASE = '../assets/pets/';
+
+// State
+let currentTab = 'my-pet';
+let userPets = [];
+let activePet = null;
+let shopItems = [];
+let userInventory = [];
+let selectedItemType = null;
+
+// ================================================
+// INITIALIZATION
+// ================================================
+document.addEventListener('DOMContentLoaded', () => {
+    initTabs();
+    initActionButtons();
+    initShopTabs();
+    initArenaTabs();
+    loadPets();
+});
+
+// ================================================
+// TAB NAVIGATION
+// ================================================
+function initTabs() {
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tab = btn.dataset.tab;
+            switchTab(tab);
+        });
+    });
+}
+
+function switchTab(tab) {
+    // Update buttons
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tab === tab);
+    });
+
+    // Update content
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.toggle('active', content.id === tab);
+    });
+
+    currentTab = tab;
+
+    // Load tab-specific data
+    switch (tab) {
+        case 'my-pet':
+            loadActivePet();
+            break;
+        case 'collection':
+            loadPets();
+            break;
+        case 'shop':
+            loadShop();
+            loadInventory();
+            break;
+        case 'arena':
+            loadOpponents();
+            break;
+    }
+}
+
+// ================================================
+// PET LOADING & DISPLAY
+// ================================================
+async function loadPets() {
+    try {
+        const response = await fetch(`${API_BASE}?action=get_pets`);
+        const data = await response.json();
+
+        if (data.success) {
+            userPets = data.pets;
+            renderCollection();
+
+            // Find and display active pet
+            activePet = userPets.find(p => p.is_active);
+            if (activePet) {
+                renderActivePet();
+            }
+        }
+    } catch (error) {
+        console.error('Error loading pets:', error);
+        showToast('Failed to load pets', 'error');
+    }
+}
+
+async function loadActivePet() {
+    try {
+        const response = await fetch(`${API_BASE}?action=get_active_pet`);
+        const data = await response.json();
+
+        if (data.success && data.pet) {
+            activePet = data.pet;
+            renderActivePet();
+        } else {
+            showNoPetMessage();
+        }
+    } catch (error) {
+        console.error('Error loading active pet:', error);
+    }
+}
+
+function renderActivePet() {
+    const stage = document.getElementById('pet-stage');
+    const info = document.getElementById('pet-info');
+    const actions = document.getElementById('action-buttons');
+
+    if (!activePet) {
+        showNoPetMessage();
+        return;
+    }
+
+    // Build pet display
+    const imgPath = getPetImagePath(activePet);
+    const shinyClass = activePet.is_shiny ? 'shiny' : '';
+    const shinyStyle = activePet.is_shiny ? `filter: hue-rotate(${activePet.shiny_hue}deg);` : '';
+
+    stage.innerHTML = `
+        <div class="pet-status-indicator ${activePet.status.toLowerCase()}">${activePet.status}</div>
+        <div class="pet-glow"></div>
+        <div class="pet-display">
+            <img src="${imgPath}" alt="${activePet.species_name}" 
+                 class="pet-image ${shinyClass}" 
+                 style="${shinyStyle}"
+                 onerror="this.src='../assets/placeholder.png'">
+        </div>
+    `;
+
+    // Pet name and level
+    const displayName = activePet.nickname || activePet.species_name;
+    document.getElementById('pet-name').textContent = displayName;
+    document.getElementById('pet-level').textContent = `Lv.${activePet.level}`;
+
+    // Element and rarity badges
+    const elementDiv = document.getElementById('pet-element');
+    elementDiv.innerHTML = `
+        <span class="element-badge ${activePet.element.toLowerCase()}">${activePet.element}</span>
+        <span class="rarity-badge ${activePet.rarity.toLowerCase()}">${activePet.rarity}</span>
+    `;
+
+    // Status bars
+    updateStatusBar('health', activePet.health);
+    updateStatusBar('hunger', activePet.hunger);
+    updateStatusBar('mood', activePet.mood);
+
+    // EXP bar
+    const expNeeded = Math.floor(100 * Math.pow(1.2, activePet.level - 1));
+    const expPercent = (activePet.exp / expNeeded) * 100;
+    document.getElementById('exp-bar').style.width = `${expPercent}%`;
+    document.getElementById('exp-text').textContent = `${activePet.exp} / ${expNeeded}`;
+
+    // Show elements
+    info.style.display = 'block';
+    actions.style.display = 'grid';
+
+    // Update shelter button text
+    const shelterBtn = document.getElementById('btn-shelter');
+    if (activePet.status === 'SHELTER') {
+        shelterBtn.querySelector('span').textContent = 'Retrieve';
+        shelterBtn.querySelector('i').className = 'fas fa-door-open';
+    } else {
+        shelterBtn.querySelector('span').textContent = 'Shelter';
+        shelterBtn.querySelector('i').className = 'fas fa-home';
+    }
+}
+
+function updateStatusBar(type, value) {
+    const bar = document.getElementById(`${type}-bar`);
+    const valueEl = document.getElementById(`${type}-value`);
+
+    bar.style.width = `${value}%`;
+    valueEl.textContent = Math.round(value);
+
+    // Color coding based on value
+    if (value <= 20) {
+        bar.style.opacity = '1';
+        bar.classList.add('critical');
+    } else {
+        bar.classList.remove('critical');
+    }
+}
+
+function showNoPetMessage() {
+    const stage = document.getElementById('pet-stage');
+    stage.innerHTML = `
+        <div class="no-pet-message">
+            <i class="fas fa-egg fa-3x"></i>
+            <p>No active pet!</p>
+            <button class="action-btn primary" onclick="switchTab('gacha')">
+                Get Your First Pet
+            </button>
+        </div>
+    `;
+
+    document.getElementById('pet-info').style.display = 'none';
+    document.getElementById('action-buttons').style.display = 'none';
+}
+
+function getPetImagePath(pet) {
+    const stage = pet.evolution_stage || getEvolutionStage(pet.level);
+    let imgKey;
+
+    switch (stage) {
+        case 'egg': imgKey = 'img_egg'; break;
+        case 'baby': imgKey = 'img_baby'; break;
+        case 'adult': imgKey = 'img_adult'; break;
+        default: imgKey = 'img_egg';
+    }
+
+    return ASSETS_BASE + (pet[imgKey] || pet.current_image || 'default/egg.png');
+}
+
+function getEvolutionStage(level) {
+    if (level < 5) return 'egg';
+    if (level < 15) return 'baby';
+    return 'adult';
+}
+
+// ================================================
+// COLLECTION TAB
+// ================================================
+function renderCollection() {
+    const grid = document.getElementById('collection-grid');
+
+    if (userPets.length === 0) {
+        grid.innerHTML = `
+            <div class="empty-message">
+                <p>No pets yet! Visit the Gacha tab to get your first companion.</p>
+            </div>
+        `;
+        return;
+    }
+
+    grid.innerHTML = userPets.map(pet => {
+        const imgPath = getPetImagePath(pet);
+        const displayName = pet.nickname || pet.species_name;
+        const activeClass = pet.is_active ? 'active' : '';
+        const deadClass = pet.status === 'DEAD' ? 'dead' : '';
+        const shinyStyle = pet.is_shiny ? `filter: hue-rotate(${pet.shiny_hue}deg);` : '';
+
+        return `
+            <div class="pet-card ${activeClass} ${deadClass}" onclick="selectPet(${pet.id})">
+                <span class="rarity-badge ${pet.rarity.toLowerCase()}">${pet.rarity.charAt(0)}</span>
+                <img src="${imgPath}" alt="${pet.species_name}" class="pet-card-img" 
+                     style="${shinyStyle}"
+                     onerror="this.src='../assets/placeholder.png'">
+                <h3 class="pet-card-name">${displayName}</h3>
+                <span class="pet-card-level">Lv.${pet.level} ${pet.is_shiny ? '✨' : ''}</span>
+            </div>
+        `;
+    }).join('');
+}
+
+async function selectPet(petId) {
+    const pet = userPets.find(p => p.id === petId);
+    if (!pet) return;
+
+    if (pet.status === 'DEAD') {
+        showToast('This pet is dead! Use a revival item first.', 'warning');
+        return;
+    }
+
+    if (pet.status === 'SHELTER') {
+        showToast('Retrieve this pet from shelter first.', 'warning');
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE}?action=set_active`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ pet_id: petId })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            showToast('Pet is now active!', 'success');
+            loadPets();
+            switchTab('my-pet');
+        } else {
+            showToast(data.error || 'Failed to set active pet', 'error');
+        }
+    } catch (error) {
+        console.error('Error setting active pet:', error);
+        showToast('Network error', 'error');
+    }
+}
+
+// ================================================
+// ACTION BUTTONS
+// ================================================
+function initActionButtons() {
+    document.getElementById('btn-feed').addEventListener('click', () => openItemModal('food'));
+    document.getElementById('btn-heal').addEventListener('click', () => openItemModal('potion'));
+    document.getElementById('btn-play').addEventListener('click', playWithPet);
+    document.getElementById('btn-shelter').addEventListener('click', toggleShelter);
+}
+
+async function playWithPet() {
+    if (!activePet) return;
+
+    // Playing increases mood slightly (simulated - expand later)
+    showToast('You played with ' + (activePet.nickname || activePet.species_name) + '! 🎾', 'success');
+
+    // Could add API call to increase mood
+}
+
+async function toggleShelter() {
+    if (!activePet) return;
+
+    try {
+        const response = await fetch(`${API_BASE}?action=shelter`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ pet_id: activePet.id })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            showToast(data.message, 'success');
+            loadActivePet();
+            loadPets();
+        } else {
+            showToast(data.error || 'Failed to toggle shelter', 'error');
+        }
+    } catch (error) {
+        console.error('Error toggling shelter:', error);
+    }
+}
+
+// ================================================
+// ITEM MODAL
+// ================================================
+function openItemModal(type) {
+    if (!activePet) return;
+
+    selectedItemType = type;
+    const modal = document.getElementById('item-modal');
+    const list = document.getElementById('item-list');
+
+    // Filter inventory by type
+    const items = userInventory.filter(item => item.effect_type === type);
+
+    if (items.length === 0) {
+        list.innerHTML = `
+            <div class="empty-message">
+                No ${type} items! Visit the shop to buy some.
+            </div>
+        `;
+    } else {
+        list.innerHTML = items.map(item => `
+            <div class="item-option" onclick="useItem(${item.item_id})">
+                <img src="${ASSETS_BASE}${item.img_path}" alt="${item.name}"
+                     onerror="this.src='../assets/placeholder.png'">
+                <div class="item-option-name">${item.name}</div>
+                <div class="item-option-qty">x${item.quantity}</div>
+            </div>
+        `).join('');
+    }
+
+    modal.classList.add('show');
+}
+
+function closeItemModal() {
+    document.getElementById('item-modal').classList.remove('show');
+    selectedItemType = null;
+}
+
+async function useItem(itemId) {
+    if (!activePet) return;
+
+    try {
+        const response = await fetch(`${API_BASE}?action=use_item`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ pet_id: activePet.id, item_id: itemId })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            showToast(data.message, 'success');
+            closeItemModal();
+            loadActivePet();
+            loadInventory();
+        } else {
+            showToast(data.error || 'Failed to use item', 'error');
+        }
+    } catch (error) {
+        console.error('Error using item:', error);
+    }
+}
+
+// ================================================
+// GACHA SYSTEM
+// ================================================
+async function performGacha(type) {
+    const egg = document.getElementById('gacha-egg');
+
+    // Animate egg
+    egg.classList.add('hatching');
+
+    try {
+        const response = await fetch(`${API_BASE}?action=gacha`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type: type })
+        });
+
+        const data = await response.json();
+
+        // Wait for animation
+        setTimeout(() => {
+            egg.classList.remove('hatching');
+
+            if (data.success) {
+                showGachaResult(data);
+                updateGoldDisplay(data.remaining_gold);
+                loadPets();
+            } else {
+                showToast(data.error || 'Gacha failed', 'error');
+            }
+        }, 500);
+
+    } catch (error) {
+        console.error('Error performing gacha:', error);
+        egg.classList.remove('hatching');
+        showToast('Network error', 'error');
+    }
+}
+
+function showGachaResult(data) {
+    const modal = document.getElementById('gacha-modal');
+    const species = data.species;
+
+    // Set result image
+    const imgPath = ASSETS_BASE + (species.img_egg || 'default/egg.png');
+    document.getElementById('result-pet-img').src = imgPath;
+
+    // Apply shiny effect
+    if (data.is_shiny) {
+        document.getElementById('result-pet-img').style.filter = `hue-rotate(${data.shiny_hue}deg)`;
+        document.getElementById('result-shiny').style.display = 'block';
+    } else {
+        document.getElementById('result-pet-img').style.filter = '';
+        document.getElementById('result-shiny').style.display = 'none';
+    }
+
+    // Set info
+    document.getElementById('result-name').textContent = species.name;
+
+    const rarityBadge = document.getElementById('result-rarity');
+    rarityBadge.textContent = data.rarity;
+    rarityBadge.className = `result-rarity rarity-badge ${data.rarity.toLowerCase()}`;
+
+    // Set glow color based on rarity
+    const glow = document.getElementById('result-glow');
+    const glowColors = {
+        'Common': 'rgba(158, 158, 158, 0.5)',
+        'Rare': 'rgba(33, 150, 243, 0.5)',
+        'Epic': 'rgba(156, 39, 176, 0.5)',
+        'Legendary': 'rgba(255, 152, 0, 0.5)'
+    };
+    glow.style.background = `radial-gradient(circle, ${glowColors[data.rarity] || glowColors.Common} 0%, transparent 70%)`;
+
+    modal.classList.add('show');
+}
+
+function closeGachaModal() {
+    document.getElementById('gacha-modal').classList.remove('show');
+}
+
+// ================================================
+// SHOP SYSTEM
+// ================================================
+function initShopTabs() {
+    document.querySelectorAll('.shop-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.shop-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            renderShopItems(tab.dataset.category);
+        });
+    });
+}
+
+async function loadShop() {
+    try {
+        const response = await fetch(`${API_BASE}?action=get_shop`);
+        const data = await response.json();
+
+        if (data.success) {
+            shopItems = data.items;
+            updateGoldDisplay(data.user_gold);
+            renderShopItems('food');
+        }
+    } catch (error) {
+        console.error('Error loading shop:', error);
+    }
+}
+
+function renderShopItems(category) {
+    const grid = document.getElementById('shop-grid');
+
+    let filtered = shopItems;
+    if (category === 'food') {
+        filtered = shopItems.filter(i => i.effect_type === 'food');
+    } else if (category === 'potion') {
+        filtered = shopItems.filter(i => i.effect_type === 'potion' || i.effect_type === 'revive');
+    } else if (category === 'special') {
+        filtered = shopItems.filter(i => i.effect_type === 'exp_boost' || i.effect_type === 'gacha_ticket');
+    }
+
+    if (filtered.length === 0) {
+        grid.innerHTML = '<div class="empty-message">No items in this category</div>';
+        return;
+    }
+
+    grid.innerHTML = filtered.map(item => `
+        <div class="shop-item">
+            <img src="${ASSETS_BASE}${item.img_path}" alt="${item.name}" class="shop-item-img"
+                 onerror="this.src='../assets/placeholder.png'">
+            <h4 class="shop-item-name">${item.name}</h4>
+            <p class="shop-item-desc">${item.description}</p>
+            <div class="shop-item-price">
+                <i class="fas fa-coins"></i>
+                <span>${item.price}</span>
+            </div>
+            <button class="shop-buy-btn" onclick="buyItem(${item.id})">Buy</button>
+        </div>
+    `).join('');
+}
+
+async function buyItem(itemId) {
+    try {
+        const response = await fetch(`${API_BASE}?action=buy_item`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ item_id: itemId, quantity: 1 })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            showToast(data.message, 'success');
+            updateGoldDisplay(data.remaining_gold);
+            loadInventory();
+        } else {
+            showToast(data.error || 'Purchase failed', 'error');
+        }
+    } catch (error) {
+        console.error('Error buying item:', error);
+    }
+}
+
+async function loadInventory() {
+    try {
+        const response = await fetch(`${API_BASE}?action=get_inventory`);
+        const data = await response.json();
+
+        if (data.success) {
+            userInventory = data.inventory;
+            renderInventory();
+        }
+    } catch (error) {
+        console.error('Error loading inventory:', error);
+    }
+}
+
+function renderInventory() {
+    const grid = document.getElementById('inventory-grid');
+
+    if (userInventory.length === 0) {
+        grid.innerHTML = '<p class="empty-message">No items yet</p>';
+        return;
+    }
+
+    grid.innerHTML = userInventory.map(item => `
+        <div class="inventory-item" title="${item.name}">
+            <img src="${ASSETS_BASE}${item.img_path}" alt="${item.name}" class="inventory-item-img"
+                 onerror="this.src='../assets/placeholder.png'">
+            <span class="inventory-item-qty">${item.quantity}</span>
+        </div>
+    `).join('');
+}
+
+// ================================================
+// ARENA / BATTLE SYSTEM
+// ================================================
+function initArenaTabs() {
+    document.querySelectorAll('.arena-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.arena-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+
+            const view = tab.dataset.view;
+            document.getElementById('arena-opponents').style.display = view === 'opponents' ? 'block' : 'none';
+            document.getElementById('arena-history').style.display = view === 'history' ? 'block' : 'none';
+
+            if (view === 'opponents') {
+                loadOpponents();
+            } else {
+                loadBattleHistory();
+            }
+        });
+    });
+}
+
+async function loadOpponents() {
+    const container = document.getElementById('arena-opponents');
+    container.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Finding opponents...</p></div>';
+
+    try {
+        const response = await fetch(`${API_BASE}?action=get_opponents`);
+        const data = await response.json();
+
+        if (data.success && data.opponents.length > 0) {
+            container.innerHTML = data.opponents.map(opp => `
+                <div class="opponent-card">
+                    <img src="${ASSETS_BASE}${opp.img_adult}" alt="${opp.species_name}" class="opponent-img"
+                         onerror="this.src='../assets/placeholder.png'">
+                    <div class="opponent-info">
+                        <h3 class="opponent-name">${opp.display_name}</h3>
+                        <p class="opponent-owner">Owner: ${opp.owner_name}</p>
+                        <div class="opponent-stats">
+                            <span class="element-badge ${opp.element.toLowerCase()}">${opp.element}</span>
+                            <span class="pet-level">Lv.${opp.level}</span>
+                        </div>
+                    </div>
+                    <button class="battle-btn" onclick="startBattle(${opp.pet_id})">
+                        <i class="fas fa-bolt"></i> Fight
+                    </button>
+                </div>
+            `).join('');
+        } else {
+            container.innerHTML = '<div class="empty-message">No opponents available right now. Check back later!</div>';
+        }
+    } catch (error) {
+        console.error('Error loading opponents:', error);
+        container.innerHTML = '<div class="empty-message">Failed to load opponents</div>';
+    }
+}
+
+async function startBattle(defenderPetId) {
+    if (!activePet) {
+        showToast('You need an active pet to battle!', 'warning');
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE}?action=battle`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ defender_pet_id: defenderPetId })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            showBattleResult(data);
+            updateGoldDisplay(); // Refresh gold
+        } else {
+            showToast(data.error || 'Battle failed', 'error');
+        }
+    } catch (error) {
+        console.error('Error starting battle:', error);
+    }
+}
+
+function showBattleResult(data) {
+    const modal = document.getElementById('battle-modal');
+
+    // Set title based on winner
+    const title = document.getElementById('battle-title');
+    if (data.winner_pet_id === data.attacker.pet_id) {
+        title.textContent = '🎉 Victory!';
+        title.style.color = '#2ecc71';
+    } else if (data.winner_pet_id === data.defender.pet_id) {
+        title.textContent = '😢 Defeat';
+        title.style.color = '#e74c3c';
+    } else {
+        title.textContent = '🤝 Draw';
+        title.style.color = '#f39c12';
+    }
+
+    // Set pet names and HP
+    document.getElementById('battle-atk-name').textContent = data.attacker.name;
+    document.getElementById('battle-atk-hp').textContent = data.attacker.final_hp;
+    document.getElementById('battle-def-name').textContent = data.defender.name;
+    document.getElementById('battle-def-hp').textContent = data.defender.final_hp;
+
+    // Render battle log
+    const logEl = document.getElementById('battle-log');
+    logEl.innerHTML = data.battle_log.map(entry => `
+        <div class="battle-log-entry">
+            Round ${entry.round}: <strong>${entry.actor}</strong> ${entry.action}s for <span style="color: #e74c3c">${entry.damage}</span> damage!
+        </div>
+    `).join('');
+
+    // Show rewards if won
+    const rewardsEl = document.getElementById('battle-rewards');
+    if (data.winner_pet_id === data.attacker.pet_id && data.rewards) {
+        document.getElementById('reward-gold').textContent = data.rewards.gold;
+        document.getElementById('reward-exp').textContent = data.rewards.exp;
+        rewardsEl.style.display = 'flex';
+    } else {
+        rewardsEl.style.display = 'none';
+    }
+
+    modal.classList.add('show');
+}
+
+function closeBattleModal() {
+    document.getElementById('battle-modal').classList.remove('show');
+}
+
+async function loadBattleHistory() {
+    const container = document.getElementById('battle-history');
+
+    try {
+        const response = await fetch(`${API_BASE}?action=battle_history`);
+        const data = await response.json();
+
+        if (data.success && data.battles.length > 0) {
+            container.innerHTML = data.battles.map(battle => {
+                // Determine if user won/lost
+                const userId = parseInt(document.body.dataset.userId) || 0;
+                let resultClass = 'draw';
+                let resultText = 'Draw';
+
+                // Simplified result detection
+                if (battle.winner_pet_id) {
+                    if (battle.atk_display === (activePet?.nickname || activePet?.species_name)) {
+                        resultClass = battle.winner_pet_id === battle.attacker_pet_id ? 'win' : 'lose';
+                    } else {
+                        resultClass = battle.winner_pet_id === battle.defender_pet_id ? 'win' : 'lose';
+                    }
+                    resultText = resultClass === 'win' ? 'Won' : 'Lost';
+                }
+
+                const date = new Date(battle.created_at).toLocaleDateString();
+
+                return `
+                    <div class="battle-history-item">
+                        <div class="battle-header">
+                            <span class="battle-result-badge ${resultClass}">${resultText}</span>
+                            <span class="battle-date">${date}</span>
+                        </div>
+                        <div class="battle-participants">
+                            <span>${battle.atk_display}</span>
+                            <span class="battle-vs">VS</span>
+                            <span>${battle.def_display}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        } else {
+            container.innerHTML = '<div class="empty-message">No battles yet. Challenge someone!</div>';
+        }
+    } catch (error) {
+        console.error('Error loading battle history:', error);
+    }
+}
+
+// ================================================
+// UTILITY FUNCTIONS
+// ================================================
+function updateGoldDisplay(gold) {
+    if (gold !== undefined) {
+        document.getElementById('user-gold').textContent = gold.toLocaleString();
+    } else {
+        // Refresh from server
+        fetch(`${API_BASE}?action=get_shop`)
+            .then(r => r.json())
+            .then(d => {
+                if (d.user_gold !== undefined) {
+                    document.getElementById('user-gold').textContent = d.user_gold.toLocaleString();
+                }
+            });
+    }
+}
+
+function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    const icon = toast.querySelector('.toast-icon');
+    const msg = toast.querySelector('.toast-message');
+
+    // Set icon based on type
+    const icons = {
+        success: 'fa-check-circle',
+        error: 'fa-times-circle',
+        warning: 'fa-exclamation-circle'
+    };
+
+    icon.className = `toast-icon fas ${icons[type] || icons.success}`;
+    msg.textContent = message;
+    toast.className = `toast ${type}`;
+    toast.classList.add('show');
+
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+
+// ================================================
+// MODAL BACKDROP CLOSE
+// ================================================
+document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
+    backdrop.addEventListener('click', () => {
+        backdrop.closest('.modal').classList.remove('show');
+    });
+});
