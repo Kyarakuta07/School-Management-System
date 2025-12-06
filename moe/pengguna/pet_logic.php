@@ -464,7 +464,6 @@ function useItemOnPet($conn, $user_id, $pet_id, $item_id) {
             $result_message = "Pet revived with $effect_value% health!";
             break;
             
-            
         case 'exp_boost':
             if ($pet['status'] === 'DEAD') {
                 return ['success' => false, 'error' => 'Cannot give EXP to a dead pet!'];
@@ -481,40 +480,7 @@ function useItemOnPet($conn, $user_id, $pet_id, $item_id) {
             
         default:
             return ['success' => false, 'error' => 'Unknown item type'];
-
-            // ... case exp_boost selesai ...
-
-        // TAMBAHKAN BAGIAN INI:
-        case 'gacha_ticket':
-            // effect_value 1 = Bronze, 2 = Silver, 3 = Gold
-            $tier = $inventory['effect_value']; 
-            
-            // Panggil fungsi gacha (Gratis, tanpa potong gold)
-            $gacha_result = performGacha($conn, $user_id, $tier);
-            
-            if ($gacha_result['success']) {
-                $species_name = $gacha_result['species']['name'];
-                $result_message = "Egg hatched! You got a $species_name!";
-                
-                // Kita kirim data lengkap gacha biar bisa muncul animasi di layar
-                // Return array ini akan ditangkap oleh JavaScript
-                return [
-                    'success' => true,
-                    'message' => $result_message,
-                    'item_used' => $inventory['item_name'],
-                    'is_gacha' => true,      // Penanda buat JS
-                    'gacha_data' => $gacha_result // Data pet baru
-                ];
-            } else {
-                return ['success' => false, 'error' => 'Failed to hatch egg.'];
-            }
-            break;
-
-        default:
-            return ['success' => false, 'error' => 'Unknown item type'];
     }
-
-    
     
     // Deduct item from inventory
     $deduct_stmt = mysqli_prepare($conn, "UPDATE user_inventory SET quantity = quantity - 1 WHERE user_id = ? AND item_id = ?");
