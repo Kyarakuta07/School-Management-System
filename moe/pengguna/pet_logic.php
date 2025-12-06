@@ -367,7 +367,7 @@ function rollRarity($gacha_type) {
 }
 
 // ================================================
-// FEEDING & ITEM USAGE (REVISED FOR GACHA TICKET)
+// FEEDING & ITEM USAGE (REVISED FOR GACHA TICKET & BULK)
 // ================================================
 
 /**
@@ -376,9 +376,10 @@ function rollRarity($gacha_type) {
  * @param int $user_id User's ID
  * @param int $pet_id Pet's ID (Can be 0 for Gacha Tickets)
  * @param int $item_id Shop item ID
+ * @param int $quantity Amount to use (Default 1)
  * @return array Result of item usage
  */
-function useItemOnPet($conn, $user_id, $pet_id, $item_id) {
+function useItemOnPet($conn, $user_id, $pet_id, $item_id, $quantity = 1) {
     // 1. Cek User Punya Item di Inventory
     $inv_check = mysqli_prepare($conn, 
         "SELECT ui.*, si.effect_type, si.effect_value, si.name as item_name 
@@ -396,15 +397,27 @@ function useItemOnPet($conn, $user_id, $pet_id, $item_id) {
         return ['success' => false, 'error' => 'Item not in inventory'];
     }
     
+    // Cek stok cukup
+    if ($inventory['quantity'] < $quantity) {
+        return ['success' => false, 'error' => 'Not enough items!'];
+    }
+    
     $effect_type = $inventory['effect_type'];
     $effect_value = $inventory['effect_value'];
+    
+    // Hitung Total Efek (Base x Quantity)
+    $total_effect = $effect_value * $quantity;
+    
     $result_message = '';
     $extra_data = []; // Data tambahan untuk return (misal: data gacha)
     
     // 2. Logika Percabangan: Gacha vs Item Biasa
     if ($effect_type === 'gacha_ticket') {
-        // --- A. ITEM TIKET GACHA (Tanpa Target Pet) ---
-        // effect_value: 1 (Bronze), 2 (Silver), 3 (Gold)
+        // Gacha Ticket dipaksa quantity 1 demi keamanan animasi
+        if ($quantity > 1) {
+            return ['success' => false, 'error' => 'Gacha tickets can only be used one at a time for now!'];
+        }
+        
         $gacha_result = performGacha($conn, $user_id, $effect_value);
         
         if ($gacha_result['success']) {
@@ -444,33 +457,35 @@ function useItemOnPet($conn, $user_id, $pet_id, $item_id) {
                 if ($pet['status'] === 'DEAD') {
                     return ['success' => false, 'error' => 'Cannot feed a dead pet. Revive first!'];
                 }
-                $new_hunger = min(100, $pet['hunger'] + $effect_value);
+                $new_hunger = min(100, $pet['hunger'] + $total_effect);
                 $stmt = mysqli_prepare($conn, "UPDATE user_pets SET hunger = ?, last_update_timestamp = ? WHERE id = ?");
                 $current_time = time();
                 mysqli_stmt_bind_param($stmt, "iii", $new_hunger, $current_time, $pet_id);
                 mysqli_stmt_execute($stmt);
                 mysqli_stmt_close($stmt);
-                $result_message = "Fed pet! Hunger restored by $effect_value.";
+                $result_message = "Fed $quantity item(s)! Hunger +$total_effect.";
                 break;
                 
             case 'potion':
                 if ($pet['status'] === 'DEAD') {
                     return ['success' => false, 'error' => 'Cannot heal a dead pet. Revive first!'];
                 }
-                $new_health = min(100, $pet['health'] + $effect_value);
+                $new_health = min(100, $pet['health'] + $total_effect);
                 $stmt = mysqli_prepare($conn, "UPDATE user_pets SET health = ?, last_update_timestamp = ? WHERE id = ?");
                 $current_time = time();
                 mysqli_stmt_bind_param($stmt, "iii", $new_health, $current_time, $pet_id);
                 mysqli_stmt_execute($stmt);
                 mysqli_stmt_close($stmt);
-                $result_message = "Healed pet! Health restored by $effect_value.";
+                $result_message = "Used $quantity potion(s)! Health +$total_effect.";
                 break;
                 
             case 'revive':
                 if ($pet['status'] !== 'DEAD') {
                     return ['success' => false, 'error' => 'Pet is not dead!'];
                 }
-                $new_health = $effect_value; // effect_value is revival health percentage
+                // Revive paksa quantity 1
+                $quantity = 1;
+                $new_health = $effect_value; 
                 $stmt = mysqli_prepare($conn, "UPDATE user_pets SET health = ?, hunger = 50, mood = 50, status = 'ALIVE', last_update_timestamp = ? WHERE id = ?");
                 $current_time = time();
                 mysqli_stmt_bind_param($stmt, "iii", $new_health, $current_time, $pet_id);
@@ -483,13 +498,13 @@ function useItemOnPet($conn, $user_id, $pet_id, $item_id) {
                 if ($pet['status'] === 'DEAD') {
                     return ['success' => false, 'error' => 'Cannot give EXP to a dead pet!'];
                 }
-                $exp_result = addExpToPet($conn, $pet_id, $effect_value);
+                $exp_result = addExpToPet($conn, $pet_id, $total_effect);
+                $result_message = "Used $quantity scroll(s)! Gained $total_effect EXP!";
+                
                 if ($exp_result['evolved']) {
-                    $result_message = "Pet gained $effect_value EXP! EVOLVED to " . $exp_result['new_stage'] . "!";
+                    $result_message .= " EVOLVED to " . $exp_result['new_stage'] . "!";
                 } else if ($exp_result['level_ups'] > 0) {
-                    $result_message = "Pet gained $effect_value EXP! Level up! Now level " . $exp_result['new_level'] . ".";
-                } else {
-                    $result_message = "Pet gained $effect_value EXP!";
+                    $result_message .= " Level Up!";
                 }
                 break;
                 
@@ -499,8 +514,8 @@ function useItemOnPet($conn, $user_id, $pet_id, $item_id) {
     }
     
     // 3. Deduct item from inventory
-    $deduct_stmt = mysqli_prepare($conn, "UPDATE user_inventory SET quantity = quantity - 1 WHERE user_id = ? AND item_id = ?");
-    mysqli_stmt_bind_param($deduct_stmt, "ii", $user_id, $item_id);
+    $deduct_stmt = mysqli_prepare($conn, "UPDATE user_inventory SET quantity = quantity - ? WHERE user_id = ? AND item_id = ?");
+    mysqli_stmt_bind_param($deduct_stmt, "iii", $quantity, $user_id, $item_id);
     mysqli_stmt_execute($deduct_stmt);
     mysqli_stmt_close($deduct_stmt);
     

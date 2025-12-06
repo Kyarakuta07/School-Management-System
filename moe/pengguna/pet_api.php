@@ -245,8 +245,8 @@ switch ($action) {
         ]);
         break;
 
-    // ============================================
-    // POST: Use item on pet
+// ============================================
+    // POST: Use item on pet (Updated for Bulk)
     // ============================================
     case 'use_item':
         if ($method !== 'POST') {
@@ -256,13 +256,17 @@ switch ($action) {
         $input = json_decode(file_get_contents('php://input'), true);
         $pet_id = isset($input['pet_id']) ? (int) $input['pet_id'] : 0;
         $item_id = isset($input['item_id']) ? (int) $input['item_id'] : 0;
+        
+        // AMBIL QUANTITY (Default 1 jika tidak ada)
+        $quantity = isset($input['quantity']) ? max(1, (int)$input['quantity']) : 1;
 
-        if (!$pet_id || !$item_id) {
-            echo json_encode(['success' => false, 'error' => 'Pet ID and Item ID required']);
+        if (!$item_id) { // Pet ID boleh 0 kalau gacha ticket
+            echo json_encode(['success' => false, 'error' => 'Item ID required']);
             break;
         }
 
-        $result = useItemOnPet($conn, $user_id, $pet_id, $item_id);
+        // Kirim quantity ke logic
+        $result = useItemOnPet($conn, $user_id, $pet_id, $item_id, $quantity);
         echo json_encode($result);
         break;
 

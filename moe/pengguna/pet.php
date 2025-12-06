@@ -387,6 +387,37 @@ if ($gold_row = mysqli_fetch_assoc($gold_result)) {
         <span class="toast-message">Message</span>
     </div>
 
+    <div class="modal" id="bulk-use-modal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content item-detail-card">
+        <div class="item-header">
+            <img src="" id="bulk-item-img" class="item-detail-img">
+            <div class="item-detail-info">
+                <h3 id="bulk-item-name">Item Name</h3>
+                <p id="bulk-item-desc">Description here...</p>
+                <span class="item-stock">Owned: <b id="bulk-item-stock">0</b></span>
+            </div>
+        </div>
+
+        <div class="quantity-selector">
+            <label>Use Quantity:</label>
+            <div class="qty-controls">
+                <button type="button" class="qty-btn" onclick="adjustQty(-1)">-</button>
+                <input type="number" id="bulk-item-qty" value="1" min="1" readonly>
+                <button type="button" class="qty-btn" onclick="adjustQty(1)">+</button>
+                <button type="button" class="qty-btn max" onclick="setMaxQty()">MAX</button>
+            </div>
+        </div>
+
+        <div class="modal-actions">
+            <button class="modal-cancel-btn" onclick="closeBulkModal()">Cancel</button>
+            <button class="modal-confirm-btn" onclick="confirmBulkUse()">
+                Use Item
+            </button>
+        </div>
+    </div>
+</div>
+
     <!-- JavaScript -->
     <script src="js/pet.js"></script>
 

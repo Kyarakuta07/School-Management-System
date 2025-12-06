@@ -1625,3 +1625,131 @@
         padding: 10px 15px;
     }
 }
+
+/* TAMBAHKAN DI PALING BAWAH pet.css */
+
+/* Bulk Use Modal Styling */
+.item-detail-card {
+    max-width: 400px;
+    text-align: left;
+    background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+    border: 1px solid var(--pet-gold);
+    box-shadow: 0 0 30px rgba(0,0,0,0.8);
+}
+
+.item-header {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 15px;
+}
+
+.item-detail-img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 10px;
+    border: 1px solid rgba(218, 165, 32, 0.3);
+}
+
+.item-detail-info h3 {
+    color: var(--pet-gold);
+    margin: 0 0 5px 0;
+    font-family: 'Cinzel', serif;
+}
+
+.item-detail-info p {
+    color: #aaa;
+    font-size: 0.8rem;
+    margin: 0 0 10px 0;
+    line-height: 1.4;
+}
+
+.item-stock {
+    font-size: 0.75rem;
+    color: #fff;
+    background: rgba(255,255,255,0.1);
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+.quantity-selector {
+    margin-bottom: 25px;
+}
+
+.quantity-selector label {
+    display: block;
+    color: #888;
+    font-size: 0.8rem;
+    margin-bottom: 10px;
+}
+
+.qty-controls {
+    display: flex;
+    gap: 10px;
+    height: 45px;
+}
+
+.qty-btn {
+    width: 45px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+    font-size: 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.qty-btn:hover {
+    background: var(--pet-gold);
+    color: #000;
+}
+
+.qty-btn.max {
+    width: auto;
+    padding: 0 15px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    font-family: 'Cinzel', serif;
+    background: rgba(218, 165, 32, 0.2);
+    color: var(--pet-gold);
+    border-color: var(--pet-gold);
+}
+
+input#bulk-item-qty {
+    flex: 1;
+    background: #000;
+    border: 1px solid #333;
+    color: #fff;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 8px;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.modal-confirm-btn {
+    flex: 1;
+    padding: 12px;
+    background: linear-gradient(135deg, var(--pet-gold), var(--pet-gold-dark));
+    border: none;
+    border-radius: 8px;
+    color: #000;
+    font-weight: bold;
+    font-family: 'Cinzel', serif;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.modal-confirm-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 15px rgba(218, 165, 32, 0.4);
+}
