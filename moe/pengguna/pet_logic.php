@@ -2,8 +2,7 @@
 /**
  * MOE Pet System - Core Logic Functions
  * Mediterranean of Egypt Virtual Pet Companion
- * 
- * This file contains all core pet mechanics:
+ * * This file contains all core pet mechanics:
  * - Lazy stat calculation (hunger/health decay)
  * - Evolution stage detection
  * - Gacha system with weighted rarity
@@ -56,8 +55,7 @@ define('SHELTER_ENABLED', true);
 /**
  * Updates pet stats based on elapsed time since last update
  * This is the "lazy calculation" - stats are computed on-demand
- * 
- * @param mysqli $conn Database connection
+ * * @param mysqli $conn Database connection
  * @param int $pet_id The pet's ID
  * @return array Updated pet data or false on failure
  */
@@ -128,8 +126,7 @@ function updatePetStats($conn, $pet_id) {
 
 /**
  * Get all pets for a user, with updated stats
- * 
- * @param mysqli $conn Database connection
+ * * @param mysqli $conn Database connection
  * @param int $user_id The user's ID (nethera.id_nethera)
  * @return array Array of pet data with species info
  */
@@ -177,8 +174,7 @@ function getUserPetsWithStats($conn, $user_id) {
 
 /**
  * Determine evolution stage based on level
- * 
- * @param int $level Pet's current level
+ * * @param int $level Pet's current level
  * @return string 'egg', 'baby', or 'adult'
  */
 function getEvolutionStage($level) {
@@ -189,8 +185,7 @@ function getEvolutionStage($level) {
 
 /**
  * Get the correct image path based on evolution stage
- * 
- * @param array $pet Pet data including species image paths
+ * * @param array $pet Pet data including species image paths
  * @return string Image path relative to assets/pets/
  */
 function getEvolutionImage($pet) {
@@ -205,8 +200,7 @@ function getEvolutionImage($pet) {
 
 /**
  * Calculate EXP required for next level
- * 
- * @param int $current_level Current level
+ * * @param int $current_level Current level
  * @return int EXP needed to reach next level
  */
 function getExpForNextLevel($current_level) {
@@ -215,8 +209,7 @@ function getExpForNextLevel($current_level) {
 
 /**
  * Add EXP to a pet and handle level ups
- * 
- * @param mysqli $conn Database connection
+ * * @param mysqli $conn Database connection
  * @param int $pet_id Pet ID
  * @param int $exp_amount Amount of EXP to add
  * @return array Result with level_up info
@@ -268,8 +261,7 @@ function addExpToPet($conn, $pet_id, $exp_amount) {
 
 /**
  * Perform a gacha roll and give user a new pet
- * 
- * @param mysqli $conn Database connection
+ * * @param mysqli $conn Database connection
  * @param int $user_id User's ID
  * @param int $gacha_type 1=Normal, 2=Rare+, 3=Epic+
  * @return array Result containing new pet info or error
@@ -338,8 +330,7 @@ function performGacha($conn, $user_id, $gacha_type = 1) {
 
 /**
  * Roll for rarity based on gacha type
- * 
- * @param int $gacha_type 1=Normal (all rarities), 2=Rare+ guaranteed, 3=Epic+ guaranteed
+ * * @param int $gacha_type 1=Normal (all rarities), 2=Rare+ guaranteed, 3=Epic+ guaranteed
  * @return string Rarity name
  */
 function rollRarity($gacha_type) {
@@ -376,32 +367,19 @@ function rollRarity($gacha_type) {
 }
 
 // ================================================
-// FEEDING & ITEM USAGE
+// FEEDING & ITEM USAGE (REVISED FOR GACHA TICKET)
 // ================================================
 
 /**
- * Use an item on a pet
- * 
- * @param mysqli $conn Database connection
+ * Use an item on a pet or perform gacha
+ * * @param mysqli $conn Database connection
  * @param int $user_id User's ID
- * @param int $pet_id Pet's ID
+ * @param int $pet_id Pet's ID (Can be 0 for Gacha Tickets)
  * @param int $item_id Shop item ID
  * @return array Result of item usage
  */
 function useItemOnPet($conn, $user_id, $pet_id, $item_id) {
-    // Verify user owns the pet
-    $pet_check = mysqli_prepare($conn, "SELECT * FROM user_pets WHERE id = ? AND user_id = ?");
-    mysqli_stmt_bind_param($pet_check, "ii", $pet_id, $user_id);
-    mysqli_stmt_execute($pet_check);
-    $pet_result = mysqli_stmt_get_result($pet_check);
-    $pet = mysqli_fetch_assoc($pet_result);
-    mysqli_stmt_close($pet_check);
-    
-    if (!$pet) {
-        return ['success' => false, 'error' => 'Pet not found or not owned by user'];
-    }
-    
-    // Check user has item in inventory
+    // 1. Cek User Punya Item di Inventory
     $inv_check = mysqli_prepare($conn, 
         "SELECT ui.*, si.effect_type, si.effect_value, si.name as item_name 
          FROM user_inventory ui 
@@ -418,71 +396,109 @@ function useItemOnPet($conn, $user_id, $pet_id, $item_id) {
         return ['success' => false, 'error' => 'Item not in inventory'];
     }
     
-    // Apply item effect
     $effect_type = $inventory['effect_type'];
     $effect_value = $inventory['effect_value'];
     $result_message = '';
+    $extra_data = []; // Data tambahan untuk return (misal: data gacha)
     
-    switch ($effect_type) {
-        case 'food':
-            // Can't feed dead pet
-            if ($pet['status'] === 'DEAD') {
-                return ['success' => false, 'error' => 'Cannot feed a dead pet. Revive first!'];
-            }
-            $new_hunger = min(100, $pet['hunger'] + $effect_value);
-            $stmt = mysqli_prepare($conn, "UPDATE user_pets SET hunger = ?, last_update_timestamp = ? WHERE id = ?");
-            $current_time = time();
-            mysqli_stmt_bind_param($stmt, "iii", $new_hunger, $current_time, $pet_id);
-            mysqli_stmt_execute($stmt);
-            mysqli_stmt_close($stmt);
-            $result_message = "Fed pet! Hunger restored by $effect_value.";
-            break;
-            
-        case 'potion':
-            if ($pet['status'] === 'DEAD') {
-                return ['success' => false, 'error' => 'Cannot heal a dead pet. Revive first!'];
-            }
-            $new_health = min(100, $pet['health'] + $effect_value);
-            $stmt = mysqli_prepare($conn, "UPDATE user_pets SET health = ?, last_update_timestamp = ? WHERE id = ?");
-            $current_time = time();
-            mysqli_stmt_bind_param($stmt, "iii", $new_health, $current_time, $pet_id);
-            mysqli_stmt_execute($stmt);
-            mysqli_stmt_close($stmt);
-            $result_message = "Healed pet! Health restored by $effect_value.";
-            break;
-            
-        case 'revive':
-            if ($pet['status'] !== 'DEAD') {
-                return ['success' => false, 'error' => 'Pet is not dead!'];
-            }
-            $new_health = $effect_value; // effect_value is revival health percentage
-            $stmt = mysqli_prepare($conn, "UPDATE user_pets SET health = ?, hunger = 50, mood = 50, status = 'ALIVE', last_update_timestamp = ? WHERE id = ?");
-            $current_time = time();
-            mysqli_stmt_bind_param($stmt, "iii", $new_health, $current_time, $pet_id);
-            mysqli_stmt_execute($stmt);
-            mysqli_stmt_close($stmt);
-            $result_message = "Pet revived with $effect_value% health!";
-            break;
-            
-        case 'exp_boost':
-            if ($pet['status'] === 'DEAD') {
-                return ['success' => false, 'error' => 'Cannot give EXP to a dead pet!'];
-            }
-            $exp_result = addExpToPet($conn, $pet_id, $effect_value);
-            if ($exp_result['evolved']) {
-                $result_message = "Pet gained $effect_value EXP! EVOLVED to " . $exp_result['new_stage'] . "!";
-            } else if ($exp_result['level_ups'] > 0) {
-                $result_message = "Pet gained $effect_value EXP! Level up! Now level " . $exp_result['new_level'] . ".";
-            } else {
-                $result_message = "Pet gained $effect_value EXP!";
-            }
-            break;
-            
-        default:
-            return ['success' => false, 'error' => 'Unknown item type'];
+    // 2. Logika Percabangan: Gacha vs Item Biasa
+    if ($effect_type === 'gacha_ticket') {
+        // --- A. ITEM TIKET GACHA (Tanpa Target Pet) ---
+        // effect_value: 1 (Bronze), 2 (Silver), 3 (Gold)
+        $gacha_result = performGacha($conn, $user_id, $effect_value);
+        
+        if ($gacha_result['success']) {
+            $species_name = $gacha_result['species']['name'];
+            $result_message = "Egg hatched! You got a $species_name!";
+            $extra_data = [
+                'is_gacha' => true,
+                'gacha_data' => $gacha_result
+            ];
+        } else {
+            return ['success' => false, 'error' => 'Failed to hatch egg: ' . ($gacha_result['error'] ?? 'Unknown error')];
+        }
+        
+    } else {
+        // --- B. ITEM KONSUMSI BIASA (Butuh Target Pet) ---
+        
+        // Cek Pet ID valid
+        if (empty($pet_id)) {
+            return ['success' => false, 'error' => 'Pet ID required for this item'];
+        }
+
+        // Cek Kepemilikan Pet
+        $pet_check = mysqli_prepare($conn, "SELECT * FROM user_pets WHERE id = ? AND user_id = ?");
+        mysqli_stmt_bind_param($pet_check, "ii", $pet_id, $user_id);
+        mysqli_stmt_execute($pet_check);
+        $pet_result = mysqli_stmt_get_result($pet_check);
+        $pet = mysqli_fetch_assoc($pet_result);
+        mysqli_stmt_close($pet_check);
+        
+        if (!$pet) {
+            return ['success' => false, 'error' => 'Pet not found or not owned by user'];
+        }
+
+        // Switch Efek Item
+        switch ($effect_type) {
+            case 'food':
+                if ($pet['status'] === 'DEAD') {
+                    return ['success' => false, 'error' => 'Cannot feed a dead pet. Revive first!'];
+                }
+                $new_hunger = min(100, $pet['hunger'] + $effect_value);
+                $stmt = mysqli_prepare($conn, "UPDATE user_pets SET hunger = ?, last_update_timestamp = ? WHERE id = ?");
+                $current_time = time();
+                mysqli_stmt_bind_param($stmt, "iii", $new_hunger, $current_time, $pet_id);
+                mysqli_stmt_execute($stmt);
+                mysqli_stmt_close($stmt);
+                $result_message = "Fed pet! Hunger restored by $effect_value.";
+                break;
+                
+            case 'potion':
+                if ($pet['status'] === 'DEAD') {
+                    return ['success' => false, 'error' => 'Cannot heal a dead pet. Revive first!'];
+                }
+                $new_health = min(100, $pet['health'] + $effect_value);
+                $stmt = mysqli_prepare($conn, "UPDATE user_pets SET health = ?, last_update_timestamp = ? WHERE id = ?");
+                $current_time = time();
+                mysqli_stmt_bind_param($stmt, "iii", $new_health, $current_time, $pet_id);
+                mysqli_stmt_execute($stmt);
+                mysqli_stmt_close($stmt);
+                $result_message = "Healed pet! Health restored by $effect_value.";
+                break;
+                
+            case 'revive':
+                if ($pet['status'] !== 'DEAD') {
+                    return ['success' => false, 'error' => 'Pet is not dead!'];
+                }
+                $new_health = $effect_value; // effect_value is revival health percentage
+                $stmt = mysqli_prepare($conn, "UPDATE user_pets SET health = ?, hunger = 50, mood = 50, status = 'ALIVE', last_update_timestamp = ? WHERE id = ?");
+                $current_time = time();
+                mysqli_stmt_bind_param($stmt, "iii", $new_health, $current_time, $pet_id);
+                mysqli_stmt_execute($stmt);
+                mysqli_stmt_close($stmt);
+                $result_message = "Pet revived with $effect_value% health!";
+                break;
+                
+            case 'exp_boost':
+                if ($pet['status'] === 'DEAD') {
+                    return ['success' => false, 'error' => 'Cannot give EXP to a dead pet!'];
+                }
+                $exp_result = addExpToPet($conn, $pet_id, $effect_value);
+                if ($exp_result['evolved']) {
+                    $result_message = "Pet gained $effect_value EXP! EVOLVED to " . $exp_result['new_stage'] . "!";
+                } else if ($exp_result['level_ups'] > 0) {
+                    $result_message = "Pet gained $effect_value EXP! Level up! Now level " . $exp_result['new_level'] . ".";
+                } else {
+                    $result_message = "Pet gained $effect_value EXP!";
+                }
+                break;
+                
+            default:
+                return ['success' => false, 'error' => 'Unknown item type or logic not implemented'];
+        }
     }
     
-    // Deduct item from inventory
+    // 3. Deduct item from inventory
     $deduct_stmt = mysqli_prepare($conn, "UPDATE user_inventory SET quantity = quantity - 1 WHERE user_id = ? AND item_id = ?");
     mysqli_stmt_bind_param($deduct_stmt, "ii", $user_id, $item_id);
     mysqli_stmt_execute($deduct_stmt);
@@ -491,11 +507,12 @@ function useItemOnPet($conn, $user_id, $pet_id, $item_id) {
     // Remove inventory entry if quantity is 0
     mysqli_query($conn, "DELETE FROM user_inventory WHERE quantity <= 0");
     
-    return [
+    // 4. Return Final Result (Merged with Extra Data like Gacha)
+    return array_merge([
         'success' => true,
         'message' => $result_message,
         'item_used' => $inventory['item_name']
-    ];
+    ], $extra_data);
 }
 
 // ================================================
@@ -504,8 +521,7 @@ function useItemOnPet($conn, $user_id, $pet_id, $item_id) {
 
 /**
  * Calculate and record a battle between two pets
- * 
- * @param mysqli $conn Database connection
+ * * @param mysqli $conn Database connection
  * @param int $attacker_pet_id Attacking pet's ID
  * @param int $defender_pet_id Defending pet's ID
  * @return array Battle result
@@ -728,8 +744,7 @@ function getElementMultiplier($attacker_element, $defender_element) {
 
 /**
  * Get active pet buff for a school activity
- * 
- * @param mysqli $conn Database connection
+ * * @param mysqli $conn Database connection
  * @param int $user_id User's ID
  * @param string $activity_type Type of school activity (sports, study, art, music)
  * @return array Buff info or empty if no buff
@@ -784,8 +799,7 @@ function getActivePetBuff($conn, $user_id, $activity_type) {
 /**
  * Toggle shelter mode for a pet
  * In shelter: stats don't decay, but pet can't gain EXP or battle
- * 
- * @param mysqli $conn Database connection
+ * * @param mysqli $conn Database connection
  * @param int $user_id User's ID
  * @param int $pet_id Pet's ID
  * @return array Result
@@ -828,8 +842,7 @@ function toggleShelter($conn, $user_id, $pet_id) {
 
 /**
  * Set a pet as the active pet (for buffs and display)
- * 
- * @param mysqli $conn Database connection
+ * * @param mysqli $conn Database connection
  * @param int $user_id User's ID
  * @param int $pet_id Pet's ID
  * @return array Result
