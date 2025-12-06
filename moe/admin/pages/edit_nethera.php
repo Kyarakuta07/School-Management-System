@@ -105,6 +105,11 @@ $result_sanctuaries = mysqli_query($conn, $sql_sanctuaries);
                     <label for="username">Username</label>
                     <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($nethera_data['username']); ?>" required>
                 </div>
+
+                <div class="form-group">
+                    <label for="noHP">No. HP / WhatsApp</label>
+                    <input type="text" id="noHP" name="noHP" value="<?php echo htmlspecialchars($nethera_data['noHP']); ?>" required>
+                </div>
                 
                 <div class="form-group">
                     <label for="no_registrasi">No. Registrasi</label>
