@@ -108,7 +108,11 @@ $result_sanctuaries = mysqli_query($conn, $sql_sanctuaries);
                 
                 <div class="form-group">
                     <label for="no_registrasi">No. Registrasi</label>
-                    <input type="text" id="no_registrasi" name="no_registrasi" value="<?php echo htmlspecialchars($nethera_data['no_registrasi']); ?>" required>
+                    <input type="text" id="no_registrasi" name="no_registrasi" 
+                    value="<?php echo htmlspecialchars($nethera_data['no_registrasi']); ?>" 
+                    placeholder="Akan digenerate otomatis saat status AKTIF"
+                    readonly style="background-color: #e9e9e9; cursor: not-allowed;">
+                    <small style="color: red;">*Dibuat otomatis oleh sistem saat Status diubah ke Aktif.</small>
                 </div>
 
                 <div class="form-group">
