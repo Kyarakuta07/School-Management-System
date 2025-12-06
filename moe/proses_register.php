@@ -20,6 +20,7 @@ $nama_lengkap = trim($_POST['nama_lengkap']);
 $username = trim($_POST['username']);
 $email = trim($_POST['email']); 
 $noHP = trim($_POST['noHP']);
+$tanggal_lahir = $_POST['tanggal_lahir'];
 $password_input = $_POST['password'];
 $id_sanctuary = null;
 $periode_masuk = (int)$_POST['periode_masuk'];
@@ -52,14 +53,14 @@ $otp_expires = date("Y-m-d H:i:s", time() + 300);
 
 // 5. SQL INSERT (11 kolom)
 $sql = "INSERT INTO nethera 
-        (nama_lengkap, username, email, noHP, id_sanctuary, periode_masuk, password, role, status_akun, otp_code, otp_expires) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"; 
+        (nama_lengkap, username, email, noHP, id_sanctuary, periode_masuk, password, role, status_akun, otp_code, otp_expires, tanggal_lahir) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"; 
 
 $stmt = mysqli_prepare($conn, $sql);
 
 if ($stmt) {
     // Bind Parameter: s, s, s, s, i, i, s, s, s, s, s (Total 11)
-mysqli_stmt_bind_param($stmt, "ssssiisssss",
+mysqli_stmt_bind_param($stmt, "ssssiissssss",
         $nama_lengkap,        // s (1)
         $username,            // s (2)
         $email,               // s (3)
@@ -70,7 +71,8 @@ mysqli_stmt_bind_param($stmt, "ssssiisssss",
         $default_role,        // s (8 - KRITIS: Role)
         $default_status,      // s (9)
         $otp_code,            // s (10)
-        $otp_expires          // s (11)
+        $otp_expires,          // s (11)
+        $tanggal_lahir
     );
 
     if (mysqli_stmt_execute($stmt)) {
