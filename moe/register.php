@@ -11,7 +11,7 @@ if (isset($_GET['error'])) {
     if ($error_code == 'db_error') {
         $error_message = 'Pendaftaran gagal. Terjadi kesalahan pada database.';
     } else if ($error_code == 'duplicate_entry') {
-        $error_message = 'Username atau alamat email ini sudah terdaftar. Silakan coba login atau gunakan data lain.';
+        $error_message = 'Username, Email, atau No HP ini sudah terdaftar. Silakan coba login atau gunakan data lain.';
     } else if ($error_code == 'email_fail') {
         $error_message = 'Pendaftaran berhasil, tetapi gagal mengirimkan kode verifikasi. Akun Anda telah terdaftar, mohon segera hubungi Admin.';
     } else if ($error_code == 'expired') {
