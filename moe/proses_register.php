@@ -26,11 +26,11 @@ $id_sanctuary = null;
 $periode_masuk = (int)$_POST['periode_masuk'];
 
 // --- 2. CHECK DUPLIKASI (Jika duplikat, redirect) ---
-$sql_check_exist = "SELECT id_nethera FROM nethera WHERE username = ? OR email = ?";
+$sql_check_exist = "SELECT id_nethera FROM nethera WHERE username = ? OR email = ? OR noHP = ?";
 $stmt_check_exist = mysqli_prepare($conn, $sql_check_exist);
 
 if ($stmt_check_exist) {
-    mysqli_stmt_bind_param($stmt_check_exist, "ss", $username, $email);
+    mysqli_stmt_bind_param($stmt_check_exist, "sss", $username, $email, $noHP);
     mysqli_stmt_execute($stmt_check_exist);
     mysqli_stmt_store_result($stmt_check_exist);
 
