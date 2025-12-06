@@ -1,8 +1,7 @@
 /**
  * MOE Pet System - Frontend JavaScript
  * Mediterranean of Egypt Virtual Pet Companion
- * 
- * Handles all UI interactions and API communication
+ * * Handles all UI interactions and API communication
  */
 
 // ================================================
@@ -231,7 +230,7 @@ function getEvolutionStage(level) {
 }
 
 // ================================================
-// COLLECTION TAB
+// COLLECTION TAB (UPDATED WITH RETRIEVE BUTTON)
 // ================================================
 function renderCollection() {
     const grid = document.getElementById('collection-grid');
@@ -252,6 +251,17 @@ function renderCollection() {
         const deadClass = pet.status === 'DEAD' ? 'dead' : '';
         const shinyStyle = pet.is_shiny ? `filter: hue-rotate(${pet.shiny_hue}deg);` : '';
 
+        // --- UPDATE 1: TAMPILKAN TOMBOL RETRIEVE ---
+        let actionButtonHTML = '';
+        if (pet.status === 'SHELTER') {
+            actionButtonHTML = `
+                <button class="shop-buy-btn" style="margin-top: 8px; background: linear-gradient(135deg, #3498db, #2980b9); color: white; width: 100%; border: none;">
+                    <i class="fas fa-box-open"></i> Retrieve
+                </button>
+            `;
+        }
+        // -------------------------------------------
+
         return `
             <div class="pet-card ${activeClass} ${deadClass}" onclick="selectPet(${pet.id})">
                 <span class="rarity-badge ${pet.rarity.toLowerCase()}">${pet.rarity.charAt(0)}</span>
@@ -260,11 +270,15 @@ function renderCollection() {
                      onerror="this.src='../assets/placeholder.png'">
                 <h3 class="pet-card-name">${displayName}</h3>
                 <span class="pet-card-level">Lv.${pet.level} ${pet.is_shiny ? '✨' : ''}</span>
+                ${actionButtonHTML}
             </div>
         `;
     }).join('');
 }
 
+// ================================================
+// ACTION LOGIC (UPDATED WITH CONFIRM)
+// ================================================
 async function selectPet(petId) {
     const pet = userPets.find(p => p.id === petId);
     if (!pet) return;
@@ -274,10 +288,14 @@ async function selectPet(petId) {
         return;
     }
 
+    // --- UPDATE 2: KONFIRMASI PENGAMBILAN ---
     if (pet.status === 'SHELTER') {
-        showToast('Retrieve this pet from shelter first.', 'warning');
+        if(confirm(`Retrieve ${pet.nickname || pet.species_name} from shelter?`)) {
+            toggleShelter(petId);
+        }
         return;
     }
+    // ----------------------------------------
 
     try {
         const response = await fetch(`${API_BASE}?action=set_active`, {
@@ -308,26 +326,24 @@ function initActionButtons() {
     document.getElementById('btn-feed').addEventListener('click', () => openItemModal('food'));
     document.getElementById('btn-heal').addEventListener('click', () => openItemModal('potion'));
     document.getElementById('btn-play').addEventListener('click', playWithPet);
-    document.getElementById('btn-shelter').addEventListener('click', toggleShelter);
+    document.getElementById('btn-shelter').addEventListener('click', () => toggleShelter()); // Fixed call
 }
 
 async function playWithPet() {
     if (!activePet) return;
-
-    // Playing increases mood slightly (simulated - expand later)
-    showToast('You played with ' + (activePet.nickname || activePet.species_name) + '! 🎾', 'success');
-
-    // Could add API call to increase mood
+    showToast('You played with ' + (activePet.nickname || activePet.species_name) + '! 🎵', 'success');
 }
 
-async function toggleShelter() {
-    if (!activePet) return;
+// --- UPDATE 3: FLEXIBLE TOGGLE SHELTER ---
+async function toggleShelter(targetPetId = null) {
+    const petId = targetPetId || (activePet ? activePet.id : null);
+    if (!petId) return;
 
     try {
         const response = await fetch(`${API_BASE}?action=shelter`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ pet_id: activePet.id })
+            body: JSON.stringify({ pet_id: petId })
         });
 
         const data = await response.json();
@@ -343,6 +359,7 @@ async function toggleShelter() {
         console.error('Error toggling shelter:', error);
     }
 }
+// ------------------------------------------
 
 // ================================================
 // ITEM MODAL
@@ -688,13 +705,13 @@ function showBattleResult(data) {
     // Set title based on winner
     const title = document.getElementById('battle-title');
     if (data.winner_pet_id === data.attacker.pet_id) {
-        title.textContent = '🎉 Victory!';
+        title.textContent = '👑 Victory!';
         title.style.color = '#2ecc71';
     } else if (data.winner_pet_id === data.defender.pet_id) {
-        title.textContent = '😢 Defeat';
+        title.textContent = '💀 Defeat';
         title.style.color = '#e74c3c';
     } else {
-        title.textContent = '🤝 Draw';
+        title.textContent = '⚖️ Draw';
         title.style.color = '#f39c12';
     }
 
