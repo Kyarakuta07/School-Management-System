@@ -399,23 +399,71 @@ function closeItemModal() {
     selectedItemType = null;
 }
 
-async function useItem(itemId) {
-    if (!activePet) return;
+// GANTI function handleInventoryClick DENGAN INI
+
+async function handleInventoryClick(itemId, type, itemName) {
+    // KITA HAPUS PENGALIHAN KE TAB GACHA.
+    // Biarkan Ticket diproses seperti item biasa (dikonsumsi).
+
+    // Khusus Gacha Ticket, kita tidak butuh Active Pet
+    // Jadi kita bypass pengecekan activePet kalau tipenya gacha_ticket
+    if (type !== 'gacha_ticket') {
+        if (!activePet) {
+            showToast('Kamu butuh Active Pet untuk menggunakan item ini!', 'warning');
+            return;
+        }
+        if (type !== 'revive' && activePet.status === 'DEAD') {
+            showToast('Pet mati. Hidupkan dulu dengan item Revive!', 'error');
+            return;
+        }
+    }
+
+    // Tentukan pesan konfirmasi yang pas
+    let confirmMsg = `Gunakan ${itemName} pada ${activePet ? (activePet.nickname || activePet.species_name) : 'pet'}?`;
+    
+    if (type === 'gacha_ticket') {
+        confirmMsg = `Apakah kamu ingin menetaskan ${itemName} sekarang?`;
+    }
+
+    if (!confirm(confirmMsg)) {
+        return;
+    }
+
+    // Kirim ID pet (kalau ada) atau 0 (kalau gacha ticket)
+    const targetPetId = activePet ? activePet.id : 0;
+    useItem(itemId, targetPetId);
+}
+
+// GANTI function useItem DENGAN INI
+
+async function useItem(itemId, targetPetId = 0) {
+    // Kalau targetPetId 0, berarti item ini tidak butuh target (seperti Egg)
+    // Tapi API kita mungkin butuh parameter pet_id, jadi kirim 0 aman.
 
     try {
         const response = await fetch(`${API_BASE}?action=use_item`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ pet_id: activePet.id, item_id: itemId })
+            body: JSON.stringify({ pet_id: targetPetId, item_id: itemId })
         });
 
         const data = await response.json();
 
         if (data.success) {
-            showToast(data.message, 'success');
+            // CEK APAKAH INI HASIL GACHA?
+            if (data.is_gacha && data.gacha_data) {
+                // Tampilkan Modal Gacha Result (Animasi Pet Baru)
+                showGachaResult(data.gacha_data);
+                showToast('Egg Hatched!', 'success');
+            } else {
+                // Item biasa (makan/potion)
+                showToast(data.message, 'success');
+            }
+
             closeItemModal();
             loadActivePet();
             loadInventory();
+            loadPets(); // Refresh collection karena mungkin nambah pet baru
         } else {
             showToast(data.error || 'Failed to use item', 'error');
         }
