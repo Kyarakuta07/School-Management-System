@@ -27,37 +27,75 @@
 
 /* Pet info card - fixed dimensions */
 .pet-info-card {
-    min-height: 380px !important;
-    max-width: 500px !important;
+    min-height: auto !important;
+    max-width: 420px !important;
     width: 100% !important;
     margin: 0 auto !important;
-    padding: 20px !important;
+    padding: 15px !important;
     box-sizing: border-box !important;
+    background: rgba(20, 15, 10, 0.9) !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(218, 165, 32, 0.2) !important;
 }
 
 /* Pet display container - prevent image reflow */
 .pet-display {
-    min-height: 240px !important;
+    min-height: 180px !important;
+    max-height: 220px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     position: relative !important;
+    margin-bottom: 10px !important;
+}
+
+/* Pet image sizing */
+.pet-display img {
+    max-width: 150px !important;
+    max-height: 150px !important;
+    object-fit: contain !important;
 }
 
 /* Action buttons container - fixed layout */
 .action-buttons {
     display: grid !important;
     grid-template-columns: repeat(4, 1fr) !important;
-    gap: 10px !important;
-    margin-top: 10px !important;
-    padding: 0 10px !important;
+    gap: 8px !important;
+    margin-top: 15px !important;
+    padding: 0 5px !important;
 }
 
-/* Individual action buttons - prevent size change */
+/* Individual action buttons - compact */
 .action-btn {
-    min-height: 70px !important;
-    padding: 12px 8px !important;
+    min-height: 60px !important;
+    padding: 10px 6px !important;
     box-sizing: border-box !important;
+    font-size: 0.75rem !important;
+    border-radius: 10px !important;
+}
+
+/* Status bars compact */
+.status-bars {
+    padding: 5px 0 !important;
+}
+
+.status-bar {
+    margin-bottom: 6px !important;
+}
+
+/* Pet name row compact */
+.pet-name-row {
+    margin-bottom: 8px !important;
+}
+
+/* Element badges compact */
+.pet-element {
+    margin-bottom: 10px !important;
+}
+
+/* EXP bar compact */
+.exp-bar-container {
+    margin-bottom: 5px !important;
 }
 
 /* Gacha tab specific - center content */
