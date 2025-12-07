@@ -1,0 +1,49 @@
+/* ================================================
+   FIX: Pet Name Overflow (Prevent hiding rename button)
+   ================================================ */
+
+/* Pet Name Row - Layout fix */
+.pet-name-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    flex-wrap: nowrap !important;
+    /* Never wrap to new line */
+    min-width: 0;
+    /* Allow flex children to shrink */
+    max-width: 100%;
+    /* Prevent overflow */
+}
+
+/* Pet Name - Truncate with ellipsis */
+.pet-name {
+    flex: 1;
+    /* Take available space */
+    min-width: 0;
+    /* Allow shrinking below content size */
+    overflow: hidden;
+    /* Hide overflowing text */
+    text-overflow: ellipsis;
+    /* Show ... for long text */
+    white-space: nowrap;
+    /* Single line only */
+    max-width: calc(100% - 100px);
+    /* Reserve space for buttons */
+}
+
+/* Ensure rename button always visible */
+.btn-rename-icon {
+    flex-shrink: 0;
+    /* Never shrink */
+    order: 2;
+    /* Always after name */
+}
+
+/* Pet level badge */
+.pet-level {
+    flex-shrink: 0;
+    /* Never shrink */
+    order: 3;
+    /* Always at end */
+}

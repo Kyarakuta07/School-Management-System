@@ -1,0 +1,203 @@
+/* ================================================
+   HEADER & TABS LAYOUT IMPROVEMENTS
+   ================================================ */
+
+/* Header - Perfect Symmetry */
+.pet-header {
+    display: grid;
+    grid-template-columns: 50px 1fr 50px;
+    /* Equal width sides */
+    align-items: center;
+    gap: 15px;
+    padding: 15px 20px;
+    background: linear-gradient(135deg, rgba(10, 8, 5, 0.95), rgba(20, 16, 10, 0.95));
+    border-bottom: 2px solid rgba(218, 165, 32, 0.3);
+}
+
+/* Back button - Left side */
+.back-btn {
+    justify-self: start;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: var(--pet-gold);
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.back-btn:hover {
+    background: rgba(218, 165, 32, 0.2);
+    border-color: var(--pet-gold);
+    transform: translateX(-3px);
+}
+
+/* Title - Center */
+.header-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.3rem;
+    color: var(--pet-gold);
+    margin: 0;
+    text-align: center;
+    justify-self: center;
+    letter-spacing: 1px;
+}
+
+/* Actions - Right side */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-self: end;
+}
+
+.gold-display {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(218, 165, 32, 0.1);
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(218, 165, 32, 0.3);
+    font-weight: bold;
+    color: var(--pet-gold);
+}
+
+.gold-display i {
+    font-size: 1.1rem;
+}
+
+/* Help button already styled in pet_help_guide.css */
+
+/* ================================================
+   TABS - Improved Layout & Symmetry
+   ================================================ */
+
+.pet-tabs {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    /* Equal width tabs */
+    gap: 0;
+    background: rgba(10, 8, 5, 0.8);
+    border-bottom: 2px solid rgba(218, 165, 32, 0.2);
+    padding: 0;
+    margin: 0;
+}
+
+.tab-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px 8px;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: #888;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.tab-btn i {
+    font-size: 1.3rem;
+    transition: transform 0.2s ease;
+}
+
+.tab-btn span {
+    font-family: 'Lato', sans-serif;
+    letter-spacing: 0.5px;
+}
+
+/* Hover effect */
+.tab-btn:hover {
+    background: rgba(255, 255, 255, 0.03);
+    color: #bbb;
+}
+
+.tab-btn:hover i {
+    transform: scale(1.1);
+}
+
+/* Active tab */
+.tab-btn.active {
+    color: var(--pet-gold);
+    background: rgba(218, 165, 32, 0.05);
+    border-bottom-color: var(--pet-gold);
+}
+
+.tab-btn.active i {
+    transform: scale(1.15);
+    text-shadow: 0 0 10px rgba(218, 165, 32, 0.5);
+}
+
+/* Active tab glow effect */
+.tab-btn.active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--pet-gold), transparent);
+    opacity: 0.5;
+}
+
+/* ================================================
+   RESPONSIVE ADJUSTMENTS
+   ================================================ */
+
+@media (max-width: 768px) {
+    .pet-header {
+        grid-template-columns: 40px 1fr 40px;
+        padding: 12px 15px;
+    }
+
+    .header-title {
+        font-size: 1.1rem;
+    }
+
+    .gold-display {
+        padding: 6px 10px;
+        font-size: 0.9rem;
+    }
+
+    .tab-btn {
+        padding: 10px 6px;
+        font-size: 0.75rem;
+    }
+
+    .tab-btn i {
+        font-size: 1.1rem;
+    }
+
+    .tab-btn span {
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-title {
+        font-size: 1rem;
+    }
+
+    /* Hide text on tabs, show icons only */
+    .tab-btn {
+        padding: 12px 4px;
+    }
+
+    .tab-btn span {
+        display: none;
+    }
+
+    .tab-btn i {
+        font-size: 1.4rem;
+    }
+}

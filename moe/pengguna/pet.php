@@ -48,6 +48,8 @@ if ($gold_row = mysqli_fetch_assoc($gold_result)) {
     <link rel="stylesheet" href="css/pet.css">
     <link rel="stylesheet" href="css/pet_hardcore_update.css">
     <link rel="stylesheet" href="css/pet_help_guide.css">
+    <link rel="stylesheet" href="css/pet_name_fix.css">
+    <link rel="stylesheet" href="css/pet_header_tabs_fix.css">
 </head>
 
 <body class="pet-page">
