@@ -18,6 +18,24 @@ if (isset($_SESSION['status_login']) && $_SESSION['status_login'] == 'berhasil')
 }
 ?>
 <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Mediterranean Of Egypt</title>
+    
+    <!-- Preconnect hints for faster resource loading -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Lato:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+</head>
+
 <body>
 
     <div id="notification-area" class="notification-container">
@@ -46,8 +64,7 @@ if (isset($_SESSION['status_login']) && $_SESSION['status_login'] == 'berhasil')
                 <i class="fa-solid fa-lock input-icon"></i>
             </div>
 
-            <?php require_once 'includes/csrf.php';
-            echo csrf_token_field(); ?>
+            <?php require_once 'includes/csrf.php'; echo csrf_token_field(); ?>
 
             <button type="submit" class="btn-login">LOGIN</button>
 
@@ -82,6 +99,9 @@ if (isset($_SESSION['status_login']) && $_SESSION['status_login'] == 'berhasil')
             } else if (pesan === 'logout') {
                 type = 'toast-success';
                 message = '<i class="fa-solid fa-check-circle"></i> Anda berhasil keluar dari portal.';
+            } else if (pesan === 'rate_limited') {
+                type = 'toast-error';
+                message = '<i class="fa-solid fa-ban"></i> Terlalu banyak percobaan login. Silakan tunggu beberapa menit.';
             }
 
             // --- TAMPILKAN TOAST ---
