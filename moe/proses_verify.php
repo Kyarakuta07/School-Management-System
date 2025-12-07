@@ -1,17 +1,22 @@
 <?php
 session_start();
+// Pastikan file koneksi sudah menggunakan versi .env yang aman tadi
 include 'connection.php'; 
+
+// 1. Set Timezone (Sangat Penting agar sinkron dengan Database)
+date_default_timezone_set('Asia/Jakarta');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: index.php");
     exit();
 }
 
-$username = trim($_POST['username']); // Tambahkan trim()
-$otp_code = trim($_POST['otp_code']); // Tambahkan trim()
+$username = trim($_POST['username']);
+$otp_code = trim($_POST['otp_code']);
 $current_time = date("Y-m-d H:i:s");
 
-// 1. Ambil data user, OTP, dan waktu kadaluarsa dari database
+// 2. Ambil data OTP dari database
+// Kita hanya cek user yang statusnya masih 'Pending'
 $sql_fetch = "SELECT otp_code, otp_expires FROM nethera WHERE username = ? AND status_akun = 'Pending'";
 $stmt_fetch = mysqli_prepare($conn, $sql_fetch);
 
@@ -22,60 +27,42 @@ if ($stmt_fetch) {
     $user_otp_data = mysqli_fetch_assoc($result);
     mysqli_stmt_close($stmt_fetch);
 
-    // 2. Cek apakah data ditemukan dan kode cocok
-    // Gunakan trim() pada data DB dan input untuk perbandingan yang ketat
-    if (!$user_otp_data || trim($user_otp_data['otp_code']) !== $otp_code) {
-        // Data tidak ditemukan atau kode salah
+    // 3. Cek 1: Apakah user ditemukan? Apakah kode OTP cocok?
+    if (!$user_otp_data || $user_otp_data['otp_code'] !== $otp_code) {
+        // Jika salah, kembalikan dengan error
         header("Location: verify_otp.php?user=" . urlencode($username) . "&status=invalid");
         exit();
     }
 
-// 3. Cek apakah kode sudah kadaluarsa (waktu di DB < Waktu Sekarang)
+    // 4. Cek 2: Apakah kode sudah kadaluarsa? (Logic_001 Fix)
+    // Jika Waktu Expired di DB < Waktu Sekarang, maka sudah basi.
     if ($user_otp_data['otp_expires'] < $current_time) {
-        
-        // --- LOGIKA RESEND (JANGAN HAPUS AKUN) ---
-        
-        // a. Generate kode baru
-        $new_otp_code = rand(100000, 999999);
-        $new_expiry_time = date("Y-m-d H:i:s", time() + 300); // 5 menit baru
-
-        // b. Update database dengan kode dan waktu baru
-        $sql_resend = "UPDATE nethera SET otp_code = ?, otp_expires = ? 
-                       WHERE username = ?";
-        $stmt_resend = mysqli_prepare($conn, $sql_resend);
-        
-        if ($stmt_resend) {
-            mysqli_stmt_bind_param($stmt_resend, "sss", $new_otp_code, $new_expiry_time, $username);
-            mysqli_stmt_execute($stmt_resend);
-            
-            // ** Di sini harus ada LOGIKA PENGIRIMAN EMAIL BARU **
-            // (Anda harus memanggil PHPMailer lagi dengan $new_otp_code)
-        }
-        
-        // Redirect kembali ke verify page dengan pesan "Kode baru sudah dikirim"
-        header("Location: verify_otp.php?user=" . urlencode($username) . "&status=resend_success"); 
+        // GAGAL KARENA EXPIRED
+        // Jangan auto-resend jika tidak ada fungsi mailer di sini.
+        // Lebih aman suruh user request ulang manual.
+        header("Location: verify_otp.php?user=" . urlencode($username) . "&status=expired");
         exit();
     }
 
-    // 4. Verifikasi Berhasil: Update status dan hapus kode OTP
-    $sql_update = "UPDATE nethera SET otp_code = NULL, otp_expires = NULL 
-                    WHERE username = ? AND status_akun = 'Pending'";
+    // 5. Verifikasi SUKSES!
+    // Hapus kode OTP agar tidak bisa dipakai lagi (Replay Attack Prevention)
+    // Tapi JANGAN ubah status jadi 'Aktif' dulu jika ada approval admin.
+    // Sesuai flow kamu: hapus OTP -> masuk halaman success -> tunggu admin.
     
+    $sql_update = "UPDATE nethera SET otp_code = NULL, otp_expires = NULL WHERE username = ?";
     $stmt_update = mysqli_prepare($conn, $sql_update);
     mysqli_stmt_bind_param($stmt_update, "s", $username);
     
     if (mysqli_stmt_execute($stmt_update)) {
-        // Redirect ke halaman sukses/tunggu persetujuan admin
+        // Redirect ke halaman sukses menunggu approval
         header("Location: success_page.php?username=" . urlencode($username));
         exit();
     } else {
-        // Error saat eksekusi UPDATE
         header("Location: verify_otp.php?user=" . urlencode($username) . "&status=db_error");
         exit();
     }
 
 } else {
-    // Error saat prepare statement fetch data
-    die("Error preparing statement.");
+    die("System Error: Unable to prepare verification.");
 }
 ?>

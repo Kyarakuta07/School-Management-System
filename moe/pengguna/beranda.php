@@ -48,10 +48,33 @@ if ($user_status !== 'Aktif') {
     exit();
 }
 
-// 4. Data Funfact (Perlu di-fetch lagi secara terpisah jika ingin ditampilkan)
-// Karena kita menghapus logic stats, kita harus memastikan funfact ada
-$fun_fact_data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT fun_fact FROM nethera WHERE id_nethera = $id_user"));
-$fun_fact = htmlspecialchars($fun_fact_data['fun_fact'] ?? 'Belum ada funfact.');
+// 1. Siapkan kerangka query dengan tanda tanya (?) sebagai placeholder
+$stmt = mysqli_prepare($conn, "SELECT fun_fact FROM nethera WHERE id_nethera = ?");
+
+// 2. Cek apakah prepare berhasil (penting untuk debugging)
+if ($stmt) {
+    // 3. Masukkan data ke placeholder
+    // "i" artinya integer (karena id_nethera adalah angka)
+    mysqli_stmt_bind_param($stmt, "i", $id_user);
+
+    // 4. Jalankan query
+    mysqli_stmt_execute($stmt);
+
+    // 5. Ambil hasilnya
+    $result = mysqli_stmt_get_result($stmt);
+    
+    // Ambil data sebagai array asosiatif
+    $row = mysqli_fetch_assoc($result);
+
+    // Tutup statement
+    mysqli_stmt_close($stmt);
+} else {
+    // Log error jika query gagal disiapkan (jangan tampilkan ke user)
+    error_log("Query prepare failed: " . mysqli_error($conn));
+    $row = null; // Set default jika gagal
+}
+
+$fun_fact = htmlspecialchars($row['fun_fact'] ?? 'Belum ada funfact.');
 
 // 5. STUDY BUDDY - Get active pet for dashboard display
 $active_pet = null;

@@ -69,7 +69,7 @@ if (isset($_SESSION['status_login']) && $_SESSION['status_login'] == 'berhasil')
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const pesan = "<?php echo $pesan; ?>";
+            const pesan = "<?php echo htmlspecialchars($pesan, ENT_QUOTES, 'UTF-8'); ?>";
             const notifArea = document.getElementById('notification-area');
             let type = '';
             let message = '';

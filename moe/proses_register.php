@@ -81,16 +81,17 @@ mysqli_stmt_bind_param($stmt, "ssssiissssss",
         $mail = new PHPMailer(true);
         try {
             // Server settings (KREDENSIAL ASLI)
-            $mail->isSMTP(); $mail->Host = 'smtp.gmail.com'; $mail->SMTPAuth = true;                                   
-            $mail->Username = 'mediterraneanofegypt@gmail.com'; $mail->Password = 'pdyn gyem ljzk odcc';   
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; $mail->Port = 465;                                    
+            $mail->isSMTP(); $mail->Host = 'smtp.gmail.com'; $mail->SMTPAuth = true;
+            $mail->Username = getenv('SMTP_USER');
+            $mail->Password = getenv('SMTP_PASS');
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; $mail->Port = 465;
 
             // Recipients
             $mail->setFrom('mediterraneanofegypt@gmail.com', 'MOE Registration');
-            $mail->addAddress($email, $username);     
+            $mail->addAddress($email, $username);
 
             // Content
-            $mail->isHTML(true);                                  
+            $mail->isHTML(true);
             $mail->Subject = 'Kode Verifikasi Akun Mediterranean of Egypt (OTP)';
             $mail->Body = <<<EMAIL_BODY
                 <html>
@@ -118,7 +119,17 @@ EMAIL_BODY;
         } catch (Exception $e) {
             // Gagal Kirim Email: Hapus data yang baru dimasukkan (Fail-Safe)
             $last_id = mysqli_insert_id($conn);
-            mysqli_query($conn, "DELETE FROM nethera WHERE id_nethera = $last_id");
+            // 1. Siapkan statement DELETE
+$stmt_del = mysqli_prepare($conn, "DELETE FROM nethera WHERE id_nethera = ?");
+
+// 2. Bind parameter (id biasanya integer -> "i")
+mysqli_stmt_bind_param($stmt_del, "i", $last_id);
+
+// 3. Eksekusi
+mysqli_stmt_execute($stmt_del);
+
+// 4. Tutup
+mysqli_stmt_close($stmt_del);
             error_log("PHPMailer Error: " . $mail->ErrorInfo); 
             
             header("Location: register.php?error=email_fail");

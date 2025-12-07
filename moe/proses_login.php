@@ -3,18 +3,18 @@ session_start();
 include 'connection.php'; // Pastikan path koneksi Anda benar
 
 $username_input = $_POST['username'];
-$password_input = $_POST['password']; 
+$password_input = $_POST['password'];
 
 // 1. Ambil data user, termasuk HASHED PASSWORD dan STATUS
 // Kunci keamanan: Kita ambil hash dari DB dan memverifikasinya di PHP
-$sql = "SELECT id_nethera, nama_lengkap, username, role, status_akun, password 
-        FROM nethera 
-        WHERE nama_lengkap = ? OR username = ?";
+$sql = "SELECT id_nethera, nama_lengkap, username, role, status_akun, password
+        FROM nethera
+        WHERE username = ?";
 
 $stmt = mysqli_prepare($conn, $sql);
 
 if ($stmt) {
-    mysqli_stmt_bind_param($stmt, "ss", $username_input, $username_input);
+    mysqli_stmt_bind_param($stmt, "s", $username_input);
     mysqli_stmt_execute($stmt);
 
     $result = mysqli_stmt_get_result($stmt);
@@ -23,6 +23,7 @@ if ($stmt) {
     // 2. CEK PENGGUNA DITEMUKAN DAN VERIFIKASI PASSWORD
     // Gunakan password_verify() untuk membandingkan input (plaintext) dengan hash (DB)
     if ($data && password_verify($password_input, $data['password'])) {
+        session_regenerate_id(true);
         
         // 3. CEK STATUS AKTIF (BUSINESS RULE)
         if ($data['status_akun'] !== 'Aktif') {
