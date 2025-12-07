@@ -1,22 +1,51 @@
 <?php
 // Pastikan koneksi database tersedia untuk mengambil daftar sanctuary
 require_once 'includes/security_config.php';
+session_start(); // PENTING: Session harus aktif untuk CSRF token
 include 'connection.php';
 
-
+// Logic untuk menampilkan pesan error jika ada redirect dari proses_register.php
 $error_message = '';
-$alert_class = 'alert-error'; // Default error class
+$alert_class = 'alert-error';
+
 if (isset($_GET['error'])) {
-    $error_code = $_GET['error'];
-    if ($error_code == 'db_error') {
-        $error_message = 'Pendaftaran gagal. Terjadi kesalahan pada database.';
-    } else if ($error_code == 'duplicate_entry') {
-        $error_message = 'Username, Email, atau No HP ini sudah terdaftar. Silakan coba login atau gunakan data lain.';
-    } else if ($error_code == 'email_fail') {
-        $error_message = 'Pendaftaran berhasil, tetapi gagal mengirimkan kode verifikasi. Akun Anda telah terdaftar, mohon segera hubungi Admin.';
-    } else if ($error_code == 'expired') {
-        $error_message = 'Verifikasi OTP kadaluarsa. Anda harus mendaftar ulang.';
+    switch ($_GET['error']) {
+        case 'duplicate_entry':
+            $error_message = 'Username, Email, atau Nomor HP sudah terdaftar! Silakan gunakan data lain atau login.';
+            break;
+        case 'password_weak':
+            $detail = isset($_GET['detail']) ? htmlspecialchars($_GET['detail']) : 'Password tidak memenuhi syarat keamanan';
+            $error_message = '🔒 Password tidak memenuhi syarat: ' . $detail . '<br><small>Password harus minimal 8 karakter dengan huruf besar, kecil, dan angka.</small>';
+            break;
+        case 'registration_failed':
+            $error_message = 'Registrasi gagal. Silakan coba lagi atau hubungi administrator.';
+            break;
+        case 'email_fail':
+        case 'email_failed':
+            $error_message = 'Akun berhasil dibuat tetapi Email OTP gagal dikirim. Hubungi admin untuk verifikasi manual.';
+            break;
+        case 'csrf_failed':
+            $error_message = '⚠️ Form keamanan tidak valid. Refresh halaman (F5) dan coba lagi.';
+            break;
+        case 'rate_limited':
+            $error_message = '⏳ Terlalu banyak percobaan registrasi dari IP Anda. Tunggu 1 jam sebelum coba lagi.';
+            break;
+        case 'invalid_email':
+            $error_message = '📧 Format email tidak valid. Pastikan menggunakan email yang benar (contoh: nama@domain.com).';
+            break;
+        case 'invalid_phone':
+            $error_message = '📱 Nomor HP tidak valid. Harus berisi 10-15 digit angka saja (tanpa spasi atau karakter lain).';
+            break;
+        case 'db_error':
+            $error_message = 'Terjadi kesalahan database. Silakan coba lagi atau hubungi administrator.';
+            break;
+        case 'expired':
+            $error_message = 'Verifikasi OTP sudah kadaluarsa. Silakan daftar ulang.';
+            break;
+        default:
+            $error_message = 'Terjadi kesalahan tidak dikenal. Silakan coba lagi.';
     }
+    $alert_class = 'alert-error';
 }
 ?>
 <!DOCTYPE html>
