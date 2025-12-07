@@ -25,17 +25,10 @@
     padding: 15px !important;
 }
 
-/* Pet info card - COMPACT */
+/* Pet info card - Additional overrides (main styling in pet.css) */
+/* Keeping min-height unset to prevent extra space */
 .pet-info-card {
     min-height: unset !important;
-    max-width: 400px !important;
-    width: 100% !important;
-    margin: 0 auto !important;
-    padding: 10px 12px !important;
-    box-sizing: border-box !important;
-    background: rgba(20, 15, 10, 0.9) !important;
-    border-radius: 12px !important;
-    border: 1px solid rgba(218, 165, 32, 0.2) !important;
 }
 
 /* Pet display container - prevent image reflow */
