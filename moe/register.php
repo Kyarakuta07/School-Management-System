@@ -11,38 +11,38 @@ $alert_class = 'alert-error';
 if (isset($_GET['error'])) {
     switch ($_GET['error']) {
         case 'duplicate_entry':
-            $error_message = 'Username, Email, atau Nomor HP sudah terdaftar! Silakan gunakan data lain atau login.';
+            $error_message = 'Username, Email, atau No HP sudah terdaftar!';
             break;
         case 'password_weak':
-            $error_message = '🔒 Password tidak memenuhi syarat keamanan!<br><small>Password harus minimal 8 karakter dengan huruf besar, kecil, dan angka.</small>';
+            $error_message = 'Password harus min. 8 karakter (huruf besar, kecil, angka)';
             break;
         case 'registration_failed':
-            $error_message = 'Registrasi gagal. Silakan coba lagi atau hubungi administrator.';
+            $error_message = 'Registrasi gagal. Coba lagi!';
             break;
         case 'email_fail':
         case 'email_failed':
-            $error_message = 'Akun berhasil dibuat tetapi Email OTP gagal dikirim. Hubungi admin untuk verifikasi manual.';
+            $error_message = 'Email OTP gagal terkirim. Hubungi admin.';
             break;
         case 'csrf_failed':
-            $error_message = '⚠️ Form keamanan tidak valid. Refresh halaman (F5) dan coba lagi.';
+            $error_message = 'Form tidak valid. Refresh halaman (F5)!';
             break;
         case 'rate_limited':
-            $error_message = '⏳ Terlalu banyak percobaan registrasi dari IP Anda. Tunggu 1 jam sebelum coba lagi.';
+            $error_message = 'Terlalu banyak percobaan. Tunggu 1 jam!';
             break;
         case 'invalid_email':
-            $error_message = '📧 Format email tidak valid. Pastikan menggunakan email yang benar (contoh: nama@domain.com).';
+            $error_message = 'Format email salah!';
             break;
         case 'invalid_phone':
-            $error_message = '📱 Nomor HP tidak valid. Harus berisi 10-15 digit angka saja (tanpa spasi atau karakter lain).';
+            $error_message = 'No HP harus 10-15 digit angka!';
             break;
         case 'db_error':
-            $error_message = 'Terjadi kesalahan database. Silakan coba lagi atau hubungi administrator.';
+            $error_message = 'Error database. Coba lagi!';
             break;
         case 'expired':
-            $error_message = 'Verifikasi OTP sudah kadaluarsa. Silakan daftar ulang.';
+            $error_message = 'OTP kadaluarsa. Daftar ulang!';
             break;
         default:
-            $error_message = 'Terjadi kesalahan tidak dikenal. Silakan coba lagi.';
+            $error_message = 'Terjadi kesalahan. Coba lagi!';
     }
     $alert_class = 'alert-error';
 }
