@@ -25,13 +25,13 @@
     padding: 15px !important;
 }
 
-/* Pet info card - fixed dimensions */
+/* Pet info card - COMPACT */
 .pet-info-card {
-    min-height: auto !important;
-    max-width: 420px !important;
+    min-height: unset !important;
+    max-width: 400px !important;
     width: 100% !important;
     margin: 0 auto !important;
-    padding: 15px !important;
+    padding: 10px 12px !important;
     box-sizing: border-box !important;
     background: rgba(20, 15, 10, 0.9) !important;
     border-radius: 12px !important;
@@ -76,26 +76,29 @@
 
 /* Status bars compact */
 .status-bars {
-    padding: 5px 0 !important;
+    padding: 2px 0 !important;
 }
 
 .status-bar {
-    margin-bottom: 6px !important;
+    margin-bottom: 4px !important;
+    padding: 2px 0 !important;
 }
 
 /* Pet name row compact */
 .pet-name-row {
-    margin-bottom: 8px !important;
+    margin-bottom: 5px !important;
 }
 
 /* Element badges compact */
 .pet-element {
-    margin-bottom: 10px !important;
+    margin-bottom: 6px !important;
 }
 
 /* EXP bar compact */
 .exp-bar-container {
-    margin-bottom: 5px !important;
+    margin-top: 2px !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
 }
 
 /* Gacha tab specific - center content */
