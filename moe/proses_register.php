@@ -41,6 +41,11 @@ if ($stmt_check_exist) {
     mysqli_stmt_close($stmt_check_exist);
 }
 
+// --- VALIDASI PASSWORD BARU ---
+if (strlen($password_input) < 8) {
+    header("Location: register.php?error=password_weak");
+    exit();
+}
 
 // --- 3. SECURITY: HASHING PASSWORD ---
 $hashed_password = password_hash($password_input, PASSWORD_DEFAULT);
