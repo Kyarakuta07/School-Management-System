@@ -1,0 +1,315 @@
+/* ================================================
+   TUTORIAL / HELP MODAL STYLING
+   ================================================ */
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.btn-help {
+    background: rgba(218, 165, 32, 0.15);
+    border: 1px solid rgba(218, 165, 32, 0.3);
+    color: var(--pet-gold);
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-help:hover {
+    background: rgba(218, 165, 32, 0.25);
+    border-color: var(--pet-gold);
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(218, 165, 32, 0.3);
+}
+
+.help-guide {
+    max-width: 700px;
+    width: 95%;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 25px;
+}
+
+.help-guide h2 {
+    font-family: 'Cinzel', serif;
+    color: var(--pet-gold);
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.modal-close-btn:hover {
+    background: rgba(231, 76, 60, 0.3);
+    border-color: #e74c3c;
+    transform: rotate(90deg);
+}
+
+/* Help Tabs */
+.help-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    padding-bottom: 5px;
+}
+
+.help-tab {
+    flex: 1;
+    min-width: 100px;
+    padding: 10px 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #aaa;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.help-tab:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.help-tab.active {
+    background: linear-gradient(135deg, var(--pet-gold), var(--pet-gold-dark));
+    border-color: var(--pet-gold);
+    color: white;
+}
+
+/* Help Content */
+.help-content {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.help-content h3 {
+    color: var(--pet-gold);
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    font-family: 'Cinzel', serif;
+}
+
+.help-content h4 {
+    font-size: 1rem;
+    color: white;
+    margin: 8px 0;
+}
+
+.help-content p {
+    color: #ccc;
+    line-height: 1.6;
+    margin: 8px 0;
+}
+
+/* Feature List (Overview Tab) */
+.feature-list {
+    display: grid;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    transition: all 0.2s ease;
+}
+
+.feature-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(218, 165, 32, 0.3);
+    transform: translateX(5px);
+}
+
+.feature-icon {
+    font-size: 1.8rem;
+    color: var(--pet-gold);
+    min-width: 40px;
+}
+
+.feature-item strong {
+    color: white;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.feature-item p {
+    color: #aaa;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* Tutorial Steps */
+.tutorial-step {
+    display: flex;
+    gap: 15px;
+    margin: 15px 0;
+    align-items: flex-start;
+}
+
+.step-number {
+    flex-shrink: 0;
+    width: 35px;
+    height: 35px;
+    background: linear-gradient(135deg, var(--pet-gold), var(--pet-gold-dark));
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.step-content {
+    flex: 1;
+}
+
+.step-content h4 {
+    margin-top: 0;
+}
+
+/* Help Tips */
+.help-tip {
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin: 15px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.9rem;
+}
+
+.help-tip i {
+    font-size: 1.2rem;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.help-tip.warning {
+    background: rgba(255, 193, 7, 0.1);
+    border: 1px solid rgba(255, 193, 7, 0.3);
+    color: #ffeb3b;
+}
+
+.help-tip.danger {
+    background: rgba(231, 76, 60, 0.1);
+    border: 1px solid rgba(231, 76, 60, 0.3);
+    color: #e74c3c;
+}
+
+.help-tip.info {
+    background: rgba(52, 152, 219, 0.1);
+    border: 1px solid rgba(52, 152, 219, 0.3);
+    color: #3498db;
+}
+
+/* Tutorial Section */
+.tutorial-section {
+    margin: 25px 0;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 8px;
+}
+
+.tutorial-section h4 {
+    color: var(--pet-gold);
+    margin-bottom: 15px;
+}
+
+.example {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 8px 12px;
+    border-left: 3px solid var(--pet-gold);
+    margin-top: 8px;
+    font-size: 0.9rem;
+}
+
+/* Help Footer */
+.help-footer {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+    color: #888;
+}
+
+.help-footer strong {
+    color: var(--pet-gold);
+}
+
+/* Mobile Responsiveness for Help Modal */
+@media (max-width: 480px) {
+    .help-guide {
+        padding: 20px 15px;
+    }
+
+    .help-tabs {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+    }
+
+    .help-tab {
+        font-size: 0.75rem;
+        padding: 8px 10px;
+        min-width: 80px;
+    }
+
+    .help-content h3 {
+        font-size: 1rem;
+    }
+
+    .step-number {
+        width: 30px;
+        height: 30px;
+        font-size: 0.9rem;
+    }
+
+    .tutorial-step {
+        gap: 10px;
+    }
+}

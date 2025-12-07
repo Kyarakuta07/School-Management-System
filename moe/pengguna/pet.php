@@ -46,6 +46,8 @@ if ($gold_row = mysqli_fetch_assoc($gold_result)) {
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="../assets/css/landing-style.css">
     <link rel="stylesheet" href="css/pet.css">
+    <link rel="stylesheet" href="css/pet_hardcore_update.css">
+    <link rel="stylesheet" href="css/pet_help_guide.css">
 </head>
 
 <body class="pet-page">
@@ -62,9 +64,14 @@ if ($gold_row = mysqli_fetch_assoc($gold_result)) {
                 <i class="fas fa-arrow-left"></i>
             </a>
             <h1 class="header-title">Pet Companion</h1>
-            <div class="gold-display">
-                <i class="fas fa-coins"></i>
-                <span id="user-gold"><?php echo number_format($user_gold); ?></span>
+            <div class="header-actions">
+                <div class="gold-display">
+                    <i class="fas fa-coins"></i>
+                    <span id="user-gold"><?php echo number_format($user_gold); ?></span>
+                </div>
+                <button class="btn-help" onclick="openHelpModal()" title="Tutorial & Help">
+                    <i class="fas fa-question-circle"></i>
+                </button>
             </div>
         </header>
 
@@ -112,6 +119,9 @@ if ($gold_row = mysqli_fetch_assoc($gold_result)) {
                 <div class="pet-info-card" id="pet-info" style="display: none;">
                     <div class="pet-name-row">
                         <h2 class="pet-name" id="pet-name">Loading...</h2>
+                        <button class="btn-rename-icon" onclick="openRenameModal()" title="Rename Pet">
+                            <i class="fas fa-edit"></i>
+                        </button>
                         <span class="pet-level" id="pet-level">Lv.1</span>
                     </div>
                     <div class="pet-element" id="pet-element">
@@ -388,38 +398,426 @@ if ($gold_row = mysqli_fetch_assoc($gold_result)) {
     </div>
 
     <div class="modal" id="bulk-use-modal">
-    <div class="modal-backdrop"></div>
-    <div class="modal-content item-detail-card">
-        <div class="item-header">
-            <img src="" id="bulk-item-img" class="item-detail-img">
-            <div class="item-detail-info">
-                <h3 id="bulk-item-name">Item Name</h3>
-                <p id="bulk-item-desc">Description here...</p>
-                <span class="item-stock">Owned: <b id="bulk-item-stock">0</b></span>
+        <div class="modal-backdrop"></div>
+        <div class="modal-content item-detail-card">
+            <div class="item-header">
+                <img src="" id="bulk-item-img" class="item-detail-img">
+                <div class="item-detail-info">
+                    <h3 id="bulk-item-name">Item Name</h3>
+                    <p id="bulk-item-desc">Description here...</p>
+                    <span class="item-stock">Owned: <b id="bulk-item-stock">0</b></span>
+                </div>
             </div>
-        </div>
 
-        <div class="quantity-selector">
-            <label>Use Quantity:</label>
-            <div class="qty-controls">
-                <button type="button" class="qty-btn" onclick="adjustQty(-1)">-</button>
-                <input type="number" id="bulk-item-qty" value="1" min="1" readonly>
-                <button type="button" class="qty-btn" onclick="adjustQty(1)">+</button>
-                <button type="button" class="qty-btn max" onclick="setMaxQty()">MAX</button>
+            <div class="quantity-selector">
+                <label>Use Quantity:</label>
+                <div class="qty-controls">
+                    <button type="button" class="qty-btn" onclick="adjustQty(-1)">-</button>
+                    <input type="number" id="bulk-item-qty" value="1" min="1" readonly>
+                    <button type="button" class="qty-btn" onclick="adjustQty(1)">+</button>
+                    <button type="button" class="qty-btn max" onclick="setMaxQty()">MAX</button>
+                </div>
             </div>
-        </div>
 
-        <div class="modal-actions">
-            <button class="modal-cancel-btn" onclick="closeBulkModal()">Cancel</button>
-            <button class="modal-confirm-btn" onclick="confirmBulkUse()">
-                Use Item
-            </button>
+            <div class="modal-actions">
+                <button class="modal-cancel-btn" onclick="closeBulkModal()">Cancel</button>
+                <button class="modal-confirm-btn" onclick="confirmBulkUse()">
+                    Use Item
+                </button>
+            </div>
         </div>
     </div>
-</div>
+
+    <!-- ========================================
+         RHYTHM GAME MODAL
+         ======================================== -->
+    <div class="modal" id="rhythm-modal">
+        <div class="modal-backdrop" onclick="closeRhythmGame()"></div>
+        <div class="modal-content rhythm-game-container">
+            <div class="rhythm-header">
+                <h2>🎵 Rhythm Game</h2>
+                <div class="rhythm-stats">
+                    <span class="rhythm-score">Score: <b id="rhythm-score-display">0</b></span>
+                    <span class="rhythm-timer" id="rhythm-timer">30s</span>
+                </div>
+            </div>
+
+            <div class="rhythm-game-area" id="rhythm-game-area">
+                <!-- Pet Dancing Animation -->
+                <div class="rhythm-pet-container">
+                    <img id="rhythm-pet-img" src="" alt="Dancing Pet" class="rhythm-pet-dance">
+                </div>
+
+                <!-- Falling Notes Container -->
+                <div class="rhythm-notes-container" id="rhythm-notes-container">
+                    <!-- Notes will be spawned dynamically via JS -->
+                </div>
+
+                <!-- Hit Zone Indicator -->
+                <div class="rhythm-hit-zone">
+                    <div class="hit-indicator">TAP HERE!</div>
+                </div>
+            </div>
+
+            <div class="rhythm-instructions">
+                <p>Tap/Click the falling notes when they reach the bottom!</p>
+            </div>
+
+            <button class="modal-cancel-btn" onclick="closeRhythmGame()">Exit</button>
+        </div>
+    </div>
+
+    <!-- ========================================
+         EVOLUTION SELECTOR MODAL
+         ======================================== -->
+    <div class="modal" id="evolution-modal">
+        <div class="modal-backdrop" onclick="closeEvolutionModal()"></div>
+        <div class="modal-content evolution-selector">
+            <h2>🔮 Manual Evolution</h2>
+
+            <div class="evolution-info">
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Main Pet: Level 20+</li>
+                    <li>Sacrifice: 3 pets of <span id="evo-required-rarity">same rarity</span></li>
+                    <li>Cost: <i class="fas fa-coins"></i> 500 Gold</li>
+                </ul>
+            </div>
+
+            <div class="evolution-warning">
+                ⚠️ Sacrificed pets will be permanently deleted!
+            </div>
+
+            <div class="fodder-selection-title">
+                <h3>Select 3 Fodder Pets (<span id="evo-selected-count">0</span>/3)</h3>
+            </div>
+
+            <div class="fodder-grid" id="fodder-grid">
+                <div class="loading-spinner">
+                    <i class="fas fa-spinner fa-spin fa-2x"></i>
+                    <p>Loading candidates...</p>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="modal-cancel-btn" onclick="closeEvolutionModal()">Cancel</button>
+                <button class="modal-confirm-btn" id="confirm-evolution-btn" onclick="confirmEvolution()" disabled>
+                    <i class="fas fa-star"></i> Evolve (500 Gold)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================
+         RENAME PET MODAL
+         ======================================== -->
+    <div class="modal" id="rename-modal">
+        <div class="modal-backdrop" onclick="closeRenameModal()"></div>
+        <div class="modal-content rename-dialog">
+            <h2>✏️ Rename Pet</h2>
+            <input type="text" id="rename-input" class="rename-input" placeholder="Enter new nickname..."
+                maxlength="50">
+            <div class="modal-actions">
+                <button class="modal-cancel-btn" onclick="closeRenameModal()">Cancel</button>
+                <button class="modal-confirm-btn" onclick="confirmRename()">
+                    <i class="fas fa-check"></i> Save
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="toast-icon fas fa-check-circle"></i>
+        <span class="toast-message">Message</span>
+    </div>
+
+    <div class="modal" id="bulk-use-modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content item-detail-card">
+            <div class="item-header">
+                <img src="" id="bulk-item-img" class="item-detail-img">
+                <div class="item-detail-info">
+                    <h3 id="bulk-item-name">Item Name</h3>
+                    <p id="bulk-item-desc">Description here...</p>
+                    <span class="item-stock">Owned: <b id="bulk-item-stock">0</b></span>
+                </div>
+            </div>
+
+            <div class="quantity-selector">
+                <label>Use Quantity:</label>
+                <div class="qty-controls">
+                    <button type="button" class="qty-btn" onclick="adjustQty(-1)">-</button>
+                    <input type="number" id="bulk-item-qty" value="1" min="1" readonly>
+                    <button type="button" class="qty-btn" onclick="adjustQty(1)">+</button>
+                    <button type="button" class="qty-btn max" onclick="setMaxQty()">MAX</button>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="modal-cancel-btn" onclick="closeBulkModal()">Cancel</button>
+                <button class="modal-confirm-btn" onclick="confirmBulkUse()">
+                    Use Item
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================
+         TUTORIAL / HELP MODAL
+         ======================================== -->
+    <div class="modal" id="help-modal">
+        <div class="modal-backdrop" onclick="closeHelpModal()"></div>
+        <div class="modal-content help-guide">
+            <button class="modal-close-btn" onclick="closeHelpModal()">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <h2>📖 Tutorial & Panduan Fitur</h2>
+
+            <div class="help-tabs">
+                <button class="help-tab active" onclick="switchHelpTab('overview')">Overview</button>
+                <button class="help-tab" onclick="switchHelpTab('rhythm')">Rhythm Game</button>
+                <button class="help-tab" onclick="switchHelpTab('battle')">Hardcore Battle</button>
+                <button class="help-tab" onclick="switchHelpTab('evolution')">Evolution</button>
+                <button class="help-tab" onclick="switchHelpTab('economy')">Sell & Rename</button>
+            </div>
+
+            <!-- Overview Tab -->
+            <div class="help-content" id="help-overview">
+                <h3>🎮 Fitur Baru: Hardcore & Rhythm Game Update</h3>
+                <p>Sistem Pet sekarang lebih menantang dengan fitur baru:</p>
+
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <i class="fas fa-music feature-icon"></i>
+                        <div>
+                            <strong>Rhythm Game</strong>
+                            <p>Main mini-game untuk dapat Mood & EXP</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+                        <i class="fas fa-heart-broken feature-icon"></i>
+                        <div>
+                            <strong>Hardcore Battle</strong>
+                            <p>Pet bisa MATI kalau HP habis! (-20 HP per kalah)</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+                        <i class="fas fa-star feature-icon"></i>
+                        <div>
+                            <strong>Manual Evolution</strong>
+                            <p>Korbankan 3 pet untuk evolve pet utama (Lv.20+)</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+                        <i class="fas fa-coins feature-icon"></i>
+                        <div>
+                            <strong>Sell & Rename</strong>
+                            <p>Jual pet untuk gold, atau ganti nama sesuai keinginan</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rhythm Game Tab -->
+            <div class="help-content" id="help-rhythm" style="display: none;">
+                <h3>🎵 Rhythm Game</h3>
+
+                <div class="tutorial-step">
+                    <span class="step-number">1</span>
+                    <div class="step-content">
+                        <h4>Cara Main</h4>
+                        <p>Klik tombol <strong>"Play"</strong> di tab "My Pet" (hanya jika pet status ALIVE)</p>
+                    </div>
+                </div>
+
+                <div class="tutorial-step">
+                    <span class="step-number">2</span>
+                    <div class="step-content">
+                        <h4>Gameplay</h4>
+                        <p>• Not akan jatuh dari atas ke bawah<br>
+                            • <strong>Klik/Tap</strong> not saat mencapai zona hijau di bawah<br>
+                            • Tiap hit = <strong>+10 poin</strong><br>
+                            • Durasi: <strong>30 detik</strong></p>
+                    </div>
+                </div>
+
+                <div class="tutorial-step">
+                    <span class="step-number">3</span>
+                    <div class="step-content">
+                        <h4>Reward</h4>
+                        <p>• Score 0-100 = Mood +0-10, EXP +0-16<br>
+                            • Score 100-300 = Mood +10-30, EXP +16-50<br>
+                            • <strong>Max reward:</strong> Mood +30, EXP +50</p>
+                    </div>
+                </div>
+
+                <div class="help-tip warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Perhatian:</strong> Pet yang DEAD tidak bisa main rhythm game!
+                </div>
+            </div>
+
+            <!--Hardcore Battle Tab -->
+            <div class="help-content" id="help-battle" style="display: none;">
+                <h3>⚔️ Hardcore Battle System</h3>
+
+                <div class="tutorial-step">
+                    <span class="step-number">1</span>
+                    <div class="step-content">
+                        <h4>HP System</h4>
+                        <p>Setiap pet punya <strong>HP (Hit Points)</strong> terpisah dari Health/Mood.<br>
+                            HP awal: <strong>100</strong></p>
+                    </div>
+                </div>
+
+                <div class="tutorial-step">
+                    <span class="step-number">2</span>
+                    <div class="step-content">
+                        <h4>Konsekuensi Battle</h4>
+                        <p>• <strong>Menang:</strong> Dapat Gold & EXP (HP tetap)<br>
+                            • <strong>Kalah:</strong> HP berkurang <strong>-20</strong><br>
+                            • <strong>Seri:</strong> Tidak ada perubahan HP</p>
+                    </div>
+                </div>
+
+                <div class="tutorial-step">
+                    <span class="step-number">3</span>
+                    <div class="step-content">
+                        <h4>Death Mechanic</h4>
+                        <p>Jika HP mencapai <strong>0</strong>, pet akan <strong>MATI (status: DEAD)</strong><br>
+                            • Pet mati tidak bisa battle<br>
+                            • Tidak bisa jadi pet aktif<br>
+                            • Tidak bisa dipakai item (kecuali revive)</p>
+                    </div>
+                </div>
+
+                <div class="help-tip danger">
+                    <i class="fas fa-skull"></i>
+                    <strong>PENTING:</strong> Kalah 5x berturut-turut = MATI! Pastiin pet kamu cukup kuat sebelum
+                    battle.
+                </div>
+
+                <div class="help-tip info">
+                    <i class="fas fa-shield-alt"></i>
+                    <strong>Tips:</strong> Beli "Divine Shield" di Shop untuk melindungi pet dari 1x serangan!
+                </div>
+            </div>
+
+            <!-- Evolution Tab -->
+            <div class="help-content" id="help-evolution" style="display: none;">
+                <h3>🌟 Manual Evolution (Sacrifice System)</h3>
+
+                <div class="tutorial-step">
+                    <span class="step-number">1</span>
+                    <div class="step-content">
+                        <h4>Syarat Evolution</h4>
+                        <p>• Pet utama harus <strong>Level 20+</strong><br>
+                            • Punya minimal <strong>3 pet lain</strong> dengan rarity yang SAMA<br>
+                            • Gold minimal <strong>500</strong></p>
+                    </div>
+                </div>
+
+                <div class="tutorial-step">
+                    <span class="step-number">2</span>
+                    <div class="step-content">
+                        <h4>Cara Evolve</h4>
+                        <p>1. Buka tab <strong>Collection</strong><br>
+                            2. Cari pet Level 20+, klik tombol <strong>⭐ (Evolve)</strong><br>
+                            3. <strong>PILIH 3 pet</strong> yang mau dikorbankan (centang checkbox)<br>
+                            4. Pastikan rarity sama semua!<br>
+                            5. Klik <strong>"Evolve (500 Gold)"</strong></p>
+                    </div>
+                </div>
+
+                <div class="tutorial-step">
+                    <span class="step-number">3</span>
+                    <div class="step-content">
+                        <h4>Hasil Evolution</h4>
+                        <p>• Pet utama naik <strong>1 level</strong><br>
+                            • Status berubah jadi <strong>Adult</strong><br>
+                            • 3 pet yang dipilih <strong>DIHAPUS PERMANEN</strong><br>
+                            • Gold berkurang <strong>-500</strong></p>
+                    </div>
+                </div>
+
+                <div class="help-tip danger">
+                    <i class="fas fa-fire"></i>
+                    <strong>PERHATIAN!</strong> Pet yang dikorbankan akan DIHAPUS PERMANEN! Pilih dengan hati-hati.
+                </div>
+
+                <div class="help-tip info">
+                    <i class="fas fa-lightbulb"></i>
+                    <strong>Tips:</strong> Korbankan pet level rendah untuk evolve pet favorit kamu!
+                </div>
+            </div>
+
+            <!-- Economy Tab -->
+            <div class="help-content" id="help-economy" style="display: none;">
+                <h3>💰 Sell Pet & Rename</h3>
+
+                <div class="tutorial-section">
+                    <h4><i class="fas fa-coins"></i> Sell Pet</h4>
+
+                    <div class="tutorial-step">
+                        <span class="step-number">1</span>
+                        <div class="step-content">
+                            <p>Di tab <strong>Collection</strong>, klik tombol <strong>💰 (Sell)</strong> pada pet yang
+                                tidak aktif</p>
+                        </div>
+                    </div>
+
+                    <div class="tutorial-step">
+                        <span class="step-number">2</span>
+                        <div class="step-content">
+                            <h4>Harga Jual</h4>
+                            <p>• <strong>Common:</strong> 50 + (Level × 10)<br>
+                                • <strong>Rare:</strong> 100 + (Level × 10)<br>
+                                • <strong>Epic:</strong> 200 + (Level × 10)<br>
+                                • <strong>Legendary:</strong> 500 + (Level × 10)</p>
+                            <p class="example">Contoh: Rare Lv.15 = 100 + 150 = <strong>250 Gold</strong></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tutorial-section">
+                    <h4><i class="fas fa-edit"></i> Rename Pet</h4>
+
+                    <div class="tutorial-step">
+                        <span class="step-number">1</span>
+                        <div class="step-content">
+                            <p>Di tab <strong>My Pet</strong>, klik icon <strong>✏️ (Edit)</strong> di samping nama pet
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="tutorial-step">
+                        <span class="step-number">2</span>
+                        <div class="step-content">
+                            <p>Masukkan nama baru (max 50 karakter), klik <strong>Save</strong></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="help-tip warning">
+                    <i class="fas fa-ban"></i>
+                    <strong>Tidak bisa:</strong> Jual pet yang sedang aktif! Set pet lain sebagai aktif dulu.
+                </div>
+            </div>
+
+            <div class="help-footer">
+                <p>💡 <strong>Butuh bantuan lebih?</strong> Hubungi admin atau lihat dokumentasi lengkap.</p>
+            </div>
+        </div>
+    </div>
 
     <!-- JavaScript -->
     <script src="js/pet.js"></script>
+    <script src="js/pet_hardcore_update.js"></script>
 
 </body>
 

@@ -540,13 +540,263 @@ switch ($action) {
         break;
 
     // ============================================
+    // POST: Finish rhythm game and collect rewards
+    // ============================================
+    case 'play_finish':
+        if ($method !== 'POST') {
+            methodNotAllowed('POST');
+        }
+
+        $input = json_decode(file_get_contents('php://input'), true);
+        $score = isset($input[' score']) ? (int) $input['score'] : 0;
+        $pet_id = isset($input['pet_id']) ? (int) $input['pet_id'] : 0;
+
+        if (!$pet_id) {
+            echo json_encode(['success' => false, 'error' => 'Pet ID required']);
+            break;
+        }
+
+        // Verify pet ownership
+        $pet_check = mysqli_prepare($conn, "SELECT id, status FROM user_pets WHERE id = ? AND user_id = ?");
+        mysqli_stmt_bind_param($pet_check, "ii", $pet_id, $user_id);
+        mysqli_stmt_execute($pet_check);
+        $pet_result = mysqli_stmt_get_result($pet_check);
+        $pet = mysqli_fetch_assoc($pet_result);
+        mysqli_stmt_close($pet_check);
+
+        if (!$pet) {
+            echo json_encode(['success' => false, 'error' => 'Pet not found']);
+            break;
+        }
+
+        if ($pet['status'] === 'DEAD') {
+            echo json_encode(['success' => false, 'error' => 'Cannot play with a dead pet']);
+            break;
+        }
+
+        // Convert score to rewards
+        $rewards = convertRhythmScore($score);
+
+        // Update pet mood and EXP
+        $new_mood = min(100, $rewards['mood']);
+        $update_stmt = mysqli_prepare(
+            $conn,
+            "UPDATE user_pets SET mood = mood + ?, last_update_timestamp = ? WHERE id = ?"
+        );
+        $current_time = time();
+        mysqli_stmt_bind_param($update_stmt, "iii", $new_mood, $current_time, $pet_id);
+        mysqli_stmt_execute($update_stmt);
+        mysqli_stmt_close($update_stmt);
+
+        // Add EXP
+        $exp_result = addExpToPet($conn, $pet_id, $rewards['exp']);
+
+        echo json_encode([
+            'success' => true,
+            'score' => $score,
+            'rewards' => $rewards,
+            'level_up' => $exp_result['level_ups'] > 0,
+            'evolved' => $exp_result['evolved'] ?? false
+        ]);
+        break;
+
+    // ============================================
+    // GET: Get evolution candidates (fodder pets)
+    // ============================================
+    case 'get_evolution_candidates':
+        if ($method !== 'GET') {
+            methodNotAllowed('GET');
+        }
+
+        $main_pet_id = isset($_GET['main_pet_id']) ? (int) $_GET['main_pet_id'] : 0;
+
+        if (!$main_pet_id) {
+            echo json_encode(['success' => false, 'error' => 'Main pet ID required']);
+            break;
+        }
+
+        // Get main pet rarity
+        $main_stmt = mysqli_prepare(
+            $conn,
+            "SELECT ps.rarity FROM user_pets up
+             JOIN pet_species ps ON up.species_id = ps.id
+             WHERE up.id = ? AND up.user_id = ?"
+        );
+        mysqli_stmt_bind_param($main_stmt, "ii", $main_pet_id, $user_id);
+        mysqli_stmt_execute($main_stmt);
+        $main_result = mysqli_stmt_get_result($main_stmt);
+        $main_pet = mysqli_fetch_assoc($main_result);
+        mysqli_stmt_close($main_stmt);
+
+        if (!$main_pet) {
+            echo json_encode(['success' => false, 'error' => 'Main pet not found']);
+            break;
+        }
+
+        // Get all user pets with matching rarity (excluding main pet and active pets)
+        $rarity = $main_pet['rarity'];
+        $candidates_stmt = mysqli_prepare(
+            $conn,
+            "SELECT up.*, ps.name as species_name, ps.rarity, ps.img_baby, ps.img_adult
+             FROM user_pets up
+             JOIN pet_species ps ON up.species_id = ps.id
+             WHERE up.user_id = ? AND up.id != ? AND up.is_active = 0
+               AND ps.rarity = ? AND up.status = 'ALIVE'
+             ORDER BY up.level ASC"
+        );
+        mysqli_stmt_bind_param($candidates_stmt, "iis", $user_id, $main_pet_id, $rarity);
+        mysqli_stmt_execute($candidates_stmt);
+        $candidates_result = mysqli_stmt_get_result($candidates_stmt);
+
+        $candidates = [];
+        while ($row = mysqli_fetch_assoc($candidates_result)) {
+            $candidates[] = $row;
+        }
+        mysqli_stmt_close($candidates_stmt);
+
+        echo json_encode([
+            'success' => true,
+            'candidates' => $candidates,
+            'required_count' => 3,
+            'required_rarity' => $rarity
+        ]);
+        break;
+
+    // ============================================
+    // POST: Manual evolution (sacrifice system)
+    // ============================================
+    case 'evolve_manual':
+        if ($method !== 'POST') {
+            methodNotAllowed('POST');
+        }
+
+        $input = json_decode(file_get_contents('php://input'), true);
+        $main_pet_id = isset($input['main_pet_id']) ? (int) $input['main_pet_id'] : 0;
+        $fodder_ids = isset($input['fodder_ids']) ? $input['fodder_ids'] : [];
+
+        if (!$main_pet_id || empty($fodder_ids)) {
+            echo json_encode(['success' => false, 'error' => 'Main pet ID and fodder IDs required']);
+            break;
+        }
+
+        // Convert to integers
+        $fodder_ids = array_map('intval', $fodder_ids);
+
+        // Call evolution function
+        $result = evolvePetManual($conn, $user_id, $main_pet_id, $fodder_ids);
+
+        // Update user gold display if successful
+        if ($result['success']) {
+            $gold_stmt = mysqli_prepare($conn, "SELECT gold FROM nethera WHERE id_nethera = ?");
+            mysqli_stmt_bind_param($gold_stmt, "i", $user_id);
+            mysqli_stmt_execute($gold_stmt);
+            $gold_result = mysqli_stmt_get_result($gold_stmt);
+            $gold_row = mysqli_fetch_assoc($gold_result);
+            $result['remaining_gold'] = $gold_row ? $gold_row['gold'] : 0;
+            mysqli_stmt_close($gold_stmt);
+        }
+
+        echo json_encode($result);
+        break;
+
+    // ============================================
+    // POST: Sell pet for gold
+    // ============================================
+    case 'sell_pet':
+        if ($method !== 'POST') {
+            methodNotAllowed('POST');
+        }
+
+        $input = json_decode(file_get_contents('php://input'), true);
+        $pet_id = isset($input['pet_id']) ? (int) $input['pet_id'] : 0;
+
+        if (!$pet_id) {
+            echo json_encode(['success' => false, 'error' => 'Pet ID required']);
+            break;
+        }
+
+        // Get pet data
+        $pet_stmt = mysqli_prepare(
+            $conn,
+            "SELECT up.*, ps.rarity FROM user_pets up
+             JOIN pet_species ps ON up.species_id = ps.id
+             WHERE up.id = ? AND up.user_id = ?"
+        );
+        mysqli_stmt_bind_param($pet_stmt, "ii", $pet_id, $user_id);
+        mysqli_stmt_execute($pet_stmt);
+        $pet_result = mysqli_stmt_get_result($pet_stmt);
+        $pet = mysqli_fetch_assoc($pet_result);
+        mysqli_stmt_close($pet_stmt);
+
+        if (!$pet) {
+            echo json_encode(['success' => false, 'error' => 'Pet not found or not owned']);
+            break;
+        }
+
+        // Cannot sell active pet
+        if ($pet['is_active']) {
+            echo json_encode(['success' => false, 'error' => 'Cannot sell your active pet! Set another pet as active first.']);
+            break;
+        }
+
+        // Calculate sell price based on rarity and level
+        $base_prices = [
+            'Common' => 50,
+            'Rare' => 100,
+            'Epic' => 200,
+            'Legendary' => 500
+        ];
+        $base_price = $base_prices[$pet['rarity']] ?? 50;
+        $sell_price = $base_price + ($pet['level'] * 10);
+
+        // Delete pet and add gold
+        mysqli_begin_transaction($conn);
+
+        try {
+            // Delete pet
+            $delete_stmt = mysqli_prepare($conn, "DELETE FROM user_pets WHERE id = ? AND user_id = ?");
+            mysqli_stmt_bind_param($delete_stmt, "ii", $pet_id, $user_id);
+            mysqli_stmt_execute($delete_stmt);
+            mysqli_stmt_close($delete_stmt);
+
+            // Add gold
+            $gold_stmt = mysqli_prepare($conn, "UPDATE nethera SET gold = gold + ? WHERE id_nethera = ?");
+            mysqli_stmt_bind_param($gold_stmt, "ii", $sell_price, $user_id);
+            mysqli_stmt_execute($gold_stmt);
+            mysqli_stmt_close($gold_stmt);
+
+            mysqli_commit($conn);
+
+            // Get new gold balance
+            $balance_stmt = mysqli_prepare($conn, "SELECT gold FROM nethera WHERE id_nethera = ?");
+            mysqli_stmt_bind_param($balance_stmt, "i", $user_id);
+            mysqli_stmt_execute($balance_stmt);
+            $balance_result = mysqli_stmt_get_result($balance_stmt);
+            $balance_row = mysqli_fetch_assoc($balance_result);
+            $new_gold = $balance_row ? $balance_row['gold'] : 0;
+            mysqli_stmt_close($balance_stmt);
+
+            echo json_encode([
+                'success' => true,
+                'message' => "Pet sold for {$sell_price} gold!",
+                'gold_earned' => $sell_price,
+                'remaining_gold' => $new_gold
+            ]);
+
+        } catch (Exception $e) {
+            mysqli_rollback($conn);
+            echo json_encode(['success' => false, 'error' => 'Failed to sell pet: ' . $e->getMessage()]);
+        }
+        break;
+
+    // ============================================
     // Default: Unknown action
     // ============================================
     default:
         http_response_code(404);
         echo json_encode([
             'success' => false,
-            'error' => 'Unknown action. Available actions: get_pets, get_active_pet, get_shop, get_inventory, gacha, buy_item, use_item, set_active, rename, shelter, get_opponents, battle, battle_history, get_buff'
+            'error' => 'Unknown action. Available actions: get_pets, get_active_pet, get_shop, get_inventory, gacha, buy_item, use_item, set_active, rename, shelter, get_opponents, battle, battle_history, get_buff, play_finish, get_evolution_candidates, evolve_manual, sell_pet'
         ]);
         break;
 }

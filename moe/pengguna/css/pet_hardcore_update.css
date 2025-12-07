@@ -1,0 +1,613 @@
+/* ================================================
+   HARDCORE & RHYTHM GAME UPDATE - NEW STYLES
+   ================================================ */
+
+/* ================================================
+   RESPONSIVE COLLECTION GRID (MOBILE-FIRST)
+   ================================================ */
+.collection-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Mobile: 2 columns */
+    gap: 15px;
+}
+
+@media (min-width: 768px) {
+    .collection-grid {
+        grid-template-columns: repeat(3, 1fr); /* Tablet: 3 columns */
+    }
+}
+
+@media (min-width: 1024px) {
+    .collection-grid {
+        grid-template-columns: repeat(4, 1fr); /* Desktop: 4 columns */
+    }
+}
+
+/* ================================================
+   PET CARD ACTION BUTTONS (SELL & EVOLVE)
+   ================================================ */
+.pet-action-row {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+    justify-content: center;
+}
+
+.pet-action-btn {
+    flex: 1;
+    padding: 8px 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.btn-sell {
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+    color: white;
+    border: 1px solid #f39c12;
+}
+
+.btn-sell:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(243, 156, 18, 0.4);
+}
+
+.btn-evolve {
+    background: linear-gradient(135deg, var(--pet-gold), var(--pet-gold-dark));
+    color: white;
+    border: 1px solid var(--pet-gold);
+}
+
+.btn-evolve:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--pet-gold-glow);
+}
+
+.btn-retrieve {
+    width: 100%;
+    margin-top: 10px;
+    padding: 8px;
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    border: 1px solid #3498db;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-retrieve:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+}
+
+/* ================================================
+   RENAME BUTTON ICON (PET DASHBOARD)
+   ================================================ */
+.btn-rename-icon {
+    background: none;
+    border: none;
+    color: var(--pet-gold);
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    margin: 0 8px;
+}
+
+.btn-rename-icon:hover {
+    background: rgba(218, 165, 32, 0.15);
+    transform: scale(1.1);
+}
+
+/* ================================================
+   RHYTHM GAME MODAL
+   ================================================ */
+.rhythm-game-container {
+    max-width: 500px;
+    width: 95%;
+    padding: 20px;
+}
+
+.rhythm-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.rhythm-header h2 {
+    color: var(--pet-gold);
+    font-family: 'Cinzel', serif;
+    font-size: 1.3rem;
+    margin: 0;
+}
+
+.rhythm-stats {
+    display: flex;
+    gap: 15px;
+    font-size: 0.9rem;
+}
+
+.rhythm-score {
+    color: #2ecc71;
+    font-weight: bold;
+}
+
+.rhythm-timer {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.rhythm-game-area {
+    position: relative;
+    height: 400px;
+    background: radial-gradient(ellipse at center, rgba(218, 165, 32, 0.1), transparent);
+    border: 2px solid rgba(218, 165, 32, 0.3);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+.rhythm-pet-container {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+}
+
+.rhythm-pet-dance {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    animation: pet-dance 0.5s ease-in-out infinite;
+}
+
+@keyframes pet-dance {
+    0%, 100% { 
+        transform: rotate(-8deg) scale(1) translateY(0); 
+    }
+    25% {
+        transform: rotate(0deg) scale(1.05) translateY(-8px);
+    }
+    50% { 
+        transform: rotate(8deg) scale(1.1) translateY(-12px); 
+    }
+    75% {
+        transform: rotate(0deg) scale(1.05) translateY(-8px);
+    }
+}
+
+.rhythm-notes-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.rhythm-note {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: all 0.1s ease;
+    z-index: 3;
+}
+
+.rhythm-note.falling {
+    animation: note-fall 2.5s linear forwards;
+}
+
+@keyframes note-fall {
+    from { 
+        transform: translateY(-80px) scale(0.5);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    to { 
+        transform: translateY(400px) scale(1);
+        opacity: 0.8;
+    }
+}
+
+.rhythm-note.hit {
+    animation: note-hit 0.3s ease-out forwards;
+}
+
+@keyframes note-hit {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.5); opacity: 0.8; }
+    100% { transform: scale(0); opacity: 0; }
+}
+
+.rhythm-hit-zone {
+    position: absolute;
+    bottom: 120px;
+    left: 0;
+    right: 0;
+    height: 80px;
+    background: linear-gradient(to top, rgba(46, 204, 113, 0.2), transparent);
+    border-top: 3px dashed rgba(46, 204, 113, 0.5);
+    z-index: 2;
+    pointer-events: none;
+}
+
+.hit-indicator {
+    text-align: center;
+    color: #2ecc71;
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    text-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
+}
+
+.hit-ripple {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border: 3px solid #2ecc71;
+    border-radius: 50%;
+    animation: ripple-expand 0.5s ease-out forwards;
+    pointer-events: none;
+    z-index: 10;
+}
+
+@keyframes ripple-expand {
+    from {
+        transform: translate(-50%, -50%) scale(0.5);
+        opacity: 1;
+    }
+    to {
+        transform: translate(-50%, -50%) scale(2);
+        opacity: 0;
+    }
+}
+
+.rhythm-instructions {
+    text-align: center;
+    color: #888;
+    font-size: 0.85rem;
+    margin-bottom: 15px;
+}
+
+/* ================================================
+   EVOLUTION SELECTOR MODAL
+   ================================================ */
+.evolution-selector {
+    max-width: 600px;
+    width: 95%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.evolution-selector h2 {
+    color: var(--pet-gold);
+    font-family: 'Cinzel', serif;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.evolution-info {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(218, 165, 32, 0.2);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.evolution-info ul {
+    margin: 10px 0 0 0;
+    padding-left: 20px;
+}
+
+.evolution-info li {
+    color: #bbb;
+    margin: 5px 0;
+}
+
+.evolution-warning {
+    background: rgba(231, 76, 60, 0.1);
+    border: 1px solid rgba(231, 76, 60, 0.3);
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+    color: #e74c3c;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.fodder-selection-title h3 {
+    color: #fff;
+    font-size: 1rem;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+#evo-selected-count {
+    color: var(--pet-gold);
+    font-weight: bold;
+}
+
+.fodder-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
+
+.fodder-card {
+    position: relative;
+}
+
+.fodder-checkbox {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    z-index: 10;
+    accent-color: var(--pet-gold);
+}
+
+.fodder-label {
+    display: block;
+    background: rgba(10, 8, 5, 0.9);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.fodder-card input:checked + .fodder-label {
+    border-color: var(--pet-gold);
+    background: rgba(218, 165, 32, 0.15);
+    box-shadow: 0 0 15px rgba(218, 165, 32, 0.3);
+}
+
+.fodder-label:hover {
+    border-color: rgba(218, 165, 32, 0.5);
+    transform: translateY(-2px);
+}
+
+.fodder-img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    margin-bottom: 8px;
+}
+
+.fodder-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.fodder-name {
+    font-size: 0.8rem;
+    color: #fff;
+    font-weight: bold;
+}
+
+.fodder-level {
+    font-size: 0.7rem;
+    color: var(--pet-gold);
+}
+
+/* ================================================
+   RENAME MODAL
+   ================================================ */
+.rename-dialog {
+    max-width: 400px;
+    width: 90%;
+    padding: 25px;
+}
+
+.rename-dialog h2 {
+    color: var(--pet-gold);
+    font-family: 'Cinzel', serif;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.rename-input {
+    width: 100%;
+    padding: 12px 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(218, 165, 32, 0.3);
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    font-family: 'Lato', sans-serif;
+    margin-bottom: 20px;
+    transition: all 0.2s ease;
+}
+
+.rename-input:focus {
+    outline: none;
+    border-color: var(--pet-gold);
+    box-shadow: 0 0 15px rgba(218, 165, 32, 0.2);
+}
+
+.rename-input::placeholder {
+    color: #666;
+}
+
+/* ================================================
+   MODAL IMPROVEMENTS (RESPONSIVE & SCROLLABLE)
+   ================================================ */
+.modal-content {
+    max-height: 90vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Scrollbar styling for modals */
+.modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: rgba(218, 165, 32, 0.5);
+    border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(218, 165, 32, 0.7);
+}
+
+@media (max-width: 480px) {
+    .modal-content {
+        width: 95%;
+        max-width: 95vw;
+        padding: 15px;
+    }
+
+    .rhythm-game-area {
+        height: 350px;
+    }
+
+    .rhythm-pet-dance {
+        width: 80px;
+        height: 80px;
+    }
+
+    .fodder-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        max-height: 250px;
+    }
+}
+
+/* ================================================
+   MODAL ACTION BUTTONS (CONSISTENT STYLING)
+   ================================================ */
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.modal-cancel-btn,
+.modal-confirm-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    font-family: 'Lato', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.modal-cancel-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: #bbb;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.modal-cancel-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+}
+
+.modal-confirm-btn {
+    background: linear-gradient(135deg, var(--pet-gold), var(--pet-gold-dark));
+    color: white;
+    border: 1px solid var(--pet-gold);
+}
+
+.modal-confirm-btn:hover:not(:disabled) {
+    transform: scale(1.02);
+    box-shadow: 0 0 15px var(--pet-gold-glow);
+}
+
+.modal-confirm-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ================================================
+   BUTTON HOVER EFFECTS (ENHANCED UX)
+   ================================================ */
+.action-btn:hover,
+.shop-buy-btn:hover,
+.gacha-btn:hover,
+.battle-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.action-btn:active,
+.shop-buy-btn:active,
+.gacha-btn:active,
+.battle-btn:active {
+    transform: translateY(0);
+}
+
+/* ================================================
+   LOADING STATES
+   ================================================ */
+.loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    padding: 40px;
+    color: #888;
+}
+
+.loading-spinner i {
+    color: var(--pet-gold);
+}
+
+/* ================================================
+   EMPTY STATES
+   ================================================ */
+.empty-message {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.empty-message p {
+    margin: 10px 0;
+}
