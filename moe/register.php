@@ -14,8 +14,7 @@ if (isset($_GET['error'])) {
             $error_message = 'Username, Email, atau Nomor HP sudah terdaftar! Silakan gunakan data lain atau login.';
             break;
         case 'password_weak':
-            $detail = isset($_GET['detail']) ? htmlspecialchars($_GET['detail']) : 'Password tidak memenuhi syarat keamanan';
-            $error_message = '🔒 Password tidak memenuhi syarat: ' . $detail . '<br><small>Password harus minimal 8 karakter dengan huruf besar, kecil, dan angka.</small>';
+            $error_message = '🔒 Password tidak memenuhi syarat keamanan!<br><small>Password harus minimal 8 karakter dengan huruf besar, kecil, dan angka.</small>';
             break;
         case 'registration_failed':
             $error_message = 'Registrasi gagal. Silakan coba lagi atau hubungi administrator.';
