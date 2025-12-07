@@ -1,203 +1,160 @@
 /* ================================================
-   HEADER & TABS LAYOUT IMPROVEMENTS
+   HEADER & TABS LAYOUT IMPROVEMENTS (FORCED OVERRIDE)
+   Force override old pet.css styles with !important
    ================================================ */
 
-/* Header - Perfect Symmetry */
-.pet-header {
-    display: grid;
-    grid-template-columns: 50px 1fr 50px;
-    /* Equal width sides */
-    align-items: center;
-    gap: 15px;
-    padding: 15px 20px;
-    background: linear-gradient(135deg, rgba(10, 8, 5, 0.95), rgba(20, 16, 10, 0.95));
-    border-bottom: 2px solid rgba(218, 165, 32, 0.3);
+/* Header - Perfect Symmetry - FORCED */
+.pet-container .pet-header {
+    display: grid !important;
+    grid-template-columns: 50px 1fr 50px !important;
+    align-items: center !important;
+    gap: 15px !important;
+    padding: 15px 20px !important;
+    background: linear-gradient(135deg, rgba(10, 8, 5, 0.95), rgba(20, 16, 10, 0.95)) !important;
+    border-bottom: 2px solid rgba(218, 165, 32, 0.3) !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 100 !important;
 }
 
-/* Back button - Left side */
-.back-btn {
-    justify-self: start;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    color: var(--pet-gold);
-    transition: all 0.2s ease;
-    text-decoration: none;
+/* Back button */
+.pet-header .back-btn {
+    justify-self: start !important;
+    width: 40px !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 8px !important;
+    color: var(--pet-gold) !important;
+    transition: all 0.2s ease !important;
 }
 
-.back-btn:hover {
-    background: rgba(218, 165, 32, 0.2);
-    border-color: var(--pet-gold);
-    transform: translateX(-3px);
+.pet-header .back-btn:hover {
+    background: rgba(218, 165, 32, 0.2) !important;
+    border-color: var(--pet-gold) !important;
+    transform: translateX(-3px) !important;
 }
 
 /* Title - Center */
-.header-title {
-    font-family: 'Cinzel', serif;
-    font-size: 1.3rem;
-    color: var(--pet-gold);
-    margin: 0;
-    text-align: center;
-    justify-self: center;
-    letter-spacing: 1px;
+.pet-header .header-title {
+    font-family: 'Cinzel', serif !important;
+    font-size: 1.3rem !important;
+    color: var(--pet-gold) !important;
+    margin: 0 !important;
+    text-align: center !important;
+    justify-self: center !important;
 }
 
-/* Actions - Right side */
-.header-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    justify-self: end;
+/* Actions */
+.pet-header .header-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    justify-self: end !important;
 }
 
-.gold-display {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(218, 165, 32, 0.1);
-    padding: 8px 12px;
-    border-radius: 8px;
-    border: 1px solid rgba(218, 165, 32, 0.3);
-    font-weight: bold;
-    color: var(--pet-gold);
+.pet-header .gold-display {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    background: rgba(218, 165, 32, 0.1) !important;
+    padding: 8px 12px !important;
+    border-radius: 8px !important;
+    border: 1px solid rgba(218, 165, 32, 0.3) !important;
+    font-weight: bold !important;
+    color: var(--pet-gold) !important;
 }
-
-.gold-display i {
-    font-size: 1.1rem;
-}
-
-/* Help button already styled in pet_help_guide.css */
 
 /* ================================================
-   TABS - Improved Layout & Symmetry
+   TABS - FORCED STABLE LAYOUT
    ================================================ */
 
-.pet-tabs {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    /* Equal width tabs */
-    gap: 0;
-    background: rgba(10, 8, 5, 0.8);
-    border-bottom: 2px solid rgba(218, 165, 32, 0.2);
-    padding: 0;
-    margin: 0;
+.pet-container .pet-tabs {
+    display: grid !important;
+    grid-template-columns: repeat(5, 1fr) !important;
+    gap: 0 !important;
+    background: rgba(10, 8, 5, 0.8) !important;
+    border-bottom: 2px solid rgba(218, 165, 32, 0.2) !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    position: sticky !important;
+    top: 73px !important;
+    z-index: 99 !important;
 }
 
-.tab-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 12px 8px;
-    background: transparent;
-    border: none;
-    border-bottom: 3px solid transparent;
-    color: #888;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    font-size: 0.85rem;
-    font-weight: 600;
+.pet-tabs .tab-btn {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    padding: 12px 8px !important;
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 3px solid transparent !important;
+    color: #888 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    min-height: 65px !important;
 }
 
-.tab-btn i {
-    font-size: 1.3rem;
-    transition: transform 0.2s ease;
+.pet-tabs .tab-btn i {
+    font-size: 1.3rem !important;
 }
 
-.tab-btn span {
-    font-family: 'Lato', sans-serif;
-    letter-spacing: 0.5px;
+.pet-tabs .tab-btn span {
+    font-family: 'Lato', sans-serif !important;
 }
 
-/* Hover effect */
-.tab-btn:hover {
-    background: rgba(255, 255, 255, 0.03);
-    color: #bbb;
+/* Hover */
+.pet-tabs .tab-btn:hover {
+    background: rgba(255, 255, 255, 0.03) !important;
+    color: #bbb !important;
 }
 
-.tab-btn:hover i {
-    transform: scale(1.1);
+.pet-tabs .tab-btn:hover i {
+    transform: scale(1.1) !important;
 }
 
 /* Active tab */
-.tab-btn.active {
-    color: var(--pet-gold);
-    background: rgba(218, 165, 32, 0.05);
-    border-bottom-color: var(--pet-gold);
+.pet-tabs .tab-btn.active {
+    color: var(--pet-gold) !important;
+    background: rgba(218, 165, 32, 0.05) !important;
+    border-bottom: 3px solid var(--pet-gold) !important;
 }
 
-.tab-btn.active i {
-    transform: scale(1.15);
-    text-shadow: 0 0 10px rgba(218, 165, 32, 0.5);
+.pet-tabs .tab-btn.active i {
+    transform: scale(1.15) !important;
 }
 
-/* Active tab glow effect */
-.tab-btn.active::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--pet-gold), transparent);
-    opacity: 0.5;
-}
-
-/* ================================================
-   RESPONSIVE ADJUSTMENTS
-   ================================================ */
-
+/* Responsive */
 @media (max-width: 768px) {
-    .pet-header {
-        grid-template-columns: 40px 1fr 40px;
-        padding: 12px 15px;
+    .pet-container .pet-header {
+        grid-template-columns: 40px 1fr 40px !important;
+        padding: 12px 15px !important;
     }
 
-    .header-title {
-        font-size: 1.1rem;
+    .pet-header .header-title {
+        font-size: 1.1rem !important;
     }
 
-    .gold-display {
-        padding: 6px 10px;
-        font-size: 0.9rem;
-    }
-
-    .tab-btn {
-        padding: 10px 6px;
-        font-size: 0.75rem;
-    }
-
-    .tab-btn i {
-        font-size: 1.1rem;
-    }
-
-    .tab-btn span {
-        font-size: 0.7rem;
+    .pet-tabs .tab-btn {
+        padding: 10px 6px !important;
+        min-height: 60px !important;
     }
 }
 
 @media (max-width: 480px) {
-    .header-title {
-        font-size: 1rem;
+    .pet-tabs .tab-btn span {
+        display: none !important;
     }
 
-    /* Hide text on tabs, show icons only */
-    .tab-btn {
-        padding: 12px 4px;
-    }
-
-    .tab-btn span {
-        display: none;
-    }
-
-    .tab-btn i {
-        font-size: 1.4rem;
+    .pet-tabs .tab-btn i {
+        font-size: 1.4rem !important;
     }
 }
