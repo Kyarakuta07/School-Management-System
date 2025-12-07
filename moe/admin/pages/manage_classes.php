@@ -202,6 +202,7 @@ $result_all_schedules = mysqli_query($conn, $query_all_schedules);
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="../js/sidebar-toggle.js"></script>
 
     <script>
         const toggleSidebar = () => document.body.classList.toggle("open");

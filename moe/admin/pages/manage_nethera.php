@@ -145,6 +145,7 @@ $result_all_nethera = mysqli_query($conn, $query_all_nethera);
 
     </main>
 
+    <script src="../js/sidebar-toggle.js"></script>
     <script>
         // --- 1. DEFINISIKAN FUNGSI DELETE SECARA GLOBAL (Disini) ---
     function confirmDelete(id) {
