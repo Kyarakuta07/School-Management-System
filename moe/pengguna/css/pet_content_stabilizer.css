@@ -1,0 +1,138 @@
+/* ================================================
+   CONTENT AREA STABILIZATION
+   Prevent header shift when tab content changes
+   ================================================ */
+
+/* Force stable content area for all tabs */
+.pet-container .pet-content {
+    min-height: calc(100vh - 138px) !important;
+    /* viewport - (header + tabs) */
+    padding-top: 20px !important;
+    padding-bottom: 20px !important;
+    box-sizing: border-box !important;
+}
+
+/* Ensure all tab content has consistent base structure */
+.tab-content {
+    width: 100% !important;
+    min-height: 400px !important;
+    padding: 15px !important;
+    box-sizing: border-box !important;
+}
+
+/* My Pet tab specific - prevent content shift */
+#my-pet-content {
+    padding: 15px !important;
+}
+
+/* Pet info card - fixed dimensions */
+.pet-info-card {
+    min-height: 450px !important;
+    padding: 20px !important;
+    box-sizing: border-box !important;
+}
+
+/* Pet display container - prevent image reflow */
+.pet-display {
+    min-height: 280px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important;
+}
+
+/* Action buttons container - fixed layout */
+.action-buttons {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 10px !important;
+    margin-top: 20px !important;
+    padding: 0 10px !important;
+}
+
+/* Individual action buttons - prevent size change */
+.action-btn {
+    min-height: 70px !important;
+    padding: 12px 8px !important;
+    box-sizing: border-box !important;
+}
+
+/* Gacha tab specific - center content */
+#gacha-content {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    padding-top: 30px !important;
+}
+
+/* Shop tab specific */
+#shop-content {
+    padding: 20px !important;
+}
+
+/* Arena tab specific */
+#arena-content {
+    padding: 20px !important;
+}
+
+/* Prevent content from pushing header */
+.pet-container {
+    position: relative !important;
+    overflow-x: hidden !important;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .pet-container .pet-content {
+        min-height: calc(100vh - 115px) !important;
+        /* 60px header + 55px tabs */
+        padding-top: 15px !important;
+    }
+
+    .pet-info-card {
+        min-height: 420px !important;
+        padding: 15px !important;
+    }
+
+    .pet-display {
+        min-height: 240px !important;
+    }
+
+    .action-buttons {
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 8px !important;
+    }
+
+    .action-btn {
+        min-height: 65px !important;
+        font-size: 0.85rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .pet-container .pet-content {
+        min-height: calc(100vh - 108px) !important;
+        /* 56px header + 52px tabs */
+        padding-top: 12px !important;
+    }
+
+    .pet-info-card {
+        min-height: 400px !important;
+        padding: 12px !important;
+    }
+
+    .pet-display {
+        min-height: 220px !important;
+    }
+
+    .action-buttons {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+    }
+
+    .action-btn {
+        min-height: 60px !important;
+        font-size: 0.8rem !important;
+    }
+}
