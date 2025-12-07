@@ -93,11 +93,15 @@ switch ($action) {
         }
 
         // Get user's gold (assuming column exists in nethera table)
-        $gold_result = mysqli_query($conn, "SELECT gold FROM nethera WHERE id_nethera = $user_id");
+        $gold_stmt = mysqli_prepare($conn, "SELECT gold FROM nethera WHERE id_nethera = ?");
+        mysqli_stmt_bind_param($gold_stmt, "i", $user_id);
+        mysqli_stmt_execute($gold_stmt);
+        $gold_result = mysqli_stmt_get_result($gold_stmt);
         $user_gold = 0;
         if ($gold_row = mysqli_fetch_assoc($gold_result)) {
             $user_gold = $gold_row['gold'] ?? 0;
         }
+        mysqli_stmt_close($gold_stmt);
 
         echo json_encode([
             'success' => true,
@@ -156,11 +160,15 @@ switch ($action) {
             $cost = 500;
 
         // Check user has enough gold
-        $gold_check = mysqli_query($conn, "SELECT gold FROM nethera WHERE id_nethera = $user_id");
+        $gold_check = mysqli_prepare($conn, "SELECT gold FROM nethera WHERE id_nethera = ?");
+        mysqli_stmt_bind_param($gold_check, "i", $user_id);
+        mysqli_stmt_execute($gold_check);
+        $gold_result = mysqli_stmt_get_result($gold_check);
         $user_gold = 0;
-        if ($gold_row = mysqli_fetch_assoc($gold_check)) {
+        if ($gold_row = mysqli_fetch_assoc($gold_result)) {
             $user_gold = $gold_row['gold'] ?? 0;
         }
+        mysqli_stmt_close($gold_check);
 
         if ($user_gold < $cost) {
             echo json_encode([
@@ -171,7 +179,10 @@ switch ($action) {
         }
 
         // Deduct gold
-        mysqli_query($conn, "UPDATE nethera SET gold = gold - $cost WHERE id_nethera = $user_id");
+        $deduct_stmt = mysqli_prepare($conn, "UPDATE nethera SET gold = gold - ? WHERE id_nethera = ?");
+        mysqli_stmt_bind_param($deduct_stmt, "ii", $cost, $user_id);
+        mysqli_stmt_execute($deduct_stmt);
+        mysqli_stmt_close($deduct_stmt);
 
         // Perform gacha
         $result = performGacha($conn, $user_id, $gacha_type);
@@ -214,8 +225,15 @@ switch ($action) {
         $total_cost = $item['price'] * $quantity;
 
         // Check user gold
-        $gold_check = mysqli_query($conn, "SELECT gold FROM nethera WHERE id_nethera = $user_id");
-        $user_gold = mysqli_fetch_assoc($gold_check)['gold'] ?? 0;
+        $gold_check = mysqli_prepare($conn, "SELECT gold FROM nethera WHERE id_nethera = ?");
+        mysqli_stmt_bind_param($gold_check, "i", $user_id);
+        mysqli_stmt_execute($gold_check);
+        $gold_result = mysqli_stmt_get_result($gold_check);
+        $user_gold = 0;
+        if ($gold_row = mysqli_fetch_assoc($gold_result)) {
+            $user_gold = $gold_row['gold'] ?? 0;
+        }
+        mysqli_stmt_close($gold_check);
 
         if ($user_gold < $total_cost) {
             echo json_encode([
@@ -226,7 +244,10 @@ switch ($action) {
         }
 
         // Deduct gold
-        mysqli_query($conn, "UPDATE nethera SET gold = gold - $total_cost WHERE id_nethera = $user_id");
+        $deduct_stmt = mysqli_prepare($conn, "UPDATE nethera SET gold = gold - ? WHERE id_nethera = ?");
+        mysqli_stmt_bind_param($deduct_stmt, "ii", $total_cost, $user_id);
+        mysqli_stmt_execute($deduct_stmt);
+        mysqli_stmt_close($deduct_stmt);
 
         // Add to inventory (use INSERT ... ON DUPLICATE KEY UPDATE)
         $inv_stmt = mysqli_prepare(
@@ -245,7 +266,7 @@ switch ($action) {
         ]);
         break;
 
-// ============================================
+    // ============================================
     // POST: Use item on pet (Updated for Bulk)
     // ============================================
     case 'use_item':
@@ -256,9 +277,9 @@ switch ($action) {
         $input = json_decode(file_get_contents('php://input'), true);
         $pet_id = isset($input['pet_id']) ? (int) $input['pet_id'] : 0;
         $item_id = isset($input['item_id']) ? (int) $input['item_id'] : 0;
-        
+
         // AMBIL QUANTITY (Default 1 jika tidak ada)
-        $quantity = isset($input['quantity']) ? max(1, (int)$input['quantity']) : 1;
+        $quantity = isset($input['quantity']) ? max(1, (int) $input['quantity']) : 1;
 
         if (!$item_id) { // Pet ID boleh 0 kalau gacha ticket
             echo json_encode(['success' => false, 'error' => 'Item ID required']);
@@ -445,7 +466,10 @@ switch ($action) {
         // If user won, add gold reward
         if ($result['success'] && $result['winner_pet_id'] == $attacker_pet_id) {
             $gold_reward = $result['rewards']['gold'];
-            mysqli_query($conn, "UPDATE nethera SET gold = gold + $gold_reward WHERE id_nethera = $user_id");
+            $reward_stmt = mysqli_prepare($conn, "UPDATE nethera SET gold = gold + ? WHERE id_nethera = ?");
+            mysqli_stmt_bind_param($reward_stmt, "ii", $gold_reward, $user_id);
+            mysqli_stmt_execute($reward_stmt);
+            mysqli_stmt_close($reward_stmt);
         }
 
         echo json_encode($result);

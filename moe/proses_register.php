@@ -1,29 +1,66 @@
 <?php
+require_once 'includes/security_config.php';
 session_start();
-include 'connection.php'; 
+require_once 'includes/config.php';
+require_once 'includes/csrf.php';
+require_once 'includes/sanitization.php';
+require_once 'includes/rate_limiter.php';
+include 'connection.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 // PASTIKAN PATH PHPMailer BENAR
-require 'phpmailer/src/Exception.php'; 
+require 'phpmailer/src/Exception.php';
 require 'phpmailer/src/PHPMailer.php';
-require 'phpmailer/src/SMTP.php'; 
+require 'phpmailer/src/SMTP.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: register.php");
     exit();
 }
 
+// CSRF validation
+if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
+    error_log("CSRF token validation failed for registration attempt");
+    header("Location: register.php?error=csrf_failed");
+    exit();
+}
+
+// Rate limiting - 3 registrations per hour per IP
+$limiter = new RateLimiter($conn);
+$check = $limiter->checkLimit($_SERVER['REMOTE_ADDR'], 'register', 3, 60);
+
+if (!$check['allowed']) {
+    header("Location: register.php?error=rate_limited");
+    exit();
+}
+
 // 1. Ambil dan bersihkan data
-$nama_lengkap = trim($_POST['nama_lengkap']);
-$username = trim($_POST['username']);
-$email = trim($_POST['email']); 
+$nama_lengkap = sanitize_input($_POST['nama_lengkap']);
+$username = sanitize_input($_POST['username']);
+$email = trim($_POST['email']);
 $noHP = trim($_POST['noHP']);
 $tanggal_lahir = $_POST['tanggal_lahir'];
 $password_input = $_POST['password'];
 $id_sanctuary = null;
-$periode_masuk = (int)$_POST['periode_masuk'];
+$periode_masuk = (int) $_POST['periode_masuk'];
+
+// --- 1.5 VALIDATE EMAIL ---
+$validated_email = validate_email($email);
+if (!$validated_email) {
+    header("Location: register.php?error=invalid_email");
+    exit();
+}
+$email = $validated_email;
+
+// --- 1.6 VALIDATE PHONE ---
+$validated_phone = validate_phone($noHP);
+if (!$validated_phone) {
+    header("Location: register.php?error=invalid_phone");
+    exit();
+}
+$noHP = $validated_phone;
 
 // --- 2. CHECK DUPLIKASI (Jika duplikat, redirect) ---
 $sql_check_exist = "SELECT id_nethera FROM nethera WHERE username = ? OR email = ? OR noHP = ?";
@@ -41,9 +78,11 @@ if ($stmt_check_exist) {
     mysqli_stmt_close($stmt_check_exist);
 }
 
-// --- VALIDASI PASSWORD BARU ---
-if (strlen($password_input) < 8) {
-    header("Location: register.php?error=password_weak");
+// --- VALIDASI PASSWORD ---
+$password_validation = validate_password($password_input);
+if (!$password_validation['valid']) {
+    $error = urlencode($password_validation['errors'][0]);
+    header("Location: register.php?error=password_weak&detail=$error");
     exit();
 }
 
@@ -52,20 +91,22 @@ $hashed_password = password_hash($password_input, PASSWORD_DEFAULT);
 
 // --- 4. STATUS & OTP GENERATION ---
 $default_role = 'Nethera';
-$default_status = 'Pending'; 
-$otp_code = rand(100000, 999999); 
-$otp_expires = date("Y-m-d H:i:s", time() + 300);
+$default_status = 'Pending';
+$otp_code = rand(100000, 999999);
+$otp_expires = date("Y-m-d H:i:s", time() + OTP_EXPIRY_SECONDS);
 
 // 5. SQL INSERT (11 kolom)
 $sql = "INSERT INTO nethera 
         (nama_lengkap, username, email, noHP, id_sanctuary, periode_masuk, password, role, status_akun, otp_code, otp_expires, tanggal_lahir) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"; 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 $stmt = mysqli_prepare($conn, $sql);
 
 if ($stmt) {
     // Bind Parameter: s, s, s, s, i, i, s, s, s, s, s (Total 11)
-mysqli_stmt_bind_param($stmt, "ssssiissssss",
+    mysqli_stmt_bind_param(
+        $stmt,
+        "ssssiissssss",
         $nama_lengkap,        // s (1)
         $username,            // s (2)
         $email,               // s (3)
@@ -81,15 +122,18 @@ mysqli_stmt_bind_param($stmt, "ssssiissssss",
     );
 
     if (mysqli_stmt_execute($stmt)) {
-        
+
         // --- 6. LOGIKA PENGIRIMAN EMAIL OTP MENGGUNAKAN PHPMailer ---
         $mail = new PHPMailer(true);
         try {
             // Server settings (KREDENSIAL ASLI)
-            $mail->isSMTP(); $mail->Host = 'smtp.gmail.com'; $mail->SMTPAuth = true;
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
             $mail->Username = getenv('SMTP_USER');
             $mail->Password = getenv('SMTP_PASS');
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; $mail->Port = 465;
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+            $mail->Port = 465;
 
             // Recipients
             $mail->setFrom('mediterraneanofegypt@gmail.com', 'MOE Registration');
@@ -116,7 +160,7 @@ mysqli_stmt_bind_param($stmt, "ssssiissssss",
 EMAIL_BODY;
 
             $mail->send();
-            
+
             // Redirect ke halaman verifikasi OTP
             header("Location: verify_otp.php?user=" . urlencode($username));
             exit();
@@ -125,18 +169,18 @@ EMAIL_BODY;
             // Gagal Kirim Email: Hapus data yang baru dimasukkan (Fail-Safe)
             $last_id = mysqli_insert_id($conn);
             // 1. Siapkan statement DELETE
-$stmt_del = mysqli_prepare($conn, "DELETE FROM nethera WHERE id_nethera = ?");
+            $stmt_del = mysqli_prepare($conn, "DELETE FROM nethera WHERE id_nethera = ?");
 
-// 2. Bind parameter (id biasanya integer -> "i")
-mysqli_stmt_bind_param($stmt_del, "i", $last_id);
+            // 2. Bind parameter (id biasanya integer -> "i")
+            mysqli_stmt_bind_param($stmt_del, "i", $last_id);
 
-// 3. Eksekusi
-mysqli_stmt_execute($stmt_del);
+            // 3. Eksekusi
+            mysqli_stmt_execute($stmt_del);
 
-// 4. Tutup
-mysqli_stmt_close($stmt_del);
-            error_log("PHPMailer Error: " . $mail->ErrorInfo); 
-            
+            // 4. Tutup
+            mysqli_stmt_close($stmt_del);
+            error_log("PHPMailer Error: " . $mail->ErrorInfo);
+
             header("Location: register.php?error=email_fail");
             exit();
         }

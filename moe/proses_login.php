@@ -1,9 +1,29 @@
 <?php
+require_once 'includes/security_config.php';
 session_start();
+require_once 'includes/csrf.php';
+require_once 'includes/rate_limiter.php';
 include 'connection.php'; // Pastikan path koneksi Anda benar
 
-$username_input = $_POST['username'];
+// CSRF validation
+if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
+    error_log("CSRF token validation failed for login attempt");
+    header("Location: index.php?pesan=gagal");
+    exit();
+}
+
+$username_input = mysqli_real_escape_string($conn, trim($_POST['username']));
 $password_input = $_POST['password'];
+
+// Rate limiting - 5 attempts per 15 minutes per username + IP
+$limiter = new RateLimiter($conn);
+$identifier = $username_input . '_' . $_SERVER['REMOTE_ADDR'];
+$check = $limiter->checkLimit($identifier, 'login', 5, 15);
+
+if (!$check['allowed']) {
+    header("Location: index.php?pesan=rate_limited");
+    exit();
+}
 
 // 1. Ambil data user, termasuk HASHED PASSWORD dan STATUS
 // Kunci keamanan: Kita ambil hash dari DB dan memverifikasinya di PHP
@@ -23,8 +43,6 @@ if ($stmt) {
     // 2. CEK PENGGUNA DITEMUKAN DAN VERIFIKASI PASSWORD
     // Gunakan password_verify() untuk membandingkan input (plaintext) dengan hash (DB)
     if ($data && password_verify($password_input, $data['password'])) {
-        session_regenerate_id(true);
-        
         // 3. CEK STATUS AKTIF (BUSINESS RULE)
         if ($data['status_akun'] !== 'Aktif') {
             // Arahkan ke halaman login dengan pesan penolakan
@@ -32,11 +50,27 @@ if ($stmt) {
             exit();
         }
 
-        // 4. LOGIN SUKSES, BUAT SESSION
+        // 4. LOGIN SUKSES - Reset rate limit
+        $limiter->resetLimit($identifier, 'login');
+
+        // Regenerate session ID for security
+        session_regenerate_id(true);
+
+        // BUAT SESSION
         $_SESSION['id_nethera'] = $data['id_nethera'];
         $_SESSION['nama_lengkap'] = $data['nama_lengkap'];
         $_SESSION['role'] = $data['role'];
         $_SESSION['status_login'] = "berhasil";
+        $_SESSION['last_activity'] = time();
+
+        // Update last login time
+        $update_login = mysqli_prepare($conn, "UPDATE nethera SET last_login = NOW() WHERE id_nethera = ?");
+        mysqli_stmt_bind_param($update_login, "i", $data['id_nethera']);
+        mysqli_stmt_execute($update_login);
+        mysqli_stmt_close($update_login);
+
+        // Regenerate CSRF token
+        regenerate_csrf_token();
 
         // Redirect pengguna berdasarkan rolenya
         if ($data['role'] == 'Vasiki') {
@@ -52,8 +86,12 @@ if ($stmt) {
         header("Location: index.php?pesan=gagal");
         exit();
     }
+
+    mysqli_stmt_close($stmt);
 } else {
     // Error saat prepare statement
-    die("Query error: " . mysqli_error($conn));
+    error_log("Login query error: " . mysqli_error($conn));
+    header("Location: index.php?pesan=gagal");
+    exit();
 }
 ?>

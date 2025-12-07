@@ -1,9 +1,9 @@
 <?php
 // Pastikan koneksi database tersedia untuk mengambil daftar sanctuary
+require_once 'includes/security_config.php';
 include 'connection.php';
 
-// Logic untuk menampilkan pesan error jika ada redirect dari proses_register.php
-// Logic untuk menampilkan pesan error jika ada redirect dari proses_register.php
+
 $error_message = '';
 $alert_class = 'alert-error'; // Default error class
 if (isset($_GET['error'])) {
@@ -26,6 +26,11 @@ if (isset($_GET['error'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - Mediterranean Of Egypt</title>
+
+    <!-- Preconnect hints for faster resource loading -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Lato:wght@400;700&display=swap"
@@ -97,14 +102,17 @@ if (isset($_GET['error'])) {
             <div class="input-group">
                 <label for="tanggal_lahir">Tanggal Lahir</label>
                 <input type="date" name="tanggal_lahir" class="form-control" required>
-                <i class="fa-solid fa-calendar-day input-icon" style="top: 38px;"></i>
+                <i class="fa-solid fa-calendar-day input-icon"></i>
             </div>
 
             <div class="input-group">
                 <label for="periode_masuk">Periode Masuk</label>
                 <input type="number" name="periode_masuk" class="form-control" value="1" required min="1">
-                <i class="fa-solid fa-calendar-alt input-icon" style="top: 38px;"></i>
+                <i class="fa-solid fa-calendar-alt input-icon"></i>
             </div>
+
+            <?php require_once 'includes/csrf.php';
+            echo csrf_token_field(); ?>
 
             <button type="submit" class="btn-login" style="margin-top: 1.5rem;">Daftar & Verifikasi Email</button>
         </form>

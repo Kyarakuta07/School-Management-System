@@ -1,5 +1,6 @@
 <?php
 // Wajib ada untuk cek sesi jika pengguna sudah login
+require_once 'includes/security_config.php';
 session_start();
 
 // Cek apakah ada pesan dari URL
@@ -17,20 +18,10 @@ if (isset($_SESSION['status_login']) && $_SESSION['status_login'] == 'berhasil')
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Mediterranean Of Egypt</title>
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Lato:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css" /> 
-</head>
 <body>
 
     <div id="notification-area" class="notification-container">
-        </div>
+    </div>
 
     <div class="bg-image"></div>
     <div class="bg-overlay"></div>
@@ -41,10 +32,11 @@ if (isset($_SESSION['status_login']) && $_SESSION['status_login'] == 'berhasil')
         <p class="subtitle">ENTER YOUR CREDENTIALS</p>
 
         <form action="proses_login.php" method="POST">
-            
+
             <div class="input-group">
                 <label for="username">USERNAME</label>
-                <input type="text" name="username" class="form-control" placeholder="Enter username" required autocomplete="off">
+                <input type="text" name="username" class="form-control" placeholder="Enter username" required
+                    autocomplete="off">
                 <i class="fa-solid fa-user input-icon"></i>
             </div>
 
@@ -53,6 +45,9 @@ if (isset($_SESSION['status_login']) && $_SESSION['status_login'] == 'berhasil')
                 <input type="password" name="password" class="form-control" placeholder="Enter password" required>
                 <i class="fa-solid fa-lock input-icon"></i>
             </div>
+
+            <?php require_once 'includes/csrf.php';
+            echo csrf_token_field(); ?>
 
             <button type="submit" class="btn-login">LOGIN</button>
 
@@ -68,12 +63,12 @@ if (isset($_SESSION['status_login']) && $_SESSION['status_login'] == 'berhasil')
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const pesan = "<?php echo htmlspecialchars($pesan, ENT_QUOTES, 'UTF-8'); ?>";
             const notifArea = document.getElementById('notification-area');
             let type = '';
             let message = '';
-            
+
             // --- LOGIC PESAN ---
             if (pesan === 'gagal') {
                 type = 'toast-error';
@@ -88,18 +83,19 @@ if (isset($_SESSION['status_login']) && $_SESSION['status_login'] == 'berhasil')
                 type = 'toast-success';
                 message = '<i class="fa-solid fa-check-circle"></i> Anda berhasil keluar dari portal.';
             }
-            
+
             // --- TAMPILKAN TOAST ---
             if (message) {
                 notifArea.innerHTML = `<div class="${type} toast-alert">${message}</div>`;
                 notifArea.classList.add('show');
-                
+
                 // Sembunyikan setelah 5 detik
                 setTimeout(() => {
                     notifArea.classList.remove('show');
-                }, 5000); 
+                }, 5000);
             }
         });
     </script>
 </body>
+
 </html>

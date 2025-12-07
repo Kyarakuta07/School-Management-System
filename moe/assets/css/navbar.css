@@ -225,7 +225,7 @@
 
         /* Ini sudah benar (sama dengan header di atas) */
         background: rgba(0, 0, 0, 0.7); 
-        backdrop-filter: blur(20px);
+        backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
         
         border-top: none; /* PENTING: Hapus garis atas biar nyambung sama header */

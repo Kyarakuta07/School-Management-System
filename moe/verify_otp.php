@@ -1,7 +1,8 @@
-<?php 
+<?php
+require_once 'includes/security_config.php';
 session_start();
 // Wajib ada untuk cek database
-include 'connection.php'; 
+include 'connection.php';
 
 // File ini dipanggil dari proses_register.php dengan parameter user
 $username = isset($_GET['user']) ? $_GET['user'] : '';
@@ -47,15 +48,18 @@ mysqli_stmt_close($stmt_check);
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verifikasi OTP - MOE</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Lato:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css" /> 
-    </head>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Lato:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+</head>
+
 <body>
 
     <div class="bg-image"></div>
@@ -68,26 +72,31 @@ mysqli_stmt_close($stmt_check);
 
         <?php if (!empty($status_message)): ?>
             <div class="alert-error">
-                <i class="fa-solid fa-triangle-exclamation"></i> 
+                <i class="fa-solid fa-triangle-exclamation"></i>
                 <?php echo $status_message; ?>
             </div>
         <?php endif; ?>
 
         <form action="proses_verify.php" method="POST">
-            
+
             <input type="hidden" name="username" value="<?php echo htmlspecialchars($username); ?>">
-            
+
             <div class="input-group">
                 <label for="otp">Kode Verifikasi (OTP)</label>
-                <input type="number" name="otp_code" class="form-control" placeholder="Masukkan 6 digit kode" required maxlength="6">
+                <input type="number" name="otp_code" class="form-control" placeholder="Masukkan 6 digit kode" required
+                    maxlength="6">
                 <i class="fa-solid fa-key input-icon"></i>
             </div>
+
+            <?php require_once 'includes/csrf.php';
+            echo csrf_token_field(); ?>
 
             <button type="submit" class="btn-login" style="margin-top: 1.5rem;">Konfirmasi & Selesaikan</button>
         </form>
 
         <div style="margin-top: 1rem; font-size: 0.9rem;">
-            <a href="resend_otp.php?user=<?php echo urlencode($username); ?>" style="color: #DAA520; text-decoration: none;">
+            <a href="resend_otp.php?user=<?php echo urlencode($username); ?>"
+                style="color: #DAA520; text-decoration: none;">
                 Kirim Ulang Kode OTP
             </a>
             <span style="color: #555; margin: 0 10px;">|</span>
@@ -97,4 +106,5 @@ mysqli_stmt_close($stmt_check);
         </div>
     </div>
 </body>
+
 </html>

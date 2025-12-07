@@ -29,7 +29,7 @@ $username = isset($_GET['username']) ? $_GET['username'] : 'Anggota Baru';
 
         .login-container {
             max-width: 450px !important;
-            padding: 50px 30px !important;
+            padding: clamp(2rem, 5vh, 3.5rem) clamp(1.5rem, 5vw, 2rem) !important;
             text-align: center;
             border-bottom: 3px solid var(--gold);
         }

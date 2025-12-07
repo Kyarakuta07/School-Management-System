@@ -7,7 +7,12 @@
     --gold-glow: rgba(218, 165, 32, 0.5);
     --dark-bg: #050505;
 }
-* { margin: 0; padding: 0; box-sizing: border-box; }
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
 body {
     font-family: 'Lato', sans-serif;
@@ -15,11 +20,13 @@ body {
     width: 100%;
     display: flex;
     justify-content: center;
-    align-items: center; /* Centering Vertikal */
+    align-items: center;
+    /* Centering Vertikal */
     background-color: var(--dark-bg);
     position: relative;
     color: #fff;
-    padding: 20px; /* Jarak aman di layar kecil */
+    padding: 20px;
+    /* Jarak aman di layar kecil */
 }
 
 /* ============================
@@ -27,8 +34,10 @@ body {
    ============================ */
 .bg-image {
     position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     /* Pastikan path gambar background benar */
     background: url('assets/landing/2.png') no-repeat center center/cover;
     z-index: -2;
@@ -37,9 +46,11 @@ body {
 
 .bg-overlay {
     position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: radial-gradient(circle at center, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.65) 100%);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.65) 100%);
     z-index: -1;
 }
 
@@ -49,22 +60,22 @@ body {
 .login-container {
     width: 100%;
     max-width: 400px;
-    
+
     /* Padding pas, tidak kepanjangan */
-    padding: 2rem 2rem; 
-    
+    padding: 2rem 2rem;
+
     background: rgba(10, 8, 5, 0.9);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    
+
     border: 1px solid rgba(218, 165, 32, 0.3);
     border-top: 1px solid rgba(218, 165, 32, 0.6);
     border-bottom: 3px solid #DAA520;
-    
+
     border-radius: 20px;
-    box-shadow: 0 0 50px rgba(0,0,0,0.8);
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
     text-align: center;
-    
+
     position: relative;
     z-index: 10;
 }
@@ -73,17 +84,22 @@ body {
    ELEMENTS
    ============================ */
 .login-logo {
-    width: 80px; 
+    width: 80px;
     height: 80px;
     margin: 0 auto 1rem;
     border-radius: 50%;
     border: 2px solid var(--gold);
     padding: 4px;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0, 0, 0, 0.6);
     box-shadow: 0 0 25px var(--gold-glow);
 }
 
-.login-logo img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+.login-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
 
 h1 {
     font-family: 'Cinzel', serif;
@@ -92,11 +108,12 @@ h1 {
     margin-bottom: 0.3rem;
     letter-spacing: 1px;
     text-transform: uppercase;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
 }
 
 .subtitle {
-    color: #888;
+    color: #999;
+    /* Improved from #888 for better contrast */
     font-size: 0.7rem;
     margin-bottom: 1.5rem;
     letter-spacing: 2px;
@@ -128,7 +145,7 @@ h1 {
     height: 40px;
     padding: 8px 15px;
     padding-left: 35px;
-    background: rgba(0, 0, 0, 0.4); 
+    background: rgba(0, 0, 0, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 6px;
     color: #fff;
@@ -139,21 +156,30 @@ h1 {
 
 .form-control:focus {
     outline: none;
-    border-color: #DAA520; /* Border jadi emas */
-    background: rgba(0, 0, 0, 0.8); /* Background jadi lebih gelap pekat */
-    box-shadow: 0 0 15px rgba(218, 165, 32, 0.3); /* Glow emas di sekeliling */
+    border-color: #DAA520;
+    /* Border jadi emas */
+    background: rgba(0, 0, 0, 0.8);
+    /* Background jadi lebih gelap pekat */
+    box-shadow: 0 0 15px rgba(218, 165, 32, 0.3);
+    /* Glow emas di sekeliling */
     color: #fff;
 }
 
 .input-icon {
     position: absolute;
     left: 12px;
-    top: 32px;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-top: 12px;
+    /* Account for label height */
     color: #555;
     transition: 0.3s;
     font-size: 0.8rem;
 }
-.form-control:focus + .input-icon { color: var(--gold); }
+
+.form-control:focus+.input-icon {
+    color: var(--gold);
+}
 
 /* ============================
    BUTTONS & LINKS
@@ -173,7 +199,7 @@ h1 {
     transition: 0.3s;
     text-transform: uppercase;
     letter-spacing: 1px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
 }
 
 .btn-login:hover {
@@ -188,8 +214,10 @@ h1 {
     justify-content: space-between;
     font-size: 0.7rem;
 }
+
 .footer-links a {
-    color: #aaa; /* Sedikit lebih terang dari sebelumnya */
+    color: #aaa;
+    /* Sedikit lebih terang dari sebelumnya */
     text-decoration: none;
     transition: all 0.3s ease;
     font-size: 0.8rem;
@@ -198,23 +226,27 @@ h1 {
 
 /* Saat mouse diarahkan, berubah jadi Emas */
 .footer-links a:hover {
-    color: #DAA520; 
-    text-shadow: 0 0 5px rgba(218, 165, 32, 0.5); /* Efek glow */
-    transform: translateX(2px); /* Gerak dikit biar interaktif */
+    color: #DAA520;
+    text-shadow: 0 0 5px rgba(218, 165, 32, 0.5);
+    /* Efek glow */
+    transform: translateX(2px);
+    /* Gerak dikit biar interaktif */
 }
 
 .back-link {
-    display: flex; /* Biar icon panah dan teks sejajar rapi */
+    display: flex;
+    /* Biar icon panah dan teks sejajar rapi */
     align-items: center;
     justify-content: center;
     gap: 8px;
-    
+
     margin-top: 1.5rem;
     font-size: 0.8rem;
-    color: #666; /* Warna default */
+    color: #666;
+    /* Warna default */
     text-decoration: none;
     transition: all 0.3s ease;
-    
+
     /* Tambahkan border tipis transparan biar area klik luas */
     padding: 5px 15px;
     border-radius: 20px;
@@ -222,10 +254,14 @@ h1 {
 }
 
 .back-link:hover {
-    color: #fff; /* Teks jadi putih */
-    border-color: rgba(255, 255, 255, 0.2); /* Muncul border tipis */
-    background: rgba(255, 255, 255, 0.05); /* Background nyala dikit */
-    transform: translateY(-2px); /* Naik dikit */
+    color: #fff;
+    /* Teks jadi putih */
+    border-color: rgba(255, 255, 255, 0.2);
+    /* Muncul border tipis */
+    background: rgba(255, 255, 255, 0.05);
+    /* Background nyala dikit */
+    transform: translateY(-2px);
+    /* Naik dikit */
 }
 
 /* =========================================
@@ -233,8 +269,8 @@ h1 {
    ========================================= */
 
 /* Gaya Dasar untuk semua tipe Alert */
-.alert-error, 
-.alert-success, 
+.alert-error,
+.alert-success,
 .alert-warning {
     padding: 12px;
     border-radius: 8px;
@@ -250,8 +286,8 @@ h1 {
 /* 1. ALERT ERROR (Gagal Login / OTP Salah) */
 .alert-error {
     /* Menggunakan warna yang mewah dan elegan (emas transparan) */
-    background: rgba(184, 138, 27, 0.2); 
-    border: 1px solid #DAA520; 
+    background: rgba(184, 138, 27, 0.2);
+    border: 1px solid #DAA520;
     color: #DAA520;
     box-shadow: 0 0 10px rgba(218, 165, 32, 0.1);
 }
@@ -274,13 +310,16 @@ h1 {
 
 .notification-container {
     position: fixed;
-    top: 20px; /* Jarak awal dari atas */
+    top: 20px;
+    /* Jarak awal dari atas */
     left: 50%;
-    transform: translateX(-50%); /* Pusatkan secara horizontal */
+    transform: translateX(-50%);
+    /* Pusatkan secara horizontal */
     z-index: 1000;
     width: 90%;
     max-width: 450px;
-    opacity: 0; /* Mulai tersembunyi */
+    opacity: 0;
+    /* Mulai tersembunyi */
     visibility: hidden;
     transition: all 0.4s ease-in-out;
 }
@@ -288,7 +327,8 @@ h1 {
 .notification-container.show {
     opacity: 1;
     visibility: visible;
-    top: 30px; /* Turunkan sedikit saat muncul */
+    top: 30px;
+    /* Turunkan sedikit saat muncul */
 }
 
 .toast-alert {
@@ -296,38 +336,44 @@ h1 {
     border-radius: 8px;
     text-align: center;
     font-weight: 700;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
 /* Gaya Warna Spesifik */
-.toast-error { 
-    background-color: rgba(150, 0, 0, 0.9); /* Merah gelap */
-    border: 1px solid #ff4444; 
+.toast-error {
+    background-color: rgba(150, 0, 0, 0.9);
+    /* Merah gelap */
+    border: 1px solid #ff4444;
     color: #fff;
 }
-.toast-warning { 
+
+.toast-warning {
     /* Emas Gelap/Cokelat */
-    background-color: rgba(184, 138, 27, 0.9); 
-    border: 1px solid var(--gold); 
-    color: var(--dark-bg); /* Teks hitam agar kontras */
+    background-color: rgba(184, 138, 27, 0.9);
+    border: 1px solid var(--gold);
+    color: var(--dark-bg);
+    /* Teks hitam agar kontras */
 }
-.toast-success { 
-    background-color: rgba(0, 100, 0, 0.9); 
-    border: 1px solid #32cd32; 
+
+.toast-success {
+    background-color: rgba(0, 100, 0, 0.9);
+    border: 1px solid #32cd32;
     color: #fff;
 }
 
 /* --- Tambahkan blok ini ke style.css global di bagian bawah --- */
 
-.bg-fixed { 
-    position: fixed; 
-    top: 0; left: 0; 
-    width: 100%; height: 100%;
+.bg-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     /* Path harus dari root ke folder assets */
-    background: url('assets/landing/2.png') no-repeat center center/cover; 
-    z-index: -2; 
-    opacity: 0.4; 
+    background: url('assets/landing/2.png') no-repeat center center/cover;
+    z-index: -2;
+    opacity: 0.4;
 }

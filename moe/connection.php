@@ -5,13 +5,12 @@
 function loadEnv($path)
 {
     if (!file_exists($path)) {
-        // Jika file .env tidak ada, kita asumsikan environment variables sudah diset di server
-        // atau kita biarkan error nanti di koneksi
         return;
     }
 
     $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($lines as $line) {
+        // Lewati komentar
         if (strpos(trim($line), '#') === 0) {
             continue;
         }
@@ -20,11 +19,11 @@ function loadEnv($path)
         $name = trim($name);
         $value = trim(trim($value), "\"'");
 
-        if (!array_key_exists($name, $_SERVER) && !array_key_exists($name, $_ENV)) {
-            putenv(sprintf('%s=%s', $name, $value));
-            $_ENV[$name] = $value;
-            $_SERVER[$name] = $value;
-        }
+        // [PERBAIKAN] Hapus pengecekan if exists.
+        // Langsung paksa timpa variabel environment dengan isi file .env
+        putenv(sprintf('%s=%s', $name, $value));
+        $_ENV[$name] = $value;
+        $_SERVER[$name] = $value;
     }
 }
 
@@ -32,7 +31,6 @@ function loadEnv($path)
 loadEnv(__DIR__ . '/.env');
 
 // Ambil kredensial dari environment variable
-// Gunakan getenv() agar aman
 $servername = getenv('DB_HOST');
 $username = getenv('DB_USER');
 $password = getenv('DB_PASS');
@@ -40,9 +38,9 @@ $dbname = getenv('DB_NAME');
 
 // Cek apakah variabel berhasil dimuat
 if (!$servername || !$username || !$password || !$dbname) {
-    // Gunakan error_log untuk mencatat error di server, bukan menampilkannya ke user
     error_log("Database configuration missing from .env file.");
-    die("System Error: Configuration missing. Please contact administrator.");
+    // Tampilkan sedikit info debug jika masih error (bisa dihapus nanti)
+    die("System Error: Configuration missing. (Debug: User is $username)"); 
 }
 
 // Buat koneksi
@@ -50,9 +48,8 @@ $conn = mysqli_connect($servername, $username, $password, $dbname);
 
 // Cek koneksi
 if (!$conn) {
-    // JANGAN tampilkan mysqli_connect_error() ke user di production!
-    // Itu membocorkan path direktori server kamu.
     error_log("Connection failed: " . mysqli_connect_error());
+    // Pesan error generik untuk user
     die("Connection failed. Please try again later.");
 }
 
