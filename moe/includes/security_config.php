@@ -8,15 +8,16 @@
 if (session_status() === PHP_SESSION_NONE) {
     ini_set('session.cookie_httponly', 1);
     ini_set('session.use_only_cookies', 1);
-    ini_set('session.cookie_secure', 1); // Only over HTTPS
-    ini_set('session.cookie_samesite', 'Strict');
+    // Disable secure flag for localhost (HTTP), enable in production with HTTPS
+    ini_set('session.cookie_secure', 0);
+    ini_set('session.cookie_samesite', 'Lax'); // Changed from Strict to Lax for localhost
 
     session_set_cookie_params([
         'lifetime' => 0,
         'path' => '/',
-        'domain' => $_SERVER['HTTP_HOST'],
-        'secure' => true,
+        'domain' => '',  // Empty for localhost compatibility
+        'secure' => false,  // Set to true in production with HTTPS
         'httponly' => true,
-        'samesite' => 'Strict'
+        'samesite' => 'Lax'  // Lax allows POST from same origin
     ]);
 }
