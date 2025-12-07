@@ -80,7 +80,7 @@
     font-size: 1.1rem !important;
 }
 
-/* Help Button - Complete Styling */
+/* Help Button */
 .pet-header .btn-help {
     background: rgba(218, 165, 32, 0.15) !important;
     border: 1px solid rgba(218, 165, 32, 0.3) !important;
@@ -169,29 +169,76 @@
     transform: scale(1.15) !important;
 }
 
-/* Responsive */
+/* ================================================
+   RESPONSIVE - MOBILE OPTIMIZED
+   ================================================ */
+
 @media (max-width: 768px) {
     .pet-container .pet-header {
-        grid-template-columns: 40px 1fr 40px !important;
-        padding: 12px 15px !important;
+        grid-template-columns: 40px 1fr auto !important;
+        padding: 10px 12px !important;
+        gap: 10px !important;
+        min-height: 60px !important;
+        height: 60px !important;
+        max-height: 60px !important;
     }
 
     .pet-header .header-title {
-        font-size: 1.1rem !important;
+        font-size: 1rem !important;
+    }
+
+    .pet-header .back-btn,
+    .pet-header .btn-help {
+        width: 36px !important;
+        height: 36px !important;
+    }
+
+    .pet-header .gold-display {
+        padding: 6px 10px !important;
+        font-size: 0.85rem !important;
+    }
+
+    .pet-container .pet-tabs {
+        top: 60px !important;
     }
 
     .pet-tabs .tab-btn {
-        padding: 10px 6px !important;
-        min-height: 60px !important;
+        padding: 8px 4px !important;
+        min-height: 55px !important;
+        font-size: 0.75rem !important;
+    }
+
+    .pet-tabs .tab-btn i {
+        font-size: 1.2rem !important;
     }
 }
 
 @media (max-width: 480px) {
+    .pet-container .pet-header {
+        padding: 8px 10px !important;
+        min-height: 56px !important;
+        height: 56px !important;
+        max-height: 56px !important;
+    }
+
+    .pet-header .header-title {
+        font-size: 0.9rem !important;
+    }
+
+    .pet-container .pet-tabs {
+        top: 56px !important;
+    }
+
+    .pet-tabs .tab-btn {
+        padding: 10px 2px !important;
+        min-height: 52px !important;
+    }
+
     .pet-tabs .tab-btn span {
         display: none !important;
     }
 
     .pet-tabs .tab-btn i {
-        font-size: 1.4rem !important;
+        font-size: 1.3rem !important;
     }
 }
