@@ -17,9 +17,12 @@ class RateLimiter
     public function __construct($db_connection)
     {
         $this->conn = $db_connection;
+
+        // Only check table existence once per script execution
         if (!self::$table_checked) {
-        $this->createTableIfNotExists();
-        self::$table_checked = true;
+            $this->createTableIfNotExists();
+            self::$table_checked = true;
+        }
     }
 
     /**
