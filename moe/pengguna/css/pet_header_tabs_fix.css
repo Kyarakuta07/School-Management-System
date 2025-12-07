@@ -15,6 +15,10 @@
     position: sticky !important;
     top: 0 !important;
     z-index: 100 !important;
+    min-height: 73px !important;
+    height: 73px !important;
+    max-height: 73px !important;
+    box-sizing: border-box !important;
 }
 
 /* Back button */
@@ -54,6 +58,8 @@
     align-items: center !important;
     gap: 10px !important;
     justify-self: end !important;
+    flex-shrink: 0 !important;
+    min-width: fit-content !important;
 }
 
 .pet-header .gold-display {
@@ -66,6 +72,37 @@
     border: 1px solid rgba(218, 165, 32, 0.3) !important;
     font-weight: bold !important;
     color: var(--pet-gold) !important;
+    flex-shrink: 0 !important;
+    min-width: fit-content !important;
+}
+
+.pet-header .gold-display i {
+    font-size: 1.1rem !important;
+}
+
+/* Help Button - Complete Styling */
+.pet-header .btn-help {
+    background: rgba(218, 165, 32, 0.15) !important;
+    border: 1px solid rgba(218, 165, 32, 0.3) !important;
+    color: var(--pet-gold) !important;
+    padding: 8px 12px !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    font-size: 1.2rem !important;
+    transition: all 0.2s ease !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 40px !important;
+    height: 40px !important;
+    flex-shrink: 0 !important;
+}
+
+.pet-header .btn-help:hover {
+    background: rgba(218, 165, 32, 0.25) !important;
+    border-color: var(--pet-gold) !important;
+    transform: scale(1.05) !important;
+    box-shadow: 0 0 15px rgba(218, 165, 32, 0.3) !important;
 }
 
 /* ================================================
