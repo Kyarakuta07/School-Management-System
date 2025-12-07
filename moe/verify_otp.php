@@ -83,8 +83,8 @@ mysqli_stmt_close($stmt_check);
 
             <div class="input-group">
                 <label for="otp">Kode Verifikasi (OTP)</label>
-                <input type="number" name="otp_code" class="form-control" placeholder="Masukkan 6 digit kode" required
-                    maxlength="6">
+                <input type="text" name="otp_code" pattern="[0-9]{6}" inputmode="numeric" maxlength="6"
+                    class="form-control" placeholder="Masukkan 6 digit kode" required autocomplete="off">>
                 <i class="fa-solid fa-key input-icon"></i>
             </div>
 

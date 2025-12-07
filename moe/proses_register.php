@@ -136,7 +136,7 @@ if ($stmt) {
             $mail->Port = 465;
 
             // Recipients
-            $mail->setFrom('mediterraneanofegypt@gmail.com', 'MOE Registration');
+            $mail->setFrom(getenv('SMTP_USER'), 'MOE Registration');
             $mail->addAddress($email, $username);
 
             // Content
@@ -187,11 +187,14 @@ EMAIL_BODY;
 
     } else {
         // Gagal Eksekusi INSERT SQL
-        header("Location: register.php?error=db_error"); // Ganti die() dengan redirect yang benar
+        error_log("Registration INSERT failed for user: " . $username . " - Error: " . mysqli_error($conn));
+        header("Location: register.php?error=db_error");
         exit();
     }
 } else {
     // Error saat prepare query
-    die("Error SQL: " . mysqli_error($conn));
+    error_log("Registration query preparation failed - Error: " . mysqli_error($conn));
+    header("Location: register.php?error=db_error");
+    exit();
 }
 ?>

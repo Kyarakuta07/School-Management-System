@@ -40,7 +40,7 @@ $dbname = getenv('DB_NAME');
 if (!$servername || !$username || !$password || !$dbname) {
     error_log("Database configuration missing from .env file.");
     // Tampilkan sedikit info debug jika masih error (bisa dihapus nanti)
-    die("System Error: Configuration missing. (Debug: User is $username)"); 
+    die("System Error: Configuration missing. Please contact administrator.");
 }
 
 // Buat koneksi

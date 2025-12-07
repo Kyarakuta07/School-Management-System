@@ -8,6 +8,7 @@
 class RateLimiter
 {
     private $conn;
+    private static $table_checked = false;
 
     /**
      * Constructor
@@ -16,7 +17,9 @@ class RateLimiter
     public function __construct($db_connection)
     {
         $this->conn = $db_connection;
+        if (!self::$table_checked) {
         $this->createTableIfNotExists();
+        self::$table_checked = true;
     }
 
     /**
