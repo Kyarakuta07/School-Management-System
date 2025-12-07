@@ -409,7 +409,7 @@
     background: var(--pet-card-bg);
     border: 1px solid rgba(218, 165, 32, 0.2);
     border-radius: 12px;
-    padding: 12px 15px;
+    padding: 12px 15px 5px 15px;
     margin-bottom: 10px;
     backdrop-filter: blur(10px);
     max-width: 400px;
