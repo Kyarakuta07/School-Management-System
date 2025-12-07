@@ -172,6 +172,7 @@ while($row = mysqli_fetch_assoc($result_sanctuary)){
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="js/sidebar-toggle.js"></script>
     <script>
         // Data dari PHP
         const labels = <?php echo json_encode($sanctuary_labels); ?>;

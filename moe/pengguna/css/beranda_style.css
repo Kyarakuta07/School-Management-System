@@ -9,10 +9,15 @@
     --font-head: 'Cinzel', serif;
     --font-body: 'Lato', sans-serif;
     --red-alert: #ff6b6b;
-    --sidebar-width: 300px; /* Lebar kolom kiri */
+    --sidebar-width: 300px;
+    /* Lebar kolom kiri */
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
 body {
     background-color: var(--dark-bg);
@@ -24,11 +29,19 @@ body {
 }
 
 /* --- BACKGROUND --- */
-.bg-fixed, .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; }
+.bg-fixed,
+.bg-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+}
 
 /* --- MAIN WRAPPER --- */
 .main-dashboard-wrapper {
-    padding: 20px 40px 60px 40px; 
+    padding: 20px 40px 60px 40px;
     max-width: 1400px;
     margin: 0 auto;
     z-index: 10;
@@ -43,8 +56,20 @@ body {
     margin-bottom: 30px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
-.main-h1 { font-family: var(--font-head); color: var(--gold); font-size: 2.5rem; margin: 0; }
-.main-h2 { font-size: 1rem; color: #ccc; font-weight: 400; margin-top: 5px; }
+
+.main-h1 {
+    font-family: var(--font-head);
+    color: var(--gold);
+    font-size: 2.5rem;
+    margin: 0;
+}
+
+.main-h2 {
+    font-size: 1rem;
+    color: #ccc;
+    font-weight: 400;
+    margin-top: 5px;
+}
 
 
 .top-nav-menu {
@@ -54,13 +79,28 @@ body {
     gap: 20px;
     margin-bottom: 30px;
 }
+
 .nav-btn {
-    display: flex; align-items: center; gap: 8px;
-    text-decoration: none; color: #aaa; padding: 8px 12px;
-    border-radius: 4px; transition: 0.3s; font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: #aaa;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: 0.3s;
+    font-size: 0.9rem;
 }
-.nav-btn:hover { background: rgba(218, 165, 32, 0.1); color: var(--gold); }
-.logout-btn-header { color: var(--red-alert) !important; margin-left: auto; }
+
+.nav-btn:hover {
+    background: rgba(218, 165, 32, 0.1);
+    color: var(--gold);
+}
+
+.logout-btn-header {
+    color: var(--red-alert) !important;
+    margin-left: auto;
+}
 
 
 /* ==================================
@@ -68,7 +108,8 @@ body {
    ================================== */
 .profile-main-grid {
     display: grid;
-    grid-template-columns: var(--sidebar-width) 1fr; /* 300px fixed column & flexible column */
+    grid-template-columns: var(--sidebar-width) 1fr;
+    /* 300px fixed column & flexible column */
     gap: 40px;
 }
 
@@ -76,12 +117,14 @@ body {
 .profile-sidebar-panel {
     display: flex;
     flex-direction: column;
-    gap: 25px; /* Jarak antar kotak di kolom kiri */
-    align-content: flex-start; /* Pastikan konten rapat ke atas */
+    gap: 25px;
+    /* Jarak antar kotak di kolom kiri */
+    align-content: flex-start;
+    /* Pastikan konten rapat ke atas */
 }
 
 .profile-avatar-box {
-    text-align: center; 
+    text-align: center;
     padding: 20px;
     border: 1px solid var(--glass-border);
     border-radius: 12px;
@@ -98,9 +141,24 @@ body {
     object-fit: cover;
 }
 
-.user-name-title { font-family: var(--font-head); font-size: 1.2rem; color: #fff; margin: 0; }
-.profile-link { color: #aaa; font-size: 0.9rem; margin-bottom: 10px;}
-.sanctuary-info-large { color: var(--gold); font-size: 0.8rem; letter-spacing: 1px; }
+.user-name-title {
+    font-family: var(--font-head);
+    font-size: 1.2rem;
+    color: #fff;
+    margin: 0;
+}
+
+.profile-link {
+    color: #aaa;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+}
+
+.sanctuary-info-large {
+    color: var(--gold);
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+}
 
 /* FUNFACT CARD */
 .funfact-card {
@@ -108,9 +166,16 @@ body {
     border-radius: 12px;
     background: var(--card-bg);
     border: 1px solid var(--glass-border);
-    min-height: 150px; /* Tambahkan tinggi minimum untuk visual */
+    min-height: 150px;
+    /* Tambahkan tinggi minimum untuk visual */
 }
-.funfact-card p { color: #aaa; margin-top: 10px; font-size: 0.9rem; line-height: 1.6; }
+
+.funfact-card p {
+    color: #aaa;
+    margin-top: 10px;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
 
 /* QUICK STATS GRID */
 .quick-stats-grid {
@@ -125,8 +190,19 @@ body {
     border: 1px solid var(--glass-border);
     border-radius: 12px;
 }
-.stat-box strong { font-family: var(--font-head); font-size: 1.5rem; color: var(--gold); display: block; margin-top: 5px;}
-.stat-box small { color: #fff; font-size: 0.8rem; }
+
+.stat-box strong {
+    font-family: var(--font-head);
+    font-size: 1.5rem;
+    color: var(--gold);
+    display: block;
+    margin-top: 5px;
+}
+
+.stat-box small {
+    color: #fff;
+    font-size: 0.8rem;
+}
 
 
 /* --- KOLOM KANAN: INFO COMMAND CENTER --- */
@@ -150,7 +226,7 @@ body {
 
 .card-title {
     font-family: var(--font-head);
-    font-size: 0.95rem; 
+    font-size: 0.95rem;
     color: var(--gold);
     text-transform: uppercase;
     border-bottom: 1px solid var(--glass-border);
@@ -159,18 +235,25 @@ body {
     letter-spacing: 1px;
 }
 
-.card-content p { color: #aaa; margin-top: 10px; line-height: 1.6; }
+.card-content p {
+    color: #aaa;
+    margin-top: 10px;
+    line-height: 1.6;
+}
 
 /* Responsive adjustments */
 @media (max-width: 900px) {
     .profile-main-grid {
-        grid-template-columns: 1fr; /* Stack kolom menjadi satu */
+        grid-template-columns: 1fr;
+        /* Stack kolom menjadi satu */
         gap: 20px;
     }
 }
+
 /* Tambahkan di akhir file beranda_style.css */
 .sanctuary-icon {
-    font-size: 2rem; /* Membuat ikon lebih besar */
+    font-size: 2rem;
+    /* Membuat ikon lebih besar */
     color: var(--gold);
     display: block;
     margin-bottom: 10px;
@@ -183,47 +266,230 @@ body {
 }
 
 /* =========================================
-   RESPONSIVE NETHERA DASHBOARD (Max Width 900px)
+   RESPONSIVE NETHERA DASHBOARD
    ========================================= */
 
+/* Tablets & Small Desktops (769px - 900px) */
 @media (max-width: 900px) {
-    
-    /* 1. Stack Kolom Utama */
     .profile-main-grid {
-        /* Kolom kiri dan kanan menumpuk penuh */
-        grid-template-columns: 1fr; 
+        grid-template-columns: 1fr;
         gap: 30px;
     }
 
-    /* 2. Stack Kartu Statistik Cepat */
     .quick-stats-grid {
-        grid-template-columns: 1fr; /* Ubah dari 2 kolom menjadi 1 kolom penuh */
+        grid-template-columns: 1fr 1fr;
+        /* Keep 2 columns on tablet */
         gap: 15px;
     }
-    
-    /* 3. Atur Ulang PADDING */
+
     .main-dashboard-wrapper {
-        padding: 20px 15px 40px 15px; /* Padding samping diperkecil */
+        padding: 20px 20px 60px 20px;
     }
-    
-    /* Rapatkan Avatar Box */
+
+    .main-h1 {
+        font-size: 2.2rem;
+    }
+
+    .top-nav-menu {
+        flex-wrap: wrap;
+        gap: 10px 15px;
+    }
+}
+
+/* Mobile Landscape (481px - 768px) */
+@media (max-width: 768px) {
+    .main-dashboard-wrapper {
+        padding: 15px 15px 80px 15px;
+    }
+
+    .main-h1 {
+        font-size: 1.8rem;
+    }
+
+    .main-h2 {
+        font-size: 0.9rem;
+    }
+
+    .top-nav-menu {
+        justify-content: center;
+        gap: 8px 10px;
+    }
+
+    .nav-btn {
+        font-size: 0.85rem;
+        padding: 10px 15px;
+        min-height: 44px;
+        /* Touch-friendly */
+        flex: 0 1 auto;
+    }
+
+    .logout-btn-header {
+        margin-left: 0;
+        width: 100%;
+        justify-content: center;
+    }
+
     .profile-avatar-box {
+        display: flex;
         flex-direction: row;
         align-items: center;
         text-align: left;
+        gap: 15px;
     }
+
     .profile-avatar-lg {
+        width: 80px;
+        height: 80px;
         margin-bottom: 0;
+        flex-shrink: 0;
     }
-    
-    /* Rapatkan Navigasi Horizontal */
+
+    .user-name-title {
+        font-size: 1.1rem;
+    }
+
+    .profile-link {
+        font-size: 0.85rem;
+    }
+
+    .quick-stats-grid {
+        grid-template-columns: 1fr;
+        /* Stack on mobile */
+    }
+
+    .stat-box {
+        padding: 15px;
+    }
+
+    .stat-box strong {
+        font-size: 1.3rem;
+    }
+
+    .profile-card {
+        padding: 18px;
+    }
+
+    .card-title {
+        font-size: 0.9rem;
+    }
+
+    .sanctuary-icon {
+        font-size: 1.5rem;
+    }
+}
+
+/* Extra Small Mobile (320px - 480px) */
+@media (max-width: 480px) {
+    .main-dashboard-wrapper {
+        padding: 12px 10px 70px 10px;
+    }
+
+    .top-user-header {
+        padding-bottom: 15px;
+        margin-bottom: 20px;
+    }
+
+    .main-h1 {
+        font-size: 1.5rem;
+    }
+
+    .main-h2 {
+        font-size: 0.85rem;
+    }
+
     .top-nav-menu {
-        flex-wrap: wrap; /* Biar tombolnya turun baris */
-        justify-content: center;
-        gap: 10px 15px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
     }
-    
+
+    .nav-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 12px;
+        font-size: 0.9rem;
+    }
+
     .logout-btn-header {
-        margin-left: 0; /* Hapus margin dorong ke kanan */
+        order: -1;
+        /* Put logout button first on mobile */
+    }
+
+    .profile-main-grid {
+        gap: 20px;
+    }
+
+    .profile-avatar-box {
+        flex-direction: column;
+        text-align: center;
+        padding: 15px;
+    }
+
+    .profile-avatar-lg {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 12px;
+    }
+
+    .funfact-card {
+        padding: 15px;
+        min-height: 120px;
+    }
+
+    .funfact-card p {
+        font-size: 0.85rem;
+    }
+
+    .stat-box {
+        padding: 12px;
+    }
+
+    .stat-box strong {
+        font-size: 1.2rem;
+    }
+
+    .stat-box small {
+        font-size: 0.75rem;
+    }
+
+    .profile-card {
+        padding: 15px;
+        min-height: 120px;
+    }
+
+    .card-title {
+        font-size: 0.85rem;
+        padding-bottom: 8px;
+        margin-bottom: 12px;
+    }
+
+    .card-content p {
+        font-size: 0.85rem;
+        line-height: 1.5;
+    }
+
+    .sanctuary-icon {
+        font-size: 1.3rem;
+        margin-bottom: 8px;
+    }
+}
+
+/* Ultra-wide Screens (1920px+) */
+@media (min-width: 1920px) {
+    .main-dashboard-wrapper {
+        max-width: 1600px;
+        padding: 30px 60px 80px 60px;
+    }
+
+    .main-h1 {
+        font-size: 3rem;
+    }
+
+    .profile-main-grid {
+        gap: 50px;
+    }
+
+    .profile-card {
+        padding: 25px;
     }
 }

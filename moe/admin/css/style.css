@@ -11,18 +11,18 @@
     --gold: #DAA520;
     --gold-glow: rgba(218, 165, 32, 0.5);
     --dark-bg: #050505;
-    
+
     /* --- GLASSMORPHISM --- */
     --glass-bg: rgba(20, 20, 20, 0.85);
     --glass-border: rgba(218, 165, 32, 0.3);
-    
+
     /* --- DIMENSIONS --- */
     --sidebar-width: 260px;
-    
+
     /* --- FONTS --- */
     --font-head: 'Cinzel', serif;
     --font-body: 'Lato', sans-serif;
-    
+
     /* --- STATUS COLORS --- */
     --status-active-bg: rgba(50, 205, 50, 0.2);
     --status-active-text: #90ee90;
@@ -53,19 +53,24 @@ body {
    ============================ */
 .bg-fixed {
     position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     /* Naik 2 level (../../) untuk keluar dari folder css dan admin */
     background: url('../../assets/landing/2.png') no-repeat center center/cover;
     z-index: -2;
-    opacity: 0.4; /* Redupkan agar konten terbaca */
+    opacity: 0.4;
+    /* Redupkan agar konten terbaca */
 }
 
 .bg-overlay {
     position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: radial-gradient(circle at center, rgba(0,0,0,0.7) 0%, #000 100%);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, rgba(0, 0, 0, 0.7) 0%, #000 100%);
     z-index: -1;
 }
 
@@ -75,10 +80,12 @@ body {
 .sidebar {
     width: var(--sidebar-width);
     height: 100vh;
-    background: rgba(10, 8, 5, 0.95); /* Hampir solid agar menu jelas */
+    background: rgba(10, 8, 5, 0.95);
+    /* Hampir solid agar menu jelas */
     border-right: 1px solid var(--glass-border);
     position: fixed;
-    left: 0; top: 0;
+    left: 0;
+    top: 0;
     padding: 2rem 1.5rem;
     display: flex;
     flex-direction: column;
@@ -94,7 +101,8 @@ body {
 }
 
 .sidebar-logo {
-    width: 50px; height: 50px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     border: 2px solid var(--gold);
     padding: 2px;
@@ -111,7 +119,8 @@ body {
 .sidebar-menu {
     display: flex;
     flex-direction: column;
-    flex-grow: 1; /* Isi ruang kosong */
+    flex-grow: 1;
+    /* Isi ruang kosong */
 }
 
 .sidebar-menu a {
@@ -128,12 +137,13 @@ body {
     font-weight: 700;
 }
 
-.sidebar-menu a:hover, 
+.sidebar-menu a:hover,
 .sidebar-menu a.active {
-    background: linear-gradient(90deg, rgba(218,165,32,0.2), transparent);
+    background: linear-gradient(90deg, rgba(218, 165, 32, 0.2), transparent);
     color: var(--gold);
     border-left: 3px solid var(--gold);
-    padding-left: 12px; /* Kompensasi border */
+    padding-left: 12px;
+    /* Kompensasi border */
 }
 
 .sidebar-menu a i {
@@ -143,7 +153,7 @@ body {
 /* Menu Bottom (Logout) */
 .menu-bottom {
     margin-top: auto;
-    border-top: 1px solid rgba(255,255,255,0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
     padding-top: 1rem;
 }
 
@@ -198,7 +208,7 @@ body {
     position: relative;
     overflow: hidden;
     transition: transform 0.3s ease, border-color 0.3s ease;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .card:hover {
@@ -213,7 +223,8 @@ body {
     flex-direction: column;
     justify-content: space-between;
     height: 200px;
-    border-bottom: 4px solid var(--gold); /* Default Gold */
+    border-bottom: 4px solid var(--gold);
+    /* Default Gold */
 }
 
 .stat-title {
@@ -228,7 +239,7 @@ body {
     font-size: 3.5rem;
     font-weight: 900;
     color: #fff;
-    text-shadow: 0 0 20px rgba(218,165,32,0.3);
+    text-shadow: 0 0 20px rgba(218, 165, 32, 0.3);
 }
 
 .stat-icon {
@@ -236,7 +247,7 @@ body {
     right: 20px;
     bottom: 20px;
     font-size: 4rem;
-    color: rgba(255,255,255,0.15);
+    color: rgba(255, 255, 255, 0.15);
 }
 
 /* --- LIST CARD (Recent Users) --- */
@@ -250,7 +261,7 @@ body {
 .card-header {
     margin-bottom: 1rem;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .card-header h3 {
@@ -267,17 +278,26 @@ body {
     scrollbar-color: var(--gold) transparent;
 }
 
-.user-list::-webkit-scrollbar { width: 5px; }
-.user-list::-webkit-scrollbar-thumb { background-color: var(--gold); border-radius: 10px; }
+.user-list::-webkit-scrollbar {
+    width: 5px;
+}
+
+.user-list::-webkit-scrollbar-thumb {
+    background-color: var(--gold);
+    border-radius: 10px;
+}
 
 .user-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 12px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
-.user-item:last-child { border-bottom: none; }
+
+.user-item:last-child {
+    border-bottom: none;
+}
 
 .user-name {
     font-weight: bold;
@@ -295,10 +315,11 @@ body {
 
 .status-Aktif {
     /* Background transparan, hanya border dan teks yang berwarna */
-    background: rgba(50, 205, 50, 0.1); 
-    border: 1px solid #32cd32; 
+    background: rgba(50, 205, 50, 0.1);
+    border: 1px solid #32cd32;
     color: #32cd32;
-    box-shadow: 0 0 5px rgba(50, 205, 50, 0.2); /* Sedikit glow hijau */
+    box-shadow: 0 0 5px rgba(50, 205, 50, 0.2);
+    /* Sedikit glow hijau */
 }
 
 .status-Pending {
@@ -316,47 +337,265 @@ body {
 /* ============================
    7. RESPONSIVE DESIGN
    ============================ */
-@media (max-width: 1200px) {
+
+/* Hamburger Menu Toggle (Mobile Only) */
+.sidebar-toggle {
+    display: none;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 150;
+    background: var(--gold);
+    border: none;
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
+    cursor: pointer;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+}
+
+.sidebar-toggle span {
+    width: 24px;
+    height: 3px;
+    background: #000;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+.sidebar-toggle.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.sidebar-toggle.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.sidebar-toggle.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -6px);
+}
+
+/* Large Tablets & Small Desktops (992px - 1199px) */
+@media (max-width: 1199px) {
     .dashboard-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+
     .card-chart {
         grid-column: span 2;
-        margin-top: 1.5rem;
     }
+
     .card-list {
         grid-column: span 2;
     }
+
+    .main-content {
+        padding: 2rem;
+    }
+
+    .top-header h1 {
+        font-size: 2.2rem;
+    }
 }
 
-@media (max-width: 768px) {
-    .sidebar {
-        transform: translateX(-100%); /* Sembunyikan sidebar di HP */
+/* Tablets (768px - 991px) */
+@media (max-width: 991px) {
+    :root {
+        --sidebar-width: 240px;
     }
-    /* Class .open untuk memunculkan sidebar via JS nanti */
-    body.open .sidebar {
+
+    .main-content {
+        padding: 1.5rem;
+    }
+
+    .stat-value {
+        font-size: 3rem;
+    }
+
+    .card-stat {
+        height: 180px;
+    }
+}
+
+/* Mobile Landscape & Small Tablets (481px - 767px) */
+@media (max-width: 767px) {
+    .sidebar-toggle {
+        display: flex;
+    }
+
+    .sidebar {
+        transform: translateX(-100%);
+        box-shadow: 5px 0 20px rgba(0, 0, 0, 0.8);
+    }
+
+    .sidebar.open {
         transform: translateX(0);
     }
-    
+
+    /* Overlay when sidebar is open */
+    body::after {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 90;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+
+    body.sidebar-open::after {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
     .main-content {
         margin-left: 0;
         width: 100%;
-        padding: 1.5rem;
+        padding: 1.5rem 1rem;
+        padding-top: 80px;
+        /* Space for hamburger */
     }
-    
+
+    .top-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .top-header h2 {
+        font-size: 0.9rem;
+    }
+
     .dashboard-grid {
-        grid-template-columns: 1fr; /* 1 kolom ke bawah */
+        grid-template-columns: 1fr;
+        gap: 1rem;
     }
-    .card-chart, .card-list, .card-stat {
+
+    .card-chart,
+    .card-list,
+    .card-stat {
         grid-column: span 1;
+    }
+
+    .card-stat {
+        height: 160px;
+    }
+
+    .stat-value {
+        font-size: 2.5rem;
+    }
+
+    .stat-icon {
+        font-size: 3rem;
+        right: 15px;
+        bottom: 15px;
+    }
+
+    .card-list {
+        height: 350px;
     }
 }
 
-@media (max-width: 1200px) {
-    /* ... (Grid 2 kolom untuk tablet/laptop kecil) ... */
+/* Extra Small Mobile (320px - 480px) */
+@media (max-width: 480px) {
+    .sidebar-toggle {
+        width: 40px;
+        height: 40px;
+        top: 15px;
+        left: 15px;
+    }
+
+    .sidebar-toggle span {
+        width: 20px;
+        height: 2px;
+    }
+
+    .main-content {
+        padding: 1rem 0.8rem;
+        padding-top: 70px;
+    }
+
+    .top-header {
+        margin-bottom: 1.5rem;
+    }
+
+    .top-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .top-header h2 {
+        font-size: 0.85rem;
+    }
+
+    .dashboard-grid {
+        gap: 0.8rem;
+    }
+
+    .card {
+        padding: 1.2rem;
+        border-radius: 12px;
+    }
+
+    .card-stat {
+        height: 140px;
+    }
+
+    .stat-title {
+        font-size: 0.75rem;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+    }
+
+    .stat-icon {
+        font-size: 2.5rem;
+        right: 10px;
+        bottom: 10px;
+    }
+
+    .user-item {
+        padding: 10px 0;
+    }
+
+    .user-name {
+        font-size: 0.85rem;
+    }
+
+    .status-badge {
+        font-size: 0.65rem;
+        padding: 3px 8px;
+    }
+
+    .card-list {
+        height: 300px;
+    }
+
+    .card-chart {
+        height: 320px;
+    }
 }
-@media (max-width: 768px) {
-    /* ... (Grid 1 kolom untuk HP, dan menghilangkan sidebar fixed) ... */
-    .dashboard-grid { grid-template-columns: 1fr; } 
-    .main-content { margin-left: 0; width: 100%; } 
+
+/* Ultra-wide Screens (1920px+) */
+@media (min-width: 1920px) {
+    .main-content {
+        max-width: 1800px;
+        margin-left: auto;
+        margin-right: auto;
+        padding-left: calc((100vw - 1800px) / 2 + var(--sidebar-width));
+    }
+
+    .dashboard-grid {
+        gap: 2rem;
+    }
+
+    .stat-value {
+        font-size: 4rem;
+    }
 }

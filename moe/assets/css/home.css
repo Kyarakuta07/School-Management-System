@@ -1,12 +1,5 @@
 /* ========= HOME SECTION ONLY ========= */
 
-/* PENTING: Tambahkan ini di landing-style.css untuk .page-wrapper */
-/* .page-wrapper {
-    padding: 0 !important;
-    min-height: 100vh;
-    max-height: 100vh;
-} */
-
 html,
 body {
     margin: 0;
@@ -14,15 +7,30 @@ body {
     width: 100%;
     height: 100%;
     overflow-x: hidden;
-    overflow-y: hidden;
-    /* TAMBAHKAN INI - cegah scroll vertikal */
+}
+
+/* Desktop: Lock height for immersive single-screen experience */
+@media (min-width: 993px) {
+
+    html,
+    body {
+        overflow-y: hidden;
+    }
+}
+
+/* Mobile/Tablet: Allow scroll for accessibility */
+@media (max-width: 992px) {
+
+    html,
+    body {
+        overflow-y: auto;
+    }
 }
 
 /* HERO WRAPPER */
 .hero-section {
     position: relative;
-    height: calc(100vh - 60px);
-    /* Sesuaikan dengan tinggi navbar + footer */
+    min-height: calc(100vh - 100px);
     width: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -210,19 +218,12 @@ body {
    ========================================= */
 
 @media (max-width: 992px) {
-
-    html,
-    body {
-        overflow-y: auto;
-        /* Izinkan scroll di mobile */
-    }
-
     .hero-section {
         grid-template-columns: 1fr;
         height: auto;
         min-height: 100vh;
-        padding: 2rem 20px;
-        padding-top: 90px;
+        padding: 2rem 20px 80px;
+        padding-top: 100px;
         gap: 0;
         overflow: visible;
     }
@@ -230,36 +231,154 @@ body {
     .hero-right {
         order: 1;
         height: auto;
-        padding-top: 40px;
+        margin-right: 0;
+        padding-top: 20px;
         padding-bottom: 20px;
+        justify-content: center;
+    }
+
+    .hero-right::before {
+        transform: scale(1) translateX(0);
+        opacity: 0.3;
     }
 
     .character-container {
         transform: none !important;
         max-width: 100%;
         height: auto;
-        max-height: 500px;
+        max-height: 450px;
     }
 
     .main-combined {
-        max-width: 80%;
+        max-width: 70%;
         height: auto;
     }
 
     .hero-left {
         order: 2;
         text-align: center;
+        padding-left: 1rem;
+        padding-right: 1rem;
         padding-top: 0;
         height: auto;
     }
 
+    .title-container h1 {
+        font-size: 1rem;
+        margin-top: 10px;
+    }
+
     .about-container {
-        margin-top: 30px;
+        margin-top: 25px;
         max-width: 100%;
         text-align: left;
     }
 
+    .about-title {
+        font-size: 2.5rem;
+        text-align: center;
+    }
+
+    .about-box {
+        padding: 1.2rem;
+    }
+
+    .about-box p {
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
     .moe-text-img {
         display: none;
+    }
+}
+
+/* Small Mobile Devices (481px - 768px) */
+@media (max-width: 768px) {
+    .hero-section {
+        padding-top: 90px;
+        padding-bottom: 70px;
+    }
+
+    .character-container {
+        max-height: 380px;
+    }
+
+    .main-combined {
+        max-width: 75%;
+    }
+
+    .about-title {
+        font-size: 2.2rem;
+    }
+
+    .about-box p {
+        font-size: 0.9rem;
+    }
+}
+
+/* Extra Small Devices (320px - 480px) */
+@media (max-width: 480px) {
+    .hero-section {
+        padding: 1.5rem 15px 60px;
+        padding-top: 80px;
+    }
+
+    .character-container {
+        max-height: 300px;
+    }
+
+    .main-combined {
+        max-width: 80%;
+    }
+
+    .hero-left {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+
+    .title-container h1 {
+        font-size: 0.9rem;
+    }
+
+    .about-title {
+        font-size: 1.8rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .about-box {
+        padding: 1rem;
+    }
+
+    .about-box p {
+        font-size: 0.85rem;
+        line-height: 1.5;
+    }
+
+    .about-box::before,
+    .about-box::after {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+/* Very Large Screens (1400px+) */
+@media (min-width: 1400px) {
+    .hero-section {
+        max-width: 1600px;
+        margin: 0 auto;
+    }
+
+    .about-title {
+        font-size: 3.5rem;
+    }
+
+    .about-box p {
+        font-size: 1.1rem;
+        line-height: 1.5;
+    }
+
+    .character-container {
+        max-width: 1000px;
     }
 }
