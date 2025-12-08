@@ -548,7 +548,7 @@ switch ($action) {
         }
 
         $input = json_decode(file_get_contents('php://input'), true);
-        $score = isset($input[' score']) ? (int) $input['score'] : 0;
+        $score = isset($input['score']) ? (int) $input['score'] : 0;
         $pet_id = isset($input['pet_id']) ? (int) $input['pet_id'] : 0;
 
         if (!$pet_id) {

@@ -57,21 +57,30 @@ document.addEventListener('DOMContentLoaded', () => {
 // ================================================
 // INPUT HANDLERS
 // ================================================
+// Track pressed keys to prevent auto-repeat
+const keysPressed = {};
+
 function setupKeyboardInput() {
     document.addEventListener('keydown', (e) => {
         if (!GameState.isPlaying) return;
 
+        // Prevent key repeat
+        if (e.repeat || keysPressed[e.code]) return;
+
         const laneIndex = LANE_KEYS.indexOf(e.code);
         if (laneIndex !== -1) {
             e.preventDefault();
+            keysPressed[e.code] = true;
             hitLane(laneIndex);
         }
     });
 
     document.addEventListener('keyup', (e) => {
+        keysPressed[e.code] = false;
         const laneIndex = LANE_KEYS.indexOf(e.code);
         if (laneIndex !== -1) {
-            DOM.lanes[laneIndex]?.classList.remove('active');
+            const lanes = document.querySelectorAll('.lane');
+            lanes[laneIndex]?.classList.remove('active');
         }
     });
 }
