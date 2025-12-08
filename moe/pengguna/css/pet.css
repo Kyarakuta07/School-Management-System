@@ -1578,27 +1578,45 @@
 .opponent-card:hover {
     border-color: var(--border-gold);
     transform: translateX(4px);
+    box-shadow: var(--shadow-glow);
 }
 
+/* Alias for JS-rendered class */
+.opponent-img,
 .opponent-pet-img {
     width: 70px;
     height: 70px;
     object-fit: contain;
     border-radius: var(--radius-md);
-    background: rgba(255, 255, 255, 0.03);
-    padding: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px;
     flex-shrink: 0;
+    border: 1px solid var(--border-subtle);
 }
 
 .opponent-info {
     flex: 1;
+    min-width: 0;
 }
 
 .opponent-name {
-    font-size: 0.9rem;
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
     font-weight: 700;
-    color: #FFF;
-    margin-bottom: 4px;
+    color: var(--gold);
+    margin: 0 0 4px 0;
+}
+
+.opponent-owner {
+    font-size: 0.8rem;
+    color: #888;
+    margin: 0 0 8px 0;
+}
+
+.opponent-stats {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
 }
 
 .opponent-pet-name {
@@ -1613,8 +1631,13 @@
     color: #888;
 }
 
+/* Battle button - alias for JS */
+.battle-btn,
 .opponent-battle-btn {
-    padding: 10px 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 20px;
     background: linear-gradient(135deg, var(--gold), var(--gold-dark));
     border: none;
     border-radius: var(--radius-sm);
@@ -1626,9 +1649,14 @@
     flex-shrink: 0;
 }
 
+.battle-btn:hover,
 .opponent-battle-btn:hover {
     transform: scale(1.05);
-    box-shadow: 0 5px 15px rgba(218, 165, 32, 0.3);
+    box-shadow: 0 5px 20px rgba(218, 165, 32, 0.4);
+}
+
+.battle-btn i {
+    font-size: 1rem;
 }
 
 /* Battle History */
@@ -1640,12 +1668,41 @@
 
 .battle-history-item {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: var(--space-sm);
     background: var(--bg-card);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-md);
     padding: var(--space-md);
+}
+
+.battle-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.battle-date {
+    font-size: 0.75rem;
+    color: #666;
+}
+
+.battle-participants {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    font-weight: 600;
+    color: #DDD;
+}
+
+.battle-vs {
+    color: var(--gold);
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 4px 10px;
+    background: rgba(218, 165, 32, 0.1);
+    border-radius: var(--radius-sm);
 }
 
 .battle-history-item.win {
@@ -1654,11 +1711,6 @@
 
 .battle-history-item.lose {
     border-left: 3px solid var(--health);
-}
-
-.battle-opponent {
-    font-weight: 600;
-    color: #FFF;
 }
 
 .battle-result {
