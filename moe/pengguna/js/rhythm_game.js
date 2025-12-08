@@ -226,18 +226,27 @@ function spawnNote() {
 // ================================================
 // HIT DETECTION
 // ================================================
+// Lane cooldown to prevent double hits on stacked notes
+const laneCooldown = [0, 0, 0, 0]; // Last hit time per lane
+const COOLDOWN_MS = 100; // Minimum ms between hits on same lane
+
 function hitLane(laneIndex) {
+    // Check cooldown
+    const now = Date.now();
+    if (now - laneCooldown[laneIndex] < COOLDOWN_MS) {
+        return; // Still in cooldown, ignore this hit
+    }
+
     // Visual feedback
     const lanes = document.querySelectorAll('.lane');
     lanes[laneIndex]?.classList.add('active');
 
-    // Find notes in this lane
-    const laneNotes = GameState.notes.filter(n => n.lane === laneIndex);
+    // Find notes in this lane (exclude already hit notes)
+    const laneNotes = GameState.notes.filter(n => n.lane === laneIndex && !n.isHit);
 
     if (laneNotes.length === 0) return;
 
     // Find the note closest to hit zone
-    const now = Date.now();
     let bestNote = null;
     let bestTiming = Infinity;
 
@@ -255,6 +264,10 @@ function hitLane(laneIndex) {
     });
 
     if (bestNote) {
+        // Mark as hit to prevent double processing
+        bestNote.isHit = true;
+        laneCooldown[laneIndex] = now;
+
         // Hit!
         processHit(bestNote, bestTiming);
     }
