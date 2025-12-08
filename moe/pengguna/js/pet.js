@@ -761,30 +761,20 @@ async function loadOpponents() {
     }
 }
 
-async function startBattle(defenderPetId) {
+// Start turn-based battle - redirects to battle arena page
+function startBattle(defenderPetId) {
     if (!activePet) {
         showToast('You need an active pet to battle!', 'warning');
         return;
     }
 
-    try {
-        const response = await fetch(`${API_BASE}?action=battle`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ defender_pet_id: defenderPetId })
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-            showBattleResult(data);
-            updateGoldDisplay(); // Refresh gold
-        } else {
-            showToast(data.error || 'Battle failed', 'error');
-        }
-    } catch (error) {
-        console.error('Error starting battle:', error);
+    if (activePet.status === 'DEAD') {
+        showToast('Cannot battle with a dead pet!', 'error');
+        return;
     }
+
+    // Redirect to battle arena page
+    window.location.href = `battle_arena.php?attacker_id=${activePet.id}&defender_id=${defenderPetId}`;
 }
 
 function showBattleResult(data) {

@@ -1,0 +1,342 @@
+/**
+ * MOE Pet System - Battle Arena Engine
+ * Dragon City-style turn-based combat with elemental advantages
+ */
+
+// ================================================
+// ELEMENTAL SYSTEM
+// ================================================
+const ELEMENT_CHART = {
+    fire: { strongAgainst: 'plant', weakAgainst: 'water' },
+    water: { strongAgainst: 'fire', weakAgainst: 'plant' },
+    plant: { strongAgainst: 'water', weakAgainst: 'fire' },
+    dark: { strongAgainst: 'light', weakAgainst: 'light' },
+    light: { strongAgainst: 'dark', weakAgainst: 'dark' },
+    air: { strongAgainst: null, weakAgainst: null }
+};
+
+function getElementalMultiplier(attackerElement, defenderElement) {
+    const chart = ELEMENT_CHART[attackerElement];
+    if (!chart) return 1.0;
+
+    if (chart.strongAgainst === defenderElement) {
+        return 1.5; // Super effective
+    } else if (chart.weakAgainst === defenderElement) {
+        return 0.7; // Not very effective
+    }
+    return 1.0; // Normal
+}
+
+// ================================================
+// BATTLE STATE
+// ================================================
+const BattleState = {
+    playerHp: BATTLE_CONFIG.attackerMaxHp,
+    enemyHp: BATTLE_CONFIG.defenderMaxHp,
+    isPlayerTurn: true,
+    isBattleOver: false,
+    turnCount: 0
+};
+
+// ================================================
+// DOM ELEMENTS
+// ================================================
+const DOM = {};
+
+document.addEventListener('DOMContentLoaded', () => {
+    DOM.playerHpBar = document.getElementById('player-hp-bar');
+    DOM.playerHpText = document.getElementById('player-hp-text');
+    DOM.enemyHpBar = document.getElementById('enemy-hp-bar');
+    DOM.enemyHpText = document.getElementById('enemy-hp-text');
+    DOM.battleLog = document.getElementById('battle-log');
+    DOM.turnIndicator = document.getElementById('turn-indicator');
+    DOM.skillsPanel = document.getElementById('skills-panel');
+    DOM.resultOverlay = document.getElementById('result-overlay');
+    DOM.playerSprite = document.querySelector('.player-sprite');
+    DOM.enemySprite = document.querySelector('.enemy-sprite');
+
+    updateHpDisplay();
+});
+
+// ================================================
+// SKILL USAGE
+// ================================================
+function useSkill(skillId, baseDamage, skillElement) {
+    if (BattleState.isBattleOver || !BattleState.isPlayerTurn) return;
+
+    // Disable skills during animation
+    disableSkills(true);
+    BattleState.isPlayerTurn = false;
+    BattleState.turnCount++;
+
+    // Calculate damage
+    const multiplier = getElementalMultiplier(skillElement, BATTLE_CONFIG.defenderElement);
+    const levelBonus = 1 + (BATTLE_CONFIG.attackerLevel * 0.02);
+    const defenseReduction = 1 - (BATTLE_CONFIG.defenderBaseDef * 0.005);
+    const critChance = Math.random() < 0.15;
+    const critMultiplier = critChance ? 1.5 : 1;
+
+    let damage = Math.floor(baseDamage * multiplier * levelBonus * defenseReduction * critMultiplier);
+    damage = Math.max(1, damage); // Minimum 1 damage
+
+    // Play attack animation
+    DOM.playerSprite.classList.add('attacking');
+
+    setTimeout(() => {
+        DOM.playerSprite.classList.remove('attacking');
+        DOM.enemySprite.classList.add('hit');
+
+        // Apply damage
+        BattleState.enemyHp = Math.max(0, BattleState.enemyHp - damage);
+        updateHpDisplay();
+
+        // Show damage popup
+        showDamagePopup(DOM.enemySprite, damage, multiplier, critChance);
+
+        // Log the attack
+        let logClass = 'player-action';
+        let logText = `You dealt ${damage} damage!`;
+        if (multiplier > 1) {
+            logClass += ' effective';
+            logText += ' Super effective!';
+        } else if (multiplier < 1) {
+            logClass += ' weak';
+            logText += ' Not very effective...';
+        }
+        if (critChance) {
+            logClass += ' critical';
+            logText = `CRITICAL HIT! ${logText}`;
+        }
+        addBattleLog(logText, logClass);
+
+        setTimeout(() => {
+            DOM.enemySprite.classList.remove('hit');
+
+            // Check if enemy defeated
+            if (BattleState.enemyHp <= 0) {
+                endBattle(true);
+            } else {
+                // Enemy turn
+                enemyTurn();
+            }
+        }, 400);
+    }, 300);
+}
+
+// ================================================
+// ENEMY AI (SMART)
+// ================================================
+function enemyTurn() {
+    if (BattleState.isBattleOver) return;
+
+    DOM.turnIndicator.textContent = "ENEMY TURN";
+    DOM.turnIndicator.classList.add('enemy-turn');
+
+    setTimeout(() => {
+        // Smart AI: Pick the best skill
+        let bestSkill = null;
+        let bestDamage = 0;
+
+        const defenderSkills = BATTLE_CONFIG.defenderSkills;
+
+        if (defenderSkills && defenderSkills.length > 0) {
+            defenderSkills.forEach(skill => {
+                const multiplier = getElementalMultiplier(skill.skill_element, BATTLE_CONFIG.attackerElement);
+                const potentialDamage = skill.base_damage * multiplier;
+
+                if (potentialDamage > bestDamage) {
+                    bestDamage = potentialDamage;
+                    bestSkill = skill;
+                }
+            });
+        }
+
+        // Fallback if no skills
+        if (!bestSkill) {
+            bestSkill = {
+                skill_name: 'Attack',
+                base_damage: 25 + (BATTLE_CONFIG.defenderLevel * 2),
+                skill_element: BATTLE_CONFIG.defenderElement
+            };
+        }
+
+        // Calculate actual damage
+        const multiplier = getElementalMultiplier(bestSkill.skill_element, BATTLE_CONFIG.attackerElement);
+        const levelBonus = 1 + (BATTLE_CONFIG.defenderLevel * 0.02);
+        const defenseReduction = 1 - (BATTLE_CONFIG.attackerBaseDef * 0.005);
+        const critChance = Math.random() < 0.1;
+        const critMultiplier = critChance ? 1.5 : 1;
+
+        let damage = Math.floor(bestSkill.base_damage * multiplier * levelBonus * defenseReduction * critMultiplier);
+        damage = Math.max(1, damage);
+
+        // Play attack animation
+        DOM.enemySprite.classList.add('attacking');
+
+        setTimeout(() => {
+            DOM.enemySprite.classList.remove('attacking');
+            DOM.playerSprite.classList.add('hit');
+
+            // Apply damage
+            BattleState.playerHp = Math.max(0, BattleState.playerHp - damage);
+            updateHpDisplay();
+
+            // Show damage popup
+            showDamagePopup(DOM.playerSprite, damage, multiplier, critChance);
+
+            // Log the attack
+            let logClass = 'enemy-action';
+            let logText = `Enemy used ${bestSkill.skill_name}! ${damage} damage!`;
+            if (multiplier > 1) logText += ' Super effective!';
+            if (critChance) logText = `CRITICAL! ${logText}`;
+            addBattleLog(logText, logClass);
+
+            setTimeout(() => {
+                DOM.playerSprite.classList.remove('hit');
+
+                // Check if player defeated
+                if (BattleState.playerHp <= 0) {
+                    endBattle(false);
+                } else {
+                    // Player turn
+                    BattleState.isPlayerTurn = true;
+                    DOM.turnIndicator.textContent = "YOUR TURN";
+                    DOM.turnIndicator.classList.remove('enemy-turn');
+                    disableSkills(false);
+                }
+            }, 400);
+        }, 300);
+    }, 1000);
+}
+
+// ================================================
+// UI UPDATES
+// ================================================
+function updateHpDisplay() {
+    // Player HP
+    const playerPercent = (BattleState.playerHp / BATTLE_CONFIG.attackerMaxHp) * 100;
+    DOM.playerHpBar.style.width = playerPercent + '%';
+    DOM.playerHpText.textContent = `${BattleState.playerHp} / ${BATTLE_CONFIG.attackerMaxHp}`;
+
+    if (playerPercent < 30) {
+        DOM.playerHpBar.classList.add('low');
+    }
+
+    // Enemy HP
+    const enemyPercent = (BattleState.enemyHp / BATTLE_CONFIG.defenderMaxHp) * 100;
+    DOM.enemyHpBar.style.width = enemyPercent + '%';
+    DOM.enemyHpText.textContent = `${BattleState.enemyHp} / ${BATTLE_CONFIG.defenderMaxHp}`;
+
+    if (enemyPercent < 30) {
+        DOM.enemyHpBar.classList.add('low');
+    }
+}
+
+function showDamagePopup(targetElement, damage, multiplier, isCrit) {
+    const popup = document.createElement('div');
+    popup.className = 'damage-popup';
+
+    if (isCrit) {
+        popup.classList.add('critical');
+    } else if (multiplier > 1) {
+        popup.classList.add('effective');
+    } else if (multiplier < 1) {
+        popup.classList.add('weak');
+    }
+
+    popup.textContent = `-${damage}`;
+
+    const rect = targetElement.getBoundingClientRect();
+    popup.style.left = (rect.left + rect.width / 2) + 'px';
+    popup.style.top = (rect.top + 20) + 'px';
+
+    document.body.appendChild(popup);
+
+    setTimeout(() => popup.remove(), 1000);
+}
+
+function addBattleLog(message, className = '') {
+    const entry = document.createElement('div');
+    entry.className = 'log-entry ' + className;
+    entry.textContent = message;
+    DOM.battleLog.appendChild(entry);
+    DOM.battleLog.scrollTop = DOM.battleLog.scrollHeight;
+}
+
+function disableSkills(disabled) {
+    const buttons = DOM.skillsPanel.querySelectorAll('.skill-btn');
+    buttons.forEach(btn => btn.disabled = disabled);
+}
+
+// ================================================
+// BATTLE END
+// ================================================
+function endBattle(playerWon) {
+    BattleState.isBattleOver = true;
+    disableSkills(true);
+
+    // Calculate rewards
+    let goldReward = 0;
+    let expReward = 0;
+
+    if (playerWon) {
+        goldReward = 20 + Math.floor(Math.random() * 30) + (BATTLE_CONFIG.defenderLevel * 2);
+        expReward = 30 + Math.floor(Math.random() * 30) + (BATTLE_CONFIG.defenderLevel * 3);
+    }
+
+    // Submit result to backend
+    submitBattleResult(playerWon, goldReward, expReward);
+
+    // Show result after delay
+    setTimeout(() => {
+        const resultTitle = document.getElementById('result-title');
+        if (playerWon) {
+            resultTitle.textContent = '🏆 Victory!';
+            resultTitle.className = 'victory';
+        } else {
+            resultTitle.textContent = '💀 Defeat...';
+            resultTitle.className = 'defeat';
+        }
+
+        document.getElementById('reward-gold').textContent = `+${goldReward}`;
+        document.getElementById('reward-exp').textContent = `+${expReward}`;
+
+        DOM.resultOverlay.classList.remove('hidden');
+    }, 1000);
+}
+
+async function submitBattleResult(playerWon, gold, exp) {
+    try {
+        await fetch(`${API_BASE}?action=battle_result`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                attacker_pet_id: BATTLE_CONFIG.attackerPetId,
+                defender_pet_id: BATTLE_CONFIG.defenderPetId,
+                winner: playerWon ? 'attacker' : 'defender',
+                gold_reward: gold,
+                exp_reward: exp
+            })
+        });
+    } catch (error) {
+        console.error('Error submitting battle result:', error);
+    }
+}
+
+// ================================================
+// NAVIGATION
+// ================================================
+function forfeitBattle() {
+    if (BattleState.isBattleOver) {
+        returnToArena();
+        return;
+    }
+
+    if (confirm('Forfeit this battle? You will lose!')) {
+        endBattle(false);
+    }
+}
+
+function returnToArena() {
+    window.location.href = 'pet.php?tab=arena';
+}

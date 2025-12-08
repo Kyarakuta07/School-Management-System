@@ -790,13 +790,79 @@ switch ($action) {
         break;
 
     // ============================================
+    // POST: Submit turn-based battle result
+    // ============================================
+    case 'battle_result':
+        if ($method !== 'POST') {
+            methodNotAllowed('POST');
+        }
+
+        $input = json_decode(file_get_contents('php://input'), true);
+        $attacker_pet_id = isset($input['attacker_pet_id']) ? (int) $input['attacker_pet_id'] : 0;
+        $defender_pet_id = isset($input['defender_pet_id']) ? (int) $input['defender_pet_id'] : 0;
+        $winner = isset($input['winner']) ? $input['winner'] : '';
+        $gold_reward = isset($input['gold_reward']) ? (int) $input['gold_reward'] : 0;
+        $exp_reward = isset($input['exp_reward']) ? (int) $input['exp_reward'] : 0;
+
+        if (!$attacker_pet_id || !$defender_pet_id) {
+            echo json_encode(['success' => false, 'error' => 'Missing pet IDs']);
+            break;
+        }
+
+        // Verify attacker is user's pet
+        $verify_stmt = mysqli_prepare($conn, "SELECT id FROM user_pets WHERE id = ? AND user_id = ?");
+        mysqli_stmt_bind_param($verify_stmt, "ii", $attacker_pet_id, $user_id);
+        mysqli_stmt_execute($verify_stmt);
+        $verify_result = mysqli_stmt_get_result($verify_stmt);
+        if (!mysqli_fetch_assoc($verify_result)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid attacker pet']);
+            mysqli_stmt_close($verify_stmt);
+            break;
+        }
+        mysqli_stmt_close($verify_stmt);
+
+        $playerWon = ($winner === 'attacker');
+
+        // Apply rewards if player won
+        if ($playerWon && $gold_reward > 0) {
+            $gold_stmt = mysqli_prepare($conn, "UPDATE nethera SET gold = gold + ? WHERE id_nethera = ?");
+            mysqli_stmt_bind_param($gold_stmt, "ii", $gold_reward, $user_id);
+            mysqli_stmt_execute($gold_stmt);
+            mysqli_stmt_close($gold_stmt);
+        }
+
+        if ($playerWon && $exp_reward > 0) {
+            addExpToPet($conn, $attacker_pet_id, $exp_reward);
+        }
+
+        // Record battle in history
+        $winner_pet_id = $playerWon ? $attacker_pet_id : $defender_pet_id;
+        $battle_log = json_encode(['type' => 'arena', 'turns' => 'turn-based']);
+
+        $record_stmt = mysqli_prepare(
+            $conn,
+            "INSERT INTO pet_battles (attacker_pet_id, defender_pet_id, winner_pet_id, battle_log) VALUES (?, ?, ?, ?)"
+        );
+        mysqli_stmt_bind_param($record_stmt, "iiis", $attacker_pet_id, $defender_pet_id, $winner_pet_id, $battle_log);
+        mysqli_stmt_execute($record_stmt);
+        mysqli_stmt_close($record_stmt);
+
+        echo json_encode([
+            'success' => true,
+            'player_won' => $playerWon,
+            'gold_earned' => $playerWon ? $gold_reward : 0,
+            'exp_earned' => $playerWon ? $exp_reward : 0
+        ]);
+        break;
+
+    // ============================================
     // Default: Unknown action
     // ============================================
     default:
         http_response_code(404);
         echo json_encode([
             'success' => false,
-            'error' => 'Unknown action. Available actions: get_pets, get_active_pet, get_shop, get_inventory, gacha, buy_item, use_item, set_active, rename, shelter, get_opponents, battle, battle_history, get_buff, play_finish, get_evolution_candidates, evolve_manual, sell_pet'
+            'error' => 'Unknown action. Available actions: get_pets, get_active_pet, get_shop, get_inventory, gacha, buy_item, use_item, set_active, rename, shelter, get_opponents, battle, battle_history, get_buff, play_finish, get_evolution_candidates, evolve_manual, sell_pet, battle_result'
         ]);
         break;
 }
