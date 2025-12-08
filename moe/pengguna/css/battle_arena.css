@@ -166,8 +166,8 @@ body {
     color: #fff;
 }
 
-.element-badge.plant {
-    background: #27ae60;
+.element-badge.earth {
+    background: #8B4513;
     color: #fff;
 }
 
@@ -463,27 +463,27 @@ body {
     right: 6px;
 }
 
-.skill-element.fire {
+.skill-element.Fire {
     background: #e74c3c;
 }
 
-.skill-element.water {
+.skill-element.Water {
     background: #3498db;
 }
 
-.skill-element.plant {
-    background: #27ae60;
+.skill-element.Earth {
+    background: #8B4513;
 }
 
-.skill-element.dark {
+.skill-element.Dark {
     background: #2c3e50;
 }
 
-.skill-element.light {
+.skill-element.Light {
     background: #f1c40f;
 }
 
-.skill-element.air {
+.skill-element.Air {
     background: #95a5a6;
 }
 

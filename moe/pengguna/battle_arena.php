@@ -29,7 +29,7 @@ include '../koneksi.php';
 // Get attacker pet data (user's pet)
 $atk_query = mysqli_prepare(
     $conn,
-    "SELECT up.*, ps.name as species_name, ps.element, ps.rarity, ps.img_adult, ps.base_attack, ps.base_defense, ps.base_speed
+    "SELECT up.*, ps.name as species_name, ps.element, ps.rarity, ps.img_adult
      FROM user_pets up 
      JOIN pet_species ps ON up.species_id = ps.id 
      WHERE up.id = ? AND up.user_id = ?"
@@ -48,7 +48,7 @@ if (!$attacker) {
 // Get defender pet data
 $def_query = mysqli_prepare(
     $conn,
-    "SELECT up.*, ps.name as species_name, ps.element, ps.rarity, ps.img_adult, ps.base_attack, ps.base_defense, ps.base_speed,
+    "SELECT up.*, ps.name as species_name, ps.element, ps.rarity, ps.img_adult,
             n.nama_lengkap as owner_name
      FROM user_pets up 
      JOIN pet_species ps ON up.species_id = ps.id 
@@ -252,10 +252,10 @@ $defender_max_hp = 100 + ($defender['level'] * 5);
             defenderMaxHp: <?php echo $defender_max_hp; ?>,
             attackerLevel: <?php echo $attacker['level']; ?>,
             defenderLevel: <?php echo $defender['level']; ?>,
-            attackerBaseAtk: <?php echo $attacker['base_attack'] ?? 10; ?>,
-            defenderBaseAtk: <?php echo $defender['base_attack'] ?? 10; ?>,
-            attackerBaseDef: <?php echo $attacker['base_defense'] ?? 10; ?>,
-            defenderBaseDef: <?php echo $defender['base_defense'] ?? 10; ?>,
+            attackerBaseAtk: 10,
+            defenderBaseAtk: 10,
+            attackerBaseDef: 10,
+            defenderBaseDef: 10,
             defenderSkills: <?php echo json_encode($defender_skills); ?>
         };
         const API_BASE = 'pet_api.php';
