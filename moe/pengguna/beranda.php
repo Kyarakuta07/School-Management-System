@@ -138,12 +138,13 @@ if ($active_pet) {
         </header>
 
         <nav class="top-nav-menu">
-            <a href="class.php" class="nav-btn"><i class="fa-solid fa-book-open"></i> Class</a>
-            <a href="pet.php" class="nav-btn"><i class="fa-solid fa-paw"></i> Pet</a>
-            <a href="trapeza.php" class="nav-btn"><i class="fa-solid fa-credit-card"></i> Trapeza</a>
-            <a href="punish.php" class="nav-btn"><i class="fa-solid fa-gavel"></i> Punishment</a>
-            <a href="staff.php" class="nav-btn"><i class="fa-solid fa-users"></i> Staff</a>
-            <a href="../logout.php" class="logout-btn-header"><i class="fa-solid fa-sign-out-alt"></i> Logout</a>
+            <a href="class.php" class="nav-btn"><i class="fa-solid fa-book-open"></i><span>Class</span></a>
+            <a href="pet.php" class="nav-btn"><i class="fa-solid fa-paw"></i><span>Pet</span></a>
+            <a href="trapeza.php" class="nav-btn"><i class="fa-solid fa-credit-card"></i><span>Trapeza</span></a>
+            <a href="punish.php" class="nav-btn"><i class="fa-solid fa-gavel"></i><span>Punishment</span></a>
+            <a href="staff.php" class="nav-btn"><i class="fa-solid fa-users"></i><span>Staff</span></a>
+            <a href="../logout.php" class="logout-btn-header"><i
+                    class="fa-solid fa-sign-out-alt"></i><span>Logout</span></a>
         </nav>
 
         <main class="profile-main-grid">

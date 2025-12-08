@@ -76,30 +76,107 @@ body {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    gap: 20px;
+    gap: 12px;
     margin-bottom: 30px;
+    padding: 15px 20px;
+    background: rgba(15, 15, 15, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(218, 165, 32, 0.15);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    flex-wrap: wrap;
 }
 
 .nav-btn {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     text-decoration: none;
-    color: #aaa;
-    padding: 8px 12px;
-    border-radius: 4px;
-    transition: 0.3s;
+    color: #b0b0b0;
+    padding: 12px 18px;
+    border-radius: 10px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-size: 0.9rem;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-btn i {
+    font-size: 1.1rem;
+    transition: transform 0.3s ease, color 0.3s ease;
 }
 
 .nav-btn:hover {
-    background: rgba(218, 165, 32, 0.1);
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.15), rgba(218, 165, 32, 0.05));
+    border-color: rgba(218, 165, 32, 0.3);
+    color: var(--gold);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(218, 165, 32, 0.15);
+}
+
+.nav-btn:hover i {
+    transform: scale(1.15);
     color: var(--gold);
 }
 
+.nav-btn:active {
+    transform: translateY(0);
+}
+
+/* Active State for Current Page */
+.nav-btn.active {
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.2), rgba(218, 165, 32, 0.1));
+    border-color: var(--gold);
+    color: var(--gold);
+    box-shadow: 0 0 20px rgba(218, 165, 32, 0.2);
+}
+
+.nav-btn.active::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 3px;
+    background: var(--gold);
+    border-radius: 3px 3px 0 0;
+}
+
+/* Logout Button - Special Styling */
 .logout-btn-header {
-    color: var(--red-alert) !important;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: #ff6b6b !important;
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
     margin-left: auto;
+    background: rgba(255, 107, 107, 0.08);
+    border: 1px solid rgba(255, 107, 107, 0.2);
+    transition: all 0.3s ease;
+}
+
+.logout-btn-header:hover {
+    background: rgba(255, 107, 107, 0.15);
+    border-color: rgba(255, 107, 107, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.15);
+}
+
+.logout-btn-header i {
+    transition: transform 0.3s ease;
+}
+
+.logout-btn-header:hover i {
+    transform: translateX(3px);
 }
 
 
@@ -312,21 +389,21 @@ body {
 
     .top-nav-menu {
         justify-content: center;
-        gap: 8px 10px;
+        gap: 8px;
+        padding: 12px 15px;
     }
 
     .nav-btn {
         font-size: 0.85rem;
-        padding: 10px 15px;
+        padding: 10px 14px;
         min-height: 44px;
         /* Touch-friendly */
-        flex: 0 1 auto;
     }
 
     .logout-btn-header {
         margin-left: 0;
-        width: 100%;
-        justify-content: center;
+        width: auto;
+        order: 1;
     }
 
     .profile-avatar-box {
@@ -398,21 +475,37 @@ body {
     }
 
     .top-nav-menu {
-        flex-direction: column;
-        align-items: stretch;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
         gap: 8px;
+        padding: 12px;
     }
 
     .nav-btn {
-        width: 100%;
+        flex: 0 1 auto;
         justify-content: center;
-        padding: 12px;
-        font-size: 0.9rem;
+        padding: 10px 14px;
+        font-size: 0.85rem;
+    }
+
+    /* Hide text on very small screens, show only icons */
+    .nav-btn span {
+        display: none;
+    }
+
+    .nav-btn i {
+        font-size: 1.2rem;
     }
 
     .logout-btn-header {
-        order: -1;
-        /* Put logout button first on mobile */
+        order: 1;
+        flex: 0 0 100%;
+        margin-top: 8px;
+    }
+
+    .logout-btn-header span {
+        display: inline;
     }
 
     .profile-main-grid {
@@ -541,10 +634,12 @@ body {
 }
 
 @keyframes buddy-float {
+
     0%,
     100% {
         transform: translateY(0) rotate(-2deg);
     }
+
     50% {
         transform: translateY(-8px) rotate(2deg);
     }
