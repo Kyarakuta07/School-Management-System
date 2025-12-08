@@ -1,18 +1,37 @@
 <?php
+require_once 'includes/security_config.php';
 session_start();
-include 'connection.php'; 
+require_once 'includes/csrf.php';
+require_once 'includes/rate_limiter.php';
+include 'connection.php';
 
 // Include PHPMailer files
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 // PASTIKAN PATH INI BENAR DARI ROOT
-require 'phpmailer/src/Exception.php'; 
+require 'phpmailer/src/Exception.php';
 require 'phpmailer/src/PHPMailer.php';
-require 'phpmailer/src/SMTP.php'; 
+require 'phpmailer/src/SMTP.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: forgot_password.php");
+    exit();
+}
+
+// CSRF validation
+if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
+    error_log("CSRF token validation failed for forgot password attempt");
+    header("Location: forgot_password.php?status=csrf_failed");
+    exit();
+}
+
+// Rate limiting - 3 attempts per 15 minutes per IP
+$limiter = new RateLimiter($conn);
+$check = $limiter->checkLimit($_SERVER['REMOTE_ADDR'], 'forgot_password', 3, 15);
+
+if (!$check['allowed']) {
+    header("Location: forgot_password.php?status=rate_limited");
     exit();
 }
 
@@ -37,7 +56,7 @@ if ($stmt_check) {
         header("Location: forgot_password.php?status=fail");
         exit();
     }
-    
+
     $user_id = $user_data['id_nethera'];
     $username = $user_data['username'];
 
@@ -48,25 +67,29 @@ if ($stmt_check) {
 
     if ($stmt_update) {
         mysqli_stmt_bind_param($stmt_update, "ssi", $token, $expiry_time, $user_id);
-        
+
         if (mysqli_stmt_execute($stmt_update)) {
-            
+
             // --- 3. KIRIM EMAIL RESET ---
             $mail = new PHPMailer(true);
             try {
                 // Server settings (Gunakan kredensial Gmail yang sudah Anda setup)
-                $mail->isSMTP(); $mail->Host = 'smtp.gmail.com'; $mail->SMTPAuth = true;                                   
-                $mail->Username = getenv('SMTP_USER'); $mail->Password = getenv('SMTP_PASS');   
-                $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; $mail->Port = 465;                                    
+                $mail->isSMTP();
+                $mail->Host = 'smtp.gmail.com';
+                $mail->SMTPAuth = true;
+                $mail->Username = getenv('SMTP_USER');
+                $mail->Password = getenv('SMTP_PASS');
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+                $mail->Port = 465;
 
                 // Recipients
-                $mail->setFrom('mediterraneanofegypt@gmail.com', 'MOE Password Reset');
-                $mail->addAddress($user_email, $username);     
+                $mail->setFrom(getenv('SMTP_USER'), 'MOE Password Reset');
+                $mail->addAddress($user_email, $username);
 
                 // Content
-                $mail->isHTML(true);                                  
+                $mail->isHTML(true);
                 $mail->Subject = 'Permintaan Reset Password Akun MOE';
-                $mail->Body    = "
+                $mail->Body = "
                     <html>
                     <body style='font-family: Lato, sans-serif; background-color: #0d0d0d; color: #fff; padding: 20px;'>
                         <div style='max-width: 500px; margin: auto; padding: 20px; background-color: rgba(255, 255, 255, 0.1); border-radius: 10px; border: 1px solid #DAA520;'>
@@ -83,16 +106,16 @@ if ($stmt_check) {
                     </body>
                     </html>
                 ";
-                
+
                 $mail->send();
-                
+
                 // 4. Sukses: Redirect ke halaman forgot password dengan status sukses
                 header("Location: forgot_password.php?status=success");
                 exit();
 
             } catch (Exception $e) {
                 // Gagal Kirim Email
-                error_log("PHPMailer Reset Error: " . $mail->ErrorInfo); 
+                error_log("PHPMailer Reset Error: " . $mail->ErrorInfo);
                 header("Location: forgot_password.php?status=email_fail");
                 exit();
             }

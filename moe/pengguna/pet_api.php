@@ -7,6 +7,7 @@
  * All responses are JSON formatted
  */
 
+require_once '../includes/security_config.php';
 session_start();
 header('Content-Type: application/json');
 
@@ -16,6 +17,7 @@ header("Pragma: no-cache");
 
 include '../connection.php';
 include 'pet_logic.php';
+require_once '../includes/rate_limiter.php';
 
 // ================================================
 // AUTHENTICATION CHECK
@@ -28,6 +30,9 @@ if (!isset($_SESSION['status_login']) || $_SESSION['role'] != 'Nethera') {
 }
 
 $user_id = $_SESSION['id_nethera'];
+
+// Initialize rate limiter for API endpoints
+$api_limiter = new RateLimiter($conn);
 
 // ================================================
 // ROUTING
@@ -147,6 +152,17 @@ switch ($action) {
     case 'gacha':
         if ($method !== 'POST') {
             methodNotAllowed('POST');
+        }
+
+        // Rate limiting - 20 gacha rolls per hour per user
+        $gacha_limit = $api_limiter->checkLimit($user_id, 'gacha', 20, 60);
+        if (!$gacha_limit['allowed']) {
+            echo json_encode([
+                'success' => false,
+                'error' => 'Rate limit exceeded. Please wait before rolling again.',
+                'wait_until' => $gacha_limit['locked_until']
+            ]);
+            break;
         }
 
         $input = json_decode(file_get_contents('php://input'), true);
@@ -411,6 +427,17 @@ switch ($action) {
     case 'battle':
         if ($method !== 'POST') {
             methodNotAllowed('POST');
+        }
+
+        // Rate limiting - 3 battles per day per user
+        $battle_limit = $api_limiter->checkLimit($user_id, 'battle', 3, 1440);
+        if (!$battle_limit['allowed']) {
+            echo json_encode([
+                'success' => false,
+                'error' => 'Too many battles. Please wait before battling again.',
+                'wait_until' => $battle_limit['locked_until']
+            ]);
+            break;
         }
 
         $input = json_decode(file_get_contents('php://input'), true);

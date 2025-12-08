@@ -1,5 +1,7 @@
 <?php
+require_once '../../includes/security_config.php';
 session_start();
+require_once '../../includes/csrf.php';
 
 // Koneksi Database (Naik 2 folder)
 include '../../connection.php'; 
@@ -143,17 +145,23 @@ $result_all_nethera = mysqli_query($conn, $query_all_nethera);
             </div>
         </div>
 
+        <!-- Hidden Delete Form with CSRF -->
+        <form id="deleteForm" method="POST" action="delete_nethera.php" style="display: none;">
+            <input type="hidden" name="id" id="deleteId" value="">
+            <?php echo csrf_token_field(); ?>
+        </form>
+
     </main>
 
     <script src="../js/sidebar-toggle.js"></script>
     <script>
-        // --- 1. DEFINISIKAN FUNGSI DELETE SECARA GLOBAL (Disini) ---
-    function confirmDelete(id) {
-        if (confirm('Apakah Anda yakin ingin menghapus data Nethera ini?')) {
-            // Arahkan ke file proses delete (Pastikan path ke delete_nethera.php benar)
-            window.location.href = 'delete_nethera.php?id=' + id;
+        // --- SECURE DELETE FUNCTION (POST with CSRF) ---
+        function confirmDelete(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus data Nethera ini? Aksi ini tidak dapat dibatalkan.')) {
+                document.getElementById('deleteId').value = id;
+                document.getElementById('deleteForm').submit();
+            }
         }
-    }
         // Fungsi untuk memastikan sidebar toggle tetap berfungsi
         const toggleSidebar = () => document.body.classList.toggle("open");
         
