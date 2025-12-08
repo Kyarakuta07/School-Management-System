@@ -1233,7 +1233,38 @@ switch ($action) {
             $row = mysqli_fetch_assoc($q);
             $stats['login_streak'] = $row ? $row['total_logins'] : 0;
 
+            // AUTO-UNLOCK: Check and unlock achievements based on progress
+            $newly_unlocked = [];
+            mysqli_data_seek($achievements_result, 0); // Reset result pointer
+            while ($ach = mysqli_fetch_assoc($achievements_result)) {
+                // Skip if already unlocked
+                if (in_array($ach['id'], $unlocked_ids)) {
+                    continue;
+                }
+
+                // Check if requirement is met
+                $current = isset($stats[$ach['requirement_type']]) ? (int) $stats[$ach['requirement_type']] : 0;
+                $required = (int) $ach['requirement_value'];
+
+                if ($current >= $required) {
+                    // Unlock this achievement!
+                    $unlock_stmt = mysqli_prepare($conn, "INSERT IGNORE INTO user_achievements (user_id, achievement_id) VALUES (?, ?)");
+                    mysqli_stmt_bind_param($unlock_stmt, "ii", $user_id, $ach['id']);
+                    mysqli_stmt_execute($unlock_stmt);
+                    mysqli_stmt_close($unlock_stmt);
+
+                    $unlocked_ids[] = $ach['id'];
+                    $newly_unlocked[] = $ach;
+
+                    // Give gold reward if any
+                    if ($ach['reward_gold'] > 0) {
+                        mysqli_query($conn, "UPDATE nethera SET gold = gold + {$ach['reward_gold']} WHERE id_nethera = $user_id");
+                    }
+                }
+            }
+
             // Build achievements list with progress
+            mysqli_data_seek($achievements_result, 0); // Reset again
             $achievements = [];
             while ($ach = mysqli_fetch_assoc($achievements_result)) {
                 $ach['unlocked'] = in_array($ach['id'], $unlocked_ids);
@@ -1249,6 +1280,7 @@ switch ($action) {
                 'success' => true,
                 'total' => $total,
                 'unlocked' => $unlocked_count,
+                'newly_unlocked' => $newly_unlocked,
                 'achievements' => $achievements
             ]);
         } catch (Exception $e) {
