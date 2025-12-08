@@ -48,13 +48,8 @@ mysqli_stmt_close($gold_stmt);
 
     <!-- Styles -->
     <link rel="stylesheet" href="../style.css">
-    <link rel="stylesheet" href="../assets/css/landing-style.css">
     <link rel="stylesheet" href="css/pet.css">
-    <link rel="stylesheet" href="css/pet_hardcore_update.css">
     <link rel="stylesheet" href="css/pet_help_guide.css">
-    <link rel="stylesheet" href="css/pet_name_fix.css">
-    <link rel="stylesheet" href="css/pet_header_tabs_fix.css">
-    <link rel="stylesheet" href="css/pet_content_stabilizer.css">
 </head>
 
 <body class="pet-page">
