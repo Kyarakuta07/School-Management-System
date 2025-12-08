@@ -856,13 +856,228 @@ switch ($action) {
         break;
 
     // ============================================
+    // GET: Check daily login reward
+    // ============================================
+    case 'get_daily_reward':
+        if ($method !== 'GET') {
+            methodNotAllowed('GET');
+        }
+
+        // Define 30-day rewards (day => [gold, item_id or null])
+        // Item IDs: 1=Food, 4=Potion, 7=Revive, 9=EXP Boost, 11=Gacha Ticket, 16=Divine Shield
+        $rewards = [
+            1 => ['gold' => 50, 'item_id' => null],
+            2 => ['gold' => 100, 'item_id' => null],
+            3 => ['gold' => 0, 'item_id' => 1], // Basic Kibble (Food)
+            4 => ['gold' => 50, 'item_id' => null],
+            5 => ['gold' => 0, 'item_id' => 4], // Health Elixir (Potion)
+            6 => ['gold' => 100, 'item_id' => null],
+            7 => ['gold' => 0, 'item_id' => 9], // Wisdom Scroll (EXP Boost - special)
+            8 => ['gold' => 50, 'item_id' => null],
+            9 => ['gold' => 100, 'item_id' => null],
+            10 => ['gold' => 0, 'item_id' => 1], // Basic Kibble (Food)
+            11 => ['gold' => 50, 'item_id' => null],
+            12 => ['gold' => 0, 'item_id' => 4], // Health Elixir (Potion)
+            13 => ['gold' => 100, 'item_id' => null],
+            14 => ['gold' => 0, 'item_id' => 11], // Bronze Egg (Gacha - special)
+            15 => ['gold' => 50, 'item_id' => null],
+            16 => ['gold' => 50, 'item_id' => null],
+            17 => ['gold' => 100, 'item_id' => null],
+            18 => ['gold' => 0, 'item_id' => 1], // Basic Kibble (Food)
+            19 => ['gold' => 50, 'item_id' => null],
+            20 => ['gold' => 0, 'item_id' => 4], // Health Elixir (Potion)
+            21 => ['gold' => 0, 'item_id' => 11], // Bronze Egg (Gacha - special)
+            22 => ['gold' => 50, 'item_id' => null],
+            23 => ['gold' => 100, 'item_id' => null],
+            24 => ['gold' => 0, 'item_id' => 7], // Soul Fragment (Revive)
+            25 => ['gold' => 50, 'item_id' => null],
+            26 => ['gold' => 0, 'item_id' => 1], // Basic Kibble (Food)
+            27 => ['gold' => 100, 'item_id' => null],
+            28 => ['gold' => 0, 'item_id' => 16], // Divine Shield (special)
+            29 => ['gold' => 50, 'item_id' => null],
+            30 => ['gold' => 100, 'item_id' => 11], // Bronze Egg + Gold (jackpot)
+        ];
+
+        // Get user's streak data
+        $streak_stmt = mysqli_prepare($conn, "SELECT * FROM daily_login_streak WHERE user_id = ?");
+        mysqli_stmt_bind_param($streak_stmt, "i", $user_id);
+        mysqli_stmt_execute($streak_stmt);
+        $streak_result = mysqli_stmt_get_result($streak_stmt);
+        $streak = mysqli_fetch_assoc($streak_result);
+        mysqli_stmt_close($streak_stmt);
+
+        $today = date('Y-m-d');
+        $current_day = 1;
+        $total_logins = 0;
+        $can_claim = true;
+
+        if ($streak) {
+            $current_day = $streak['current_day'];
+            $total_logins = $streak['total_logins'];
+
+            if ($streak['last_claim_date'] === $today) {
+                $can_claim = false;
+            }
+        }
+
+        // Get item name if reward includes item
+        $item_name = null;
+        $reward = $rewards[$current_day];
+        if ($reward['item_id']) {
+            $item_stmt = mysqli_prepare($conn, "SELECT name FROM shop_items WHERE id = ?");
+            mysqli_stmt_bind_param($item_stmt, "i", $reward['item_id']);
+            mysqli_stmt_execute($item_stmt);
+            $item_result = mysqli_stmt_get_result($item_stmt);
+            if ($item_row = mysqli_fetch_assoc($item_result)) {
+                $item_name = $item_row['name'];
+            }
+            mysqli_stmt_close($item_stmt);
+        }
+
+        echo json_encode([
+            'success' => true,
+            'can_claim' => $can_claim,
+            'current_day' => $current_day,
+            'total_logins' => $total_logins,
+            'reward_gold' => $reward['gold'],
+            'reward_item_id' => $reward['item_id'],
+            'reward_item_name' => $item_name,
+            'rewards_map' => $rewards
+        ]);
+        break;
+
+    // ============================================
+    // POST: Claim daily login reward
+    // ============================================
+    case 'claim_daily_reward':
+        if ($method !== 'POST') {
+            methodNotAllowed('POST');
+        }
+
+        // Same rewards definition (IDs: 1=Food, 4=Potion, 7=Revive, 9=EXP Boost, 11=Gacha, 16=Shield)
+        $rewards = [
+            1 => ['gold' => 50, 'item_id' => null],
+            2 => ['gold' => 100, 'item_id' => null],
+            3 => ['gold' => 0, 'item_id' => 1],
+            4 => ['gold' => 50, 'item_id' => null],
+            5 => ['gold' => 0, 'item_id' => 4],
+            6 => ['gold' => 100, 'item_id' => null],
+            7 => ['gold' => 0, 'item_id' => 9],
+            8 => ['gold' => 50, 'item_id' => null],
+            9 => ['gold' => 100, 'item_id' => null],
+            10 => ['gold' => 0, 'item_id' => 1],
+            11 => ['gold' => 50, 'item_id' => null],
+            12 => ['gold' => 0, 'item_id' => 4],
+            13 => ['gold' => 100, 'item_id' => null],
+            14 => ['gold' => 0, 'item_id' => 11],
+            15 => ['gold' => 50, 'item_id' => null],
+            16 => ['gold' => 50, 'item_id' => null],
+            17 => ['gold' => 100, 'item_id' => null],
+            18 => ['gold' => 0, 'item_id' => 1],
+            19 => ['gold' => 50, 'item_id' => null],
+            20 => ['gold' => 0, 'item_id' => 4],
+            21 => ['gold' => 0, 'item_id' => 11],
+            22 => ['gold' => 50, 'item_id' => null],
+            23 => ['gold' => 100, 'item_id' => null],
+            24 => ['gold' => 0, 'item_id' => 7],
+            25 => ['gold' => 50, 'item_id' => null],
+            26 => ['gold' => 0, 'item_id' => 1],
+            27 => ['gold' => 100, 'item_id' => null],
+            28 => ['gold' => 0, 'item_id' => 16],
+            29 => ['gold' => 50, 'item_id' => null],
+            30 => ['gold' => 100, 'item_id' => 11],
+        ];
+
+        $today = date('Y-m-d');
+
+        // Get current streak
+        $streak_stmt = mysqli_prepare($conn, "SELECT * FROM daily_login_streak WHERE user_id = ?");
+        mysqli_stmt_bind_param($streak_stmt, "i", $user_id);
+        mysqli_stmt_execute($streak_stmt);
+        $streak_result = mysqli_stmt_get_result($streak_stmt);
+        $streak = mysqli_fetch_assoc($streak_result);
+        mysqli_stmt_close($streak_stmt);
+
+        if ($streak && $streak['last_claim_date'] === $today) {
+            echo json_encode(['success' => false, 'error' => 'Already claimed today!']);
+            break;
+        }
+
+        $current_day = $streak ? $streak['current_day'] : 1;
+        $total_logins = $streak ? $streak['total_logins'] : 0;
+        $reward = $rewards[$current_day];
+
+        // Grant gold
+        if ($reward['gold'] > 0) {
+            $gold_stmt = mysqli_prepare($conn, "UPDATE nethera SET gold = gold + ? WHERE id_nethera = ?");
+            mysqli_stmt_bind_param($gold_stmt, "ii", $reward['gold'], $user_id);
+            mysqli_stmt_execute($gold_stmt);
+            mysqli_stmt_close($gold_stmt);
+        }
+
+        // Grant item
+        $item_name = null;
+        if ($reward['item_id']) {
+            $inv_stmt = mysqli_prepare(
+                $conn,
+                "INSERT INTO user_inventory (user_id, item_id, quantity) VALUES (?, ?, 1)
+                 ON DUPLICATE KEY UPDATE quantity = quantity + 1"
+            );
+            mysqli_stmt_bind_param($inv_stmt, "ii", $user_id, $reward['item_id']);
+            mysqli_stmt_execute($inv_stmt);
+            mysqli_stmt_close($inv_stmt);
+
+            // Get item name
+            $item_stmt = mysqli_prepare($conn, "SELECT name FROM shop_items WHERE id = ?");
+            mysqli_stmt_bind_param($item_stmt, "i", $reward['item_id']);
+            mysqli_stmt_execute($item_stmt);
+            $item_result = mysqli_stmt_get_result($item_stmt);
+            if ($item_row = mysqli_fetch_assoc($item_result)) {
+                $item_name = $item_row['name'];
+            }
+            mysqli_stmt_close($item_stmt);
+        }
+
+        // Update streak
+        $next_day = ($current_day >= 30) ? 1 : $current_day + 1;
+        $new_total = $total_logins + 1;
+
+        if ($streak) {
+            $update_stmt = mysqli_prepare(
+                $conn,
+                "UPDATE daily_login_streak SET current_day = ?, last_claim_date = ?, total_logins = ? WHERE user_id = ?"
+            );
+            mysqli_stmt_bind_param($update_stmt, "isii", $next_day, $today, $new_total, $user_id);
+        } else {
+            $update_stmt = mysqli_prepare(
+                $conn,
+                "INSERT INTO daily_login_streak (user_id, current_day, last_claim_date, total_logins) VALUES (?, ?, ?, ?)"
+            );
+            $next_day = 2; // After first claim, move to day 2
+            $new_total = 1;
+            mysqli_stmt_bind_param($update_stmt, "iisi", $user_id, $next_day, $today, $new_total);
+        }
+        mysqli_stmt_execute($update_stmt);
+        mysqli_stmt_close($update_stmt);
+
+        echo json_encode([
+            'success' => true,
+            'claimed_day' => $current_day,
+            'gold_received' => $reward['gold'],
+            'item_received' => $item_name,
+            'next_day' => $next_day,
+            'total_logins' => $new_total
+        ]);
+        break;
+
+    // ============================================
     // Default: Unknown action
     // ============================================
     default:
         http_response_code(404);
         echo json_encode([
             'success' => false,
-            'error' => 'Unknown action. Available actions: get_pets, get_active_pet, get_shop, get_inventory, gacha, buy_item, use_item, set_active, rename, shelter, get_opponents, battle, battle_history, get_buff, play_finish, get_evolution_candidates, evolve_manual, sell_pet, battle_result'
+            'error' => 'Unknown action. Available actions: get_pets, get_active_pet, get_shop, get_inventory, gacha, buy_item, use_item, set_active, rename, shelter, get_opponents, battle, battle_history, get_buff, play_finish, get_evolution_candidates, evolve_manual, sell_pet, battle_result, get_daily_reward, claim_daily_reward'
         ]);
         break;
 }

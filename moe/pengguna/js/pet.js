@@ -28,7 +28,125 @@ document.addEventListener('DOMContentLoaded', () => {
     initShopTabs();
     initArenaTabs();
     loadPets();
+    checkDailyReward(); // Check for daily login reward
 });
+
+// ================================================
+// DAILY LOGIN REWARD SYSTEM
+// ================================================
+let dailyRewardData = null;
+
+async function checkDailyReward() {
+    try {
+        const response = await fetch(`${API_BASE}?action=get_daily_reward`);
+        const data = await response.json();
+
+        if (data.success && data.can_claim) {
+            dailyRewardData = data;
+            showDailyRewardModal(data);
+        }
+    } catch (error) {
+        console.error('Error checking daily reward:', error);
+    }
+}
+
+function showDailyRewardModal(data) {
+    const modal = document.getElementById('daily-login-modal');
+    const calendar = document.getElementById('daily-calendar');
+    const currentDayEl = document.getElementById('daily-current-day');
+    const rewardText = document.getElementById('daily-reward-text');
+    const totalLogins = document.getElementById('daily-total-logins');
+
+    currentDayEl.textContent = data.current_day;
+    totalLogins.textContent = data.total_logins;
+
+    // Build reward text
+    let rewardStr = '';
+    if (data.reward_gold > 0) {
+        rewardStr += `${data.reward_gold} Gold`;
+    }
+    if (data.reward_item_name) {
+        rewardStr += (rewardStr ? ' + ' : '') + `1 ${data.reward_item_name}`;
+    }
+    rewardText.textContent = rewardStr;
+
+    // Generate calendar
+    let calendarHTML = '';
+    const specialDays = [7, 14, 21, 28, 30];
+
+    for (let day = 1; day <= 30; day++) {
+        let classes = 'calendar-day';
+        let icon = '💰';
+
+        if (day < data.current_day) {
+            classes += ' claimed';
+            icon = '✓';
+        } else if (day === data.current_day) {
+            classes += ' current';
+            icon = '🎁';
+        }
+
+        if (specialDays.includes(day)) {
+            classes += ' special';
+            if (day !== data.current_day && day > data.current_day) {
+                icon = '⭐';
+            }
+        }
+
+        calendarHTML += `
+            <div class="${classes}">
+                <span class="day-num">${day}</span>
+                <span class="day-icon">${icon}</span>
+            </div>
+        `;
+    }
+    calendar.innerHTML = calendarHTML;
+
+    modal.classList.add('show');
+}
+
+async function claimDailyReward() {
+    const btn = document.getElementById('claim-reward-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Claiming...';
+
+    try {
+        const response = await fetch(`${API_BASE}?action=claim_daily_reward`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            let message = `Day ${data.claimed_day} reward claimed!`;
+            if (data.gold_received > 0) {
+                message += ` +${data.gold_received} Gold`;
+            }
+            if (data.item_received) {
+                message += ` +1 ${data.item_received}`;
+            }
+
+            showToast(message, 'success');
+            closeDailyModal();
+            updateGoldDisplay(); // Refresh gold
+            loadInventory(); // Refresh inventory
+        } else {
+            showToast(data.error || 'Failed to claim reward', 'error');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-gift"></i> Claim Reward!';
+        }
+    } catch (error) {
+        console.error('Error claiming daily reward:', error);
+        showToast('Network error', 'error');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-gift"></i> Claim Reward!';
+    }
+}
+
+function closeDailyModal() {
+    document.getElementById('daily-login-modal').classList.remove('show');
+}
 
 // ================================================
 // TAB NAVIGATION

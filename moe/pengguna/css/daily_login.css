@@ -1,0 +1,268 @@
+/* ================================================
+   DAILY LOGIN REWARD MODAL
+   Gold/Dark Egyptian Theme
+   ================================================ */
+
+/* Overlay */
+.daily-login-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.daily-login-modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Content Card */
+.daily-login-content {
+    background: linear-gradient(145deg, #1a1a2e 0%, #0f0f1a 100%);
+    border: 2px solid rgba(218, 165, 32, 0.4);
+    border-radius: 20px;
+    padding: 24px;
+    max-width: 360px;
+    width: 90%;
+    text-align: center;
+    transform: scale(0.8);
+    transition: transform 0.3s ease;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8),
+        0 0 40px rgba(218, 165, 32, 0.1);
+}
+
+.daily-login-modal.show .daily-login-content {
+    transform: scale(1);
+}
+
+/* Header */
+.daily-login-header {
+    margin-bottom: 20px;
+}
+
+.daily-login-header h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    color: #DAA520;
+    margin: 0 0 6px 0;
+    text-shadow: 0 2px 10px rgba(218, 165, 32, 0.4);
+}
+
+.daily-login-header p {
+    font-size: 0.85rem;
+    color: #888;
+    margin: 0;
+}
+
+/* Calendar Grid (7 columns) */
+.daily-calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin-bottom: 20px;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 4px;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    font-size: 0.65rem;
+    color: #666;
+    transition: all 0.2s;
+}
+
+.calendar-day .day-num {
+    font-weight: 700;
+    font-size: 0.7rem;
+    margin-bottom: 2px;
+}
+
+.calendar-day .day-icon {
+    font-size: 0.9rem;
+}
+
+/* Claimed days */
+.calendar-day.claimed {
+    background: rgba(46, 204, 113, 0.15);
+    border-color: rgba(46, 204, 113, 0.3);
+    color: #2ecc71;
+}
+
+.calendar-day.claimed .day-icon::after {
+    content: '✓';
+}
+
+/* Current day */
+.calendar-day.current {
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.2), rgba(218, 165, 32, 0.1));
+    border-color: #DAA520;
+    color: #DAA520;
+    animation: currentDayPulse 2s infinite;
+}
+
+@keyframes currentDayPulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(218, 165, 32, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 10px 3px rgba(218, 165, 32, 0.2);
+    }
+}
+
+/* Special/Milestone days */
+.calendar-day.special {
+    border-color: rgba(155, 89, 182, 0.5);
+}
+
+.calendar-day.special .day-icon {
+    color: #9b59b6;
+}
+
+/* Reward Display */
+.daily-reward-display {
+    background: rgba(218, 165, 32, 0.1);
+    border: 1px solid rgba(218, 165, 32, 0.3);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.reward-label {
+    font-size: 0.75rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.reward-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #DAA520;
+}
+
+.reward-content i {
+    font-size: 1.5rem;
+}
+
+.reward-content .reward-gold {
+    color: #FFD700;
+}
+
+.reward-content .reward-item {
+    color: #2ecc71;
+}
+
+/* Streak Counter */
+.streak-counter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: #e74c3c;
+    margin-bottom: 16px;
+}
+
+.streak-counter i {
+    animation: fireFlicker 0.5s infinite alternate;
+}
+
+@keyframes fireFlicker {
+    from {
+        transform: scale(1);
+    }
+
+    to {
+        transform: scale(1.1);
+    }
+}
+
+/* Claim Button */
+.claim-reward-btn {
+    width: 100%;
+    padding: 14px 24px;
+    background: linear-gradient(135deg, #DAA520, #B8860B);
+    border: none;
+    border-radius: 12px;
+    color: #000;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.claim-reward-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 25px rgba(218, 165, 32, 0.4);
+}
+
+.claim-reward-btn:active {
+    transform: scale(0.98);
+}
+
+.claim-reward-btn:disabled {
+    background: #444;
+    color: #888;
+    cursor: not-allowed;
+}
+
+/* Close button */
+.daily-close-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    color: #888;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.daily-close-btn:hover {
+    background: rgba(231, 76, 60, 0.2);
+    border-color: #e74c3c;
+    color: #e74c3c;
+}
+
+/* Responsive */
+@media (max-width: 380px) {
+    .daily-login-content {
+        padding: 16px;
+    }
+
+    .daily-calendar {
+        gap: 4px;
+    }
+
+    .calendar-day {
+        font-size: 0.55rem;
+    }
+}
