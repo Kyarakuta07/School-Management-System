@@ -228,13 +228,14 @@ function spawnNote() {
 // ================================================
 // Lane cooldown to prevent double hits on stacked notes
 const laneCooldown = [0, 0, 0, 0]; // Last hit time per lane
-const COOLDOWN_MS = 100; // Minimum ms between hits on same lane
+const COOLDOWN_MS = 80; // Minimum ms between hits on same lane
 
 function hitLane(laneIndex) {
-    // Check cooldown
     const now = Date.now();
+
+    // Check cooldown
     if (now - laneCooldown[laneIndex] < COOLDOWN_MS) {
-        return; // Still in cooldown, ignore this hit
+        return;
     }
 
     // Visual feedback
@@ -242,18 +243,23 @@ function hitLane(laneIndex) {
     lanes[laneIndex]?.classList.add('active');
 
     // Find notes in this lane (exclude already hit notes)
-    const laneNotes = GameState.notes.filter(n => n.lane === laneIndex && !n.isHit);
+    const laneNotes = GameState.notes.filter(n =>
+        n.lane === laneIndex &&
+        !n.isHit &&
+        !n.isProcessing
+    );
 
     if (laneNotes.length === 0) return;
 
-    // Find the note closest to hit zone
+    // Find the note closest to hit zone (only the ONE best note)
     let bestNote = null;
     let bestTiming = Infinity;
 
-    const hitZoneTime = GameState.fallDuration * 0.85; // 85% of fall duration
-    const hitWindow = 200; // ms tolerance
+    const hitZoneTime = GameState.fallDuration * 0.85;
+    const hitWindow = 180; // Slightly tighter window
 
-    laneNotes.forEach(noteData => {
+    for (let i = 0; i < laneNotes.length; i++) {
+        const noteData = laneNotes[i];
         const elapsed = now - noteData.spawnTime;
         const diff = Math.abs(elapsed - hitZoneTime);
 
@@ -261,28 +267,38 @@ function hitLane(laneIndex) {
             bestTiming = diff;
             bestNote = noteData;
         }
-    });
+    }
 
     if (bestNote) {
-        // Mark as hit to prevent double processing
+        // IMMEDIATELY mark as processing and hit
+        bestNote.isProcessing = true;
         bestNote.isHit = true;
         laneCooldown[laneIndex] = now;
 
-        // Hit!
+        // Process the hit
         processHit(bestNote, bestTiming);
+
+        // IMMEDIATELY remove from notes array
+        const idx = GameState.notes.indexOf(bestNote);
+        if (idx > -1) {
+            GameState.notes.splice(idx, 1);
+        }
     }
 }
 
 function processHit(noteData, timing) {
     const note = noteData.element;
 
+    // Safety check
+    if (!note || !note.parentNode) return;
+
     // Determine hit quality
     let quality, points;
-    if (timing < 50) {
+    if (timing < 40) {
         quality = 'PERFECT';
         points = 15;
         GameState.perfectHits++;
-    } else if (timing < 100) {
+    } else if (timing < 90) {
         quality = 'GREAT';
         points = 10;
     } else {
