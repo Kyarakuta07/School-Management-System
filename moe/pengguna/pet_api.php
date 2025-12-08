@@ -4,7 +4,7 @@
  * Mediterranean of Egypt Virtual Pet Companion
  * 
  * AJAX endpoints for frontend communication
- * All responses are JSON formatted
+ * All responses are JSON formatted using standardized response helper
  */
 
 require_once '../includes/security_config.php';
@@ -18,15 +18,14 @@ header("Pragma: no-cache");
 include '../connection.php';
 include 'pet_logic.php';
 require_once '../includes/rate_limiter.php';
+require_once '../includes/api_response.php';
 
 // ================================================
 // AUTHENTICATION CHECK
 // ================================================
 
 if (!isset($_SESSION['status_login']) || $_SESSION['role'] != 'Nethera') {
-    http_response_code(401);
-    echo json_encode(['success' => false, 'error' => 'Unauthorized. Please login.']);
-    exit();
+    api_unauthorized();
 }
 
 $user_id = $_SESSION['id_nethera'];
@@ -48,7 +47,7 @@ switch ($action) {
     // ============================================
     case 'get_pets':
         if ($method !== 'GET') {
-            methodNotAllowed('GET');
+            api_method_not_allowed('GET');
         }
 
         $pets = getUserPetsWithStats($conn, $user_id);
@@ -64,7 +63,7 @@ switch ($action) {
     // ============================================
     case 'get_active_pet':
         if ($method !== 'GET') {
-            methodNotAllowed('GET');
+            api_method_not_allowed('GET');
         }
 
         $pets = getUserPetsWithStats($conn, $user_id);
@@ -88,7 +87,7 @@ switch ($action) {
     // ============================================
     case 'get_shop':
         if ($method !== 'GET') {
-            methodNotAllowed('GET');
+            api_method_not_allowed('GET');
         }
 
         $result = mysqli_query($conn, "SELECT * FROM shop_items WHERE is_available = 1 ORDER BY effect_type, price");
@@ -120,7 +119,7 @@ switch ($action) {
     // ============================================
     case 'get_inventory':
         if ($method !== 'GET') {
-            methodNotAllowed('GET');
+            api_method_not_allowed('GET');
         }
 
         $query = "SELECT ui.*, si.name, si.description, si.effect_type, si.effect_value, si.img_path
@@ -151,18 +150,13 @@ switch ($action) {
     // ============================================
     case 'gacha':
         if ($method !== 'POST') {
-            methodNotAllowed('POST');
+            api_method_not_allowed('POST');
         }
 
         // Rate limiting - 20 gacha rolls per hour per user
         $gacha_limit = $api_limiter->checkLimit($user_id, 'gacha', 20, 60);
         if (!$gacha_limit['allowed']) {
-            echo json_encode([
-                'success' => false,
-                'error' => 'Rate limit exceeded. Please wait before rolling again.',
-                'wait_until' => $gacha_limit['locked_until']
-            ]);
-            break;
+            api_rate_limited($gacha_limit['locked_until']);
         }
 
         $input = json_decode(file_get_contents('php://input'), true);
@@ -187,11 +181,7 @@ switch ($action) {
         mysqli_stmt_close($gold_check);
 
         if ($user_gold < $cost) {
-            echo json_encode([
-                'success' => false,
-                'error' => "Not enough gold! Need $cost, have $user_gold."
-            ]);
-            break;
+            api_insufficient_funds($cost, $user_gold);
         }
 
         // Deduct gold
@@ -213,7 +203,7 @@ switch ($action) {
     // ============================================
     case 'buy_item':
         if ($method !== 'POST') {
-            methodNotAllowed('POST');
+            api_method_not_allowed('POST');
         }
 
         $input = json_decode(file_get_contents('php://input'), true);
@@ -287,7 +277,7 @@ switch ($action) {
     // ============================================
     case 'use_item':
         if ($method !== 'POST') {
-            methodNotAllowed('POST');
+            api_method_not_allowed('POST');
         }
 
         $input = json_decode(file_get_contents('php://input'), true);
@@ -312,7 +302,7 @@ switch ($action) {
     // ============================================
     case 'set_active':
         if ($method !== 'POST') {
-            methodNotAllowed('POST');
+            api_method_not_allowed('POST');
         }
 
         $input = json_decode(file_get_contents('php://input'), true);
@@ -332,7 +322,7 @@ switch ($action) {
     // ============================================
     case 'rename':
         if ($method !== 'POST') {
-            methodNotAllowed('POST');
+            api_method_not_allowed('POST');
         }
 
         $input = json_decode(file_get_contents('php://input'), true);
@@ -370,7 +360,7 @@ switch ($action) {
     // ============================================
     case 'shelter':
         if ($method !== 'POST') {
-            methodNotAllowed('POST');
+            api_method_not_allowed('POST');
         }
 
         $input = json_decode(file_get_contents('php://input'), true);
@@ -390,7 +380,7 @@ switch ($action) {
     // ============================================
     case 'get_opponents':
         if ($method !== 'GET') {
-            methodNotAllowed('GET');
+            api_method_not_allowed('GET');
         }
 
         $query = "SELECT up.id as pet_id, up.level, up.nickname,
@@ -426,7 +416,7 @@ switch ($action) {
     // ============================================
     case 'battle':
         if ($method !== 'POST') {
-            methodNotAllowed('POST');
+            api_method_not_allowed('POST');
         }
 
         // Rate limiting - 3 battles per day per user
@@ -507,7 +497,7 @@ switch ($action) {
     // ============================================
     case 'battle_history':
         if ($method !== 'GET') {
-            methodNotAllowed('GET');
+            api_method_not_allowed('GET');
         }
 
         // Get battles where user's pets were involved
@@ -551,7 +541,7 @@ switch ($action) {
     // ============================================
     case 'get_buff':
         if ($method !== 'GET') {
-            methodNotAllowed('GET');
+            api_method_not_allowed('GET');
         }
 
         $activity = isset($_GET['activity']) ? $_GET['activity'] : '';
@@ -571,7 +561,7 @@ switch ($action) {
     // ============================================
     case 'play_finish':
         if ($method !== 'POST') {
-            methodNotAllowed('POST');
+            api_method_not_allowed('POST');
         }
 
         $input = json_decode(file_get_contents('php://input'), true);
@@ -632,7 +622,7 @@ switch ($action) {
     // ============================================
     case 'get_evolution_candidates':
         if ($method !== 'GET') {
-            methodNotAllowed('GET');
+            api_method_not_allowed('GET');
         }
 
         $main_pet_id = isset($_GET['main_pet_id']) ? (int) $_GET['main_pet_id'] : 0;
@@ -694,7 +684,7 @@ switch ($action) {
     // ============================================
     case 'evolve_manual':
         if ($method !== 'POST') {
-            methodNotAllowed('POST');
+            api_method_not_allowed('POST');
         }
 
         $input = json_decode(file_get_contents('php://input'), true);
@@ -731,7 +721,7 @@ switch ($action) {
     // ============================================
     case 'sell_pet':
         if ($method !== 'POST') {
-            methodNotAllowed('POST');
+            api_method_not_allowed('POST');
         }
 
         $input = json_decode(file_get_contents('php://input'), true);
@@ -821,7 +811,7 @@ switch ($action) {
     // ============================================
     case 'battle_result':
         if ($method !== 'POST') {
-            methodNotAllowed('POST');
+            api_method_not_allowed('POST');
         }
 
         $input = json_decode(file_get_contents('php://input'), true);
@@ -887,7 +877,7 @@ switch ($action) {
     // ============================================
     case 'get_daily_reward':
         if ($method !== 'GET') {
-            methodNotAllowed('GET');
+            api_method_not_allowed('GET');
         }
 
         // Define 30-day rewards (day => [gold, item_id or null])
@@ -978,7 +968,7 @@ switch ($action) {
     // ============================================
     case 'claim_daily_reward':
         if ($method !== 'POST') {
-            methodNotAllowed('POST');
+            api_method_not_allowed('POST');
         }
 
         // Same rewards definition (IDs: 1=Food, 4=Potion, 7=Revive, 9=EXP Boost, 11=Gacha, 16=Shield)
@@ -1102,7 +1092,7 @@ switch ($action) {
     // ============================================
     case 'get_leaderboard':
         if ($method !== 'GET') {
-            methodNotAllowed('GET');
+            api_method_not_allowed('GET');
         }
 
         $category = isset($_GET['category']) ? $_GET['category'] : 'top_level';
@@ -1205,7 +1195,7 @@ switch ($action) {
     // ============================================
     case 'get_achievements':
         if ($method !== 'GET') {
-            methodNotAllowed('GET');
+            api_method_not_allowed('GET');
         }
 
         try {
@@ -1322,25 +1312,6 @@ switch ($action) {
     // Default: Unknown action
     // ============================================
     default:
-        http_response_code(404);
-        echo json_encode([
-            'success' => false,
-            'error' => 'Unknown action. Available actions: get_pets, get_active_pet, get_shop, get_inventory, gacha, buy_item, use_item, set_active, rename, shelter, get_opponents, battle, battle_history, get_buff, play_finish, get_evolution_candidates, evolve_manual, sell_pet, battle_result, get_daily_reward, claim_daily_reward, get_leaderboard, get_achievements'
-        ]);
-        break;
-}
-
-// ================================================
-// HELPER FUNCTIONS
-// ================================================
-
-function methodNotAllowed($expected)
-{
-    http_response_code(405);
-    echo json_encode([
-        'success' => false,
-        'error' => "Method not allowed. Use $expected."
-    ]);
-    exit();
+        api_not_found('Unknown action. Available: get_pets, get_active_pet, get_shop, get_inventory, gacha, buy_item, use_item, set_active, rename, shelter, get_opponents, battle, battle_history, get_buff, play_finish, get_evolution_candidates, evolve_manual, sell_pet, battle_result, get_daily_reward, claim_daily_reward, get_leaderboard, get_achievements');
 }
 ?>

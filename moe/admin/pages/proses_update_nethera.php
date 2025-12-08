@@ -1,5 +1,7 @@
 <?php
+require_once '../../includes/security_config.php';
 session_start();
+require_once '../../includes/activity_logger.php';
 include '../../connection.php';
 
 if (!isset($_SESSION['status_login']) || $_SESSION['role'] != 'Vasiki') {
@@ -21,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // --- LOGIC AUTO NUMBER DIMULAI ---
 
     // 1. Cek data lama di database sebelum di-update
-    $query_cek = mysqli_prepare($conn, "SELECT no_registrasi, status_akun FROM nethera WHERE id_nethera = ?");
+    $query_cek = mysqli_prepare($conn, "SELECT no_registrasi, status_akun, nama_lengkap, username, id_sanctuary, periode_masuk FROM nethera WHERE id_nethera = ?");
     mysqli_stmt_bind_param($query_cek, "i", $id_nethera);
     mysqli_stmt_execute($query_cek);
     $result_cek = mysqli_stmt_get_result($query_cek);
@@ -116,6 +118,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         );
 
         if (mysqli_stmt_execute($stmt)) {
+            // Log the update action
+            $new_data = [
+                'nama_lengkap' => $nama_lengkap,
+                'username' => $username,
+                'no_registrasi' => $final_no_registrasi,
+                'id_sanctuary' => $id_sanctuary,
+                'periode_masuk' => $periode_masuk,
+                'status_akun' => $status_akun
+            ];
+
+            log_update(
+                $conn,
+                'nethera',
+                $id_nethera,
+                'Updated user: ' . $username,
+                $data_lama,
+                $new_data
+            );
+
             header("Location: manage_nethera.php?status=update_sukses");
             exit();
         } else {

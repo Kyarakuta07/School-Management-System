@@ -7,6 +7,7 @@
 require_once '../../includes/security_config.php';
 session_start();
 require_once '../../includes/csrf.php';
+require_once '../../includes/activity_logger.php';
 include '../../connection.php';
 
 // Role check
@@ -41,6 +42,14 @@ if ($id_nethera_to_delete == $_SESSION['id_nethera']) {
     exit();
 }
 
+// Fetch user info before delete for logging
+$info_stmt = mysqli_prepare($conn, "SELECT username, nama_lengkap, email FROM nethera WHERE id_nethera = ?");
+mysqli_stmt_bind_param($info_stmt, "i", $id_nethera_to_delete);
+mysqli_stmt_execute($info_stmt);
+$info_result = mysqli_stmt_get_result($info_stmt);
+$user_info = mysqli_fetch_assoc($info_result);
+mysqli_stmt_close($info_stmt);
+
 // Delete record from database
 $sql_delete = "DELETE FROM nethera WHERE id_nethera = ?";
 $stmt_delete = mysqli_prepare($conn, $sql_delete);
@@ -49,6 +58,15 @@ if ($stmt_delete) {
     mysqli_stmt_bind_param($stmt_delete, "i", $id_nethera_to_delete);
 
     if (mysqli_stmt_execute($stmt_delete)) {
+        // Log the delete action
+        log_delete(
+            $conn,
+            'nethera',
+            $id_nethera_to_delete,
+            'Deleted user: ' . ($user_info['username'] ?? 'Unknown') . ' (' . ($user_info['nama_lengkap'] ?? '') . ')',
+            $user_info
+        );
+
         // Regenerate CSRF token after successful action
         regenerate_csrf_token();
 
