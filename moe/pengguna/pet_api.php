@@ -1071,13 +1071,111 @@ switch ($action) {
         break;
 
     // ============================================
+    // GET: Leaderboard rankings
+    // ============================================
+    case 'get_leaderboard':
+        if ($method !== 'GET') {
+            methodNotAllowed('GET');
+        }
+
+        $category = isset($_GET['category']) ? $_GET['category'] : 'top_level';
+        $limit = 10;
+
+        switch ($category) {
+            case 'battle_wins':
+                // Top battle winners
+                $query = "SELECT 
+                    up.id as pet_id,
+                    up.custom_name as pet_name,
+                    up.level,
+                    ps.name as species_name,
+                    ps.rarity,
+                    ps.element,
+                    n.nama_lengkap as owner_name,
+                    COALESCE(s.nama_sanctuary, 'Unknown') as sanctuary,
+                    COUNT(pb.id) as wins
+                FROM user_pets up
+                JOIN pet_species ps ON up.species_id = ps.id
+                JOIN nethera n ON up.user_id = n.id_nethera
+                LEFT JOIN sanctuary s ON n.id_sanctuary = s.id_sanctuary
+                LEFT JOIN pet_battles pb ON up.id = pb.winner_pet_id
+                WHERE up.status != 'DEAD'
+                GROUP BY up.id
+                ORDER BY wins DESC, up.level DESC
+                LIMIT ?";
+                break;
+
+            case 'streak':
+                // Top daily login streak
+                $query = "SELECT 
+                    up.id as pet_id,
+                    up.custom_name as pet_name,
+                    up.level,
+                    ps.name as species_name,
+                    ps.rarity,
+                    ps.element,
+                    n.nama_lengkap as owner_name,
+                    COALESCE(s.nama_sanctuary, 'Unknown') as sanctuary,
+                    COALESCE(dls.total_logins, 0) as streak
+                FROM user_pets up
+                JOIN pet_species ps ON up.species_id = ps.id
+                JOIN nethera n ON up.user_id = n.id_nethera
+                LEFT JOIN sanctuary s ON n.id_sanctuary = s.id_sanctuary
+                LEFT JOIN daily_login_streak dls ON up.user_id = dls.user_id
+                WHERE up.is_active = 1 AND up.status != 'DEAD'
+                ORDER BY streak DESC, up.level DESC
+                LIMIT ?";
+                break;
+
+            default: // top_level
+                $query = "SELECT 
+                    up.id as pet_id,
+                    up.custom_name as pet_name,
+                    up.level,
+                    ps.name as species_name,
+                    ps.rarity,
+                    ps.element,
+                    n.nama_lengkap as owner_name,
+                    COALESCE(s.nama_sanctuary, 'Unknown') as sanctuary
+                FROM user_pets up
+                JOIN pet_species ps ON up.species_id = ps.id
+                JOIN nethera n ON up.user_id = n.id_nethera
+                LEFT JOIN sanctuary s ON n.id_sanctuary = s.id_sanctuary
+                WHERE up.status != 'DEAD'
+                ORDER BY up.level DESC, up.exp DESC
+                LIMIT ?";
+                break;
+        }
+
+        $stmt = mysqli_prepare($conn, $query);
+        mysqli_stmt_bind_param($stmt, "i", $limit);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        $leaderboard = [];
+        $rank = 1;
+        while ($row = mysqli_fetch_assoc($result)) {
+            $row['rank'] = $rank++;
+            $row['display_name'] = $row['pet_name'] ?: $row['species_name'];
+            $leaderboard[] = $row;
+        }
+        mysqli_stmt_close($stmt);
+
+        echo json_encode([
+            'success' => true,
+            'category' => $category,
+            'leaderboard' => $leaderboard
+        ]);
+        break;
+
+    // ============================================
     // Default: Unknown action
     // ============================================
     default:
         http_response_code(404);
         echo json_encode([
             'success' => false,
-            'error' => 'Unknown action. Available actions: get_pets, get_active_pet, get_shop, get_inventory, gacha, buy_item, use_item, set_active, rename, shelter, get_opponents, battle, battle_history, get_buff, play_finish, get_evolution_candidates, evolve_manual, sell_pet, battle_result, get_daily_reward, claim_daily_reward'
+            'error' => 'Unknown action. Available actions: get_pets, get_active_pet, get_shop, get_inventory, gacha, buy_item, use_item, set_active, rename, shelter, get_opponents, battle, battle_history, get_buff, play_finish, get_evolution_candidates, evolve_manual, sell_pet, battle_result, get_daily_reward, claim_daily_reward, get_leaderboard'
         ]);
         break;
 }

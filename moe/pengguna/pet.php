@@ -311,6 +311,7 @@ mysqli_stmt_close($gold_stmt);
                 <div class="arena-tabs">
                     <button class="arena-tab active" data-view="opponents">Find Opponent</button>
                     <button class="arena-tab" data-view="history">Battle History</button>
+                    <button class="arena-tab" data-view="leaderboard">🏆 Leaderboard</button>
                 </div>
 
                 <div class="arena-content" id="arena-opponents">
@@ -323,6 +324,20 @@ mysqli_stmt_close($gold_stmt);
                 <div class="arena-content" id="arena-history" style="display: none;">
                     <div class="battle-history-list" id="battle-history">
                         <p class="empty-message">No battles yet</p>
+                    </div>
+                </div>
+
+                <div class="arena-content" id="arena-leaderboard" style="display: none;">
+                    <div class="leaderboard-tabs">
+                        <button class="lb-tab active" data-category="top_level">Top Level</button>
+                        <button class="lb-tab" data-category="battle_wins">Battle Wins</button>
+                        <button class="lb-tab" data-category="streak">Login Streak</button>
+                    </div>
+                    <div class="leaderboard-list" id="leaderboard-list">
+                        <div class="loading-spinner">
+                            <i class="fas fa-spinner fa-spin fa-2x"></i>
+                            <p>Loading leaderboard...</p>
+                        </div>
                     </div>
                 </div>
             </section>

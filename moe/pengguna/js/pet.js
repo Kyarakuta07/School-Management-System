@@ -1013,6 +1013,109 @@ function showToast(message, type = 'success') {
 }
 
 // ================================================
+// LEADERBOARD
+// ================================================
+let currentLeaderboardCategory = 'top_level';
+
+function initLeaderboardTabs() {
+    document.querySelectorAll('.lb-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.lb-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            currentLeaderboardCategory = tab.dataset.category;
+            loadLeaderboard(currentLeaderboardCategory);
+        });
+    });
+
+    // Also handle arena tab switching to show leaderboard
+    document.querySelectorAll('.arena-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            const view = tab.dataset.view;
+            document.querySelectorAll('.arena-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+
+            document.getElementById('arena-opponents').style.display = view === 'opponents' ? 'block' : 'none';
+            document.getElementById('arena-history').style.display = view === 'history' ? 'block' : 'none';
+            document.getElementById('arena-leaderboard').style.display = view === 'leaderboard' ? 'block' : 'none';
+
+            if (view === 'leaderboard') {
+                loadLeaderboard(currentLeaderboardCategory);
+            }
+        });
+    });
+}
+
+async function loadLeaderboard(category = 'top_level') {
+    const container = document.getElementById('leaderboard-list');
+    container.innerHTML = `<div class="loading-spinner"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Loading...</p></div>`;
+
+    try {
+        const response = await fetch(`${API_BASE}?action=get_leaderboard&category=${category}`);
+        const data = await response.json();
+
+        if (data.success && data.leaderboard.length > 0) {
+            renderLeaderboard(data.leaderboard, category);
+        } else {
+            container.innerHTML = '<div class="empty-message">No data available yet</div>';
+        }
+    } catch (error) {
+        console.error('Error loading leaderboard:', error);
+        container.innerHTML = '<div class="empty-message">Failed to load leaderboard</div>';
+    }
+}
+
+function renderLeaderboard(entries, category) {
+    const container = document.getElementById('leaderboard-list');
+
+    const getRankIcon = (rank) => {
+        if (rank === 1) return '👑';
+        if (rank === 2) return '🥈';
+        if (rank === 3) return '🥉';
+        return `#${rank}`;
+    };
+
+    const getStatLabel = () => {
+        switch (category) {
+            case 'battle_wins': return 'Wins';
+            case 'streak': return 'Logins';
+            default: return 'Level';
+        }
+    };
+
+    const getStatValue = (entry) => {
+        switch (category) {
+            case 'battle_wins': return entry.wins || 0;
+            case 'streak': return entry.streak || 0;
+            default: return entry.level;
+        }
+    };
+
+    container.innerHTML = entries.map(entry => `
+        <div class="lb-entry${entry.rank <= 3 ? ' rank-' + entry.rank : ''}">
+            <div class="lb-rank${entry.rank <= 3 ? ' rank-' + entry.rank : ''}">${getRankIcon(entry.rank)}</div>
+            <div class="lb-info">
+                <div class="lb-pet-name">
+                    ${entry.display_name}
+                    <span class="rarity-badge ${entry.rarity}">${entry.rarity}</span>
+                </div>
+                <div class="lb-owner">
+                    ${entry.owner_name} • <span class="sanctuary">${entry.sanctuary}</span>
+                </div>
+            </div>
+            <div class="lb-stat">
+                <div class="lb-stat-value">${getStatValue(entry)}</div>
+                <div class="lb-stat-label">${getStatLabel()}</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Initialize leaderboard tabs when DOM ready
+document.addEventListener('DOMContentLoaded', () => {
+    initLeaderboardTabs();
+});
+
+// ================================================
 // MODAL BACKDROP CLOSE
 // ================================================
 document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
