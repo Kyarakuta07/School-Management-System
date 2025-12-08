@@ -599,3 +599,61 @@ body {
         font-size: 4rem;
     }
 }
+
+/* =========================================
+   UTILITY CLASSES
+   (Extracted from inline styles in admin/index.php)
+   ========================================= */
+
+/* Card Color Variants */
+.card-stat--pending {
+    border-bottom-color: #ff6b6b;
+}
+
+.card-stat--sanctuary {
+    border-bottom-color: #4facfe;
+}
+
+.card-stat--online {
+    border-bottom-color: #00fa9a;
+}
+
+/* Status Value Variant */
+.stat-value--status {
+    font-size: 1.5rem;
+    margin-top: 10px;
+}
+
+/* Card Header Flex */
+.card-header--flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* View All Link */
+.view-all-link {
+    font-size: 0.8rem;
+    color: #DAA520;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.view-all-link:hover {
+    color: #fff;
+}
+
+/* User Name Truncate */
+.user-name--truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 140px;
+}
+
+/* Empty Message */
+.empty-message {
+    text-align: center;
+    color: #aaa;
+    margin-top: 20px;
+}

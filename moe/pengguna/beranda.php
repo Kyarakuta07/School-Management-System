@@ -62,7 +62,7 @@ if ($stmt) {
 
     // 5. Ambil hasilnya
     $result = mysqli_stmt_get_result($stmt);
-    
+
     // Ambil data sebagai array asosiatif
     $row = mysqli_fetch_assoc($result);
 
@@ -178,118 +178,6 @@ if ($active_pet) {
                             </div>
                         </div>
                     </a>
-                    <style>
-                        .study-buddy-card {
-                            display: block;
-                            text-decoration: none;
-                            transition: all 0.3s ease;
-                            border: 1px solid rgba(218, 165, 32, 0.3) !important;
-                        }
-
-                        .study-buddy-card:hover {
-                            border-color: #DAA520 !important;
-                            transform: translateY(-3px);
-                            box-shadow: 0 5px 20px rgba(218, 165, 32, 0.2);
-                        }
-
-                        .study-buddy-card .card-title {
-                            color: #DAA520;
-                            margin-bottom: 12px;
-                        }
-
-                        .study-buddy-card .card-title i {
-                            margin-right: 6px;
-                        }
-
-                        .study-buddy-content {
-                            display: flex;
-                            align-items: center;
-                            gap: 15px;
-                        }
-
-                        .study-buddy-pet {
-                            width: 60px;
-                            height: 60px;
-                            flex-shrink: 0;
-                        }
-
-                        .study-buddy-img {
-                            width: 100%;
-                            height: 100%;
-                            object-fit: contain;
-                            animation: buddy-float 3s ease-in-out infinite;
-                            filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.5));
-                        }
-
-                        @keyframes buddy-float {
-
-                            0%,
-                            100% {
-                                transform: translateY(0) rotate(-2deg);
-                            }
-
-                            50% {
-                                transform: translateY(-8px) rotate(2deg);
-                            }
-                        }
-
-                        .study-buddy-info {
-                            display: flex;
-                            flex-direction: column;
-                            gap: 4px;
-                        }
-
-                        .buddy-name {
-                            font-family: 'Cinzel', serif;
-                            font-size: 1rem;
-                            color: #fff;
-                        }
-
-                        .buddy-element {
-                            font-size: 0.7rem;
-                            padding: 2px 8px;
-                            border-radius: 10px;
-                            width: fit-content;
-                            text-transform: uppercase;
-                            font-weight: bold;
-                        }
-
-                        .buddy-element.fire {
-                            background: rgba(255, 107, 53, 0.2);
-                            color: #ff6b35;
-                        }
-
-                        .buddy-element.water {
-                            background: rgba(78, 205, 196, 0.2);
-                            color: #4ecdc4;
-                        }
-
-                        .buddy-element.earth {
-                            background: rgba(139, 115, 85, 0.2);
-                            color: #c4a77d;
-                        }
-
-                        .buddy-element.air {
-                            background: rgba(168, 218, 220, 0.2);
-                            color: #a8dadc;
-                        }
-
-                        .buddy-element.dark {
-                            background: rgba(108, 92, 231, 0.2);
-                            color: #6c5ce7;
-                        }
-
-                        .buddy-element.light {
-                            background: rgba(255, 234, 167, 0.2);
-                            color: #d4a017;
-                        }
-
-                        .buddy-buff {
-                            font-size: 0.75rem;
-                            color: #2ecc71;
-                            font-weight: bold;
-                        }
-                    </style>
                 <?php endif; ?>
 
             </section>

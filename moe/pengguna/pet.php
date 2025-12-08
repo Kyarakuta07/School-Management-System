@@ -19,11 +19,15 @@ $user_id = $_SESSION['id_nethera'];
 $nama_pengguna = htmlspecialchars($_SESSION['nama_lengkap']);
 
 // Get user gold (add column if doesn't exist)
-$gold_result = mysqli_query($conn, "SELECT gold FROM nethera WHERE id_nethera = $user_id");
+$gold_stmt = mysqli_prepare($conn, "SELECT gold FROM nethera WHERE id_nethera = ?");
+mysqli_stmt_bind_param($gold_stmt, "i", $user_id);
+mysqli_stmt_execute($gold_stmt);
+$gold_result = mysqli_stmt_get_result($gold_stmt);
 $user_gold = 0;
 if ($gold_row = mysqli_fetch_assoc($gold_result)) {
     $user_gold = $gold_row['gold'] ?? 0;
 }
+mysqli_stmt_close($gold_stmt);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -524,43 +528,6 @@ if ($gold_row = mysqli_fetch_assoc($gold_result)) {
                 <button class="modal-cancel-btn" onclick="closeRenameModal()">Cancel</button>
                 <button class="modal-confirm-btn" onclick="confirmRename()">
                     <i class="fas fa-check"></i> Save
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Toast Notification -->
-    <div class="toast" id="toast">
-        <i class="toast-icon fas fa-check-circle"></i>
-        <span class="toast-message">Message</span>
-    </div>
-
-    <div class="modal" id="bulk-use-modal">
-        <div class="modal-backdrop"></div>
-        <div class="modal-content item-detail-card">
-            <div class="item-header">
-                <img src="" id="bulk-item-img" class="item-detail-img">
-                <div class="item-detail-info">
-                    <h3 id="bulk-item-name">Item Name</h3>
-                    <p id="bulk-item-desc">Description here...</p>
-                    <span class="item-stock">Owned: <b id="bulk-item-stock">0</b></span>
-                </div>
-            </div>
-
-            <div class="quantity-selector">
-                <label>Use Quantity:</label>
-                <div class="qty-controls">
-                    <button type="button" class="qty-btn" onclick="adjustQty(-1)">-</button>
-                    <input type="number" id="bulk-item-qty" value="1" min="1" readonly>
-                    <button type="button" class="qty-btn" onclick="adjustQty(1)">+</button>
-                    <button type="button" class="qty-btn max" onclick="setMaxQty()">MAX</button>
-                </div>
-            </div>
-
-            <div class="modal-actions">
-                <button class="modal-cancel-btn" onclick="closeBulkModal()">Cancel</button>
-                <button class="modal-confirm-btn" onclick="confirmBulkUse()">
-                    Use Item
                 </button>
             </div>
         </div>
