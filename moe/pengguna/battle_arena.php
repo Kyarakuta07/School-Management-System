@@ -28,7 +28,7 @@ if (!$defender_pet_id || !$attacker_pet_id) {
 }
 
 // Include database connection
-include '../koneksi.php';
+include '../connection.php';
 
 // Get attacker pet data (user's pet)
 $atk_query = mysqli_prepare(
