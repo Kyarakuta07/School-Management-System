@@ -1,576 +1,397 @@
-// ================================================
-// HARDCORE & RHYTHM GAME UPDATE - NEW FUNCTIONS
-// ================================================
+/**
+ * MOE Pet System - Rhythm Game Engine
+ * Fullscreen rhythm game with 4-lane notes
+ */
 
 // ================================================
-// RHYTHM GAME ENGINE
+// GAME STATE
 // ================================================
+const GameState = {
+    score: 0,
+    combo: 0,
+    maxCombo: 0,
+    perfectHits: 0,
+    timeLeft: 30,
+    isPlaying: false,
+    notes: [],
+    noteIdCounter: 0,
+    timerInterval: null,
+    spawnInterval: null,
+    fallDuration: 2000 // ms for note to fall
+};
 
-let rhythmGame = null;
+// Lane colors
+const LANE_COLORS = ['#ff6b6b', '#4ecdc4', '#ffd93d', '#a78bfa'];
+const LANE_KEYS = ['KeyD', 'KeyF', 'KeyJ', 'KeyK'];
 
-class RhythmGame {
-    constructor(petId, petImg) {
-        this.petId = petId;
-        this.petImg = petImg;
-        this.score = 0;
-        this.timeLeft = 30;
-        this.notes = [];
-        this.noteIdCounter = 0;
-        this.isPlaying = false;
-        this.timerInterval = null;
-        this.spawnInterval = null;
-    }
+// ================================================
+// DOM ELEMENTS
+// ================================================
+const DOM = {
+    scoreDisplay: null,
+    comboDisplay: null,
+    timerDisplay: null,
+    gameArea: null,
+    dancingPet: null,
+    startOverlay: null,
+    resultOverlay: null,
+    lanes: []
+};
 
-    start() {
-        this.isPlaying = true;
-        this.score = 0;
-        this.timeLeft = 30;
-
-        // Set pet image
-        document.getElementById('rhythm-pet-img').src = this.petImg;
-
-        // Show modal
-        document.getElementById('rhythm-modal').classList.add('show');
-
-        // Start timer countdown
-        this.timerInterval = setInterval(() => {
-            this.timeLeft--;
-            document.getElementById('rhythm-timer').textContent = `${this.timeLeft}s`;
-
-            if (this.timeLeft <= 0) {
-                this.end();
-            }
-        }, 1000);
-
-        // Spawn notes every 0.6 seconds
-        this.spawnInterval = setInterval(() => {
-            if (this.isPlaying) {
-                this.spawnNote();
-            }
-        }, 600);
-
-        // Update score display
-        this.updateScoreDisplay();
-    }
-
-    spawnNote() {
-        const container = document.getElementById('rhythm-notes-container');
-        const note = document.createElement('div');
-        note.className = 'rhythm-note';
-        note.dataset.noteId = this.noteIdCounter++;
-
-        // Random horizontal position (4 lanes)
-        const lane = Math.floor(Math.random() * 4);
-        const laneWidth = 25; // 100% / 4 lanes
-        note.style.left = `${lane * laneWidth + 10}%`;
-
-        // Random note color/type
-        const colors = ['#ff6b35', '#4ecdc4', '#ffd93d', '#a8dadc'];
-        note.style.background = colors[lane];
-        note.innerHTML = '♪';
-
-        container.appendChild(note);
-        this.notes.push(note);
-
-        // Animate fall (CSS handles this)
-        setTimeout(() => {
-            note.classList.add('falling');
-        }, 10);
-
-        // Remove after falling (2.5s animation + buffer)
-        setTimeout(() => {
-            if (note.parentNode) {
-                note.remove();
-                const index = this.notes.indexOf(note);
-                if (index > -1) this.notes.splice(index, 1);
-            }
-        }, 3000);
-    }
-
-    checkHit(clickY) {
-        // Hit zone is at bottom 20% of game area
-        const gameArea = document.getElementById('rhythm-game-area');
-        const hitZoneY = gameArea.offsetHeight * 0.75;
-        const hitTolerance = 60;
-
-        if (clickY >= hitZoneY - hitTolerance && clickY <= hitZoneY + hitTolerance) {
-            // Find closest note to hit zone
-            let closestNote = null;
-            let closestDist = Infinity;
-
-            this.notes.forEach(note => {
-                const noteRect = note.getBoundingClientRect();
-                const noteY = noteRect.top + noteRect.height / 2;
-                const dist = Math.abs(noteY - hitZoneY);
-
-                if (dist < closestDist && dist < hitTolerance) {
-                    closestDist = dist;
-                    closestNote = note;
-                }
-            });
-
-            if (closestNote) {
-                // HIT!
-                this.score += 10;
-                closestNote.classList.add('hit');
-                closestNote.remove();
-                const index = this.notes.indexOf(closestNote);
-                if (index > -1) this.notes.splice(index, 1);
-
-                this.updateScoreDisplay();
-                return true;
-            }
-        }
-        return false;
-    }
-
-    updateScoreDisplay() {
-        document.getElementById('rhythm-score-display').textContent = this.score;
-    }
-
-    end() {
-        this.isPlaying = false;
-        clearInterval(this.timerInterval);
-        clearInterval(this.spawnInterval);
-
-        // Clear remaining notes
-        document.getElementById('rhythm-notes-container').innerHTML = '';
-
-        // Send score to backend
-        this.submitScore();
-    }
-
-    async submitScore() {
-        try {
-            const response = await fetch(`${API_BASE}?action=play_finish`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    pet_id: this.petId,
-                    score: this.score
-                })
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                document.getElementById('rhythm-modal').classList.remove('show');
-
-                let message = `Game Over! Score: ${this.score}\\n`;
-                message += `Rewards: +${data.rewards.mood} Mood, +${data.rewards.exp} EXP`;
-
-                if (data.level_up) {
-                    message += '\\n🎉 Level Up!';
-                }
-                if (data.evolved) {
-                    message += '\\n✨ Your pet evolved!';
-                }
-
-                showToast(message, 'success');
-                loadActivePet();
-            } else {
-                showToast(data.error || 'Failed to save score', 'error');
-            }
-        } catch (error) {
-            console.error('Error submitting score:', error);
-            showToast('Network error', 'error');
-        }
-    }
-}
-
-// Open rhythm game - NOW REDIRECTS TO FULLSCREEN PAGE
-function openRhythmGame() {
-    if (!activePet) {
-        showToast('No active pet!', 'warning');
-        return;
-    }
-
-    if (activePet.status === 'DEAD') {
-        showToast('Cannot play with a dead pet!', 'error');
-        return;
-    }
-
-    // Get pet image path
-    const petImg = getPetImagePath(activePet);
-
-    // Redirect to fullscreen rhythm game page
-    window.location.href = `rhythm_game.php?pet_id=${activePet.id}&pet_img=${encodeURIComponent(petImg)}`;
-}
-
-function closeRhythmGame() {
-    // Legacy function - no longer needed but kept for compatibility
-    document.getElementById('rhythm-modal')?.classList.remove('show');
-}
-
-// Add click/tap handler for rhythm game
+// Initialize DOM references
 document.addEventListener('DOMContentLoaded', () => {
-    const gameArea = document.getElementById('rhythm-game-area');
-    if (gameArea) {
-        gameArea.addEventListener('click', (e) => {
-            if (rhythmGame && rhythmGame.isPlaying) {
-                const rect = gameArea.getBoundingClientRect();
-                const clickY = e.clientY - rect.top;
-                const hit = rhythmGame.checkHit(clickY);
+    DOM.scoreDisplay = document.getElementById('score-display');
+    DOM.comboDisplay = document.getElementById('combo-display');
+    DOM.timerDisplay = document.getElementById('timer-display');
+    DOM.gameArea = document.getElementById('game-area');
+    DOM.dancingPet = document.getElementById('dancing-pet');
+    DOM.startOverlay = document.getElementById('start-overlay');
+    DOM.resultOverlay = document.getElementById('result-overlay');
+    DOM.lanes = document.querySelectorAll('.lane');
 
-                if (hit) {
-                    // Visual feedback
-                    const ripple = document.createElement('div');
-                    ripple.className = 'hit-ripple';
-                    ripple.style.left = e.clientX - rect.left + 'px';
-                    ripple.style.top = clickY + 'px';
-                    gameArea.appendChild(ripple);
-                    setTimeout(() => ripple.remove(), 500);
-                }
-            }
-        });
-    }
+    // Setup input handlers
+    setupKeyboardInput();
+    setupTouchInput();
 });
 
 // ================================================
-// MANUAL EVOLUTION SYSTEM
+// INPUT HANDLERS
 // ================================================
+function setupKeyboardInput() {
+    document.addEventListener('keydown', (e) => {
+        if (!GameState.isPlaying) return;
 
-let evolutionState = {
-    mainPetId: null,
-    selectedFodder: [],
-    candidates: []
-};
-
-async function openEvolutionModal(mainPetId) {
-    // Find the main pet in collection
-    const mainPet = userPets.find(p => p.id === mainPetId);
-
-    if (!mainPet) {
-        showToast('Pet not found', 'error');
-        return;
-    }
-
-    // Check level requirement
-    if (mainPet.level < 20) {
-        showToast('Pet must be level 20 or higher to evolve!', 'warning');
-        return;
-    }
-
-    evolutionState.mainPetId = mainPetId;
-    evolutionState.selectedFodder = [];
-
-    // Show modal
-    document.getElementById('evolution-modal').classList.add('show');
-
-    // Load candidates
-    try {
-        const response = await fetch(`${API_BASE}?action=get_evolution_candidates&main_pet_id=${mainPetId}`);
-        const data = await response.json();
-
-        if (data.success) {
-            evolutionState.candidates = data.candidates;
-            document.getElementById('evo-required-rarity').textContent = data.required_rarity;
-            renderFodderGrid(data.candidates);
-        } else {
-            showToast(data.error || 'Failed to load candidates', 'error');
-            closeEvolutionModal();
+        const laneIndex = LANE_KEYS.indexOf(e.code);
+        if (laneIndex !== -1) {
+            e.preventDefault();
+            hitLane(laneIndex);
         }
-    } catch (error) {
-        console.error('Error loading evolution candidates:', error);
-        showToast('Network error', 'error');
-        closeEvolutionModal();
-    }
+    });
+
+    document.addEventListener('keyup', (e) => {
+        const laneIndex = LANE_KEYS.indexOf(e.code);
+        if (laneIndex !== -1) {
+            DOM.lanes[laneIndex]?.classList.remove('active');
+        }
+    });
 }
 
-function renderFodderGrid(candidates) {
-    const grid = document.getElementById('fodder-grid');
+function setupTouchInput() {
+    const touchLanes = document.querySelectorAll('.touch-lane');
 
-    if (candidates.length === 0) {
-        grid.innerHTML = `
-            <div class="empty-message">
-                <p>No eligible fodder pets found!</p>
-                <p style="font-size: 0.85rem; color: #888;">You need 3 pets of the same rarity that are not active.</p>
-            </div>
-        `;
-        return;
-    }
+    touchLanes.forEach((touchLane, index) => {
+        touchLane.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (GameState.isPlaying) {
+                hitLane(index);
+            }
+        });
 
-    grid.innerHTML = candidates.map(pet => {
-        const img = getPetImagePath(pet);
-        const displayName = pet.nickname || pet.species_name;
-
-        return `
-            <div class="fodder-card" data-pet-id="${pet.id}">
-                <input type="checkbox" 
-                       id="fodder-${pet.id}" 
-                       class="fodder-checkbox" 
-                       onchange="toggleFodderSelection(${pet.id})">
-                <label for="fodder-${pet.id}" class="fodder-label">
-                    <img src="${img}" alt="${displayName}" class="fodder-img">
-                    <div class="fodder-info">
-                        <span class="fodder-name">${displayName}</span>
-                        <span class="fodder-level">Lv.${pet.level}</span>
-                    </div>
-                </label>
-            </div>
-        `;
-    }).join('');
+        touchLane.addEventListener('touchend', () => {
+            DOM.lanes[index]?.classList.remove('active');
+        });
+    });
 }
 
-function toggleFodderSelection(petId) {
-    const checkbox = document.getElementById(`fodder-${petId}`);
+// ================================================
+// GAME CONTROL
+// ================================================
+function startGame() {
+    console.log('startGame called');
 
-    if (checkbox.checked) {
-        if (evolutionState.selectedFodder.length >= 3) {
-            // Uncheck if trying to select more than 3
-            checkbox.checked = false;
-            showToast('You can only select 3 pets!', 'warning');
+    // Reset state
+    GameState.score = 0;
+    GameState.combo = 0;
+    GameState.maxCombo = 0;
+    GameState.perfectHits = 0;
+    GameState.timeLeft = 30;
+    GameState.isPlaying = true;
+    GameState.notes = [];
+    GameState.noteIdCounter = 0;
+
+    // Hide start overlay
+    const startOverlay = document.getElementById('start-overlay');
+    if (startOverlay) {
+        startOverlay.classList.add('hidden');
+        console.log('Start overlay hidden');
+    } else {
+        console.error('Start overlay not found');
+    }
+
+    // Update display
+    updateDisplay();
+
+    // Start timer
+    GameState.timerInterval = setInterval(() => {
+        GameState.timeLeft--;
+        document.getElementById('timer-display').textContent = GameState.timeLeft;
+
+        // Warning animation when low
+        if (GameState.timeLeft <= 5) {
+            document.querySelector('.timer-box').classList.add('warning');
+        }
+
+        if (GameState.timeLeft <= 0) {
+            endGame();
+        }
+    }, 1000);
+
+    // Start spawning notes
+    GameState.spawnInterval = setInterval(() => {
+        if (GameState.isPlaying) {
+            spawnNote();
+        }
+    }, 500); // Spawn every 500ms
+}
+
+function endGame() {
+    GameState.isPlaying = false;
+
+    // Clear intervals
+    clearInterval(GameState.timerInterval);
+    clearInterval(GameState.spawnInterval);
+
+    // Clear remaining notes
+    GameState.notes.forEach(note => note.element?.remove());
+    GameState.notes = [];
+
+    // Submit score to backend
+    submitScore();
+}
+
+function exitGame() {
+    if (GameState.isPlaying) {
+        if (!confirm('Exit game? Your progress will be lost.')) {
             return;
         }
-        evolutionState.selectedFodder.push(petId);
-    } else {
-        const index = evolutionState.selectedFodder.indexOf(petId);
-        if (index > -1) {
-            evolutionState.selectedFodder.splice(index, 1);
-        }
+        GameState.isPlaying = false;
+        clearInterval(GameState.timerInterval);
+        clearInterval(GameState.spawnInterval);
     }
 
-    // Update counter
-    document.getElementById('evo-selected-count').textContent = evolutionState.selectedFodder.length;
-
-    // Enable/disable evolution button
-    const confirmBtn = document.getElementById('confirm-evolution-btn');
-    confirmBtn.disabled = evolutionState.selectedFodder.length !== 3;
+    window.location.href = 'pet.php';
 }
 
-async function confirmEvolution() {
-    if (evolutionState.selectedFodder.length !== 3) {
-        showToast('Please select exactly 3 fodder pets', 'warning');
-        return;
-    }
-
-    if (!confirm('⚠️ This will permanently sacrifice the 3 selected pets and cost 500 Gold. Continue?')) {
-        return;
-    }
-
-    try {
-        const response = await fetch(`${API_BASE}?action=evolve_manual`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                main_pet_id: evolutionState.mainPetId,
-                fodder_ids: evolutionState.selectedFodder
-            })
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-            showToast(data.message, 'success');
-            updateGoldDisplay(data.remaining_gold);
-            closeEvolutionModal();
-            loadPets(); // Refresh collection
-            loadActivePet(); // Refresh active pet if it was evolved
-        } else {
-            showToast(data.error || 'Evolution failed', 'error');
-        }
-    } catch (error) {
-        console.error('Error during evolution:', error);
-        showToast('Network error', 'error');
-    }
+function returnToPet() {
+    window.location.href = 'pet.php';
 }
 
-function closeEvolutionModal() {
-    document.getElementById('evolution-modal').classList.remove('show');
-    evolutionState = {
-        mainPetId: null,
-        selectedFodder: [],
-        candidates: []
+// ================================================
+// NOTE SYSTEM
+// ================================================
+function spawnNote() {
+    // Random lane
+    const laneIndex = Math.floor(Math.random() * 4);
+    const lanes = document.querySelectorAll('.lane');
+    const lane = lanes[laneIndex];
+
+    // Create note element
+    const note = document.createElement('div');
+    note.className = 'note';
+    note.style.setProperty('--note-color', LANE_COLORS[laneIndex]);
+    note.style.setProperty('--fall-duration', `${GameState.fallDuration}ms`);
+    note.dataset.noteId = GameState.noteIdCounter++;
+    note.dataset.lane = laneIndex;
+
+    // Add to lane
+    lane.appendChild(note);
+
+    // Track note
+    const noteData = {
+        id: note.dataset.noteId,
+        lane: laneIndex,
+        element: note,
+        spawnTime: Date.now()
     };
-}
+    GameState.notes.push(noteData);
 
-// ================================================
-// PET ECONOMY: SELL & RENAME
-// ================================================
+    // Remove note after fall animation
+    setTimeout(() => {
+        if (note.parentNode && !note.classList.contains('hit')) {
+            // Missed!
+            note.classList.add('miss');
+            GameState.combo = 0;
+            updateDisplay();
+            showHitText(note, 'MISS', 'miss');
 
-async function sellPet(petId) {
-    const pet = userPets.find(p => p.id === petId);
-    if (!pet) return;
+            setTimeout(() => note.remove(), 300);
 
-    const displayName = pet.nickname || pet.species_name;
-
-    if (!confirm(`Sell ${displayName}? This cannot be undone!`)) {
-        return;
-    }
-
-    try {
-        const response = await fetch(`${API_BASE}?action=sell_pet`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ pet_id: petId })
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-            showToast(data.message, 'success');
-            updateGoldDisplay(data.remaining_gold);
-            loadPets(); // Refresh collection
-        } else {
-            showToast(data.error || 'Failed to sell pet', 'error');
+            // Remove from tracking
+            const idx = GameState.notes.findIndex(n => n.id === noteData.id);
+            if (idx > -1) GameState.notes.splice(idx, 1);
         }
-    } catch (error) {
-        console.error('Error selling pet:', error);
-        showToast('Network error', 'error');
+    }, GameState.fallDuration);
+}
+
+// ================================================
+// HIT DETECTION
+// ================================================
+function hitLane(laneIndex) {
+    // Visual feedback
+    const lanes = document.querySelectorAll('.lane');
+    lanes[laneIndex]?.classList.add('active');
+
+    // Find notes in this lane
+    const laneNotes = GameState.notes.filter(n => n.lane === laneIndex);
+
+    if (laneNotes.length === 0) return;
+
+    // Find the note closest to hit zone
+    const now = Date.now();
+    let bestNote = null;
+    let bestTiming = Infinity;
+
+    const hitZoneTime = GameState.fallDuration * 0.85; // 85% of fall duration
+    const hitWindow = 200; // ms tolerance
+
+    laneNotes.forEach(noteData => {
+        const elapsed = now - noteData.spawnTime;
+        const diff = Math.abs(elapsed - hitZoneTime);
+
+        if (diff < hitWindow && diff < bestTiming) {
+            bestTiming = diff;
+            bestNote = noteData;
+        }
+    });
+
+    if (bestNote) {
+        // Hit!
+        processHit(bestNote, bestTiming);
     }
 }
 
-let renamingPetId = null;
+function processHit(noteData, timing) {
+    const note = noteData.element;
 
-function openRenameModal() {
-    if (!activePet) return;
+    // Determine hit quality
+    let quality, points;
+    if (timing < 50) {
+        quality = 'PERFECT';
+        points = 15;
+        GameState.perfectHits++;
+    } else if (timing < 100) {
+        quality = 'GREAT';
+        points = 10;
+    } else {
+        quality = 'GOOD';
+        points = 5;
+    }
 
-    renamingPetId = activePet.id;
-    const currentName = activePet.nickname || activePet.species_name;
+    // Update score and combo
+    GameState.score += points * (1 + Math.floor(GameState.combo / 10) * 0.1);
+    GameState.combo++;
+    GameState.maxCombo = Math.max(GameState.maxCombo, GameState.combo);
 
-    document.getElementById('rename-input').value = activePet.nickname || '';
-    document.getElementById('rename-input').placeholder = activePet.species_name;
-    document.getElementById('rename-modal').classList.add('show');
+    // Check combo milestones
+    if (GameState.combo > 0 && GameState.combo % 10 === 0) {
+        showComboPopup(GameState.combo);
+    }
 
-    // Focus input
-    setTimeout(() => document.getElementById('rename-input').focus(), 100);
+    // Visual feedback
+    note.classList.add('hit');
+    showHitEffect(note);
+    showHitText(note, quality, quality.toLowerCase());
+
+    // Remove note
+    setTimeout(() => note.remove(), 300);
+
+    // Remove from tracking
+    const idx = GameState.notes.findIndex(n => n.id === noteData.id);
+    if (idx > -1) GameState.notes.splice(idx, 1);
+
+    // Update display
+    updateDisplay();
 }
 
-function closeRenameModal() {
-    document.getElementById('rename-modal').classList.remove('show');
-    renamingPetId = null;
+// ================================================
+// VISUAL EFFECTS
+// ================================================
+function showHitEffect(note) {
+    const rect = note.getBoundingClientRect();
+    const effect = document.createElement('div');
+    effect.className = 'hit-effect';
+    effect.style.left = rect.left + rect.width / 2 + 'px';
+    effect.style.top = rect.top + rect.height / 2 + 'px';
+    document.body.appendChild(effect);
+
+    setTimeout(() => effect.remove(), 400);
 }
 
-async function confirmRename() {
-    const newNickname = document.getElementById('rename-input').value.trim();
+function showHitText(note, text, className) {
+    const rect = note.getBoundingClientRect();
+    const textEl = document.createElement('div');
+    textEl.className = `hit-text ${className}`;
+    textEl.textContent = text;
+    textEl.style.left = rect.left + rect.width / 2 + 'px';
+    textEl.style.top = rect.top + 'px';
+    document.body.appendChild(textEl);
 
-    if (!renamingPetId) return;
+    setTimeout(() => textEl.remove(), 500);
+}
+
+function showComboPopup(combo) {
+    const popup = document.createElement('div');
+    popup.className = 'combo-popup';
+    popup.textContent = `${combo} COMBO!`;
+    document.body.appendChild(popup);
+
+    setTimeout(() => popup.remove(), 600);
+}
+
+function updateDisplay() {
+    document.getElementById('score-display').textContent = Math.floor(GameState.score);
+    document.getElementById('combo-display').textContent = GameState.combo;
+}
+
+// ================================================
+// SCORE SUBMISSION
+// ================================================
+async function submitScore() {
+    const finalScore = Math.floor(GameState.score);
 
     try {
-        const response = await fetch(`${API_BASE}?action=rename`, {
+        const response = await fetch(`${API_BASE}?action=play_finish`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                pet_id: renamingPetId,
-                nickname: newNickname
+                pet_id: PET_ID,
+                score: finalScore
             })
         });
 
         const data = await response.json();
 
-        if (data.success) {
-            showToast('Pet renamed successfully!', 'success');
-            closeRenameModal();
-            loadActivePet();
-            loadPets();
-        } else {
-            showToast(data.error || 'Failed to rename', 'error');
-        }
+        // Show results
+        showResults(data);
+
     } catch (error) {
-        console.error('Error renaming pet:', error);
-        showToast('Network error', 'error');
+        console.error('Error submitting score:', error);
+        showResults({ success: false, rewards: { mood: 0, exp: 0 } });
     }
 }
 
-// ================================================
-// UPDATE COLLECTION RENDERING (ADD SELL & EVOLVE BUTTONS)
-// ================================================
+function showResults(data) {
+    const finalScore = Math.floor(GameState.score);
 
-// Override renderCollection to add new buttons
-const originalRenderCollection = renderCollection;
-renderCollection = function () {
-    const grid = document.getElementById('collection-grid');
+    // Determine title based on score
+    let title = '🎉 Great!';
+    if (finalScore >= 200) title = '🏆 AMAZING!';
+    else if (finalScore >= 150) title = '⭐ Excellent!';
+    else if (finalScore >= 100) title = '🎉 Great!';
+    else if (finalScore >= 50) title = '👍 Good Job!';
+    else title = '🎵 Keep Trying!';
 
-    if (userPets.length === 0) {
-        grid.innerHTML = `
-            <div class="empty-message">
-                <p>No pets yet! Visit the Gacha tab to get your first companion.</p>
-            </div>
-        `;
-        return;
+    // Update result screen
+    document.getElementById('result-title').textContent = title;
+    document.getElementById('final-score').textContent = finalScore;
+    document.getElementById('max-combo').textContent = GameState.maxCombo;
+    document.getElementById('perfect-hits').textContent = GameState.perfectHits;
+
+    if (data.success && data.rewards) {
+        document.getElementById('reward-mood').textContent = `+${data.rewards.mood}`;
+        document.getElementById('reward-exp').textContent = `+${data.rewards.exp}`;
     }
 
-    grid.innerHTML = userPets.map(pet => {
-        const imgPath = getPetImagePath(pet);
-        const displayName = pet.nickname || pet.species_name;
-        const activeClass = pet.is_active ? 'active' : '';
-        const deadClass = pet.status === 'DEAD' ? 'dead' : '';
-        const shinyStyle = pet.is_shiny ? `filter: hue-rotate(${pet.shiny_hue}deg);` : '';
-
-        // Action buttons based on status
-        let actionButtons = '';
-
-        if (pet.status === 'SHELTER') {
-            actionButtons = `
-                <button class="pet-action-btn btn-retrieve" onclick="event.stopPropagation(); toggleShelter(${pet.id})">
-                    <i class="fas fa-box-open"></i> Retrieve
-                </button>
-            `;
-        } else if (pet.status === 'ALIVE' && !pet.is_active) {
-            actionButtons = `
-                <div class="pet-action-row">
-                    <button class="pet-action-btn btn-sell" onclick="event.stopPropagation(); sellPet(${pet.id})" title="Sell Pet">
-                        <i class="fas fa-coins"></i>
-                    </button>
-                    ${pet.level >= 20 ? `
-                        <button class="pet-action-btn btn-evolve" onclick="event.stopPropagation(); openEvolutionModal(${pet.id})" title="Manual Evolution">
-                            <i class="fas fa-star"></i>
-                        </button>
-                    ` : ''}
-                </div>
-            `;
-        }
-
-        return `
-            <div class="pet-card ${activeClass} ${deadClass}" onclick="selectPet(${pet.id})">
-                <span class="rarity-badge ${pet.rarity.toLowerCase()}">${pet.rarity.charAt(0)}</span>
-                <img src="${imgPath}" alt="${pet.species_name}" class="pet-card-img" 
-                     style="${shinyStyle}"
-                     onerror="this.src='../assets/placeholder.png'">
-                <h3 class="pet-card-name">${displayName}</h3>
-                <span class="pet-card-level">Lv.${pet.level} ${pet.is_shiny ? '✨' : ''}</span>
-                ${actionButtons}
-            </div>
-        `;
-    }).join('');
-};
-
-// ================================================
-// UPDATE playWithPet TO USE RHYTHM GAME
-// ================================================
-
-playWithPet = function () {
-    openRhythmGame();
-};
-
-// ================================================
-// HELP / TUTORIAL SYSTEM
-// ================================================
-
-function openHelpModal() {
-    document.getElementById('help-modal').classList.add('show');
-    // Reset to overview tab
-    switchHelpTab('overview');
-}
-
-function closeHelpModal() {
-    document.getElementById('help-modal').classList.remove('show');
-}
-
-function switchHelpTab(tabName) {
-    // Hide all content
-    document.querySelectorAll('.help-content').forEach(content => {
-        content.style.display = 'none';
-    });
-
-    // Remove active class from all tabs
-    document.querySelectorAll('.help-tab').forEach(tab => {
-        tab.classList.remove('active');
-    });
-
-    // Show selected content
-    document.getElementById('help-' + tabName).style.display = 'block';
-
-    // Add active class to clicked tab
-    event.target.classList.add('active');
+    // Show result overlay
+    document.getElementById('result-overlay').classList.remove('hidden');
 }
