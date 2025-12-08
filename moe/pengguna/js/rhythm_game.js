@@ -222,6 +222,7 @@ function spawnNote() {
             GameState.combo = 0;
             updateDisplay();
             showHitText(note, 'MISS', 'miss');
+            SoundManager.hitMiss();
 
             setTimeout(() => note.remove(), 300);
 
@@ -307,12 +308,15 @@ function processHit(noteData, timing) {
         quality = 'PERFECT';
         points = 15;
         GameState.perfectHits++;
+        SoundManager.hitPerfect();
     } else if (timing < 90) {
         quality = 'GREAT';
         points = 10;
+        SoundManager.hitGood();
     } else {
         quality = 'GOOD';
         points = 5;
+        SoundManager.hitGood();
     }
 
     // Update score and combo
@@ -323,6 +327,7 @@ function processHit(noteData, timing) {
     // Check combo milestones
     if (GameState.combo > 0 && GameState.combo % 10 === 0) {
         showComboPopup(GameState.combo);
+        SoundManager.combo();
     }
 
     // Visual feedback

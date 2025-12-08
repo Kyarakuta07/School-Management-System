@@ -165,6 +165,7 @@ if (!$pet_id) {
     </script>
 
     <!-- Game JS -->
+    <script src="js/sound_manager.js"></script>
     <script src="js/rhythm_game.js"></script>
 </body>
 

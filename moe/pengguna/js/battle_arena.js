@@ -81,6 +81,7 @@ function useSkill(skillId, baseDamage, skillElement) {
 
     // Play attack animation
     DOM.playerSprite.classList.add('attacking');
+    SoundManager.attack();
 
     setTimeout(() => {
         DOM.playerSprite.classList.remove('attacking');
@@ -92,6 +93,11 @@ function useSkill(skillId, baseDamage, skillElement) {
 
         // Show damage popup
         showDamagePopup(DOM.enemySprite, damage, multiplier, critChance);
+        if (critChance) {
+            SoundManager.critical();
+        } else {
+            SoundManager.damage();
+        }
 
         // Log the attack
         let logClass = 'player-action';
@@ -172,6 +178,7 @@ function enemyTurn() {
 
         // Play attack animation
         DOM.enemySprite.classList.add('attacking');
+        SoundManager.attack();
 
         setTimeout(() => {
             DOM.enemySprite.classList.remove('attacking');
@@ -183,6 +190,11 @@ function enemyTurn() {
 
             // Show damage popup
             showDamagePopup(DOM.playerSprite, damage, multiplier, critChance);
+            if (critChance) {
+                SoundManager.critical();
+            } else {
+                SoundManager.damage();
+            }
 
             // Log the attack
             let logClass = 'enemy-action';
@@ -293,9 +305,11 @@ function endBattle(playerWon) {
         if (playerWon) {
             resultTitle.textContent = '🏆 Victory!';
             resultTitle.className = 'victory';
+            SoundManager.victory();
         } else {
             resultTitle.textContent = '💀 Defeat...';
             resultTitle.className = 'defeat';
+            SoundManager.defeat();
         }
 
         document.getElementById('reward-gold').textContent = `+${goldReward}`;

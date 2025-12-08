@@ -266,6 +266,7 @@ $defender_max_hp = 100 + ($defender['level'] * 5);
     </script>
 
     <!-- Battle JS -->
+    <script src="js/sound_manager.js"></script>
     <script src="js/battle_arena.js"></script>
 </body>
 
