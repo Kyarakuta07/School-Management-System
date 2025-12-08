@@ -1210,12 +1210,115 @@
 }
 
 /* ================================================
+   12.5. GACHA RATES DISPLAY
+   ================================================ */
+.gacha-rates {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: var(--space-md);
+    margin-top: var(--space-lg);
+}
+
+.gacha-rates h4 {
+    font-family: 'Cinzel', serif;
+    font-size: 0.95rem;
+    color: var(--gold);
+    margin: 0 0 var(--space-md) 0;
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.rate-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+}
+
+.rate-row:not(:last-child) {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.rate-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: var(--radius-full);
+}
+
+.rate-label.common {
+    background: rgba(158, 158, 158, 0.15);
+    color: var(--common);
+}
+
+.rate-label.rare {
+    background: rgba(52, 152, 219, 0.15);
+    color: var(--rare);
+}
+
+.rate-label.epic {
+    background: rgba(155, 89, 182, 0.15);
+    color: var(--epic);
+}
+
+.rate-label.legendary {
+    background: rgba(255, 152, 0, 0.15);
+    color: var(--legendary);
+}
+
+.rate-value {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #AAA;
+}
+
+/* ================================================
    13. SHOP SECTION
    ================================================ */
+
+/* Shop Category Tabs */
+.shop-tabs {
+    display: flex;
+    gap: var(--space-xs);
+    padding: var(--space-sm);
+    margin-bottom: var(--space-md);
+    background: var(--bg-glass);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+}
+
+.shop-tab {
+    flex: 1;
+    padding: 10px 16px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    color: #666;
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-out);
+}
+
+.shop-tab:hover:not(.active) {
+    background: var(--bg-hover);
+    color: #AAA;
+}
+
+.shop-tab.active {
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.2), rgba(218, 165, 32, 0.1));
+    border-color: var(--border-gold);
+    color: var(--gold);
+}
+
+/* Shop Grid */
 .shop-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: var(--space-md);
+    margin-bottom: var(--space-xl);
 }
 
 .shop-item {
@@ -1230,91 +1333,367 @@
 .shop-item:hover {
     border-color: var(--border-gold);
     transform: translateY(-3px);
+    box-shadow: var(--shadow-glow);
 }
 
 .shop-item-img {
     width: 70px;
     height: 70px;
     object-fit: contain;
-    margin-bottom: var(--space-sm);
+    margin: 0 auto var(--space-sm);
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.shop-item-img i {
+    font-size: 2rem;
+    color: var(--gold);
 }
 
 .shop-item-name {
-    font-size: 0.9rem;
-    font-weight: 600;
+    font-size: 0.95rem;
+    font-weight: 700;
     color: #FFF;
     margin-bottom: 4px;
 }
 
+.shop-item-desc {
+    font-size: 0.75rem;
+    color: #888;
+    margin-bottom: var(--space-sm);
+    line-height: 1.4;
+}
+
 .shop-item-price {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 4px;
-    font-size: 0.85rem;
+    gap: 5px;
+    font-size: 0.9rem;
     font-weight: 700;
     color: var(--gold);
     margin-bottom: var(--space-sm);
 }
 
+.shop-item-price i {
+    color: #FFD700;
+}
+
 .shop-buy-btn {
     width: 100%;
-    padding: 10px;
-    background: rgba(218, 165, 32, 0.15);
-    border: 1px solid var(--border-gold);
+    padding: 12px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    border: none;
     border-radius: var(--radius-sm);
-    color: var(--gold);
-    font-weight: 600;
-    font-size: 0.8rem;
+    color: #000;
+    font-weight: 700;
+    font-size: 0.85rem;
     cursor: pointer;
     transition: all 0.3s var(--ease-out);
 }
 
 .shop-buy-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 5px 15px rgba(218, 165, 32, 0.4);
+}
+
+.shop-buy-btn:active {
+    transform: scale(0.98);
+}
+
+/* Inventory Section */
+.inventory-section {
+    margin-top: var(--space-xl);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--border-subtle);
+}
+
+.section-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    color: var(--gold);
+    margin: 0 0 var(--space-md) 0;
+}
+
+.inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-sm);
+}
+
+.inventory-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-sm);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-out);
+    position: relative;
+}
+
+.inventory-item:hover {
+    border-color: var(--border-gold);
+    transform: translateY(-2px);
+}
+
+.inventory-item-img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    margin-bottom: 4px;
+}
+
+.inventory-item-count {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
     background: var(--gold);
     color: #000;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: var(--radius-full);
+}
+
+.empty-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #666;
+    font-size: 0.9rem;
+    padding: var(--space-lg);
+}
+
+/* Loading Spinner */
+.loading-spinner {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-md);
+    padding: var(--space-xl);
+    color: var(--gold);
+}
+
+.loading-spinner i {
+    font-size: 2rem;
+}
+
+.loading-spinner p {
+    color: #888;
+    margin: 0;
 }
 
 /* ================================================
    14. ARENA SECTION
    ================================================ */
-.arena-container {
+
+/* Arena Header */
+.arena-header {
     text-align: center;
+    margin-bottom: var(--space-lg);
     padding: var(--space-lg);
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.08), transparent);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border-gold);
 }
 
-.arena-title {
+.arena-header h2 {
     font-family: 'Cinzel', serif;
     font-size: 1.8rem;
     color: var(--gold);
-    margin-bottom: var(--space-md);
+    margin: 0 0 var(--space-sm) 0;
     text-shadow: 0 2px 20px rgba(218, 165, 32, 0.5);
 }
 
-.arena-desc {
+.arena-header p {
     color: #888;
-    margin-bottom: var(--space-xl);
+    margin: 0;
+    font-size: 0.95rem;
 }
 
-.arena-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-sm);
-    padding: var(--space-md) var(--space-xl);
-    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-    border: none;
+/* Arena Tabs */
+.arena-tabs {
+    display: flex;
+    gap: var(--space-xs);
+    padding: var(--space-sm);
+    margin-bottom: var(--space-lg);
+    background: var(--bg-glass);
     border-radius: var(--radius-md);
-    color: #000;
-    font-family: 'Cinzel', serif;
-    font-size: 1rem;
-    font-weight: 700;
+    border: 1px solid var(--border-subtle);
+}
+
+.arena-tab {
+    flex: 1;
+    padding: 12px 16px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    color: #666;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.3s var(--ease-out);
 }
 
-.arena-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 30px rgba(218, 165, 32, 0.4);
+.arena-tab:hover:not(.active) {
+    background: var(--bg-hover);
+    color: #AAA;
+}
+
+.arena-tab.active {
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.2), rgba(218, 165, 32, 0.1));
+    border-color: var(--border-gold);
+    color: var(--gold);
+}
+
+/* Arena Content */
+.arena-content {
+    min-height: 200px;
+}
+
+/* Opponent Cards */
+.opponent-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: var(--space-md);
+}
+
+.opponent-card {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: var(--space-md);
+    transition: all 0.3s var(--ease-out);
+}
+
+.opponent-card:hover {
+    border-color: var(--border-gold);
+    transform: translateX(4px);
+}
+
+.opponent-pet-img {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.03);
+    padding: 8px;
+    flex-shrink: 0;
+}
+
+.opponent-info {
+    flex: 1;
+}
+
+.opponent-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #FFF;
+    margin-bottom: 4px;
+}
+
+.opponent-pet-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    color: var(--gold);
+    margin-bottom: 4px;
+}
+
+.opponent-level {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.opponent-battle-btn {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    border: none;
+    border-radius: var(--radius-sm);
+    color: #000;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-out);
+    flex-shrink: 0;
+}
+
+.opponent-battle-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(218, 165, 32, 0.3);
+}
+
+/* Battle History */
+.battle-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.battle-history-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+}
+
+.battle-history-item.win {
+    border-left: 3px solid var(--mood);
+}
+
+.battle-history-item.lose {
+    border-left: 3px solid var(--health);
+}
+
+.battle-opponent {
+    font-weight: 600;
+    color: #FFF;
+}
+
+.battle-result {
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: var(--radius-full);
+}
+
+.battle-result.win {
+    background: rgba(46, 204, 113, 0.15);
+    color: var(--mood);
+}
+
+.battle-result.lose {
+    background: rgba(231, 76, 60, 0.15);
+    color: var(--health);
+}
+
+/* No Opponents Message */
+.arena-empty {
+    text-align: center;
+    padding: var(--space-xl);
+    color: #666;
+}
+
+.arena-empty i {
+    font-size: 3rem;
+    color: var(--gold);
+    margin-bottom: var(--space-md);
+    opacity: 0.5;
+}
+
+.arena-empty p {
+    margin: 0;
 }
 
 /* ================================================
