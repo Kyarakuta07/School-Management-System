@@ -290,7 +290,7 @@ async function selectPet(petId) {
 
     // --- LOGIKA SHELTER RETRIEVE ---
     if (pet.status === 'SHELTER') {
-        if(confirm(`Retrieve ${pet.nickname || pet.species_name} from shelter?`)) {
+        if (confirm(`Retrieve ${pet.nickname || pet.species_name} from shelter?`)) {
             toggleShelter(petId);
         }
         return;
@@ -324,7 +324,7 @@ function initActionButtons() {
     document.getElementById('btn-feed').addEventListener('click', () => openItemModal('food'));
     document.getElementById('btn-heal').addEventListener('click', () => openItemModal('potion'));
     document.getElementById('btn-play').addEventListener('click', playWithPet);
-    document.getElementById('btn-shelter').addEventListener('click', () => toggleShelter()); 
+    document.getElementById('btn-shelter').addEventListener('click', () => toggleShelter());
 }
 
 async function playWithPet() {
@@ -391,7 +391,7 @@ function renderInventory() {
 
 // 2. Handle Klik Item (Buka Modal / Gacha)
 async function handleInventoryClick(itemId, type, itemName, itemDesc, itemImg, maxQty) {
-    
+
     // Gacha Ticket: Langsung eksekusi (tanpa bulk, demi animasi)
     if (type === 'gacha_ticket') {
         if (confirm(`Apakah kamu ingin menetaskan ${itemName} sekarang?`)) {
@@ -421,7 +421,7 @@ async function handleInventoryClick(itemId, type, itemName, itemDesc, itemImg, m
     const modal = document.getElementById('bulk-use-modal');
     if (!modal) {
         // Fallback jika lupa update HTML: Pakai cara lama (confirm 1 item)
-        if(confirm(`Gunakan ${itemName}?`)) useItem(itemId, activePet.id, 1);
+        if (confirm(`Gunakan ${itemName}?`)) useItem(itemId, activePet.id, 1);
         return;
     }
 
@@ -439,10 +439,10 @@ async function handleInventoryClick(itemId, type, itemName, itemDesc, itemImg, m
 function adjustQty(amount) {
     const input = document.getElementById('bulk-item-qty');
     let val = parseInt(input.value) + amount;
-    
+
     if (val < 1) val = 1;
     if (val > currentBulkItem.max) val = currentBulkItem.max;
-    
+
     input.value = val;
 }
 
@@ -457,9 +457,9 @@ function closeBulkModal() {
 
 function confirmBulkUse() {
     if (!currentBulkItem || !activePet) return;
-    
+
     const qty = parseInt(document.getElementById('bulk-item-qty').value);
-    
+
     // Eksekusi pakai item dengan Quantity
     useItem(currentBulkItem.id, activePet.id, qty);
     closeBulkModal();
@@ -471,10 +471,10 @@ async function useItem(itemId, targetPetId = 0, quantity = 1) {
         const response = await fetch(`${API_BASE}?action=use_item`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                pet_id: targetPetId, 
+            body: JSON.stringify({
+                pet_id: targetPetId,
                 item_id: itemId,
-                quantity: quantity 
+                quantity: quantity
             })
         });
 
@@ -491,12 +491,12 @@ async function useItem(itemId, targetPetId = 0, quantity = 1) {
             }
 
             // Tutup modal jika terbuka (termasuk modal quick use lama)
-            if(document.getElementById('item-modal')) closeItemModal();
-            
+            if (document.getElementById('item-modal')) closeItemModal();
+
             // Refresh Data
             loadActivePet();
             loadInventory();
-            loadPets(); 
+            loadPets();
         } else {
             showToast(data.error || 'Failed to use item', 'error');
         }
@@ -578,7 +578,7 @@ function showGachaResult(data) {
 
     document.getElementById('result-pet-img').src = ASSETS_BASE + (species.img_egg || 'default/egg.png');
     document.getElementById('result-name').textContent = species.name;
-    
+
     const rarityBadge = document.getElementById('result-rarity');
     rarityBadge.textContent = data.rarity;
     rarityBadge.className = `result-rarity rarity-badge ${data.rarity.toLowerCase()}`;
@@ -591,7 +591,7 @@ function showGachaResult(data) {
         document.getElementById('result-pet-img').style.filter = '';
         document.getElementById('result-shiny').style.display = 'none';
     }
-    
+
     const glow = document.getElementById('result-glow');
     const glowColors = {
         'Common': 'rgba(158, 158, 158, 0.5)',
@@ -645,7 +645,7 @@ function renderShopItems(category) {
     } else if (category === 'potion') {
         filtered = shopItems.filter(i => i.effect_type === 'potion' || i.effect_type === 'revive');
     } else if (category === 'special') {
-        filtered = shopItems.filter(i => i.effect_type === 'exp_boost' || i.effect_type === 'gacha_ticket');
+        filtered = shopItems.filter(i => i.effect_type === 'exp_boost' || i.effect_type === 'gacha_ticket' || i.effect_type === 'shield');
     }
 
     if (filtered.length === 0) {

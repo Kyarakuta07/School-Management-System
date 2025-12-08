@@ -748,6 +748,24 @@ function useItemOnPet($conn, $user_id, $pet_id, $item_id, $quantity = 1)
                 }
                 break;
 
+            case 'shield':
+                if ($pet['status'] === 'DEAD') {
+                    return ['success' => false, 'error' => 'Cannot shield a dead pet!'];
+                }
+                // Check if pet already has shield
+                if (isset($pet['has_shield']) && $pet['has_shield']) {
+                    return ['success' => false, 'error' => 'Pet already has an active shield!'];
+                }
+                // Apply shield (only 1 at a time)
+                $quantity = 1;
+                $stmt = mysqli_prepare($conn, "UPDATE user_pets SET has_shield = 1, last_update_timestamp = ? WHERE id = ?");
+                $current_time = time();
+                mysqli_stmt_bind_param($stmt, "ii", $current_time, $pet_id);
+                mysqli_stmt_execute($stmt);
+                mysqli_stmt_close($stmt);
+                $result_message = "Divine Shield activated! Your pet will block 1 attack in battle.";
+                break;
+
             default:
                 return ['success' => false, 'error' => 'Unknown item type or logic not implemented'];
         }
@@ -924,25 +942,51 @@ function performBattle($conn, $attacker_pet_id, $defender_pet_id)
 
     // ================================================
     // HARDCORE: Update HP for both pets (LOSER LOSES 20 HP)
+    // Check for Divine Shield protection first!
     // ================================================
+    $shield_blocked = false;
+
     if ($loser_pet_id) {
-        // Get loser's current HP from database
-        $hp_check = mysqli_prepare($conn, "SELECT hp FROM user_pets WHERE id = ?");
-        mysqli_stmt_bind_param($hp_check, "i", $loser_pet_id);
-        mysqli_stmt_execute($hp_check);
-        $hp_result = mysqli_stmt_get_result($hp_check);
-        $hp_row = mysqli_fetch_assoc($hp_result);
-        $current_hp = $hp_row ? $hp_row['hp'] : 100;
-        mysqli_stmt_close($hp_check);
+        // First check if loser has Divine Shield
+        $shield_check = mysqli_prepare($conn, "SELECT hp, has_shield FROM user_pets WHERE id = ?");
+        mysqli_stmt_bind_param($shield_check, "i", $loser_pet_id);
+        mysqli_stmt_execute($shield_check);
+        $shield_result = mysqli_stmt_get_result($shield_check);
+        $loser_data = mysqli_fetch_assoc($shield_result);
+        $current_hp = $loser_data ? $loser_data['hp'] : 100;
+        $has_shield = $loser_data ? ($loser_data['has_shield'] ?? 0) : 0;
+        mysqli_stmt_close($shield_check);
 
-        // Deduct 20 HP from loser
-        $new_hp = max(0, $current_hp - 20);
-        $new_status = 'ALIVE';
+        if ($has_shield) {
+            // DIVINE SHIELD ACTIVATED! Block damage and consume shield
+            $shield_blocked = true;
+            $new_hp = $current_hp; // No HP loss
+            $new_status = 'ALIVE';
 
-        // If HP reaches 0, pet DIES
-        if ($new_hp <= 0) {
-            $new_hp = 0;
-            $new_status = 'DEAD';
+            // Consume the shield
+            $consume_shield = mysqli_prepare($conn, "UPDATE user_pets SET has_shield = 0 WHERE id = ?");
+            mysqli_stmt_bind_param($consume_shield, "i", $loser_pet_id);
+            mysqli_stmt_execute($consume_shield);
+            mysqli_stmt_close($consume_shield);
+
+            // Add to battle log
+            $battle_log[] = [
+                'round' => 'END',
+                'actor' => '🛡️ Divine Shield',
+                'action' => 'blocked',
+                'damage' => 0,
+                'target_hp' => $current_hp
+            ];
+        } else {
+            // No shield - normal HP deduction
+            $new_hp = max(0, $current_hp - 20);
+            $new_status = 'ALIVE';
+
+            // If HP reaches 0, pet DIES
+            if ($new_hp <= 0) {
+                $new_hp = 0;
+                $new_status = 'DEAD';
+            }
         }
 
         // Update loser's HP and status
@@ -993,8 +1037,9 @@ function performBattle($conn, $attacker_pet_id, $defender_pet_id)
             'gold' => $reward_gold,
             'exp' => $reward_exp
         ],
-        'hardcore_damage' => $loser_pet_id ? 20 : 0,
-        'pet_died' => $loser_pet_id && $new_hp <= 0
+        'hardcore_damage' => ($loser_pet_id && !$shield_blocked) ? 20 : 0,
+        'shield_blocked' => $shield_blocked,
+        'pet_died' => $loser_pet_id && !$shield_blocked && $new_hp <= 0
     ];
 }
 
