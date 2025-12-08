@@ -74,7 +74,7 @@ if ($stmt) {
     $row = null; // Set default jika gagal
 }
 
-$fun_fact = htmlspecialchars($fun_fact_data['fun_fact'] ?? 'Belum ada funfact.');
+$fun_fact = htmlspecialchars($row['fun_fact'] ?? 'Belum ada funfact.');
 
 // 5. STUDY BUDDY - Get active pet for dashboard display
 $active_pet = null;

@@ -56,7 +56,7 @@ if ($stmt_check) {
             try {
                 // Server settings (Gunakan kredensial Gmail yang sudah Anda setup)
                 $mail->isSMTP(); $mail->Host = 'smtp.gmail.com'; $mail->SMTPAuth = true;                                   
-                $mail->Username = 'mediterraneanofegypt@gmail.com'; $mail->Password = 'pdyn gyem ljzk odcc';   
+                $mail->Username = getenv('SMTP_USER'); $mail->Password = getenv('SMTP_PASS');   
                 $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; $mail->Port = 465;                                    
 
                 // Recipients
