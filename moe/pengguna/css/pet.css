@@ -1859,6 +1859,68 @@
 }
 
 /* ================================================
+   RENAME PET MODAL - Premium Design
+   ================================================ */
+.rename-dialog {
+    text-align: center;
+    max-width: 380px;
+}
+
+.rename-dialog h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    color: var(--gold);
+    margin: 0 0 var(--space-lg) 0;
+    text-shadow: 0 2px 15px rgba(218, 165, 32, 0.4);
+}
+
+.rename-input {
+    width: 100%;
+    padding: 16px 20px;
+    background: rgba(10, 10, 10, 0.9);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    color: #FFF;
+    font-family: inherit;
+    font-size: 1rem;
+    text-align: center;
+    transition: all 0.3s var(--ease-out);
+    box-sizing: border-box;
+}
+
+.rename-input::placeholder {
+    color: #555;
+    font-style: italic;
+}
+
+.rename-input:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 20px rgba(218, 165, 32, 0.2),
+        inset 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.rename-input:focus::placeholder {
+    color: transparent;
+}
+
+/* Character counter (optional enhancement) */
+.rename-char-count {
+    text-align: right;
+    font-size: 0.75rem;
+    color: #555;
+    margin-top: 6px;
+}
+
+.rename-char-count.warning {
+    color: var(--experience);
+}
+
+.rename-char-count.limit {
+    color: var(--health);
+}
+
+/* ================================================
    16. TOAST NOTIFICATIONS
    ================================================ */
 .toast {
