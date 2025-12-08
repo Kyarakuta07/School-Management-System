@@ -1087,7 +1087,7 @@ switch ($action) {
                     // Top battle winners - simplified query
                     $query = "SELECT 
                         up.id as pet_id,
-                        up.custom_name as pet_name,
+                        up.nickname,
                         up.level,
                         ps.name as species_name,
                         ps.rarity,
@@ -1108,7 +1108,7 @@ switch ($action) {
                     // Top daily login streak
                     $query = "SELECT 
                         up.id as pet_id,
-                        up.custom_name as pet_name,
+                        up.nickname,
                         up.level,
                         ps.name as species_name,
                         ps.rarity,
@@ -1129,7 +1129,7 @@ switch ($action) {
                 default: // top_level
                     $query = "SELECT 
                         up.id as pet_id,
-                        up.custom_name as pet_name,
+                        up.nickname,
                         up.level,
                         ps.name as species_name,
                         ps.rarity,
@@ -1156,7 +1156,7 @@ switch ($action) {
             $rank = 1;
             while ($row = mysqli_fetch_assoc($result)) {
                 $row['rank'] = $rank++;
-                $row['display_name'] = $row['pet_name'] ?: $row['species_name'];
+                $row['display_name'] = !empty($row['nickname']) ? $row['nickname'] : $row['species_name'];
                 $leaderboard[] = $row;
             }
 
