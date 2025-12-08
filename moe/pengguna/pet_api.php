@@ -16,7 +16,7 @@ header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Pragma: no-cache");
 
 include '../connection.php';
-include 'pet_logic.php';
+include 'pet/pet_loader.php';
 require_once '../includes/rate_limiter.php';
 require_once '../includes/api_response.php';
 
