@@ -1174,13 +1174,99 @@ switch ($action) {
         break;
 
     // ============================================
+    // GET: Achievements list with user progress
+    // ============================================
+    case 'get_achievements':
+        if ($method !== 'GET') {
+            methodNotAllowed('GET');
+        }
+
+        try {
+            // Get all achievements
+            $achievements_query = "SELECT * FROM achievements ORDER BY category, rarity DESC, id";
+            $achievements_result = mysqli_query($conn, $achievements_query);
+
+            if (!$achievements_result) {
+                throw new Exception(mysqli_error($conn));
+            }
+
+            // Get user's unlocked achievements
+            $unlocked_query = "SELECT achievement_id FROM user_achievements WHERE user_id = ?";
+            $unlocked_stmt = mysqli_prepare($conn, $unlocked_query);
+            mysqli_stmt_bind_param($unlocked_stmt, "i", $user_id);
+            mysqli_stmt_execute($unlocked_stmt);
+            $unlocked_result = mysqli_stmt_get_result($unlocked_stmt);
+
+            $unlocked_ids = [];
+            while ($row = mysqli_fetch_assoc($unlocked_result)) {
+                $unlocked_ids[] = $row['achievement_id'];
+            }
+            mysqli_stmt_close($unlocked_stmt);
+
+            // Get user stats for progress calculation
+            $stats = [];
+
+            // Pets owned
+            $q = mysqli_query($conn, "SELECT COUNT(*) as cnt FROM user_pets WHERE user_id = $user_id AND status != 'DEAD'");
+            $stats['pets_owned'] = mysqli_fetch_assoc($q)['cnt'];
+
+            // Shiny pets
+            $q = mysqli_query($conn, "SELECT COUNT(*) as cnt FROM user_pets WHERE user_id = $user_id AND is_shiny = 1");
+            $stats['shiny_pets'] = mysqli_fetch_assoc($q)['cnt'];
+
+            // Legendary pets
+            $q = mysqli_query($conn, "SELECT COUNT(*) as cnt FROM user_pets up JOIN pet_species ps ON up.species_id = ps.id WHERE up.user_id = $user_id AND ps.rarity = 'legendary'");
+            $stats['legendary_pets'] = mysqli_fetch_assoc($q)['cnt'];
+
+            // Battle wins
+            $q = mysqli_query($conn, "SELECT wins FROM user_pets WHERE user_id = $user_id ORDER BY wins DESC LIMIT 1");
+            $row = mysqli_fetch_assoc($q);
+            $stats['battle_wins'] = $row ? $row['wins'] : 0;
+
+            // Max pet level
+            $q = mysqli_query($conn, "SELECT MAX(level) as max_lvl FROM user_pets WHERE user_id = $user_id");
+            $row = mysqli_fetch_assoc($q);
+            $stats['max_pet_level'] = $row ? $row['max_lvl'] : 0;
+
+            // Login streak
+            $q = mysqli_query($conn, "SELECT total_logins FROM daily_login_streak WHERE user_id = $user_id");
+            $row = mysqli_fetch_assoc($q);
+            $stats['login_streak'] = $row ? $row['total_logins'] : 0;
+
+            // Build achievements list with progress
+            $achievements = [];
+            while ($ach = mysqli_fetch_assoc($achievements_result)) {
+                $ach['unlocked'] = in_array($ach['id'], $unlocked_ids);
+                $ach['current_progress'] = isset($stats[$ach['requirement_type']]) ? $stats[$ach['requirement_type']] : 0;
+                $achievements[] = $ach;
+            }
+
+            // Count stats
+            $total = count($achievements);
+            $unlocked_count = count($unlocked_ids);
+
+            echo json_encode([
+                'success' => true,
+                'total' => $total,
+                'unlocked' => $unlocked_count,
+                'achievements' => $achievements
+            ]);
+        } catch (Exception $e) {
+            echo json_encode([
+                'success' => false,
+                'error' => 'Database error: ' . $e->getMessage()
+            ]);
+        }
+        break;
+
+    // ============================================
     // Default: Unknown action
     // ============================================
     default:
         http_response_code(404);
         echo json_encode([
             'success' => false,
-            'error' => 'Unknown action. Available actions: get_pets, get_active_pet, get_shop, get_inventory, gacha, buy_item, use_item, set_active, rename, shelter, get_opponents, battle, battle_history, get_buff, play_finish, get_evolution_candidates, evolve_manual, sell_pet, battle_result, get_daily_reward, claim_daily_reward, get_leaderboard'
+            'error' => 'Unknown action. Available actions: get_pets, get_active_pet, get_shop, get_inventory, gacha, buy_item, use_item, set_active, rename, shelter, get_opponents, battle, battle_history, get_buff, play_finish, get_evolution_candidates, evolve_manual, sell_pet, battle_result, get_daily_reward, claim_daily_reward, get_leaderboard, get_achievements'
         ]);
         break;
 }

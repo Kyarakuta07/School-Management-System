@@ -100,6 +100,10 @@ mysqli_stmt_close($gold_stmt);
                 <i class="fas fa-swords"></i>
                 <span>Arena</span>
             </button>
+            <button class="tab-btn" data-tab="achievements">
+                <i class="fas fa-trophy"></i>
+                <span>Badges</span>
+            </button>
         </nav>
 
         <!-- Tab Content -->
@@ -338,6 +342,29 @@ mysqli_stmt_close($gold_stmt);
                             <i class="fas fa-spinner fa-spin fa-2x"></i>
                             <p>Loading leaderboard...</p>
                         </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ACHIEVEMENTS TAB -->
+            <section id="achievements" class="tab-content">
+                <div class="achievements-header">
+                    <h2>🏆 Achievements</h2>
+                    <p class="ach-progress"><span id="ach-unlocked">0</span>/<span id="ach-total">0</span> Unlocked</p>
+                </div>
+
+                <div class="ach-category-tabs">
+                    <button class="ach-tab active" data-category="all">All</button>
+                    <button class="ach-tab" data-category="collection">Collection</button>
+                    <button class="ach-tab" data-category="battle">Battle</button>
+                    <button class="ach-tab" data-category="level">Level</button>
+                    <button class="ach-tab" data-category="login">Login</button>
+                </div>
+
+                <div class="achievements-list" id="achievements-list">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin fa-2x"></i>
+                        <p>Loading achievements...</p>
                     </div>
                 </div>
             </section>

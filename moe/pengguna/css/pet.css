@@ -2237,6 +2237,198 @@
     text-transform: uppercase;
 }
 
+/* ================================================
+   ACHIEVEMENTS STYLES
+   ================================================ */
+
+.achievements-header {
+    text-align: center;
+    margin-bottom: var(--space-md);
+}
+
+.achievements-header h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.3rem;
+    color: var(--gold);
+    margin: 0;
+}
+
+.ach-progress {
+    color: #888;
+    font-size: 0.85rem;
+    margin-top: 4px;
+}
+
+.ach-progress span {
+    color: var(--gold);
+    font-weight: 700;
+}
+
+.ach-category-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: var(--space-md);
+    overflow-x: auto;
+    padding-bottom: 4px;
+}
+
+.ach-tab {
+    flex-shrink: 0;
+    padding: 8px 14px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    color: #666;
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.ach-tab:hover {
+    background: var(--bg-hover);
+    color: #888;
+}
+
+.ach-tab.active {
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.15), rgba(218, 165, 32, 0.08));
+    border-color: var(--border-gold);
+    color: var(--gold);
+}
+
+.achievements-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ach-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    transition: all 0.2s;
+}
+
+.ach-card.unlocked {
+    border-color: var(--border-gold);
+}
+
+.ach-card.locked {
+    opacity: 0.6;
+}
+
+.ach-icon {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--radius-md);
+    flex-shrink: 0;
+}
+
+.ach-card.locked .ach-icon {
+    filter: grayscale(1);
+}
+
+.ach-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.ach-name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #FFF;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ach-card.locked .ach-name {
+    color: #888;
+}
+
+.ach-desc {
+    font-size: 0.75rem;
+    color: #888;
+    margin-bottom: 6px;
+}
+
+.ach-progress-bar {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.ach-progress-fill {
+    height: 100%;
+    background: var(--gold);
+    border-radius: 2px;
+    transition: width 0.3s;
+}
+
+.ach-rarity {
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    flex-shrink: 0;
+}
+
+.ach-rarity.bronze {
+    background: rgba(205, 127, 50, 0.2);
+    color: #CD7F32;
+    border: 1px solid rgba(205, 127, 50, 0.3);
+}
+
+.ach-rarity.silver {
+    background: rgba(192, 192, 192, 0.2);
+    color: #C0C0C0;
+    border: 1px solid rgba(192, 192, 192, 0.3);
+}
+
+.ach-rarity.gold {
+    background: rgba(255, 215, 0, 0.2);
+    color: #FFD700;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.ach-rarity.platinum {
+    background: linear-gradient(135deg, rgba(229, 228, 226, 0.2), rgba(180, 180, 180, 0.1));
+    color: #E5E4E2;
+    border: 1px solid rgba(229, 228, 226, 0.4);
+}
+
+.ach-check {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.ach-card.unlocked .ach-check {
+    color: #2ecc71;
+}
+
+.ach-card.locked .ach-check {
+    color: #444;
+}
+
 /* Reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
 

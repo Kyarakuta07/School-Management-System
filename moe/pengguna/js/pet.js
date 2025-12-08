@@ -189,6 +189,9 @@ function switchTab(tab) {
         case 'arena':
             loadOpponents();
             break;
+        case 'achievements':
+            loadAchievements();
+            break;
     }
 }
 
@@ -1113,7 +1116,91 @@ function renderLeaderboard(entries, category) {
 // Initialize leaderboard tabs when DOM ready
 document.addEventListener('DOMContentLoaded', () => {
     initLeaderboardTabs();
+    initAchievementTabs();
 });
+
+// ================================================
+// ACHIEVEMENTS SYSTEM
+// ================================================
+let allAchievements = [];
+let currentAchievementCategory = 'all';
+
+function initAchievementTabs() {
+    document.querySelectorAll('.ach-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.ach-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            currentAchievementCategory = tab.dataset.category;
+            renderAchievements(allAchievements, currentAchievementCategory);
+        });
+    });
+}
+
+async function loadAchievements() {
+    const container = document.getElementById('achievements-list');
+    container.innerHTML = `<div class="loading-spinner"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Loading...</p></div>`;
+
+    try {
+        const response = await fetch(`${API_BASE}?action=get_achievements`);
+        const data = await response.json();
+
+        if (data.success) {
+            allAchievements = data.achievements;
+            document.getElementById('ach-unlocked').textContent = data.unlocked;
+            document.getElementById('ach-total').textContent = data.total;
+            renderAchievements(allAchievements, currentAchievementCategory);
+        } else {
+            container.innerHTML = `<div class="empty-message">${data.error || 'Failed to load achievements'}</div>`;
+        }
+    } catch (error) {
+        console.error('Error loading achievements:', error);
+        container.innerHTML = '<div class="empty-message">Failed to load achievements</div>';
+    }
+}
+
+function renderAchievements(achievements, category = 'all') {
+    const container = document.getElementById('achievements-list');
+
+    // Filter by category
+    const filtered = category === 'all'
+        ? achievements
+        : achievements.filter(a => a.category === category);
+
+    if (filtered.length === 0) {
+        container.innerHTML = '<div class="empty-message">No achievements in this category</div>';
+        return;
+    }
+
+    // Sort: unlocked first, then by rarity
+    const rarityOrder = { platinum: 0, gold: 1, silver: 2, bronze: 3 };
+    filtered.sort((a, b) => {
+        if (a.unlocked !== b.unlocked) return b.unlocked - a.unlocked;
+        return rarityOrder[a.rarity] - rarityOrder[b.rarity];
+    });
+
+    container.innerHTML = filtered.map(ach => {
+        const progress = Math.min(100, (ach.current_progress / ach.requirement_value) * 100);
+        const statusClass = ach.unlocked ? 'unlocked' : 'locked';
+        const checkIcon = ach.unlocked ? '✓' : '🔒';
+
+        return `
+        <div class="ach-card ${statusClass}">
+            <div class="ach-icon">${ach.icon}</div>
+            <div class="ach-info">
+                <div class="ach-name">${ach.name}</div>
+                <div class="ach-desc">${ach.description}</div>
+                ${!ach.unlocked ? `
+                <div class="ach-progress-bar">
+                    <div class="ach-progress-fill" style="width: ${progress}%"></div>
+                </div>
+                ` : ''}
+            </div>
+            <div class="ach-rarity ${ach.rarity}">${ach.rarity}</div>
+            <div class="ach-check">${checkIcon}</div>
+        </div>
+        `;
+    }).join('');
+}
 
 // ================================================
 // MODAL BACKDROP CLOSE
