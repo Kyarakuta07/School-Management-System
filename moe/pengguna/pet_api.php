@@ -7,8 +7,19 @@
  * All responses are JSON formatted using standardized response helper
  */
 
+// Clean output buffer to prevent any accidental output before JSON
+ob_start();
+
+// Suppress warnings/notices in API responses (errors are still logged)
+error_reporting(E_ERROR | E_PARSE);
+ini_set('display_errors', '0');
+
 require_once '../includes/security_config.php';
 session_start();
+
+// Clean any buffered output that might have been generated
+ob_clean();
+
 header('Content-Type: application/json');
 
 // Prevent caching
@@ -296,7 +307,7 @@ switch ($action) {
         mysqli_stmt_close($deduct_stmt);
 
         // Log transaction
-        logGoldTransaction($conn, $user_id, 0, $total_cost, 'shop', "Purchased {$item_data['nama']} x{$quantity}");
+        logGoldTransaction($conn, $user_id, 0, $total_cost, 'shop', "Purchased {$item['name']} x{$quantity}");
 
         // Add to inventory (use INSERT ... ON DUPLICATE KEY UPDATE)
         $inv_stmt = mysqli_prepare(
