@@ -4,6 +4,7 @@
  * Mediterranean of Egypt Virtual Pet Companion
  * 
  * Handles pet evolution stages, level ups, and manual evolution system.
+ * Evolution is SACRIFICE-ONLY - stages are stored in database, not calculated from level.
  */
 
 // Ensure constants are loaded
@@ -12,29 +13,40 @@ if (!defined('LEVEL_BABY')) {
 }
 
 /**
- * Determine evolution stage based on level
+ * Get evolution stage from pet data (stored in database)
+ * This is used when pet data already includes evolution_stage
  *
- * @param int $level Pet's current level
+ * @param array $pet Pet data with evolution_stage field
  * @return string 'egg', 'baby', or 'adult'
  */
-function getEvolutionStage($level)
+function getStoredEvolutionStage($pet)
 {
-    if ($level < LEVEL_BABY)
-        return 'egg';
-    if ($level < LEVEL_ADULT)
-        return 'baby';
-    return 'adult';
+    return $pet['evolution_stage'] ?? 'egg';
 }
 
 /**
- * Get the correct image path based on evolution stage
+ * Legacy function - kept for compatibility but now just returns 'egg'
+ * Actual stage is stored in database, not calculated from level
  *
- * @param array $pet Pet data including species image paths
+ * @param int $level Pet's current level (ignored in new system)
+ * @return string Always returns 'egg' - use getStoredEvolutionStage() instead
+ * @deprecated Use getStoredEvolutionStage($pet) instead
+ */
+function getEvolutionStage($level)
+{
+    // Legacy fallback - new system uses stored stage
+    return 'egg';
+}
+
+/**
+ * Get the correct image path based on stored evolution stage
+ *
+ * @param array $pet Pet data including species image paths and evolution_stage
  * @return string Image path relative to assets/pets/
  */
 function getEvolutionImage($pet)
 {
-    $stage = getEvolutionStage($pet['level']);
+    $stage = $pet['evolution_stage'] ?? 'egg';
     switch ($stage) {
         case 'egg':
             return $pet['img_egg'];
@@ -60,6 +72,7 @@ function getExpForNextLevel($current_level)
 
 /**
  * Add EXP to a pet and handle level ups
+ * NOTE: Level ups do NOT trigger evolution - evolution is sacrifice-only
  *
  * @param mysqli $conn Database connection
  * @param int $pet_id Pet ID
@@ -68,7 +81,7 @@ function getExpForNextLevel($current_level)
  */
 function addExpToPet($conn, $pet_id, $exp_amount)
 {
-    $stmt = mysqli_prepare($conn, "SELECT level, exp FROM user_pets WHERE id = ?");
+    $stmt = mysqli_prepare($conn, "SELECT level, exp, evolution_stage FROM user_pets WHERE id = ?");
     mysqli_stmt_bind_param($stmt, "i", $pet_id);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
@@ -81,19 +94,16 @@ function addExpToPet($conn, $pet_id, $exp_amount)
     $current_level = $pet['level'];
     $current_exp = $pet['exp'] + $exp_amount;
     $level_ups = 0;
-    $old_stage = getEvolutionStage($current_level);
+    $current_stage = $pet['evolution_stage']; // Stage stays the same, no auto-evolution
 
-    // Process level ups
+    // Process level ups (but NOT evolution - that's sacrifice-only)
     while ($current_exp >= getExpForNextLevel($current_level)) {
         $current_exp -= getExpForNextLevel($current_level);
         $current_level++;
         $level_ups++;
     }
 
-    $new_stage = getEvolutionStage($current_level);
-    $evolved = ($old_stage !== $new_stage);
-
-    // Update database
+    // Update database - evolution_stage is NOT changed here
     $update_stmt = mysqli_prepare($conn, "UPDATE user_pets SET level = ?, exp = ? WHERE id = ?");
     mysqli_stmt_bind_param($update_stmt, "iii", $current_level, $current_exp, $pet_id);
     mysqli_stmt_execute($update_stmt);
@@ -104,8 +114,8 @@ function addExpToPet($conn, $pet_id, $exp_amount)
         'new_level' => $current_level,
         'new_exp' => $current_exp,
         'level_ups' => $level_ups,
-        'evolved' => $evolved,
-        'new_stage' => $new_stage
+        'evolved' => false, // Never auto-evolve
+        'new_stage' => $current_stage // Stage unchanged
     ];
 }
 
@@ -147,8 +157,8 @@ function evolvePetManual($conn, $user_id, $main_pet_id, $fodder_pet_ids, $gold_c
         return ['success' => false, 'error' => 'Main pet not found or not owned'];
     }
 
-    // Determine current stage and check requirements
-    $current_stage = getEvolutionStage($main_pet['level']);
+    // Get current stage from database (not calculated from level)
+    $current_stage = $main_pet['evolution_stage'] ?? 'egg';
     $level = $main_pet['level'];
 
     if ($current_stage === 'adult') {
@@ -165,7 +175,6 @@ function evolvePetManual($conn, $user_id, $main_pet_id, $fodder_pet_ids, $gold_c
 
     // Determine next stage
     $next_stage = ($current_stage === 'egg') ? 'baby' : 'adult';
-    $next_level = ($current_stage === 'egg') ? 10 : 20; // Ensure minimum level after evolution
 
     // Check user's gold
     $gold_check = mysqli_prepare($conn, "SELECT gold FROM nethera WHERE id_nethera = ?");
@@ -237,18 +246,14 @@ function evolvePetManual($conn, $user_id, $main_pet_id, $fodder_pet_ids, $gold_c
             mysqli_stmt_close($delete_stmt);
         }
 
-        // Evolve main pet - set level to evolution threshold + 1
-        // This ensures they're in the new stage
-        $new_level = ($next_stage === 'baby') ? 5 : 15; // LEVEL_BABY or LEVEL_ADULT
-        if ($level >= $new_level) {
-            $new_level = $level + 1; // Just add 1 level if already above threshold
-        }
+        // Evolve main pet - update evolution_stage and add bonus level
+        $new_level = $level + 1; // Add 1 level as bonus for evolving
 
         $evolve_stmt = mysqli_prepare(
             $conn,
-            "UPDATE user_pets SET level = ?, exp = 0 WHERE id = ?"
+            "UPDATE user_pets SET evolution_stage = ?, level = ?, exp = 0 WHERE id = ?"
         );
-        mysqli_stmt_bind_param($evolve_stmt, "ii", $new_level, $main_pet_id);
+        mysqli_stmt_bind_param($evolve_stmt, "sii", $next_stage, $new_level, $main_pet_id);
         mysqli_stmt_execute($evolve_stmt);
         mysqli_stmt_close($evolve_stmt);
 

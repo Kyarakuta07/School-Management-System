@@ -245,8 +245,8 @@ async function openEvolutionModal(mainPetId) {
         return;
     }
 
-    // Determine current stage
-    const currentStage = getEvolutionStage(mainPet.level);
+    // Get current stage from stored data (not calculated from level)
+    const currentStage = mainPet.evolution_stage || 'egg';
 
     // Check if already max evolved
     if (currentStage === 'adult') {

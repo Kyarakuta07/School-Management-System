@@ -129,8 +129,8 @@ function getUserPetsWithStats($conn, $user_id)
             $pet['status'] = $updated_pet['status'];
             $pet['last_update_timestamp'] = $updated_pet['last_update_timestamp'];
 
-            // Add evolution stage
-            $pet['evolution_stage'] = getEvolutionStage($pet['level']);
+            // evolution_stage is already in $pet from database (up.*)
+            // Just set current_image based on stored stage
             $pet['current_image'] = getEvolutionImage($pet);
         }
         $pets[] = $pet;

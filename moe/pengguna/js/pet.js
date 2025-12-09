@@ -332,7 +332,8 @@ function showNoPetMessage() {
 }
 
 function getPetImagePath(pet) {
-    const stage = pet.evolution_stage || getEvolutionStage(pet.level);
+    // Use stored evolution_stage from database, not level-based
+    const stage = pet.evolution_stage || 'egg';
 
     // Priority order based on evolution stage
     let imgKeys;
@@ -361,10 +362,14 @@ function getPetImagePath(pet) {
     return ASSETS_BASE + (pet.current_image || 'default/egg.png');
 }
 
-function getEvolutionStage(level) {
-    if (level < 5) return 'egg';
-    if (level < 15) return 'baby';
-    return 'adult';
+// Get evolution stage from pet data (stored in database, not calculated)
+function getEvolutionStage(pet) {
+    // If pet is an object, use stored stage
+    if (typeof pet === 'object' && pet !== null) {
+        return pet.evolution_stage || 'egg';
+    }
+    // Legacy fallback
+    return 'egg';
 }
 
 // ================================================
