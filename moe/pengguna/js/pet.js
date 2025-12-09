@@ -716,7 +716,14 @@ async function performGacha(type) {
 
 function showGachaResult(data) {
     const modal = document.getElementById('gacha-modal');
+    const modalContent = modal.querySelector('.gacha-result');
     const species = data.species;
+
+    // Remove previous rarity classes
+    modalContent.classList.remove('rarity-common', 'rarity-rare', 'rarity-epic', 'rarity-legendary');
+
+    // Add current rarity class for styling
+    modalContent.classList.add(`rarity-${data.rarity.toLowerCase()}`);
 
     document.getElementById('result-pet-img').src = ASSETS_BASE + (species.img_egg || 'default/egg.png');
     document.getElementById('result-name').textContent = species.name;
@@ -725,29 +732,34 @@ function showGachaResult(data) {
     rarityBadge.textContent = data.rarity;
     rarityBadge.className = `result-rarity rarity-badge ${data.rarity.toLowerCase()}`;
 
+    // Update title based on rarity
+    const titleEl = document.getElementById('result-title');
+    const titles = {
+        'Common': 'New Pet!',
+        'Rare': 'Nice Pull!',
+        'Epic': 'Amazing!',
+        'Legendary': '🎉 LEGENDARY! 🎉'
+    };
+    titleEl.textContent = titles[data.rarity] || 'Congratulations!';
+
     // Apply shiny
     if (data.is_shiny) {
-        document.getElementById('result-pet-img').style.filter = `hue-rotate(${data.shiny_hue}deg)`;
+        document.getElementById('result-pet-img').style.filter = `hue-rotate(${data.shiny_hue}deg) drop-shadow(0 8px 20px rgba(0, 0, 0, 0.5))`;
         document.getElementById('result-shiny').style.display = 'block';
     } else {
-        document.getElementById('result-pet-img').style.filter = '';
+        document.getElementById('result-pet-img').style.filter = 'drop-shadow(0 8px 20px rgba(0, 0, 0, 0.5))';
         document.getElementById('result-shiny').style.display = 'none';
     }
-
-    const glow = document.getElementById('result-glow');
-    const glowColors = {
-        'Common': 'rgba(158, 158, 158, 0.5)',
-        'Rare': 'rgba(33, 150, 243, 0.5)',
-        'Epic': 'rgba(156, 39, 176, 0.5)',
-        'Legendary': 'rgba(255, 152, 0, 0.5)'
-    };
-    glow.style.background = `radial-gradient(circle, ${glowColors[data.rarity] || glowColors.Common} 0%, transparent 70%)`;
 
     modal.classList.add('show');
 }
 
 function closeGachaModal() {
-    document.getElementById('gacha-modal').classList.remove('show');
+    const modal = document.getElementById('gacha-modal');
+    modal.classList.remove('show');
+
+    // Reload pets to show new pet in collection
+    loadPets();
 }
 
 // ================================================

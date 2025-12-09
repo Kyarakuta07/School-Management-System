@@ -2175,6 +2175,244 @@
 }
 
 /* ================================================
+   GACHA RESULT MODAL - Premium Celebration Design
+   ================================================ */
+.gacha-result {
+    max-width: 380px;
+    text-align: center;
+    padding: var(--space-xl) var(--space-lg);
+    overflow: visible;
+    background: linear-gradient(180deg, rgba(30, 30, 30, 0.98) 0%, rgba(20, 20, 20, 0.99) 100%);
+}
+
+.result-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -60%);
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    filter: blur(40px);
+    opacity: 0.6;
+    animation: glowPulse 2s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Rarity-based glow colors */
+.gacha-result.rarity-common .result-glow {
+    background: radial-gradient(circle, rgba(150, 150, 150, 0.8), transparent);
+}
+
+.gacha-result.rarity-rare .result-glow {
+    background: radial-gradient(circle, rgba(52, 152, 219, 0.8), transparent);
+}
+
+.gacha-result.rarity-epic .result-glow {
+    background: radial-gradient(circle, rgba(155, 89, 182, 0.8), transparent);
+}
+
+.gacha-result.rarity-legendary .result-glow {
+    background: radial-gradient(circle, rgba(241, 196, 15, 0.9), transparent);
+}
+
+@keyframes glowPulse {
+
+    0%,
+    100% {
+        transform: translate(-50%, -60%) scale(1);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: translate(-50%, -60%) scale(1.15);
+        opacity: 0.8;
+    }
+}
+
+.result-pet {
+    position: relative;
+    z-index: 1;
+    margin-bottom: var(--space-lg);
+}
+
+.result-pet img {
+    width: 140px;
+    height: 140px;
+    object-fit: contain;
+    filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.5));
+    animation: petBounce 0.8s ease-out, petFloat 3s ease-in-out 0.8s infinite;
+}
+
+@keyframes petBounce {
+    0% {
+        transform: scale(0) rotate(-10deg);
+        opacity: 0;
+    }
+
+    50% {
+        transform: scale(1.2) rotate(5deg);
+    }
+
+    70% {
+        transform: scale(0.9) rotate(-3deg);
+    }
+
+    100% {
+        transform: scale(1) rotate(0);
+        opacity: 1;
+    }
+}
+
+@keyframes petFloat {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+.result-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.5rem;
+    margin: 0 0 var(--space-md) 0;
+    animation: titleFade 0.5s ease-out 0.3s both;
+}
+
+.gacha-result.rarity-common .result-title {
+    color: #AAA;
+}
+
+.gacha-result.rarity-rare .result-title {
+    color: #3498DB;
+}
+
+.gacha-result.rarity-epic .result-title {
+    color: #9B59B6;
+}
+
+.gacha-result.rarity-legendary .result-title {
+    color: #F1C40F;
+    text-shadow: 0 0 20px rgba(241, 196, 15, 0.5);
+}
+
+@keyframes titleFade {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.result-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-md);
+    animation: titleFade 0.5s ease-out 0.4s both;
+}
+
+.result-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1.3rem;
+    color: #FFF;
+    font-weight: 700;
+}
+
+.result-rarity {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: var(--radius-full);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.gacha-result.rarity-common .result-rarity {
+    background: rgba(150, 150, 150, 0.2);
+    border: 1px solid rgba(150, 150, 150, 0.4);
+    color: #AAA;
+}
+
+.gacha-result.rarity-rare .result-rarity {
+    background: rgba(52, 152, 219, 0.2);
+    border: 1px solid rgba(52, 152, 219, 0.4);
+    color: #3498DB;
+}
+
+.gacha-result.rarity-epic .result-rarity {
+    background: rgba(155, 89, 182, 0.2);
+    border: 1px solid rgba(155, 89, 182, 0.4);
+    color: #9B59B6;
+}
+
+.gacha-result.rarity-legendary .result-rarity {
+    background: linear-gradient(135deg, rgba(241, 196, 15, 0.3), rgba(243, 156, 18, 0.2));
+    border: 1px solid rgba(241, 196, 15, 0.6);
+    color: #F1C40F;
+    animation: legendaryPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes legendaryPulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 10px rgba(241, 196, 15, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 25px rgba(241, 196, 15, 0.6);
+    }
+}
+
+.result-shiny {
+    font-size: 1.1rem;
+    color: #F1C40F;
+    margin: var(--space-sm) 0;
+    animation: shinyBlink 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes shinyBlink {
+    from {
+        opacity: 0.7;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.gacha-result .modal-close-btn {
+    width: 100%;
+    padding: 14px;
+    margin-top: var(--space-md);
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    border: none;
+    border-radius: var(--radius-md);
+    color: #000;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-out);
+    animation: titleFade 0.5s ease-out 0.6s both;
+}
+
+.gacha-result .modal-close-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(218, 165, 32, 0.4);
+}
+
+/* ================================================
    SELL PET MODAL - Premium Design
    ================================================ */
 .sell-dialog {
