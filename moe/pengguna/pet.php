@@ -555,12 +555,14 @@ mysqli_stmt_close($gold_stmt);
     <div class="modal" id="evolution-modal">
         <div class="modal-backdrop" onclick="closeEvolutionModal()"></div>
         <div class="modal-content evolution-selector">
-            <h2>🔮 Manual Evolution</h2>
+            <h2>🔮 <span id="evo-title">Evolution</span></h2>
 
             <div class="evolution-info">
+                <p><strong>Current Stage:</strong> <span id="evo-current-stage">Egg</span></p>
+                <p><strong>Evolve To:</strong> <span id="evo-next-stage">Baby</span></p>
                 <p><strong>Requirements:</strong></p>
                 <ul>
-                    <li>Main Pet: Level 20+</li>
+                    <li>Level: <span id="evo-required-level">10</span>+</li>
                     <li>Sacrifice: 3 pets of <span id="evo-required-rarity">same rarity</span></li>
                     <li>Cost: <i class="fas fa-coins"></i> 500 Gold</li>
                 </ul>

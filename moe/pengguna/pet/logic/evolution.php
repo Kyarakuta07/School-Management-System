@@ -111,7 +111,9 @@ function addExpToPet($conn, $pet_id, $exp_amount)
 
 /**
  * Manually evolve a pet by sacrificing 3 other pets of the same rarity
- * This is a strategic decision that requires user selection
+ * Stage-based evolution:
+ * - Egg (Lv.10+) → Baby
+ * - Baby (Lv.20+) → Adult
  * 
  * @param mysqli $conn Database connection
  * @param int $user_id User's ID
@@ -145,13 +147,25 @@ function evolvePetManual($conn, $user_id, $main_pet_id, $fodder_pet_ids, $gold_c
         return ['success' => false, 'error' => 'Main pet not found or not owned'];
     }
 
-    if ($main_pet['level'] < 20) {
-        return ['success' => false, 'error' => 'Main pet must be level 20 or higher'];
+    // Determine current stage and check requirements
+    $current_stage = getEvolutionStage($main_pet['level']);
+    $level = $main_pet['level'];
+
+    if ($current_stage === 'adult') {
+        return ['success' => false, 'error' => 'Pet is already at Adult stage (max evolution)'];
     }
 
-    if ($main_pet['level'] >= 15 && $main_pet['is_adult']) {
-        return ['success' => false, 'error' => 'Pet is already fully evolved'];
+    if ($current_stage === 'egg' && $level < 10) {
+        return ['success' => false, 'error' => "Pet must be Level 10+ to evolve from Egg to Baby (current: Lv.$level)"];
     }
+
+    if ($current_stage === 'baby' && $level < 20) {
+        return ['success' => false, 'error' => "Pet must be Level 20+ to evolve from Baby to Adult (current: Lv.$level)"];
+    }
+
+    // Determine next stage
+    $next_stage = ($current_stage === 'egg') ? 'baby' : 'adult';
+    $next_level = ($current_stage === 'egg') ? 10 : 20; // Ensure minimum level after evolution
 
     // Check user's gold
     $gold_check = mysqli_prepare($conn, "SELECT gold FROM nethera WHERE id_nethera = ?");
@@ -223,34 +237,44 @@ function evolvePetManual($conn, $user_id, $main_pet_id, $fodder_pet_ids, $gold_c
             mysqli_stmt_close($delete_stmt);
         }
 
-        // Evolve main pet
+        // Evolve main pet - set level to evolution threshold + 1
+        // This ensures they're in the new stage
+        $new_level = ($next_stage === 'baby') ? 5 : 15; // LEVEL_BABY or LEVEL_ADULT
+        if ($level >= $new_level) {
+            $new_level = $level + 1; // Just add 1 level if already above threshold
+        }
+
         $evolve_stmt = mysqli_prepare(
             $conn,
-            "UPDATE user_pets SET is_adult = 1, level = level + 1, exp = 0 WHERE id = ?"
+            "UPDATE user_pets SET level = ?, exp = 0 WHERE id = ?"
         );
-        mysqli_stmt_bind_param($evolve_stmt, "i", $main_pet_id);
+        mysqli_stmt_bind_param($evolve_stmt, "ii", $new_level, $main_pet_id);
         mysqli_stmt_execute($evolve_stmt);
         mysqli_stmt_close($evolve_stmt);
 
-        // Record evolution history
+        // Record evolution history (if table exists)
         $history_json = json_encode($fodder_pet_ids);
         $history_stmt = mysqli_prepare(
             $conn,
             "INSERT INTO pet_evolution_history (user_id, main_pet_id, fodder_pet_ids, gold_cost) 
              VALUES (?, ?, ?, ?)"
         );
-        mysqli_stmt_bind_param($history_stmt, "iisi", $user_id, $main_pet_id, $history_json, $gold_cost);
-        mysqli_stmt_execute($history_stmt);
-        mysqli_stmt_close($history_stmt);
+        if ($history_stmt) {
+            mysqli_stmt_bind_param($history_stmt, "iisi", $user_id, $main_pet_id, $history_json, $gold_cost);
+            mysqli_stmt_execute($history_stmt);
+            mysqli_stmt_close($history_stmt);
+        }
 
         mysqli_commit($conn);
 
+        $stage_emoji = ($next_stage === 'baby') ? '🐣' : '🦅';
         return [
             'success' => true,
-            'message' => 'Evolution successful! Your pet has reached its final form!',
+            'message' => "Evolution successful! Your pet evolved to $next_stage stage! $stage_emoji",
             'sacrificed_count' => 3,
             'gold_spent' => $gold_cost,
-            'new_status' => 'adult'
+            'new_stage' => $next_stage,
+            'new_level' => $new_level
         ];
 
     } catch (Exception $e) {

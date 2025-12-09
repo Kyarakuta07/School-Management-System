@@ -245,14 +245,32 @@ async function openEvolutionModal(mainPetId) {
         return;
     }
 
-    // Check level requirement
-    if (mainPet.level < 20) {
-        showToast('Pet must be level 20 or higher to evolve!', 'warning');
+    // Determine current stage
+    const currentStage = getEvolutionStage(mainPet.level);
+
+    // Check if already max evolved
+    if (currentStage === 'adult') {
+        showToast('Pet is already at Adult stage (max evolution)!', 'warning');
+        return;
+    }
+
+    // Check level requirement based on current stage
+    const requiredLevel = (currentStage === 'egg') ? 10 : 20;
+    const nextStage = (currentStage === 'egg') ? 'Baby' : 'Adult';
+
+    if (mainPet.level < requiredLevel) {
+        showToast(`Pet must be level ${requiredLevel}+ to evolve to ${nextStage}!`, 'warning');
         return;
     }
 
     evolutionState.mainPetId = mainPetId;
     evolutionState.selectedFodder = [];
+
+    // Update modal info
+    document.getElementById('evo-title').textContent = `Evolve to ${nextStage}`;
+    document.getElementById('evo-current-stage').textContent = currentStage.charAt(0).toUpperCase() + currentStage.slice(1);
+    document.getElementById('evo-next-stage').textContent = nextStage;
+    document.getElementById('evo-required-level').textContent = requiredLevel;
 
     // Show modal
     document.getElementById('evolution-modal').classList.add('show');
