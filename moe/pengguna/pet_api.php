@@ -654,7 +654,7 @@ switch ($action) {
         $rarity = $main_pet['rarity'];
         $candidates_stmt = mysqli_prepare(
             $conn,
-            "SELECT up.*, ps.name as species_name, ps.rarity, ps.img_baby, ps.img_adult
+            "SELECT up.*, ps.name as species_name, ps.rarity, ps.img_egg, ps.img_baby, ps.img_adult
              FROM user_pets up
              JOIN pet_species ps ON up.species_id = ps.id
              WHERE up.user_id = ? AND up.id != ? AND up.is_active = 0

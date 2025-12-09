@@ -2129,6 +2129,51 @@
     color: var(--gold);
 }
 
+/* Evolution Confirm Dialog */
+.evo-confirm-dialog {
+    max-width: 380px;
+    text-align: center;
+}
+
+.evo-confirm-dialog h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.3rem;
+    color: var(--experience);
+    margin: 0 0 var(--space-lg) 0;
+}
+
+.evo-confirm-message {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    margin-bottom: var(--space-lg);
+}
+
+.evo-confirm-message p {
+    color: #CCC;
+    font-size: 0.95rem;
+    margin: 0 0 var(--space-sm) 0;
+    line-height: 1.5;
+}
+
+.evo-confirm-message .fa-coins {
+    color: #FFD700;
+}
+
+.evo-confirm-warning {
+    color: var(--health) !important;
+    font-weight: 600;
+    margin-top: var(--space-sm) !important;
+}
+
+.evo-proceed-btn {
+    background: linear-gradient(135deg, #9B59B6, #8E44AD) !important;
+}
+
+.evo-proceed-btn:hover {
+    box-shadow: 0 5px 20px rgba(155, 89, 182, 0.4) !important;
+}
+
 /* ================================================
    SELL PET MODAL - Premium Design
    ================================================ */

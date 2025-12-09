@@ -480,7 +480,7 @@ mysqli_stmt_close($gold_stmt);
         <div class="modal-backdrop" onclick="closeSellModal()"></div>
         <div class="modal-content sell-dialog">
             <h2>💰 Sell Pet</h2>
-            
+
             <div class="sell-pet-preview">
                 <img src="" id="sell-pet-img" alt="Pet">
                 <div class="sell-pet-info">
@@ -585,6 +585,30 @@ mysqli_stmt_close($gold_stmt);
                 <button class="modal-cancel-btn" onclick="closeEvolutionModal()">Cancel</button>
                 <button class="modal-confirm-btn" id="confirm-evolution-btn" onclick="confirmEvolution()" disabled>
                     <i class="fas fa-star"></i> Evolve (500 Gold)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================
+         EVOLUTION CONFIRM MODAL
+         ======================================== -->
+    <div class="modal" id="evolution-confirm-modal">
+        <div class="modal-backdrop" onclick="closeEvoConfirmModal()"></div>
+        <div class="modal-content evo-confirm-dialog">
+            <h2>⚠️ Confirm Evolution</h2>
+
+            <div class="evo-confirm-message">
+                <p>This will <strong>permanently sacrifice</strong> the 3 selected pets and cost <strong><i
+                            class="fas fa-coins"></i> 500 Gold</strong>.</p>
+                <p class="evo-confirm-warning">This action cannot be undone!</p>
+            </div>
+
+            <div class="modal-actions">
+                <button class="modal-cancel-btn" onclick="closeEvoConfirmModal()">Cancel</button>
+                <button class="modal-confirm-btn evo-proceed-btn" id="proceed-evolution-btn"
+                    onclick="proceedEvolution()">
+                    <i class="fas fa-star"></i> Proceed with Evolution
                 </button>
             </div>
         </div>

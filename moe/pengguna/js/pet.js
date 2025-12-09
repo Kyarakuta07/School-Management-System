@@ -333,16 +333,32 @@ function showNoPetMessage() {
 
 function getPetImagePath(pet) {
     const stage = pet.evolution_stage || getEvolutionStage(pet.level);
-    let imgKey;
 
+    // Priority order based on evolution stage
+    let imgKeys;
     switch (stage) {
-        case 'egg': imgKey = 'img_egg'; break;
-        case 'baby': imgKey = 'img_baby'; break;
-        case 'adult': imgKey = 'img_adult'; break;
-        default: imgKey = 'img_egg';
+        case 'egg':
+            imgKeys = ['img_egg', 'img_baby', 'img_adult'];
+            break;
+        case 'baby':
+            imgKeys = ['img_baby', 'img_egg', 'img_adult'];
+            break;
+        case 'adult':
+            imgKeys = ['img_adult', 'img_baby', 'img_egg'];
+            break;
+        default:
+            imgKeys = ['img_egg', 'img_baby', 'img_adult'];
     }
 
-    return ASSETS_BASE + (pet[imgKey] || pet.current_image || 'default/egg.png');
+    // Try each image key until we find a valid one
+    for (const key of imgKeys) {
+        if (pet[key] && pet[key] !== '' && pet[key] !== null) {
+            return ASSETS_BASE + pet[key];
+        }
+    }
+
+    // Last resort: current_image or default
+    return ASSETS_BASE + (pet.current_image || 'default/egg.png');
 }
 
 function getEvolutionStage(level) {

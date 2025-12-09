@@ -344,9 +344,18 @@ async function confirmEvolution() {
         return;
     }
 
-    if (!confirm('⚠️ This will permanently sacrifice the 3 selected pets and cost 500 Gold. Continue?')) {
-        return;
-    }
+    // Show custom confirm modal instead of browser confirm
+    document.getElementById('evolution-confirm-modal').classList.add('show');
+}
+
+function closeEvoConfirmModal() {
+    document.getElementById('evolution-confirm-modal').classList.remove('show');
+}
+
+async function proceedEvolution() {
+    const btn = document.getElementById('proceed-evolution-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Evolving...';
 
     try {
         const response = await fetch(`${API_BASE}?action=evolve_manual`, {
@@ -363,6 +372,7 @@ async function confirmEvolution() {
         if (data.success) {
             showToast(data.message, 'success');
             updateGoldDisplay(data.remaining_gold);
+            closeEvoConfirmModal();
             closeEvolutionModal();
             loadPets(); // Refresh collection
             loadActivePet(); // Refresh active pet if it was evolved
@@ -372,6 +382,9 @@ async function confirmEvolution() {
     } catch (error) {
         console.error('Error during evolution:', error);
         showToast('Network error', 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-star"></i> Proceed with Evolution';
     }
 }
 
