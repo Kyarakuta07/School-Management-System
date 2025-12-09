@@ -34,6 +34,32 @@ $user_id = $_SESSION['id_nethera'];
 $api_limiter = new RateLimiter($conn);
 
 // ================================================
+// TRANSACTION LOGGING HELPER
+// ================================================
+
+/**
+ * Log gold transaction to trapeza_transactions table
+ * @param mysqli $conn Database connection
+ * @param int $sender_id User who sent/spent gold
+ * @param int $receiver_id User who received gold (0 for system)
+ * @param int $amount Amount of gold
+ * @param string $type Transaction type (transfer, gacha, shop, etc.)
+ * @param string $description Transaction description
+ */
+function logGoldTransaction($conn, $sender_id, $receiver_id, $amount, $type, $description) {
+    $log_stmt = mysqli_prepare($conn, 
+        "INSERT INTO trapeza_transactions (sender_id, receiver_id, amount, transaction_type, description) 
+         VALUES (?, ?, ?, ?, ?)"
+    );
+    
+    if ($log_stmt) {
+        mysqli_stmt_bind_param($log_stmt, "iiiss", $sender_id, $receiver_id, $amount, $type, $description);
+        mysqli_stmt_execute($log_stmt);
+        mysqli_stmt_close($log_stmt);
+    }
+}
+
+// ================================================
 // ROUTING
 // ================================================
 
@@ -199,6 +225,11 @@ switch ($action) {
         mysqli_stmt_execute($deduct_stmt);
         mysqli_stmt_close($deduct_stmt);
 
+        // Log transaction
+        $gacha_types = [1 => 'Bronze Summon', 2 => 'Silver Summon', 3 => 'Gold Summon'];
+        $gacha_name = $gacha_types[$gacha_type] ?? 'Gacha Roll';
+        logGoldTransaction($conn, $user_id, 0, $cost, 'gacha', $gacha_name);
+
         $result['cost'] = $cost;
         $result['remaining_gold'] = $user_gold - $cost;
 
@@ -261,6 +292,9 @@ switch ($action) {
         mysqli_stmt_bind_param($deduct_stmt, "ii", $total_cost, $user_id);
         mysqli_stmt_execute($deduct_stmt);
         mysqli_stmt_close($deduct_stmt);
+
+        // Log transaction
+        logGoldTransaction($conn, $user_id, 0, $total_cost, 'shop', "Purchased {$item_data['nama']} x{$quantity}");
 
         // Add to inventory (use INSERT ... ON DUPLICATE KEY UPDATE)
         $inv_stmt = mysqli_prepare(
@@ -496,6 +530,9 @@ switch ($action) {
             mysqli_stmt_bind_param($reward_stmt, "ii", $gold_reward, $user_id);
             mysqli_stmt_execute($reward_stmt);
             mysqli_stmt_close($reward_stmt);
+
+            // Log transaction
+            logGoldTransaction($conn, 0, $user_id, $gold_reward, 'battle_reward', 'Arena victory reward');
         }
 
         echo json_encode($result);
@@ -868,6 +905,9 @@ switch ($action) {
             mysqli_stmt_bind_param($gold_stmt, "ii", $gold_reward, $user_id);
             mysqli_stmt_execute($gold_stmt);
             mysqli_stmt_close($gold_stmt);
+
+            // Log transaction
+            logGoldTransaction($conn, 0, $user_id, $gold_reward, 'sell_pet', "Sold {$pet['nickname']} (Lv.{$pet['level']} {$pet['species_name']})");
         }
 
         if ($playerWon && $exp_reward > 0) {
@@ -1115,6 +1155,9 @@ switch ($action) {
             mysqli_stmt_bind_param($gold_stmt, "ii", $reward['gold'], $user_id);
             mysqli_stmt_execute($gold_stmt);
             mysqli_stmt_close($gold_stmt);
+
+            // Log transaction
+            logGoldTransaction($conn, 0, $user_id, $reward['gold'], 'daily_reward', "Day {$current_day} daily login reward");
         }
 
         // Grant item
@@ -1384,6 +1427,114 @@ switch ($action) {
                 'unlocked' => $unlocked_count,
                 'newly_unlocked' => $newly_unlocked,
                 'achievements' => $achievements
+    // GET: Achievements list with user progress
+    // ============================================
+    case 'get_achievements':
+        if ($method !== 'GET') {
+            api_method_not_allowed('GET');
+        }
+
+        try {
+            // Get all achievements
+            $achievements_query = "SELECT * FROM achievements ORDER BY category, rarity DESC, id";
+            $achievements_result = mysqli_query($conn, $achievements_query);
+
+            if (!$achievements_result) {
+                throw new Exception(mysqli_error($conn));
+            }
+
+            // Get user's unlocked achievements
+            $unlocked_query = "SELECT achievement_id FROM user_achievements WHERE user_id = ?";
+            $unlocked_stmt = mysqli_prepare($conn, $unlocked_query);
+            mysqli_stmt_bind_param($unlocked_stmt, "i", $user_id);
+            mysqli_stmt_execute($unlocked_stmt);
+            $unlocked_result = mysqli_stmt_get_result($unlocked_stmt);
+
+            $unlocked_ids = [];
+            while ($row = mysqli_fetch_assoc($unlocked_result)) {
+                $unlocked_ids[] = $row['achievement_id'];
+            }
+            mysqli_stmt_close($unlocked_stmt);
+
+            // Get user stats for progress calculation
+            $stats = [];
+
+            // Pets owned
+            $q = mysqli_query($conn, "SELECT COUNT(*) as cnt FROM user_pets WHERE user_id = $user_id AND status != 'DEAD'");
+            $stats['pets_owned'] = mysqli_fetch_assoc($q)['cnt'];
+
+            // Shiny pets
+            $q = mysqli_query($conn, "SELECT COUNT(*) as cnt FROM user_pets WHERE user_id = $user_id AND is_shiny = 1");
+            $stats['shiny_pets'] = mysqli_fetch_assoc($q)['cnt'];
+
+            // Legendary pets
+            $q = mysqli_query($conn, "SELECT COUNT(*) as cnt FROM user_pets up JOIN pet_species ps ON up.species_id = ps.id WHERE up.user_id = $user_id AND ps.rarity = 'legendary'");
+            $stats['legendary_pets'] = mysqli_fetch_assoc($q)['cnt'];
+
+            // Battle wins
+            $q = mysqli_query($conn, "SELECT wins FROM user_pets WHERE user_id = $user_id ORDER BY wins DESC LIMIT 1");
+            $row = mysqli_fetch_assoc($q);
+            $stats['battle_wins'] = $row ? $row['wins'] : 0;
+
+            // Max pet level
+            $q = mysqli_query($conn, "SELECT MAX(level) as max_lvl FROM user_pets WHERE user_id = $user_id");
+            $row = mysqli_fetch_assoc($q);
+            $stats['max_pet_level'] = $row ? $row['max_lvl'] : 0;
+
+            // Login streak
+            $q = mysqli_query($conn, "SELECT total_logins FROM daily_login_streak WHERE user_id = $user_id");
+            $row = mysqli_fetch_assoc($q);
+            $stats['login_streak'] = $row ? $row['total_logins'] : 0;
+
+            // AUTO-UNLOCK: Check and unlock achievements based on progress
+            $newly_unlocked = [];
+            mysqli_data_seek($achievements_result, 0); // Reset result pointer
+            while ($ach = mysqli_fetch_assoc($achievements_result)) {
+                // Skip if already unlocked
+                if (in_array($ach['id'], $unlocked_ids)) {
+                    continue;
+                }
+
+                // Check if requirement is met
+                $current = isset($stats[$ach['requirement_type']]) ? (int) $stats[$ach['requirement_type']] : 0;
+                $required = (int) $ach['requirement_value'];
+
+                if ($current >= $required) {
+                    // Unlock this achievement!
+                    $unlock_stmt = mysqli_prepare($conn, "INSERT IGNORE INTO user_achievements (user_id, achievement_id) VALUES (?, ?)");
+                    mysqli_stmt_bind_param($unlock_stmt, "ii", $user_id, $ach['id']);
+                    mysqli_stmt_execute($unlock_stmt);
+                    mysqli_stmt_close($unlock_stmt);
+
+                    $unlocked_ids[] = $ach['id'];
+                    $newly_unlocked[] = $ach;
+
+                    // Give gold reward if any
+                    if ($ach['reward_gold'] > 0) {
+                        mysqli_query($conn, "UPDATE nethera SET gold = gold + {$ach['reward_gold']} WHERE id_nethera = $user_id");
+                    }
+                }
+            }
+
+            // Build achievements list with progress
+            mysqli_data_seek($achievements_result, 0); // Reset again
+            $achievements = [];
+            while ($ach = mysqli_fetch_assoc($achievements_result)) {
+                $ach['unlocked'] = in_array($ach['id'], $unlocked_ids);
+                $ach['current_progress'] = isset($stats[$ach['requirement_type']]) ? $stats[$ach['requirement_type']] : 0;
+                $achievements[] = $ach;
+            }
+
+            // Count stats
+            $total = count($achievements);
+            $unlocked_count = count($unlocked_ids);
+
+            echo json_encode([
+                'success' => true,
+                'total' => $total,
+                'unlocked' => $unlocked_count,
+                'newly_unlocked' => $newly_unlocked,
+                'achievements' => $achievements
             ]);
         } catch (Exception $e) {
             echo json_encode([
@@ -1394,9 +1545,267 @@ switch ($action) {
         break;
 
     // ============================================
+    // TRAPEZA BANKING SYSTEM
+    // ============================================
+
+    // GET: Get user's gold balance
+    case 'get_balance':
+        if ($method !== 'GET') {
+            api_method_not_allowed('GET');
+        }
+
+        $balance_stmt = mysqli_prepare($conn, "SELECT gold, username FROM nethera WHERE id_nethera = ?");
+        mysqli_stmt_bind_param($balance_stmt, "i", $user_id);
+        mysqli_stmt_execute($balance_stmt);
+        $balance_result = mysqli_stmt_get_result($balance_stmt);
+        $balance_data = mysqli_fetch_assoc($balance_result);
+        mysqli_stmt_close($balance_stmt);
+
+        echo json_encode([
+            'success' => true,
+            'gold' => $balance_data['gold'] ?? 0,
+            'username' => $balance_data['username'] ?? ''
+        ]);
+        break;
+
+    // GET: Get transaction history
+    case 'get_transactions':
+        if ($method !== 'GET') {
+            api_method_not_allowed('GET');
+        }
+
+        $limit = isset($_GET['limit']) ? min(100, (int)$_GET['limit']) : 20;
+        $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
+
+        // Get transactions where user is sender or receiver
+        $query = "SELECT 
+                    t.id, 
+                    t.amount, 
+                    t.transaction_type, 
+                    t.description, 
+                    t.created_at,
+                    t.sender_id,
+                    t.receiver_id,
+                    sender.username as sender_username,
+                    receiver.username as receiver_username
+                  FROM gold_transactions t
+                  LEFT JOIN nethera sender ON t.sender_id = sender.id_nethera
+                  LEFT JOIN nethera receiver ON t.receiver_id = receiver.id_nethera
+                  WHERE t.sender_id = ? OR t.receiver_id = ?
+                  ORDER BY t.created_at DESC
+                  LIMIT ? OFFSET ?";
+
+        $trans_stmt = mysqli_prepare($conn, $query);
+        mysqli_stmt_bind_param($trans_stmt, "iiii", $user_id, $user_id, $limit, $offset);
+        mysqli_stmt_execute($trans_stmt);
+        $trans_result = mysqli_stmt_get_result($trans_stmt);
+
+        $transactions = [];
+        while ($row = mysqli_fetch_assoc($trans_result)) {
+            $is_income = ($row['receiver_id'] == $user_id);
+            $other_party = $is_income ? $row['sender_username'] : $row['receiver_username'];
+
+            $transactions[] = [
+                'id' => $row['id'],
+                'type' => $row['transaction_type'],
+                'amount' => $is_income ? $row['amount'] : -$row['amount'],
+                'other_party' => $other_party,
+                'description' => $row['description'],
+                'created_at' => $row['created_at'],
+                'is_income' => $is_income
+            ];
+        }
+        mysqli_stmt_close($trans_stmt);
+
+        // Get total count
+        $count_stmt = mysqli_prepare($conn, "SELECT COUNT(*) as total FROM gold_transactions WHERE sender_id = ? OR receiver_id = ?");
+        mysqli_stmt_bind_param($count_stmt, "ii", $user_id, $user_id);
+        mysqli_stmt_execute($count_stmt);
+        $count_result = mysqli_stmt_get_result($count_stmt);
+        $total_count = mysqli_fetch_assoc($count_result)['total'];
+        mysqli_stmt_close($count_stmt);
+
+        echo json_encode([
+            'success' => true,
+            'transactions' => $transactions,
+            'total_count' => $total_count
+        ]);
+        break;
+
+    // POST: Transfer gold to another user
+    case 'transfer_gold':
+        if ($method !== 'POST') {
+            api_method_not_allowed('POST');
+        }
+
+        // Rate limiting - 5 transfers per hour
+        $transfer_limit = $api_limiter->checkLimit($user_id, 'gold_transfer', 5, 60);
+        if (!$transfer_limit['allowed']) {
+            api_rate_limited($transfer_limit['locked_until']);
+        }
+
+        $input = json_decode(file_get_contents('php://input'), true);
+        $recipient_username = isset($input['recipient_username']) ? trim($input['recipient_username']) : '';
+        $amount = isset($input['amount']) ? (int)$input['amount'] : 0;
+        $description = isset($input['description']) ? trim($input['description']) : 'Gold transfer';
+
+        // Validation
+        if (empty($recipient_username)) {
+            echo json_encode(['success' => false, 'error' => 'Recipient username required']);
+            break;
+        }
+
+        if ($amount < 10) {
+            echo json_encode(['success' => false, 'error' => 'Minimum transfer amount is 10 gold']);
+            break;
+        }
+
+        if ($amount > 1000) {
+            echo json_encode(['success' => false, 'error' => 'Maximum transfer amount is 1000 gold']);
+            break;
+        }
+
+        // Get recipient
+        $recipient_stmt = mysqli_prepare($conn, "SELECT id_nethera, username FROM nethera WHERE username = ? AND status_akun = 'Aktif'");
+        mysqli_stmt_bind_param($recipient_stmt, "s", $recipient_username);
+        mysqli_stmt_execute($recipient_stmt);
+        $recipient_result = mysqli_stmt_get_result($recipient_stmt);
+        $recipient = mysqli_fetch_assoc($recipient_result);
+        mysqli_stmt_close($recipient_stmt);
+
+        if (!$recipient) {
+            echo json_encode(['success' => false, 'error' => 'Recipient not found or inactive']);
+            break;
+        }
+
+        $recipient_id = $recipient['id_nethera'];
+
+        // Cannot transfer to self
+        if ($recipient_id == $user_id) {
+            echo json_encode(['success' => false, 'error' => 'Cannot transfer to yourself']);
+            break;
+        }
+
+        // Check daily limit (3000 gold)
+        $daily_check = mysqli_prepare($conn, 
+            "SELECT IFNULL(SUM(amount), 0) as total 
+             FROM gold_transactions 
+             WHERE sender_id = ? 
+             AND transaction_type = 'transfer' 
+             AND DATE(created_at) = CURDATE()");
+        mysqli_stmt_bind_param($daily_check, "i", $user_id);
+        mysqli_stmt_execute($daily_check);
+        $daily_result = mysqli_stmt_get_result($daily_check);
+        $daily_total = mysqli_fetch_assoc($daily_result)['total'];
+        mysqli_stmt_close($daily_check);
+
+        if ($daily_total + $amount > 3000) {
+            echo json_encode(['success' => false, 'error' => 'Daily transfer limit exceeded (3000 gold)']);
+            break;
+        }
+
+        // Check sufficient funds
+        $balance_check = mysqli_prepare($conn, "SELECT gold FROM nethera WHERE id_nethera = ?");
+        mysqli_stmt_bind_param($balance_check, "i", $user_id);
+        mysqli_stmt_execute($balance_check);
+        $balance_result = mysqli_stmt_get_result($balance_check);
+        $user_gold = mysqli_fetch_assoc($balance_result)['gold'];
+        mysqli_stmt_close($balance_check);
+
+        if ($user_gold < $amount) {
+            echo json_encode(['success' => false, 'error' => 'Insufficient funds']);
+            break;
+        }
+
+        // Execute transfer (atomic transaction)
+        mysqli_begin_transaction($conn);
+
+        try {
+            // Deduct from sender
+            $deduct_stmt = mysqli_prepare($conn, "UPDATE nethera SET gold = gold - ? WHERE id_nethera = ?");
+            mysqli_stmt_bind_param($deduct_stmt, "ii", $amount, $user_id);
+            mysqli_stmt_execute($deduct_stmt);
+            mysqli_stmt_close($deduct_stmt);
+
+            // Add to receiver
+            $add_stmt = mysqli_prepare($conn, "UPDATE nethera SET gold = gold + ? WHERE id_nethera = ?");
+            mysqli_stmt_bind_param($add_stmt, "ii", $amount, $recipient_id);
+            mysqli_stmt_execute($add_stmt);
+            mysqli_stmt_close($add_stmt);
+
+            // Log transaction
+            $log_stmt = mysqli_prepare($conn, 
+                "INSERT INTO gold_transactions (sender_id, receiver_id, amount, transaction_type, description) 
+                 VALUES (?, ?, ?, 'transfer', ?)");
+            mysqli_stmt_bind_param($log_stmt, "iiis", $user_id, $recipient_id, $amount, $description);
+            mysqli_stmt_execute($log_stmt);
+            $transaction_id = mysqli_insert_id($conn);
+            mysqli_stmt_close($log_stmt);
+
+            mysqli_commit($conn);
+
+            // Get new balance
+            $new_balance = $user_gold - $amount;
+
+            echo json_encode([
+                'success' => true,
+                'message' => 'Transfer successful!',
+                'new_balance' => $new_balance,
+                'transaction_id' => $transaction_id
+            ]);
+
+        } catch (Exception $e) {
+            mysqli_rollback($conn);
+            echo json_encode(['success' => false, 'error' => 'Transfer failed: ' . $e->getMessage()]);
+        }
+        break;
+
+    // GET: Search for Nethera users
+    case 'search_nethera':
+        if ($method !== 'GET') {
+            api_method_not_allowed('GET');
+        }
+
+        $query = isset($_GET['query']) ? trim($_GET['query']) : '';
+
+        if (strlen($query) < 2) {
+            echo json_encode(['success' => true, 'results' => []]);
+            break;
+        }
+
+        $search_pattern = '%' . $query . '%';
+        $search_stmt = mysqli_prepare($conn, 
+            "SELECT id_nethera, username, nama_lengkap 
+             FROM nethera 
+             WHERE (username LIKE ? OR nama_lengkap LIKE ?) 
+             AND status_akun = 'Aktif' 
+             AND role = 'Nethera'
+             AND id_nethera != ?
+             LIMIT 10");
+        mysqli_stmt_bind_param($search_stmt, "ssi", $search_pattern, $search_pattern, $user_id);
+        mysqli_stmt_execute($search_stmt);
+        $search_result = mysqli_stmt_get_result($search_stmt);
+
+        $results = [];
+        while ($row = mysqli_fetch_assoc($search_result)) {
+            $results[] = [
+                'id_nethera' => $row['id_nethera'],
+                'username' => $row['username'],
+                'nama_lengkap' => $row['nama_lengkap']
+            ];
+        }
+        mysqli_stmt_close($search_stmt);
+
+        echo json_encode([
+            'success' => true,
+            'results' => $results
+        ]);
+        break;
+
+    // ============================================
     // Default: Unknown action
     // ============================================
     default:
-        api_not_found('Unknown action. Available: get_pets, get_active_pet, get_shop, get_inventory, gacha, buy_item, use_item, set_active, rename, shelter, get_opponents, battle, battle_history, get_buff, play_finish, get_evolution_candidates, evolve_manual, sell_pet, battle_result, get_daily_reward, claim_daily_reward, get_leaderboard, get_achievements');
+        api_not_found('Unknown action. Available: get_pets, get_active_pet, get_shop, get_inventory, gacha, buy_item, use_item, set_active, rename, shelter, get_opponents, battle, battle_history, get_buff, play_finish, get_evolution_candidates, evolve_manual, sell_pet, battle_result, get_daily_reward, claim_daily_reward, get_leaderboard, get_achievements, get_balance, get_transactions, transfer_gold, search_nethera');
 }
 ?>
