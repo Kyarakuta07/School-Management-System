@@ -420,12 +420,14 @@ switch ($action) {
         }
 
         // Rate limiting - 3 battles per day per user
-        $battle_limit = $api_limiter->checkLimit($user_id, 'battle', 3, 1440);
+        $user_id_str = 'user_' . $user_id; // Convert to string identifier
+        $battle_limit = $api_limiter->checkLimit($user_id_str, 'pet_battle', 3, 1440);
         if (!$battle_limit['allowed']) {
             echo json_encode([
                 'success' => false,
-                'error' => 'Too many battles. Please wait before battling again.',
-                'wait_until' => $battle_limit['locked_until']
+                'error' => 'You have used all 3 daily battles! Reset at midnight.',
+                'wait_until' => $battle_limit['locked_until'],
+                'remaining_battles' => 0
             ]);
             break;
         }
@@ -812,6 +814,19 @@ switch ($action) {
     case 'battle_result':
         if ($method !== 'POST') {
             api_method_not_allowed('POST');
+        }
+
+        // Rate limiting - 3 battles per day per user
+        $user_id_str = 'user_' . $user_id;
+        $battle_limit = $api_limiter->checkLimit($user_id_str, 'pet_battle', 3, 1440);
+        if (!$battle_limit['allowed']) {
+            echo json_encode([
+                'success' => false,
+                'error' => 'You have used all 3 daily battles! Reset at midnight.',
+                'wait_until' => $battle_limit['locked_until'],
+                'remaining_battles' => 0
+            ]);
+            break;
         }
 
         $input = json_decode(file_get_contents('php://input'), true);
