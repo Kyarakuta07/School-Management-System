@@ -60,21 +60,41 @@ $api_limiter = new RateLimiter($conn);
 function logGoldTransaction($conn, $sender_id, $receiver_id, $amount, $type, $description)
 {
     try {
-        // Silently attempt to log transaction - don't break main flow if it fails
-        $log_stmt = @mysqli_prepare(
+        // Attempt to log transaction with detailed error reporting
+        $log_stmt = mysqli_prepare(
             $conn,
             "INSERT INTO trapeza_transactions (sender_id, receiver_id, amount, transaction_type, description, status) 
              VALUES (?, ?, ?, ?, ?, 'completed')"
         );
 
-        if ($log_stmt) {
-            @mysqli_stmt_bind_param($log_stmt, "iiiss", $sender_id, $receiver_id, $amount, $type, $description);
-            @mysqli_stmt_execute($log_stmt);
-            @mysqli_stmt_close($log_stmt);
+        if (!$log_stmt) {
+            error_log("TRAPEZA PREPARE FAILED: " . mysqli_error($conn));
+            return false;
         }
+
+        $bind_result = mysqli_stmt_bind_param($log_stmt, "iiiss", $sender_id, $receiver_id, $amount, $type, $description);
+        if (!$bind_result) {
+            error_log("TRAPEZA BIND FAILED: " . mysqli_stmt_error($log_stmt));
+            mysqli_stmt_close($log_stmt);
+            return false;
+        }
+
+        $exec_result = mysqli_stmt_execute($log_stmt);
+        if (!$exec_result) {
+            error_log("TRAPEZA EXECUTE FAILED: " . mysqli_stmt_error($log_stmt));
+            mysqli_stmt_close($log_stmt);
+            return false;
+        }
+
+        $insert_id = mysqli_insert_id($conn);
+        error_log("TRAPEZA SUCCESS: Inserted ID=$insert_id for user=$sender_id, type=$type, amount=$amount");
+
+        mysqli_stmt_close($log_stmt);
+        return true;
+
     } catch (Exception $e) {
-        // Silently fail - trapeza logging is optional, don't break main transaction
-        error_log("Trapeza logging failed: " . $e->getMessage());
+        error_log("TRAPEZA EXCEPTION: " . $e->getMessage());
+        return false;
     }
 }
 
