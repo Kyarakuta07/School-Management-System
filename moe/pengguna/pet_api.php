@@ -874,6 +874,69 @@ switch ($action) {
             addExpToPet($conn, $attacker_pet_id, $exp_reward);
         }
 
+        // ============================================
+        // HARDCORE MECHANIC: HP REDUCTION ON LOSS
+        // ============================================
+        // If player lost, reduce attacker pet HP by 20
+        if (!$playerWon) {
+            // Get current HP
+            $hp_check = mysqli_prepare($conn, "SELECT health FROM user_pets WHERE id = ?");
+            mysqli_stmt_bind_param($hp_check, "i", $attacker_pet_id);
+            mysqli_stmt_execute($hp_check);
+            $hp_result = mysqli_stmt_get_result($hp_check);
+            $hp_data = mysqli_fetch_assoc($hp_result);
+            mysqli_stmt_close($hp_check);
+
+            if ($hp_data) {
+                $current_hp = $hp_data['health'];
+                $new_hp = max(0, $current_hp - 20); // Reduce by 20, minimum 0
+
+                // Update HP
+                $hp_update = mysqli_prepare($conn, "UPDATE user_pets SET health = ? WHERE id = ?");
+                mysqli_stmt_bind_param($hp_update, "ii", $new_hp, $attacker_pet_id);
+                mysqli_stmt_execute($hp_update);
+                mysqli_stmt_close($hp_update);
+
+                // If HP reaches 0, set status to DEAD
+                if ($new_hp <= 0) {
+                    $death_stmt = mysqli_prepare($conn, "UPDATE user_pets SET status = 'DEAD', is_active = 0 WHERE id = ?");
+                    mysqli_stmt_bind_param($death_stmt, "i", $attacker_pet_id);
+                    mysqli_stmt_execute($death_stmt);
+                    mysqli_stmt_close($death_stmt);
+                }
+            }
+        }
+
+        // If player won but defender is AI/other player, reduce defender's HP too
+        if ($playerWon) {
+            // Get defender's HP
+            $def_hp_check = mysqli_prepare($conn, "SELECT health FROM user_pets WHERE id = ?");
+            mysqli_stmt_bind_param($def_hp_check, "i", $defender_pet_id);
+            mysqli_stmt_execute($def_hp_check);
+            $def_hp_result = mysqli_stmt_get_result($def_hp_check);
+            $def_hp_data = mysqli_fetch_assoc($def_hp_result);
+            mysqli_stmt_close($def_hp_check);
+
+            if ($def_hp_data) {
+                $def_current_hp = $def_hp_data['health'];
+                $def_new_hp = max(0, $def_current_hp - 20);
+
+                // Update defender HP
+                $def_hp_update = mysqli_prepare($conn, "UPDATE user_pets SET health = ? WHERE id = ?");
+                mysqli_stmt_bind_param($def_hp_update, "ii", $def_new_hp, $defender_pet_id);
+                mysqli_stmt_execute($def_hp_update);
+                mysqli_stmt_close($def_hp_update);
+
+                // If defender HP reaches 0, set to DEAD
+                if ($def_new_hp <= 0) {
+                    $def_death_stmt = mysqli_prepare($conn, "UPDATE user_pets SET status = 'DEAD', is_active = 0 WHERE id = ?");
+                    mysqli_stmt_bind_param($def_death_stmt, "i", $defender_pet_id);
+                    mysqli_stmt_execute($def_death_stmt);
+                    mysqli_stmt_close($def_death_stmt);
+                }
+            }
+        }
+
         // Record battle in history
         $winner_pet_id = $playerWon ? $attacker_pet_id : $defender_pet_id;
         $battle_log = json_encode(['type' => 'arena', 'turns' => 'turn-based']);
