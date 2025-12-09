@@ -39,6 +39,21 @@ function convertRhythmScore($score)
  */
 function performGacha($conn, $user_id, $gacha_type = 1)
 {
+    // Check pet collection limit (25 max)
+    $count_stmt = mysqli_prepare($conn, "SELECT COUNT(*) as pet_count FROM user_pets WHERE user_id = ?");
+    mysqli_stmt_bind_param($count_stmt, "i", $user_id);
+    mysqli_stmt_execute($count_stmt);
+    $count_result = mysqli_stmt_get_result($count_stmt);
+    $pet_count = mysqli_fetch_assoc($count_result)['pet_count'];
+    mysqli_stmt_close($count_stmt);
+
+    if ($pet_count >= 25) {
+        return [
+            'success' => false,
+            'error' => 'Pet collection full! You can only have 25 pets. Sell some pets first.'
+        ];
+    }
+
     $rarity = rollRarity($gacha_type);
 
     // Get random species of that rarity

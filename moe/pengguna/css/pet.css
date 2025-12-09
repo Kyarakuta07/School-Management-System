@@ -1060,6 +1060,34 @@
     }
 }
 
+/* Collection Header with Pet Count */
+.collection-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-lg);
+    padding: var(--space-md);
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-md);
+}
+
+.collection-header h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.2rem;
+    color: var(--gold);
+    margin: 0;
+}
+
+.pet-count-badge {
+    padding: 6px 16px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: #000;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
 .pet-card-name {
     font-family: 'Cinzel', serif;
     font-size: 0.95rem;

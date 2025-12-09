@@ -203,6 +203,10 @@ mysqli_stmt_close($gold_stmt);
 
             <!-- COLLECTION TAB -->
             <section id="collection" class="tab-content">
+                <div class="collection-header">
+                    <h3>My Collection</h3>
+                    <span class="pet-count-badge" id="pet-count-badge">0 / 25</span>
+                </div>
                 <div class="collection-grid" id="collection-grid">
                     <div class="loading-spinner">
                         <i class="fas fa-spinner fa-spin fa-2x"></i>

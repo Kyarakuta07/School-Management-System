@@ -394,6 +394,22 @@ function getEvolutionStage(pet) {
 function renderCollection() {
     const grid = document.getElementById('collection-grid');
 
+    // Update pet count badge
+    const petCountBadge = document.getElementById('pet-count-badge');
+    if (petCountBadge) {
+        const petCount = userPets.length;
+        petCountBadge.textContent = `${petCount} / 25`;
+
+        // Color code based on capacity
+        if (petCount >= 25) {
+            petCountBadge.style.background = 'linear-gradient(135deg, #E74C3C, #C0392B)';
+        } else if (petCount >= 20) {
+            petCountBadge.style.background = 'linear-gradient(135deg, #F39C12, #E67E22)';
+        } else {
+            petCountBadge.style.background = 'linear-gradient(135deg, var(--gold), var(--gold-dark))';
+        }
+    }
+
     if (userPets.length === 0) {
         grid.innerHTML = `
             <div class="empty-message">
