@@ -1973,6 +1973,162 @@
     box-shadow: 0 5px 20px rgba(218, 165, 32, 0.3);
 }
 
+.modal-confirm-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* ================================================
+   EVOLUTION SELECTOR MODAL - Premium Design
+   ================================================ */
+.evolution-selector {
+    max-width: 520px;
+    text-align: center;
+}
+
+.evolution-selector h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.5rem;
+    color: var(--gold);
+    margin: 0 0 var(--space-lg) 0;
+    text-shadow: 0 2px 20px rgba(218, 165, 32, 0.4);
+}
+
+.evolution-info {
+    background: rgba(218, 165, 32, 0.08);
+    border: 1px solid var(--border-gold);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    margin-bottom: var(--space-md);
+    text-align: left;
+}
+
+.evolution-info p {
+    color: var(--gold);
+    font-weight: 600;
+    margin: 0 0 var(--space-sm) 0;
+}
+
+.evolution-info ul {
+    margin: 0;
+    padding-left: var(--space-lg);
+    color: #AAA;
+}
+
+.evolution-info li {
+    margin: 6px 0;
+    font-size: 0.9rem;
+}
+
+.evolution-info .fa-coins {
+    color: #FFD700;
+}
+
+.evolution-warning {
+    background: rgba(231, 76, 60, 0.12);
+    border: 1px solid rgba(231, 76, 60, 0.4);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    margin-bottom: var(--space-lg);
+    color: var(--health);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.fodder-selection-title h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    color: #FFF;
+    margin: 0 0 var(--space-md) 0;
+}
+
+#evo-selected-count {
+    color: var(--gold);
+}
+
+.fodder-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: var(--space-sm);
+    max-height: 250px;
+    overflow-y: auto;
+    padding: var(--space-sm);
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-md);
+}
+
+.fodder-grid::-webkit-scrollbar {
+    width: 6px;
+}
+
+.fodder-grid::-webkit-scrollbar-thumb {
+    background: var(--border-gold);
+    border-radius: 3px;
+}
+
+.fodder-card {
+    position: relative;
+}
+
+.fodder-checkbox {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    z-index: 10;
+    accent-color: var(--gold);
+}
+
+.fodder-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-sm);
+    background: var(--bg-glass);
+    border: 2px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s var(--ease-out);
+}
+
+.fodder-card input:checked+.fodder-label {
+    border-color: var(--gold);
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.15), transparent);
+    box-shadow: 0 0 20px rgba(218, 165, 32, 0.2);
+}
+
+.fodder-label:hover {
+    border-color: rgba(218, 165, 32, 0.5);
+    transform: translateY(-2px);
+}
+
+.fodder-img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
+
+.fodder-info {
+    text-align: center;
+}
+
+.fodder-name {
+    font-size: 0.75rem;
+    color: #FFF;
+    font-weight: 600;
+    display: block;
+}
+
+.fodder-level {
+    font-size: 0.65rem;
+    color: var(--gold);
+}
+
 /* ================================================
    RENAME PET MODAL - Premium Design
    ================================================ */
