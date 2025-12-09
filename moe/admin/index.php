@@ -1,8 +1,17 @@
 <?php
+require_once '../includes/security_config.php';
 session_start();
+
+// Security headers
+header("X-Frame-Options: DENY");
+header("X-Content-Type-Options: nosniff");
+header("X-XSS-Protection: 1; mode=block");
+
+// Cache control
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
+
 include '../connection.php';
 
 // Cek Login & Role Vasiki
@@ -156,7 +165,7 @@ while ($row = mysqli_fetch_assoc($result_sanctuary)) {
                                     <?php echo htmlspecialchars($user['status_akun']); ?>
                                 </span>
                             </div>
-                        <?php
+                            <?php
                         endwhile;
                     } else {
                         echo '<p class="empty-message">No recent registrations.</p>';

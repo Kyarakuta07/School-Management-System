@@ -1,20 +1,27 @@
 <?php
+// Security: Must be authenticated admin
+require_once '../../includes/security_config.php';
+session_start();
+require_once '../../includes/csrf.php';
 
-// 1. Path Koneksi Database
-// Pastikan path ini benar (dari pages/ ke root/connection.php)
+// Check admin authentication
+if (!isset($_SESSION['status_login']) || $_SESSION['role'] != 'Vasiki') {
+    http_response_code(403);
+    echo '<tr><td colspan="7" style="color:red; text-align:center;">Unauthorized Access</td></tr>';
+    exit();
+}
+
+// Database connection
 include '../../connection.php';
-// (Keluar dari pages/ -> Keluar dari admin/ -> Sampai di connection.php)
 
-
-// 2. Ambil dan Persiapkan Data Pencarian
+// Get and prepare search data
 $search_term = '';
 if (isset($_POST['search'])) {
-    // Ambil data yang dikirimkan melalui AJAX
     $search_term = $_POST['search'];
 }
 
 // Persiapan untuk LIKE query. % dipasang di sini, bukan di string SQL
-$search_param = "%{$search_term}%"; 
+$search_param = "%{$search_term}%";
 
 
 // 3. Query SQL dengan Prepared Statements (Paling Aman)
@@ -34,10 +41,10 @@ $output = '';
 if ($stmt) {
     // Bind parameter untuk 3 kondisi LIKE ('sss' = tiga parameter string)
     mysqli_stmt_bind_param($stmt, "sss", $search_param, $search_param, $search_param);
-    
+
     // Coba eksekusi
     if (mysqli_stmt_execute($stmt)) {
-        
+
         $result = mysqli_stmt_get_result($stmt);
 
         // 5. Proses Hasil
@@ -46,7 +53,7 @@ if ($stmt) {
                 // Status badge logic
                 $status_class = strtolower($nethera['status_akun']);
                 $status_class = str_replace(' ', '-', $status_class);
-                
+
                 $output .= '<tr>';
                 $output .= '<td>' . htmlspecialchars($nethera['no_registrasi']) . '</td>';
                 $output .= '<td>' . htmlspecialchars($nethera['nama_lengkap']) . '</td>';
@@ -54,8 +61,8 @@ if ($stmt) {
                 $output .= '<td>' . htmlspecialchars($nethera['nama_sanctuary']) . '</td>';
                 $output .= '<td>' . htmlspecialchars($nethera['periode_masuk']) . '</td>';
                 $output .= '<td><span class="status-badge status-' . $status_class . '">' . htmlspecialchars($nethera['status_akun']) . '</span></td>';
-                
-$output .= '<td>
+
+                $output .= '<td>
     <div class="action-buttons">
         
         <a href="edit_nethera.php?id=' . $nethera['id_nethera'] . '" class="btn-edit" title="Edit">
@@ -67,16 +74,16 @@ $output .= '<td>
         </button>
     </div>
 </td>';
-$output .= '</tr>';
+                $output .= '</tr>';
             }
         } else {
             // Jika tidak ditemukan hasil
             $output = '<tr><td colspan="7" style="text-align: center; padding: 20px;">
                         <i class="uil uil-search-alt" style="font-size: 1.2rem; margin-right: 5px;"></i> 
-                        No results found for "'. htmlspecialchars($search_term) .'".
+                        No results found for "' . htmlspecialchars($search_term) . '".
                        </td></tr>';
         }
-        
+
     } else {
         // Error saat eksekusi
         $output = '<tr><td colspan="7" style="text-align: center; padding: 20px; color: red;">

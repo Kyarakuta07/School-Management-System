@@ -1,8 +1,14 @@
 <?php
-
+require_once '../../includes/security_config.php';
 session_start();
-include '../../connection.php'; 
+require_once '../../includes/csrf.php';
 
+// Security headers
+header("X-Frame-Options: DENY");
+header("X-Content-Type-Options: nosniff");
+header("X-XSS-Protection: 1; mode=block");
+
+include '../../connection.php';
 
 if (!isset($_SESSION['status_login']) || $_SESSION['role'] != 'Vasiki') {
     header("Location: ../../index.php?pesan=gagal");
@@ -27,7 +33,7 @@ $result_chart = mysqli_query($conn, $query_chart);
 
 $sanctuary_labels = [];
 $sanctuary_points = [];
-while($row = mysqli_fetch_assoc($result_chart)) {
+while ($row = mysqli_fetch_assoc($result_chart)) {
     $sanctuary_labels[] = $row['nama_sanctuary'];
     $sanctuary_points[] = $row['total_points'];
 }
@@ -38,20 +44,23 @@ $result_all_schedules = mysqli_query($conn, $query_all_schedules);
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Classes - MOE Admin</title>
-    
+
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css" />
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Lato:wght@400;700&display=swap" rel="stylesheet" />
-    
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Lato:wght@400;700&display=swap"
+        rel="stylesheet" />
+
     <link rel="stylesheet" type="text/css" href="../css/style.css" />
     <link rel="stylesheet" type="text/css" href="../css/cards.css" />
 </head>
+
 <body>
 
     <div class="bg-fixed"></div>
@@ -63,7 +72,7 @@ $result_all_schedules = mysqli_query($conn, $query_all_schedules);
             <img src="../../assets/landing/logo.png" class="sidebar-logo" alt="MOE Logo" />
             <div class="brand-name">MOE<br>Admin</div>
         </header>
-        
+
         <nav class="sidebar-menu">
             <a href="../index.php">
                 <i class="uil uil-create-dashboard"></i> <span>Dashboard</span>
@@ -86,12 +95,12 @@ $result_all_schedules = mysqli_query($conn, $query_all_schedules);
     </nav>
 
     <main class="main-content">
-        
+
         <header class="top-header">
             <h1>Manage Classes</h1>
             <h2>Kelola data nilai dan jadwal kelas di Odyssey Sanctuary</h2>
         </header>
-        
+
         <div class="card full-width-card" style="margin-bottom: 24px;">
             <header class="card-header">
                 <h3 class="card-h3">Total Poin Prestasi per Sanctuary</h3>
@@ -115,23 +124,28 @@ $result_all_schedules = mysqli_query($conn, $query_all_schedules);
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if($result_all_schedules && mysqli_num_rows($result_all_schedules) > 0): ?>
-                            <?php while($schedule = mysqli_fetch_assoc($result_all_schedules)): ?>
-                            <tr>
-                                <td><?php echo htmlspecialchars($schedule['class_name']); ?></td>
-                                <td><?php echo htmlspecialchars($schedule['hakaes_name']); ?></td>
-                                <td><?php echo htmlspecialchars($schedule['schedule_day'] . ', ' . $schedule['schedule_time']); ?></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <a href="edit_schedule.php?id=<?php echo $schedule['id_schedule']; ?>" class="btn-edit" title="Edit">
-                                            <i class="uil uil-edit"></i>
-                                        </a>
-                                        <a href="delete_schedule.php?id=<?php echo $schedule['id_schedule']; ?>" class="btn-delete" onclick="return confirm('Apakah Anda yakin ingin menghapus jadwal ini?');" title="Delete">
-                                            <i class="uil uil-trash-alt"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
+                        <?php if ($result_all_schedules && mysqli_num_rows($result_all_schedules) > 0): ?>
+                            <?php while ($schedule = mysqli_fetch_assoc($result_all_schedules)): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($schedule['class_name']); ?></td>
+                                    <td><?php echo htmlspecialchars($schedule['hakaes_name']); ?></td>
+                                    <td><?php echo htmlspecialchars($schedule['schedule_day'] . ', ' . $schedule['schedule_time']); ?>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <a href="edit_schedule.php?id=<?php echo $schedule['id_schedule']; ?>"
+                                                class="btn-edit" title="Edit">
+                                                <i class="uil uil-edit"></i>
+                                            </a>
+                                            <a href="delete_schedule.php?id=<?php echo $schedule['id_schedule']; ?>"
+                                                class="btn-delete"
+                                                onclick="return confirm('Apakah Anda yakin ingin menghapus jadwal ini?');"
+                                                title="Delete">
+                                                <i class="uil uil-trash-alt"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
                             <?php endwhile; ?>
                         <?php else: ?>
                             <tr>
@@ -148,7 +162,8 @@ $result_all_schedules = mysqli_query($conn, $query_all_schedules);
                 <h3 class="card-h3">All Class Grades</h3>
                 <div class="search-container">
                     <i class="uil uil-search"></i>
-                    <input type="search" id="gradeSearchInput" class="search-input" placeholder="Cari nama, sanctuary, atau kelas...">
+                    <input type="search" id="gradeSearchInput" class="search-input"
+                        placeholder="Cari nama, sanctuary, atau kelas...">
                 </div>
             </header>
             <div class="table-container">
@@ -167,28 +182,31 @@ $result_all_schedules = mysqli_query($conn, $query_all_schedules);
                         </tr>
                     </thead>
                     <tbody id="gradesTableBody">
-                        <?php if($result_all_grades && mysqli_num_rows($result_all_grades) > 0): ?>
-                            <?php while($grade = mysqli_fetch_assoc($result_all_grades)): ?>
-                            <tr>
-                                <td><?php echo htmlspecialchars($grade['nama_lengkap']); ?></td>
-                                <td><?php echo htmlspecialchars($grade['nama_sanctuary']); ?></td>
-                                <td><?php echo htmlspecialchars($grade['class_name']); ?></td>
-                                <td><?php echo htmlspecialchars($grade['english']); ?></td>
-                                <td><?php echo htmlspecialchars($grade['herbology']); ?></td>
-                                <td><?php echo htmlspecialchars($grade['oceanology']); ?></td>
-                                <td><?php echo htmlspecialchars($grade['astronomy']); ?></td>
-                                <td><strong><?php echo htmlspecialchars($grade['total_pp']); ?></strong></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <a href="edit_grade.php?id=<?php echo $grade['id_grade']; ?>" class="btn-edit" title="Edit">
-                                            <i class="uil uil-edit"></i>
-                                        </a>
-                                        <a href="delete_grade.php?id=<?php echo $grade['id_grade']; ?>" class="btn-delete" onclick="return confirm('Apakah Anda yakin ingin menghapus nilai ini?');" title="Delete">
-                                            <i class="uil uil-trash-alt"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
+                        <?php if ($result_all_grades && mysqli_num_rows($result_all_grades) > 0): ?>
+                            <?php while ($grade = mysqli_fetch_assoc($result_all_grades)): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($grade['nama_lengkap']); ?></td>
+                                    <td><?php echo htmlspecialchars($grade['nama_sanctuary']); ?></td>
+                                    <td><?php echo htmlspecialchars($grade['class_name']); ?></td>
+                                    <td><?php echo htmlspecialchars($grade['english']); ?></td>
+                                    <td><?php echo htmlspecialchars($grade['herbology']); ?></td>
+                                    <td><?php echo htmlspecialchars($grade['oceanology']); ?></td>
+                                    <td><?php echo htmlspecialchars($grade['astronomy']); ?></td>
+                                    <td><strong><?php echo htmlspecialchars($grade['total_pp']); ?></strong></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <a href="edit_grade.php?id=<?php echo $grade['id_grade']; ?>" class="btn-edit"
+                                                title="Edit">
+                                                <i class="uil uil-edit"></i>
+                                            </a>
+                                            <a href="delete_grade.php?id=<?php echo $grade['id_grade']; ?>" class="btn-delete"
+                                                onclick="return confirm('Apakah Anda yakin ingin menghapus nilai ini?');"
+                                                title="Delete">
+                                                <i class="uil uil-trash-alt"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
                             <?php endwhile; ?>
                         <?php else: ?>
                             <tr>
@@ -207,31 +225,31 @@ $result_all_schedules = mysqli_query($conn, $query_all_schedules);
     <script>
         const toggleSidebar = () => document.body.classList.toggle("open");
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // --- 1. SETUP CHART (Total Poin Prestasi per Sanctuary) ---
             var options = {
                 series: [{
                     name: 'Total Poin',
                     data: <?php echo json_encode($sanctuary_points); ?>
                 }],
-                chart: { 
+                chart: {
                     type: 'bar', height: 350, toolbar: { show: false },
                     background: 'transparent', // Penting untuk tema gelap
                 },
-                plotOptions: { bar: { borderRadius: 4, horizontal: false, distributed: true }},
+                plotOptions: { bar: { borderRadius: 4, horizontal: false, distributed: true } },
                 dataLabels: { enabled: false },
                 xaxis: {
                     categories: <?php echo json_encode($sanctuary_labels); ?>,
-                    labels: { style: { colors: '#FFFFFF', fontSize: '12px' }}
+                    labels: { style: { colors: '#FFFFFF', fontSize: '12px' } }
                 },
-                yaxis: { labels: { style: { colors: '#8A8A8A' }}},
+                yaxis: { labels: { style: { colors: '#8A8A8A' } } },
                 grid: { borderColor: '#444444', strokeDashArray: 3 },
                 tooltip: { theme: 'dark' },
                 legend: { show: false },
             };
             var chart = new ApexCharts(document.querySelector("#sanctuaryChart"), options);
             chart.render();
-            
+
             // --- 2. SETUP SEARCH GRADES (AJAX) ---
             const gradeSearchInput = document.getElementById('gradeSearchInput');
             const gradesTableBody = document.getElementById('gradesTableBody');
@@ -241,8 +259,8 @@ $result_all_schedules = mysqli_query($conn, $query_all_schedules);
                 // Pastikan path ke file ajax_search_grades.php benar (sama folder)
                 xhr.open('POST', 'ajax_search_grades.php', true);
                 xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-                
-                xhr.onload = function() {
+
+                xhr.onload = function () {
                     if (this.status == 200) {
                         gradesTableBody.innerHTML = this.responseText;
                     } else {
@@ -253,11 +271,11 @@ $result_all_schedules = mysqli_query($conn, $query_all_schedules);
                 xhr.send('search=' + searchTerm);
             };
 
-            if(gradeSearchInput && gradesTableBody) {
-                gradeSearchInput.addEventListener('input', function() {
+            if (gradeSearchInput && gradesTableBody) {
+                gradeSearchInput.addEventListener('input', function () {
                     fetchGrades(this.value);
                 });
-                gradeSearchInput.addEventListener('search', function() {
+                gradeSearchInput.addEventListener('search', function () {
                     if (this.value === '') {
                         fetchGrades('');
                     }
@@ -266,4 +284,5 @@ $result_all_schedules = mysqli_query($conn, $query_all_schedules);
         });
     </script>
 </body>
+
 </html>
