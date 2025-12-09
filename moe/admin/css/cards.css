@@ -14,36 +14,47 @@
 
 /* --- LAYOUT KARTU --- */
 .card.full-width-card {
-    grid-column: 1 / -1; 
-    min-height: 500px; 
+    grid-column: 1 / -1;
+    min-height: 500px;
 }
 
 /* --- TABEL GLASSMORPHISM --- */
 .table-container {
     width: 100%;
-    overflow-x: auto; /* Wajib: Scroll samping jika tabel kepanjangan */
+    overflow-x: auto;
+    /* Wajib: Scroll samping jika tabel kepanjangan */
     padding-bottom: 20px;
-    
+
     /* Scrollbar Emas Tipis */
     scrollbar-width: thin;
     scrollbar-color: var(--gold) transparent;
 }
 
-.table-container::-webkit-scrollbar { height: 8px; }
-.table-container::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
-.table-container::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+.table-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background: var(--gold);
+    border-radius: 10px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
 
 table {
     /* Memaksa lebar minimum untuk memunculkan scrollbar horizontal */
-    min-width: 1000px; 
+    min-width: 1000px;
     width: 100%;
-    border-collapse: separate; 
+    border-collapse: separate;
     border-spacing: 0;
     margin-top: 1rem;
 }
 
 thead {
-    background-color: rgba(218, 165, 32, 0.1); /* Emas sangat transparan */
+    background-color: rgba(218, 165, 32, 0.1);
+    /* Emas sangat transparan */
 }
 
 th {
@@ -52,25 +63,32 @@ th {
     color: var(--gold);
     text-transform: uppercase;
     letter-spacing: 1px;
-    padding: 18px 20px; /* Padding lebih besar biar lega */
+    padding: 18px 20px;
+    /* Padding lebih besar biar lega */
     text-align: left;
     border-bottom: 2px solid var(--glass-border);
-    white-space: nowrap; 
+    white-space: nowrap;
 }
 
 td {
-    padding: 15px 20px; /* Jarak antar teks lebih lega */
+    padding: 15px 20px;
+    /* Jarak antar teks lebih lega */
     color: #ddd;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     font-size: 0.95rem;
     vertical-align: middle;
-    white-space: nowrap !important; /* KUNCI: Mencegah teks turun baris */
+    white-space: nowrap !important;
+    /* KUNCI: Mencegah teks turun baris */
 }
 
 /* Hover Baris */
-tbody tr { transition: background 0.2s; }
+tbody tr {
+    transition: background 0.2s;
+}
+
 tbody tr:hover {
-    background-color: rgba(255, 255, 255, 0.05); /* Highlight saat mouse lewat */
+    background-color: rgba(255, 255, 255, 0.05);
+    /* Highlight saat mouse lewat */
 }
 
 /* --- STATUS BADGES --- */
@@ -86,19 +104,24 @@ tbody tr:hover {
     min-width: 80px;
 }
 
-.status-Aktif { /* Hijau Outline */
+.status-Aktif {
+    /* Hijau Outline */
     background: rgba(50, 205, 50, 0.1);
     color: #32cd32;
     border: 1px solid #32cd32;
 }
 
-.status-OUT, .status-Tidak-Lulus { /* Merah Outline */
+.status-OUT,
+.status-Tidak-Lulus {
+    /* Merah Outline */
     background: rgba(220, 20, 60, 0.15);
     color: #ff6b6b;
     border: 1px solid #ff6b6b;
 }
 
-.status-Hiatus, .status-Pending { /* Oranye Outline */
+.status-Hiatus,
+.status-Pending {
+    /* Oranye Outline */
     background: rgba(255, 165, 0, 0.15);
     color: #ffa500;
     border: 1px solid #ffa500;
@@ -132,6 +155,7 @@ tbody tr:hover {
     border-color: var(--gold);
     color: var(--gold);
 }
+
 .btn-edit:hover {
     background: var(--gold);
     color: #000;
@@ -143,6 +167,7 @@ tbody tr:hover {
     border-color: #ff6b6b;
     color: #ff6b6b;
 }
+
 .btn-delete:hover {
     background: #ff6b6b;
     color: #fff;
@@ -153,9 +178,9 @@ tbody tr:hover {
 /* --- FORM CONTAINER STYLING (Dipertahankan untuk Layout) --- */
 .form-container {
     margin-top: 20px;
-    max-width: 800px; 
-    margin-left: auto; 
-    margin-right: auto; 
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .form-group {
@@ -200,33 +225,42 @@ tbody tr:hover {
 .search-container {
     position: relative;
     display: inline-block;
-    margin-bottom: 1rem; 
+    margin-bottom: 1rem;
 }
 
 .search-input {
     /* INI SELEKTORNYA: */
     width: 300px;
-    padding: 10px 15px 10px 40px; 
+    padding: 10px 15px 10px 40px;
     border-radius: 20px;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    
+
     /* Warna Gelap Transparan */
-    background-color: rgba(0, 0, 0, 0.5); 
+    background-color: rgba(0, 0, 0, 0.5);
     color: #fff;
-    
+
     font-size: 0.9rem;
     font-family: var(--font-body);
     transition: all 0.3s ease;
 }
+
 /* ... (dilanjutkan dengan :focus state dan icon styling) ... */
 
 @media (max-width: 1200px) {
     /* ... (Grid 2 kolom untuk tablet/laptop kecil) ... */
 }
+
 @media (max-width: 768px) {
+
     /* ... (Grid 1 kolom untuk HP, dan menghilangkan sidebar fixed) ... */
-    .dashboard-grid { grid-template-columns: 1fr; } 
-    .main-content { margin-left: 0; width: 100%; } 
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+    }
 }
 
 /* =========================================================
@@ -428,17 +462,17 @@ th i {
     .stats-row {
         grid-template-columns: 1fr;
     }
-    
+
     .table-controls {
         flex-direction: column;
         width: 100%;
     }
-    
+
     .filter-select,
     .search-container {
         width: 100%;
     }
-    
+
     .search-input {
         width: 100% !important;
     }
@@ -448,4 +482,179 @@ th i {
         gap: 1rem;
         align-items: flex-start !important;
     }
+}
+
+/* =========================================================
+   DASHBOARD ENHANCEMENTS
+   ========================================================= */
+
+/* Alert Banner */
+.alert-banner {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+}
+
+.alert-warning {
+    background: linear-gradient(135deg, rgba(255, 165, 0, 0.15), rgba(255, 165, 0, 0.05));
+    border: 1px solid rgba(255, 165, 0, 0.3);
+}
+
+.alert-banner>i {
+    font-size: 2rem;
+    color: #ffa500;
+}
+
+.alert-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.alert-content strong {
+    color: #ffa500;
+    font-size: 1rem;
+}
+
+.alert-content span {
+    color: #888;
+    font-size: 0.85rem;
+}
+
+.alert-action {
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #ffa500, #ff8c00);
+    color: #000;
+    text-decoration: none;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.alert-action:hover {
+    transform: translateX(3px);
+    box-shadow: 0 4px 15px rgba(255, 165, 0, 0.3);
+}
+
+/* Quick Actions */
+.quick-actions {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.quick-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background: var(--glass-bg, rgba(20, 20, 20, 0.85));
+    border: 1px solid var(--glass-border, rgba(218, 165, 32, 0.3));
+    border-radius: 12px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.quick-action-btn:hover {
+    border-color: var(--gold);
+    background: rgba(218, 165, 32, 0.1);
+    transform: translateY(-2px);
+}
+
+.quick-action-btn i {
+    font-size: 1.3rem;
+    color: var(--gold);
+}
+
+/* Stats Row 6 columns */
+.stats-row--6 {
+    grid-template-columns: repeat(6, 1fr);
+}
+
+@media (max-width: 1200px) {
+    .stats-row--6 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 767px) {
+    .stats-row--6 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .quick-actions {
+        flex-direction: column;
+    }
+
+    .quick-action-btn {
+        justify-content: center;
+    }
+
+    .alert-banner {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .alert-action {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* Enhanced User List */
+.user-item--enhanced {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+}
+
+.user-avatar-small {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), #b8860b);
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.user-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.user-details .user-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-sanctuary {
+    font-size: 0.75rem;
+    color: #4facfe;
+}
+
+/* Card Header Icons */
+.card-header h3 i {
+    margin-right: 8px;
+    color: var(--gold);
 }
