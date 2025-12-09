@@ -221,6 +221,10 @@ async function loadPets() {
 
         if (data.success) {
             userPets = data.pets;
+
+            // Update pet count badge (always, regardless of tab)
+            updatePetCountBadge();
+
             renderCollection();
 
             // Find and display active pet
@@ -389,12 +393,9 @@ function getEvolutionStage(pet) {
 }
 
 // ================================================
-// COLLECTION TAB (With Retrieve Button)
+// UPDATE PET COUNT BADGE
 // ================================================
-function renderCollection() {
-    const grid = document.getElementById('collection-grid');
-
-    // Update pet count badge
+function updatePetCountBadge() {
     const petCountBadge = document.getElementById('pet-count-badge');
     if (petCountBadge) {
         const petCount = userPets.length;
@@ -409,6 +410,16 @@ function renderCollection() {
             petCountBadge.style.background = 'linear-gradient(135deg, var(--gold), var(--gold-dark))';
         }
     }
+}
+
+// ================================================
+// COLLECTION TAB (With Retrieve Button)
+// ================================================
+function renderCollection() {
+    const grid = document.getElementById('collection-grid');
+
+    // Update pet count badge
+    updatePetCountBadge();
 
     if (userPets.length === 0) {
         grid.innerHTML = `
