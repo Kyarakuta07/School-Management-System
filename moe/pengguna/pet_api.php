@@ -184,14 +184,21 @@ switch ($action) {
             api_insufficient_funds($cost, $user_gold);
         }
 
-        // Deduct gold
+        // Perform gacha FIRST (before deducting gold)
+        $result = performGacha($conn, $user_id, $gacha_type);
+
+        // If gacha failed (e.g. pet limit), return error without deducting gold
+        if (!$result['success']) {
+            echo json_encode($result);
+            break;
+        }
+
+        // Gacha succeeded - now deduct gold
         $deduct_stmt = mysqli_prepare($conn, "UPDATE nethera SET gold = gold - ? WHERE id_nethera = ?");
         mysqli_stmt_bind_param($deduct_stmt, "ii", $cost, $user_id);
         mysqli_stmt_execute($deduct_stmt);
         mysqli_stmt_close($deduct_stmt);
 
-        // Perform gacha
-        $result = performGacha($conn, $user_id, $gacha_type);
         $result['cost'] = $cost;
         $result['remaining_gold'] = $user_gold - $cost;
 
