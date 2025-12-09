@@ -388,21 +388,57 @@ function closeEvolutionModal() {
 // PET ECONOMY: SELL & RENAME
 // ================================================
 
-async function sellPet(petId) {
+let sellPetId = null;
+
+// Calculate sell price based on rarity and level
+function calculateSellPrice(pet) {
+    const basePrices = {
+        'Common': 50,
+        'Rare': 100,
+        'Epic': 200,
+        'Legendary': 500
+    };
+    const base = basePrices[pet.rarity] || 50;
+    return base + (pet.level * 10);
+}
+
+// Open sell modal
+function sellPet(petId) {
     const pet = userPets.find(p => p.id === petId);
     if (!pet) return;
 
+    sellPetId = petId;
     const displayName = pet.nickname || pet.species_name;
+    const imgPath = getPetImagePath(pet);
+    const sellPrice = calculateSellPrice(pet);
 
-    if (!confirm(`Sell ${displayName}? This cannot be undone!`)) {
-        return;
-    }
+    // Update modal content
+    document.getElementById('sell-pet-img').src = imgPath;
+    document.getElementById('sell-pet-name').textContent = displayName;
+    document.getElementById('sell-pet-level').textContent = `Lv.${pet.level}`;
+    document.getElementById('sell-price').textContent = sellPrice.toLocaleString();
+
+    // Show modal
+    document.getElementById('sell-modal').classList.add('show');
+}
+
+function closeSellModal() {
+    document.getElementById('sell-modal').classList.remove('show');
+    sellPetId = null;
+}
+
+async function confirmSellPet() {
+    if (!sellPetId) return;
+
+    const btn = document.getElementById('confirm-sell-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Selling...';
 
     try {
         const response = await fetch(`${API_BASE}?action=sell_pet`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ pet_id: petId })
+            body: JSON.stringify({ pet_id: sellPetId })
         });
 
         const data = await response.json();
@@ -410,6 +446,7 @@ async function sellPet(petId) {
         if (data.success) {
             showToast(data.message, 'success');
             updateGoldDisplay(data.remaining_gold);
+            closeSellModal();
             loadPets(); // Refresh collection
         } else {
             showToast(data.error || 'Failed to sell pet', 'error');
@@ -417,6 +454,9 @@ async function sellPet(petId) {
     } catch (error) {
         console.error('Error selling pet:', error);
         showToast('Network error', 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-check"></i> Confirm Sell';
     }
 }
 

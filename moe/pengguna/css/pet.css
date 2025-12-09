@@ -2130,6 +2130,111 @@
 }
 
 /* ================================================
+   SELL PET MODAL - Premium Design
+   ================================================ */
+.sell-dialog {
+    max-width: 360px;
+    text-align: center;
+}
+
+.sell-dialog h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    color: #F39C12;
+    margin: 0 0 var(--space-lg) 0;
+    text-shadow: 0 2px 15px rgba(243, 156, 18, 0.4);
+}
+
+.sell-pet-preview {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    background: rgba(243, 156, 18, 0.08);
+    border: 1px solid rgba(243, 156, 18, 0.3);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-lg);
+}
+
+.sell-pet-preview img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+}
+
+.sell-pet-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+}
+
+.sell-pet-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    color: #FFF;
+    font-weight: 700;
+}
+
+.sell-pet-level {
+    font-size: 0.8rem;
+    color: var(--gold);
+}
+
+.sell-price-box {
+    background: linear-gradient(135deg, rgba(243, 156, 18, 0.15), rgba(230, 126, 34, 0.08));
+    border: 1px solid rgba(243, 156, 18, 0.4);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    margin-bottom: var(--space-md);
+}
+
+.sell-label {
+    display: block;
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: var(--space-sm);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.sell-amount {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    font-family: 'Cinzel', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #F39C12;
+}
+
+.sell-amount i {
+    color: #FFD700;
+    font-size: 1.3rem;
+}
+
+.sell-warning {
+    background: rgba(231, 76, 60, 0.12);
+    border: 1px solid rgba(231, 76, 60, 0.3);
+    border-radius: var(--radius-sm);
+    padding: var(--space-sm) var(--space-md);
+    margin-bottom: var(--space-lg);
+    color: var(--health);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.sell-confirm {
+    background: linear-gradient(135deg, #F39C12, #E67E22) !important;
+}
+
+.sell-confirm:hover {
+    box-shadow: 0 5px 20px rgba(243, 156, 18, 0.4) !important;
+}
+
+/* ================================================
    RENAME PET MODAL - Premium Design
    ================================================ */
 .rename-dialog {

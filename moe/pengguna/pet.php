@@ -474,6 +474,43 @@ mysqli_stmt_close($gold_stmt);
     </div>
 
     <!-- ========================================
+         SELL PET CONFIRMATION MODAL
+         ======================================== -->
+    <div class="modal" id="sell-modal">
+        <div class="modal-backdrop" onclick="closeSellModal()"></div>
+        <div class="modal-content sell-dialog">
+            <h2>💰 Sell Pet</h2>
+            
+            <div class="sell-pet-preview">
+                <img src="" id="sell-pet-img" alt="Pet">
+                <div class="sell-pet-info">
+                    <span class="sell-pet-name" id="sell-pet-name">Pet Name</span>
+                    <span class="sell-pet-level" id="sell-pet-level">Lv.1</span>
+                </div>
+            </div>
+
+            <div class="sell-price-box">
+                <span class="sell-label">You will receive:</span>
+                <div class="sell-amount">
+                    <i class="fas fa-coins"></i>
+                    <span id="sell-price">0</span> Gold
+                </div>
+            </div>
+
+            <div class="sell-warning">
+                ⚠️ This action cannot be undone!
+            </div>
+
+            <div class="modal-actions">
+                <button class="modal-cancel-btn" onclick="closeSellModal()">Cancel</button>
+                <button class="modal-confirm-btn sell-confirm" id="confirm-sell-btn" onclick="confirmSellPet()">
+                    <i class="fas fa-check"></i> Confirm Sell
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================
          RHYTHM GAME MODAL
          ======================================== -->
     <div class="modal" id="rhythm-modal">
