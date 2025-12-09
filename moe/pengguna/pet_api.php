@@ -59,16 +59,22 @@ $api_limiter = new RateLimiter($conn);
  */
 function logGoldTransaction($conn, $sender_id, $receiver_id, $amount, $type, $description)
 {
-    $log_stmt = mysqli_prepare(
-        $conn,
-        "INSERT INTO trapeza_transactions (sender_id, receiver_id, amount, transaction_type, description, status) 
-         VALUES (?, ?, ?, ?, ?, 'completed')"
-    );
+    try {
+        // Silently attempt to log transaction - don't break main flow if it fails
+        $log_stmt = @mysqli_prepare(
+            $conn,
+            "INSERT INTO trapeza_transactions (sender_id, receiver_id, amount, transaction_type, description, status) 
+             VALUES (?, ?, ?, ?, ?, 'completed')"
+        );
 
-    if ($log_stmt) {
-        mysqli_stmt_bind_param($log_stmt, "iiiss", $sender_id, $receiver_id, $amount, $type, $description);
-        mysqli_stmt_execute($log_stmt);
-        mysqli_stmt_close($log_stmt);
+        if ($log_stmt) {
+            @mysqli_stmt_bind_param($log_stmt, "iiiss", $sender_id, $receiver_id, $amount, $type, $description);
+            @mysqli_stmt_execute($log_stmt);
+            @mysqli_stmt_close($log_stmt);
+        }
+    } catch (Exception $e) {
+        // Silently fail - trapeza logging is optional, don't break main transaction
+        error_log("Trapeza logging failed: " . $e->getMessage());
     }
 }
 
@@ -306,8 +312,8 @@ switch ($action) {
         mysqli_stmt_execute($deduct_stmt);
         mysqli_stmt_close($deduct_stmt);
 
-        // Log transaction (TEMPORARILY DISABLED FOR TESTING)
-        // logGoldTransaction($conn, $user_id, 0, $total_cost, 'shop', "Purchased {$item['name']} x{$quantity}");
+        // Log transaction
+        logGoldTransaction($conn, $user_id, 0, $total_cost, 'shop', "Purchased {$item['name']} x{$quantity}");
 
         // Add to inventory (use INSERT ... ON DUPLICATE KEY UPDATE)
         $inv_stmt = mysqli_prepare(
