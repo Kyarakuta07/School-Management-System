@@ -620,6 +620,41 @@
     border: 1px solid var(--border-gold);
 }
 
+/* Rename Button - Premium Pill Style */
+.btn-rename-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 24px;
+    padding: 0 8px;
+    margin-left: 8px;
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.15) 0%, rgba(184, 134, 11, 0.08) 100%);
+    border: 1px solid rgba(218, 165, 32, 0.4);
+    border-radius: 12px;
+    color: var(--gold);
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: all 0.25s var(--ease-out);
+    flex-shrink: 0;
+}
+
+.btn-rename-icon:hover {
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.3) 0%, rgba(255, 215, 0, 0.2) 100%);
+    border-color: var(--gold);
+    color: var(--gold-light);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 12px rgba(218, 165, 32, 0.3);
+}
+
+.btn-rename-icon:focus {
+    outline: none;
+}
+
+.btn-rename-icon:active {
+    transform: translateY(0);
+}
+
 .pet-element {
     display: flex;
     gap: var(--space-sm);
