@@ -1094,6 +1094,71 @@
     font-size: 2.5rem;
 }
 
+/* Pet Card Action Buttons (Sell, Evolve, Retrieve) */
+.pet-action-row {
+    display: flex;
+    gap: 6px;
+    margin-top: var(--space-sm);
+    justify-content: center;
+}
+
+.pet-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 32px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.25s var(--ease-out);
+}
+
+.pet-action-btn.btn-sell {
+    background: linear-gradient(135deg, rgba(243, 156, 18, 0.2) 0%, rgba(230, 126, 34, 0.1) 100%);
+    border: 1px solid rgba(243, 156, 18, 0.4);
+    color: #F39C12;
+}
+
+.pet-action-btn.btn-sell:hover {
+    background: linear-gradient(135deg, #F39C12, #E67E22);
+    color: #000;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(243, 156, 18, 0.4);
+}
+
+.pet-action-btn.btn-evolve {
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.2) 0%, rgba(184, 134, 11, 0.1) 100%);
+    border: 1px solid var(--border-gold);
+    color: var(--gold);
+}
+
+.pet-action-btn.btn-evolve:hover {
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: #000;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(218, 165, 32, 0.5);
+}
+
+.pet-action-btn.btn-retrieve {
+    width: 100%;
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.2) 0%, rgba(41, 128, 185, 0.1) 100%);
+    border: 1px solid rgba(52, 152, 219, 0.4);
+    color: #3498DB;
+    padding: 8px 12px;
+    gap: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.pet-action-btn.btn-retrieve:hover {
+    background: linear-gradient(135deg, #3498DB, #2980B9);
+    color: #FFF;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+}
+
 /* ================================================
    12. GACHA SECTION
    ================================================ */
