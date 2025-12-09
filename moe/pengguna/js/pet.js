@@ -797,9 +797,12 @@ async function loadShop() {
         const data = await response.json();
 
         if (data.success) {
-            shopItems = data.items;
+            shopItems = data.items || [];
+            console.log('Shop loaded:', shopItems.length, 'items');
             updateGoldDisplay(data.user_gold);
             renderShopItems('food');
+        } else {
+            console.error('Shop load failed:', data.error);
         }
     } catch (error) {
         console.error('Error loading shop:', error);
@@ -844,10 +847,12 @@ function renderShopItems(category) {
 let currentShopItem = null;
 
 function buyItem(itemId) {
-    // Find item in shopItems
-    const item = shopItems.find(i => i.id === itemId);
+    // Find item in shopItems (convert to number for comparison)
+    const searchId = parseInt(itemId);
+    const item = shopItems.find(i => parseInt(i.id) === searchId);
     if (!item) {
-        showToast('Item not found', 'error');
+        console.log('shopItems:', shopItems, 'searching for:', searchId);
+        showToast('Item not found. Please refresh the page.', 'error');
         return;
     }
 
