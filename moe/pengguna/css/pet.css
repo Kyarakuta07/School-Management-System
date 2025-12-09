@@ -2438,6 +2438,267 @@
     color: #444;
 }
 
+/* ================================================
+   ITEM SELECTION MODAL - Enhanced Grid Design
+   ================================================ */
+#item-modal .modal-content {
+    max-width: 420px;
+}
+
+#item-modal .modal-content h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    color: var(--gold);
+    text-align: center;
+    margin: 0 0 var(--space-lg) 0;
+    text-shadow: 0 2px 15px rgba(218, 165, 32, 0.4);
+}
+
+.item-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: var(--space-md);
+    max-height: 300px;
+    overflow-y: auto;
+    padding: var(--space-sm);
+    margin: 0 calc(-1 * var(--space-sm));
+}
+
+/* Custom scrollbar for item list */
+.item-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.item-list::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+}
+
+.item-list::-webkit-scrollbar-thumb {
+    background: var(--border-gold);
+    border-radius: 3px;
+}
+
+.item-list::-webkit-scrollbar-thumb:hover {
+    background: var(--gold);
+}
+
+.item-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-md);
+    background: var(--bg-glass);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.3s var(--ease-out);
+    position: relative;
+}
+
+.item-option:hover {
+    border-color: var(--gold);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(218, 165, 32, 0.2);
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.1), transparent);
+}
+
+.item-option:active {
+    transform: translateY(-2px);
+}
+
+.item-option img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    transition: transform 0.3s var(--ease-out);
+}
+
+.item-option:hover img {
+    transform: scale(1.1);
+}
+
+.item-option-name {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #FFF;
+    text-align: center;
+    line-height: 1.2;
+}
+
+.item-option-qty {
+    position: absolute;
+    top: var(--space-xs);
+    right: var(--space-xs);
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: #000;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: var(--radius-full);
+    min-width: 20px;
+    text-align: center;
+}
+
+.item-list .empty-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: var(--space-xl);
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* ================================================
+   BULK USE MODAL - Quantity Selector Design
+   ================================================ */
+#bulk-use-modal .modal-content {
+    max-width: 380px;
+}
+
+.item-detail-card {
+    text-align: center;
+}
+
+.item-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-lg);
+    text-align: left;
+}
+
+.item-detail-img {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    flex-shrink: 0;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
+}
+
+.item-detail-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.item-detail-info h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    color: var(--gold);
+    margin: 0 0 4px 0;
+}
+
+.item-detail-info p {
+    font-size: 0.8rem;
+    color: #888;
+    margin: 0 0 8px 0;
+    line-height: 1.4;
+}
+
+.item-stock {
+    font-size: 0.75rem;
+    color: #666;
+}
+
+.item-stock b {
+    color: var(--gold);
+    font-weight: 700;
+}
+
+/* Quantity Selector */
+.quantity-selector {
+    margin-bottom: var(--space-lg);
+}
+
+.quantity-selector label {
+    display: block;
+    font-size: 0.85rem;
+    color: #888;
+    margin-bottom: var(--space-sm);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.qty-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+}
+
+.qty-btn {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-glass);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    color: #AAA;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s var(--ease-out);
+}
+
+.qty-btn:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(218, 165, 32, 0.1);
+}
+
+.qty-btn:active {
+    transform: scale(0.95);
+}
+
+.qty-btn.max {
+    width: auto;
+    padding: 0 16px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.15), rgba(218, 165, 32, 0.05));
+    border-color: var(--border-gold);
+    color: var(--gold);
+}
+
+.qty-btn.max:hover {
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: #000;
+}
+
+.qty-controls input[type="number"] {
+    width: 70px;
+    height: 44px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 2px solid var(--border-gold);
+    border-radius: var(--radius-sm);
+    color: var(--gold);
+    font-family: 'Cinzel', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    text-align: center;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+.qty-controls input[type="number"]::-webkit-outer-spin-button,
+.qty-controls input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.qty-controls input[type="number"]:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 15px rgba(218, 165, 32, 0.3);
+}
+
 /* Reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
 
