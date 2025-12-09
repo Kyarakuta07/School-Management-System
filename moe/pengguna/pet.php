@@ -640,6 +640,52 @@ mysqli_stmt_close($gold_stmt);
     </div>
 
     <!-- ========================================
+         SHOP PURCHASE MODAL
+         ======================================== -->
+    <div class="modal" id="shop-purchase-modal">
+        <div class="modal-backdrop" onclick="closeShopPurchaseModal()"></div>
+        <div class="modal-content shop-purchase-dialog">
+            <h2>🛒 Purchase Item</h2>
+
+            <!-- Item Preview -->
+            <div class="shop-modal-item">
+                <img src="" alt="Item" id="shop-modal-img" class="shop-modal-img">
+                <div class="shop-modal-info">
+                    <span class="shop-modal-name" id="shop-modal-name">Item Name</span>
+                    <span class="shop-modal-desc" id="shop-modal-desc">Description</span>
+                </div>
+            </div>
+
+            <!-- Quantity Selector -->
+            <div class="shop-qty-controls">
+                <button class="qty-btn" onclick="adjustShopQty(-10)">-10</button>
+                <button class="qty-btn" onclick="adjustShopQty(-1)">-</button>
+                <input type="number" id="shop-qty-input" class="qty-input" value="1" min="1" max="99"
+                    onchange="updateShopTotal()">
+                <button class="qty-btn" onclick="adjustShopQty(1)">+</button>
+                <button class="qty-btn" onclick="adjustShopQty(10)">+10</button>
+            </div>
+
+            <!-- Price Calculation -->
+            <div class="shop-price-row">
+                <span class="shop-price-label">Unit Price:</span>
+                <span class="shop-price-value"><i class="fas fa-coins"></i> <span id="shop-unit-price">0</span></span>
+            </div>
+            <div class="shop-price-row total">
+                <span class="shop-price-label">Total:</span>
+                <span class="shop-price-value"><i class="fas fa-coins"></i> <span id="shop-total-price">0</span></span>
+            </div>
+
+            <div class="modal-actions">
+                <button class="modal-cancel-btn" onclick="closeShopPurchaseModal()">Cancel</button>
+                <button class="modal-confirm-btn shop-confirm-btn" onclick="confirmShopPurchase()">
+                    <i class="fas fa-shopping-cart"></i> Buy Now
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================
          TUTORIAL / HELP MODAL
          ======================================== -->
     <div class="modal" id="help-modal">

@@ -2571,6 +2571,166 @@
 }
 
 /* ================================================
+   SHOP PURCHASE MODAL - Quantity Selector
+   ================================================ */
+.shop-purchase-dialog {
+    max-width: 380px;
+    text-align: center;
+}
+
+.shop-purchase-dialog h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    color: var(--gold);
+    margin: 0 0 var(--space-lg) 0;
+}
+
+.shop-modal-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    background: rgba(218, 165, 32, 0.08);
+    border: 1px solid rgba(218, 165, 32, 0.3);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-lg);
+}
+
+.shop-modal-img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    border-radius: var(--radius-sm);
+    background: rgba(0, 0, 0, 0.3);
+    padding: 8px;
+}
+
+.shop-modal-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    flex: 1;
+    text-align: left;
+}
+
+.shop-modal-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    color: #FFF;
+    font-weight: 600;
+}
+
+.shop-modal-desc {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.3;
+}
+
+.shop-qty-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: var(--space-lg);
+}
+
+.shop-qty-controls .qty-btn {
+    width: 44px;
+    height: 44px;
+    border: 1px solid rgba(218, 165, 32, 0.4);
+    background: rgba(218, 165, 32, 0.1);
+    color: var(--gold);
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.shop-qty-controls .qty-btn:hover {
+    background: rgba(218, 165, 32, 0.25);
+    border-color: var(--gold);
+}
+
+.shop-qty-controls .qty-btn:active {
+    transform: scale(0.95);
+}
+
+.shop-qty-controls .qty-input {
+    width: 70px;
+    height: 44px;
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #FFF;
+    background: rgba(0, 0, 0, 0.4);
+    border: 2px solid rgba(218, 165, 32, 0.5);
+    border-radius: var(--radius-sm);
+    outline: none;
+    -moz-appearance: textfield;
+}
+
+.shop-qty-controls .qty-input::-webkit-outer-spin-button,
+.shop-qty-controls .qty-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.shop-qty-controls .qty-input:focus {
+    border-color: var(--gold);
+}
+
+.shop-price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px var(--space-md);
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+}
+
+.shop-price-row.total {
+    background: rgba(218, 165, 32, 0.15);
+    border: 1px solid rgba(218, 165, 32, 0.4);
+}
+
+.shop-price-label {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.95rem;
+}
+
+.shop-price-row.total .shop-price-label {
+    color: #FFF;
+    font-weight: 600;
+}
+
+.shop-price-value {
+    color: var(--gold);
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.shop-price-value i {
+    font-size: 0.9rem;
+    margin-right: 4px;
+}
+
+.shop-price-row.total .shop-price-value {
+    font-size: 1.3rem;
+}
+
+.shop-confirm-btn {
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark)) !important;
+    color: #000 !important;
+}
+
+.shop-confirm-btn:hover {
+    box-shadow: 0 5px 20px rgba(218, 165, 32, 0.4) !important;
+}
+
+/* ================================================
    SELL PET MODAL - Premium Design
    ================================================ */
 .sell-dialog {

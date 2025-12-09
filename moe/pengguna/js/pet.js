@@ -838,25 +838,79 @@ function renderShopItems(category) {
     `).join('');
 }
 
-async function buyItem(itemId) {
+// ================================================
+// SHOP PURCHASE MODAL SYSTEM
+// ================================================
+let currentShopItem = null;
+
+function buyItem(itemId) {
+    // Find item in shopItems
+    const item = shopItems.find(i => i.id === itemId);
+    if (!item) {
+        showToast('Item not found', 'error');
+        return;
+    }
+
+    currentShopItem = item;
+
+    // Populate modal
+    document.getElementById('shop-modal-img').src = ASSETS_BASE + (item.img_path || 'placeholder.png');
+    document.getElementById('shop-modal-name').textContent = item.name;
+    document.getElementById('shop-modal-desc').textContent = item.description;
+    document.getElementById('shop-unit-price').textContent = item.price;
+    document.getElementById('shop-qty-input').value = 1;
+    updateShopTotal();
+
+    // Show modal
+    document.getElementById('shop-purchase-modal').classList.add('show');
+}
+
+function closeShopPurchaseModal() {
+    document.getElementById('shop-purchase-modal').classList.remove('show');
+    currentShopItem = null;
+}
+
+function adjustShopQty(amount) {
+    const input = document.getElementById('shop-qty-input');
+    let value = parseInt(input.value) || 1;
+    value = Math.max(1, Math.min(99, value + amount));
+    input.value = value;
+    updateShopTotal();
+}
+
+function updateShopTotal() {
+    if (!currentShopItem) return;
+
+    const qty = parseInt(document.getElementById('shop-qty-input').value) || 1;
+    const total = qty * currentShopItem.price;
+    document.getElementById('shop-total-price').textContent = total.toLocaleString();
+}
+
+async function confirmShopPurchase() {
+    if (!currentShopItem) return;
+
+    const quantity = parseInt(document.getElementById('shop-qty-input').value) || 1;
+
     try {
         const response = await fetch(`${API_BASE}?action=buy_item`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ item_id: itemId, quantity: 1 })
+            body: JSON.stringify({ item_id: currentShopItem.id, quantity: quantity })
         });
 
         const data = await response.json();
 
         if (data.success) {
-            showToast(data.message, 'success');
+            showToast(data.message || `Purchased ${quantity}x ${currentShopItem.name}!`, 'success');
             updateGoldDisplay(data.remaining_gold);
             loadInventory();
+            closeShopPurchaseModal();
         } else {
             showToast(data.error || 'Purchase failed', 'error');
         }
     } catch (error) {
         console.error('Error buying item:', error);
+        showToast('Network error', 'error');
     }
 }
 
