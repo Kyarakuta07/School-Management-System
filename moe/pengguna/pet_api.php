@@ -7,19 +7,8 @@
  * All responses are JSON formatted using standardized response helper
  */
 
-// Clean output buffer to prevent any accidental output before JSON
-ob_start();
-
-// Suppress warnings/notices in API responses (errors are still logged)
-error_reporting(E_ERROR | E_PARSE);
-ini_set('display_errors', '0');
-
 require_once '../includes/security_config.php';
 session_start();
-
-// Clean any buffered output that might have been generated
-ob_clean();
-
 header('Content-Type: application/json');
 
 // Prevent caching
@@ -59,29 +48,16 @@ $api_limiter = new RateLimiter($conn);
  */
 function logGoldTransaction($conn, $sender_id, $receiver_id, $amount, $type, $description)
 {
-    try {
-        $log_stmt = mysqli_prepare(
-            $conn,
-            "INSERT INTO trapeza_transactions (sender_id, receiver_id, amount, transaction_type, description) 
-             VALUES (?, ?, ?, ?, ?)"
-        );
+    $log_stmt = mysqli_prepare(
+        $conn,
+        "INSERT INTO trapeza_transactions (sender_id, receiver_id, amount, transaction_type, description, status) 
+         VALUES (?, ?, ?, ?, ?, 'completed')"
+    );
 
-        if ($log_stmt) {
-            mysqli_stmt_bind_param($log_stmt, "iiiss", $sender_id, $receiver_id, $amount, $type, $description);
-            mysqli_stmt_execute($log_stmt);
-
-            // Check for errors but don't break the API
-            if (mysqli_stmt_error($log_stmt)) {
-                error_log("Trapeza transaction logging failed: " . mysqli_stmt_error($log_stmt));
-            }
-
-            mysqli_stmt_close($log_stmt);
-        } else {
-            error_log("Trapeza transaction prepare failed: " . mysqli_error($conn));
-        }
-    } catch (Exception $e) {
-        // Log error but don't break the main transaction
-        error_log("Trapeza logging error: " . $e->getMessage());
+    if ($log_stmt) {
+        mysqli_stmt_bind_param($log_stmt, "iiiss", $sender_id, $receiver_id, $amount, $type, $description);
+        mysqli_stmt_execute($log_stmt);
+        mysqli_stmt_close($log_stmt);
     }
 }
 
@@ -320,7 +296,7 @@ switch ($action) {
         mysqli_stmt_close($deduct_stmt);
 
         // Log transaction
-        logGoldTransaction($conn, $user_id, 0, $total_cost, 'shop', "Purchased {$item['name']} x{$quantity}");
+        logGoldTransaction($conn, $user_id, 0, $total_cost, 'shop', "Purchased {$item_data['nama']} x{$quantity}");
 
         // Add to inventory (use INSERT ... ON DUPLICATE KEY UPDATE)
         $inv_stmt = mysqli_prepare(
