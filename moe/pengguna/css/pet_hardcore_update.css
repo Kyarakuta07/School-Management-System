@@ -93,39 +93,56 @@
 }
 
 /* ================================================
-   RENAME BUTTON ICON (PET DASHBOARD) - Clean Minimal
+   RENAME BUTTON ICON (PET DASHBOARD) - Premium Pill
    ================================================ */
 .btn-rename-icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
-    height: 24px;
-    padding: 0;
-    margin-left: 6px;
-    background: none;
-    border: none;
-    outline: none;
-    color: rgba(218, 165, 32, 0.5);
-    font-size: 0.75rem;
+    gap: 4px;
+    min-width: 32px;
+    height: 26px;
+    padding: 0 10px;
+    margin-left: 10px;
+
+    /* Elegant gold gradient pill */
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.15) 0%, rgba(184, 134, 11, 0.08) 100%);
+    border: 1px solid rgba(218, 165, 32, 0.35);
+    border-radius: 13px;
+
+    /* Text styling */
+    color: #DAA520;
+    font-size: 0.7rem;
+    font-weight: 600;
+
+    /* Interaction */
     cursor: pointer;
-    transition: all 0.2s ease;
-    vertical-align: middle;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+}
+
+.btn-rename-icon i {
+    font-size: 0.65rem;
 }
 
 .btn-rename-icon:hover {
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.3) 0%, rgba(255, 215, 0, 0.2) 100%);
+    border-color: #DAA520;
     color: #FFD700;
-    text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
-    transform: scale(1.2);
+    transform: translateY(-1px);
+    box-shadow:
+        0 3px 12px rgba(218, 165, 32, 0.25),
+        0 0 20px rgba(218, 165, 32, 0.15);
 }
 
 .btn-rename-icon:focus {
     outline: none;
+    border-color: #FFD700;
 }
 
 .btn-rename-icon:active {
-    transform: scale(0.9);
-    color: #DAA520;
+    transform: translateY(0);
+    box-shadow: 0 1px 4px rgba(218, 165, 32, 0.2);
 }
 
 /* ================================================
