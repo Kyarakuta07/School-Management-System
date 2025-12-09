@@ -4,7 +4,7 @@ session_start();
 require_once '../../includes/csrf.php';
 
 // Koneksi Database (Naik 2 folder)
-include '../../connection.php'; 
+include '../../connection.php';
 
 // Cek Login & Role
 if (!isset($_SESSION['status_login']) || $_SESSION['role'] != 'Vasiki') {
@@ -22,20 +22,23 @@ $result_all_nethera = mysqli_query($conn, $query_all_nethera);
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Nethera - MOE Admin</title>
-    
+
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css" />
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Lato:wght@400;700&display=swap"
+        rel="stylesheet">
+
     <link rel="stylesheet" href="../css/style.css" />
     <link rel="stylesheet" href="../css/cards.css" />
 </head>
+
 <body>
 
     <div class="bg-fixed"></div>
@@ -46,7 +49,7 @@ $result_all_nethera = mysqli_query($conn, $query_all_nethera);
             <img src="../../assets/landing/logo.png" class="sidebar-logo" alt="Logo" />
             <div class="brand-name">MOE<br>Admin</div>
         </div>
-        
+
         <div class="sidebar-menu">
             <a href="../index.php">
                 <i class="uil uil-create-dashboard"></i> <span>Dashboard</span>
@@ -60,7 +63,7 @@ $result_all_nethera = mysqli_query($conn, $query_all_nethera);
             <a href="#">
                 <i class="uil uil-setting"></i> <span>Settings</span>
             </a>
-            
+
             <div class="menu-bottom">
                 <a href="../../logout.php">
                     <i class="uil uil-signout"></i> <span>Logout</span>
@@ -70,73 +73,156 @@ $result_all_nethera = mysqli_query($conn, $query_all_nethera);
     </nav>
 
     <main class="main-content">
-        
+
         <header class="top-header">
             <h1>Manage Nethera</h1>
             <h2>Kelola data anggota terdaftar di Mediterranean Of Egypt</h2>
         </header>
-        
-        <div class="card full-width-card">
-            
-            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-                <h3>All Registered Nethera</h3>
 
-<div class="search-container">
-    <input type="search" id="searchInput" class="search-input" placeholder="Search name or sanctuary...">
-    <i class="uil uil-search"></i>
-</div>
+        <!-- Stats Summary Cards -->
+        <?php
+        // Get counts for stats
+        $total_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM nethera WHERE role = 'Nethera'");
+        $aktif_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM nethera WHERE status_akun = 'Aktif' AND role = 'Nethera'");
+        $hiatus_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM nethera WHERE status_akun = 'Hiatus' AND role = 'Nethera'");
+        $out_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM nethera WHERE status_akun = 'Out' AND role = 'Nethera'");
+
+        $total_count = mysqli_fetch_assoc($total_query)['total'];
+        $aktif_count = mysqli_fetch_assoc($aktif_query)['total'];
+        $hiatus_count = mysqli_fetch_assoc($hiatus_query)['total'];
+        $out_count = mysqli_fetch_assoc($out_query)['total'];
+        ?>
+        <div class="stats-row">
+            <div class="mini-stat-card">
+                <div class="mini-stat-icon" style="background: rgba(218, 165, 32, 0.2); color: var(--gold);">
+                    <i class="uil uil-users-alt"></i>
+                </div>
+                <div class="mini-stat-info">
+                    <span class="mini-stat-value"><?php echo $total_count; ?></span>
+                    <span class="mini-stat-label">Total Nethera</span>
+                </div>
+            </div>
+            <div class="mini-stat-card">
+                <div class="mini-stat-icon" style="background: rgba(50, 205, 50, 0.2); color: #32cd32;">
+                    <i class="uil uil-check-circle"></i>
+                </div>
+                <div class="mini-stat-info">
+                    <span class="mini-stat-value"><?php echo $aktif_count; ?></span>
+                    <span class="mini-stat-label">Aktif</span>
+                </div>
+            </div>
+            <div class="mini-stat-card">
+                <div class="mini-stat-icon" style="background: rgba(255, 165, 0, 0.2); color: #ffa500;">
+                    <i class="uil uil-pause-circle"></i>
+                </div>
+                <div class="mini-stat-info">
+                    <span class="mini-stat-value"><?php echo $hiatus_count; ?></span>
+                    <span class="mini-stat-label">Hiatus</span>
+                </div>
+            </div>
+            <div class="mini-stat-card">
+                <div class="mini-stat-icon" style="background: rgba(255, 107, 107, 0.2); color: #ff6b6b;">
+                    <i class="uil uil-times-circle"></i>
+                </div>
+                <div class="mini-stat-info">
+                    <span class="mini-stat-value"><?php echo $out_count; ?></span>
+                    <span class="mini-stat-label">Out</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card full-width-card">
+
+            <div class="card-header card-header--flex">
+                <h3 class="card-h3">
+                    <i class="uil uil-list-ul"></i> All Registered Nethera
+                </h3>
+
+                <div class="table-controls">
+                    <!-- Filter Dropdown -->
+                    <select id="statusFilter" class="filter-select">
+                        <option value="">All Status</option>
+                        <option value="Aktif">Aktif</option>
+                        <option value="Hiatus">Hiatus</option>
+                        <option value="Out">Out</option>
+                        <option value="Pending">Pending</option>
+                    </select>
+
+                    <!-- Search Box -->
+                    <div class="search-container">
+                        <i class="uil uil-search search-icon"></i>
+                        <input type="search" id="searchInput" class="search-input"
+                            placeholder="Search name, username, sanctuary...">
+                    </div>
+                </div>
             </div>
 
             <div class="table-container">
                 <table>
                     <thead>
                         <tr>
-                            <th>No. Reg</th>
-                            <th>Full Name</th>
-                            <th>Username</th>
-                            <th>No. HP</th>
-                            <th>Sanctuary</th>
-                            <th>Period</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <th><i class="uil uil-tag-alt"></i> No. Reg</th>
+                            <th><i class="uil uil-user"></i> Full Name</th>
+                            <th><i class="uil uil-at"></i> Username</th>
+                            <th><i class="uil uil-phone"></i> No. HP</th>
+                            <th><i class="uil uil-building"></i> Sanctuary</th>
+                            <th><i class="uil uil-calendar-alt"></i> Period</th>
+                            <th><i class="uil uil-toggle-on"></i> Status</th>
+                            <th><i class="uil uil-setting"></i> Actions</th>
                         </tr>
                     </thead>
 
                     <tbody id="netheraTableBody">
-                        <?php if($result_all_nethera && mysqli_num_rows($result_all_nethera) > 0): ?>
-                            <?php while($nethera = mysqli_fetch_assoc($result_all_nethera)): ?>
-                            <tr>
-                                <td><?php echo htmlspecialchars($nethera['no_registrasi']); ?></td>
-                                <td>
-                                    <strong><?php echo htmlspecialchars($nethera['nama_lengkap']); ?></strong>
-                                </td>
-                                <td><?php echo htmlspecialchars($nethera['username']); ?></td>
-                                <td><?php echo htmlspecialchars($nethera['noHP']); ?></td>
-                                <td><?php echo htmlspecialchars($nethera['nama_sanctuary']); ?></td>
-                                <td><?php echo htmlspecialchars($nethera['periode_masuk']); ?></td>
-                                
-                                <td>
-                                    <span class="status-badge status-<?php echo $nethera['status_akun']; ?>">
-                                        <?php echo htmlspecialchars($nethera['status_akun']); ?>
-                                    </span>
-                                </td>
-                                
-<td style="white-space: nowrap;">
-    <div class="action-buttons">
-        <a href="edit_nethera.php?id=<?php echo $nethera['id_nethera']; ?>" class="btn-edit" title="Edit">
-            <i class="uil uil-edit"></i>
-        </a>
-        <button class="btn-delete" title="Delete" onclick="confirmDelete(<?php echo $nethera['id_nethera']; ?>)">
-            <i class="uil uil-trash-alt"></i>
-        </button>
-    </div>
-</td>
-                            </tr>
+                        <?php if ($result_all_nethera && mysqli_num_rows($result_all_nethera) > 0): ?>
+                            <?php while ($nethera = mysqli_fetch_assoc($result_all_nethera)): ?>
+                                <tr data-status="<?php echo htmlspecialchars($nethera['status_akun']); ?>">
+                                    <td>
+                                        <span
+                                            class="reg-badge"><?php echo htmlspecialchars($nethera['no_registrasi']); ?></span>
+                                    </td>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="user-avatar">
+                                                <?php echo strtoupper(substr($nethera['nama_lengkap'], 0, 1)); ?></div>
+                                            <strong><?php echo htmlspecialchars($nethera['nama_lengkap']); ?></strong>
+                                        </div>
+                                    </td>
+                                    <td><code
+                                            class="username-code">@<?php echo htmlspecialchars($nethera['username']); ?></code>
+                                    </td>
+                                    <td><?php echo htmlspecialchars($nethera['noHP'] ?? '-'); ?></td>
+                                    <td>
+                                        <span
+                                            class="sanctuary-badge"><?php echo htmlspecialchars($nethera['nama_sanctuary']); ?></span>
+                                    </td>
+                                    <td><?php echo htmlspecialchars($nethera['periode_masuk']); ?></td>
+
+                                    <td>
+                                        <span class="status-badge status-<?php echo $nethera['status_akun']; ?>">
+                                            <?php echo htmlspecialchars($nethera['status_akun']); ?>
+                                        </span>
+                                    </td>
+
+                                    <td style="white-space: nowrap;">
+                                        <div class="action-buttons">
+                                            <a href="edit_nethera.php?id=<?php echo $nethera['id_nethera']; ?>" class="btn-edit"
+                                                title="Edit">
+                                                <i class="uil uil-edit"></i>
+                                            </a>
+                                            <button class="btn-delete" title="Delete"
+                                                onclick="confirmDelete(<?php echo $nethera['id_nethera']; ?>)">
+                                                <i class="uil uil-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
                             <?php endwhile; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="7" style="text-align: center; padding: 30px; color: #aaa;">
-                                    No data available.
+                                <td colspan="8" class="empty-state">
+                                    <div class="empty-icon"><i class="uil uil-user-times"></i></div>
+                                    <h4>No Nethera Found</h4>
+                                    <p>Data anggota belum tersedia.</p>
                                 </td>
                             </tr>
                         <?php endif; ?>
@@ -164,9 +250,9 @@ $result_all_nethera = mysqli_query($conn, $query_all_nethera);
         }
         // Fungsi untuk memastikan sidebar toggle tetap berfungsi
         const toggleSidebar = () => document.body.classList.toggle("open");
-        
+
         // --- AJAX Search Logic ---
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const searchInput = document.getElementById('searchInput');
             const netheraTableBody = document.getElementById('netheraTableBody');
 
@@ -174,22 +260,24 @@ $result_all_nethera = mysqli_query($conn, $query_all_nethera);
                 const performSearch = () => {
                     // Ambil nilai input
                     const searchTerm = searchInput.value;
-                    
+
                     let xhr = new XMLHttpRequest();
                     // PATH AJAX: Naik satu level ke admin/ajax_search_nethera.php
                     xhr.open('POST', 'ajax_search_nethera.php', true);
                     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-                    
-                    xhr.onload = function() {
+
+                    xhr.onload = function () {
                         if (this.status === 200) {
                             // Update isi tabel
                             netheraTableBody.innerHTML = this.responseText;
+                            // Apply filter after search results load
+                            applyFilter();
                         } else {
                             // Tampilkan error jika server gagal merespon
-                            netheraTableBody.innerHTML = '<tr><td colspan="7" style="color:red; text-align:center;">SERVER ERROR (' + this.status + ')</td></tr>';
+                            netheraTableBody.innerHTML = '<tr><td colspan="8" style="color:red; text-align:center;">SERVER ERROR (' + this.status + ')</td></tr>';
                         }
                     };
-                    
+
                     // Kirim data
                     xhr.send('search=' + searchTerm);
                 };
@@ -198,7 +286,29 @@ $result_all_nethera = mysqli_query($conn, $query_all_nethera);
                 searchInput.addEventListener('input', performSearch);
                 searchInput.addEventListener('search', performSearch); // Untuk deteksi saat tombol X diklik
             }
+
+            // --- Status Filter Logic ---
+            const statusFilter = document.getElementById('statusFilter');
+            
+            function applyFilter() {
+                const filterValue = statusFilter ? statusFilter.value : '';
+                const rows = document.querySelectorAll('#netheraTableBody tr[data-status]');
+                
+                rows.forEach(row => {
+                    const rowStatus = row.getAttribute('data-status');
+                    if (filterValue === '' || rowStatus === filterValue) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            }
+
+            if (statusFilter) {
+                statusFilter.addEventListener('change', applyFilter);
+            }
         });
     </script>
 </body>
+
 </html>
