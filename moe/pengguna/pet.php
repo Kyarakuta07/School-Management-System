@@ -375,18 +375,23 @@ mysqli_stmt_close($gold_stmt);
 
     <!-- Gacha Result Modal -->
     <div class="modal" id="gacha-modal">
-        <div class="modal-backdrop"></div>
+        <div class="modal-backdrop" onclick="closeGachaModal()"></div>
         <div class="modal-content gacha-result">
             <div class="result-glow" id="result-glow"></div>
+
+            <!-- Pet Display Area -->
             <div class="result-pet" id="result-pet">
                 <img src="" alt="New Pet" id="result-pet-img">
             </div>
-            <h2 class="result-title" id="result-title">Congratulations!</h2>
+
+            <!-- Info Section -->
             <div class="result-info">
+                <h2 class="result-title" id="result-title">Congratulations!</h2>
                 <span class="result-name" id="result-name">Pet Name</span>
                 <span class="result-rarity" id="result-rarity">Common</span>
+                <p class="result-shiny" id="result-shiny" style="display: none;">✨ SHINY! ✨</p>
             </div>
-            <p class="result-shiny" id="result-shiny" style="display: none;">✨ SHINY! ✨</p>
+
             <button class="modal-close-btn" onclick="closeGachaModal()">Awesome!</button>
         </div>
     </div>
