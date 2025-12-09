@@ -1,5 +1,7 @@
 <?php
+require_once '../includes/security_config.php';
 session_start();
+require_once '../includes/csrf.php';
 include '../connection.php';
 
 // 1. CEK AUTENTIKASI DASAR
@@ -10,8 +12,8 @@ if (!isset($_SESSION['status_login']) || $_SESSION['role'] != 'Nethera') {
 
 $id_user = $_SESSION['id_nethera'];
 
-// 2. QUERY: CEK STATUS DAN AMBIL NAMA SANCTUARY (Security dan Title Data)
-$sql_info = "SELECT n.status_akun, s.nama_sanctuary
+// 2. QUERY: CEK STATUS DAN AMBIL NAMA SANCTUARY + PROFILE PHOTO
+$sql_info = "SELECT n.status_akun, n.profile_photo, s.nama_sanctuary
              FROM nethera n
              JOIN sanctuary s ON n.id_sanctuary = s.id_sanctuary
              WHERE n.id_nethera = ?";
@@ -36,6 +38,7 @@ mysqli_stmt_close($stmt_info);
 $user_status = trim($user_info_data['status_akun']);
 $sanctuary_name = htmlspecialchars($user_info_data['nama_sanctuary']);
 $nama_pengguna = htmlspecialchars($_SESSION['nama_lengkap']);
+$profile_photo = $user_info_data['profile_photo']; // Profile photo filename
 
 // ENFORCEMENT: Cek status harus SAMA PERSIS dengan string 'Aktif'
 if ($user_status !== 'Aktif') {
@@ -154,14 +157,31 @@ if ($active_pet) {
             <section class="profile-sidebar-panel">
 
                 <div class="profile-avatar-box">
-                    <img src="../assets/placeholder.png" alt="Avatar" class="profile-avatar-lg">
+                    <div class="avatar-wrapper" onclick="document.getElementById('photoUploadInput').click()">
+                        <?php
+                        $avatarSrc = $profile_photo
+                            ? '../assets/uploads/profiles/' . htmlspecialchars($profile_photo)
+                            : '../assets/placeholder.png';
+                        ?>
+                        <img src="<?php echo $avatarSrc; ?>" alt="Avatar" class="profile-avatar-lg" id="avatarPreview">
+                        <div class="avatar-edit-overlay">
+                            <i class="fa-solid fa-camera"></i>
+                        </div>
+                    </div>
                     <h2 class="user-name-title"><?php echo $nama_pengguna; ?></h2>
                     <p class="profile-link">My Profile</p>
+
+                    <!-- Hidden file input for photo upload -->
+                    <input type="file" id="photoUploadInput" accept="image/jpeg,image/png,image/gif,image/webp"
+                        style="display: none;">
                 </div>
 
                 <div class="profile-card funfact-card">
-                    <h3 class="card-title">MY FUNFACT</h3>
-                    <p class="card-content"><?php echo $fun_fact; ?></p>
+                    <div class="card-title-row">
+                        <h3 class="card-title">MY FUNFACT</h3>
+                        <button class="edit-btn" onclick="openFunfactModal()"><i class="fa-solid fa-pen"></i></button>
+                    </div>
+                    <p class="card-content" id="funfactDisplay"><?php echo $fun_fact; ?></p>
                 </div>
 
                 <?php if ($active_pet): ?>
@@ -225,6 +245,142 @@ if ($active_pet) {
 
         </main>
     </div>
+
+    <!-- Fun Fact Edit Modal -->
+    <div class="modal-overlay" id="funfactModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Fun Fact</h3>
+                <button class="modal-close" onclick="closeFunfactModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <textarea id="funfactInput" placeholder="Tulis fun fact tentang dirimu..."
+                    maxlength="500"><?php echo htmlspecialchars($row['fun_fact'] ?? ''); ?></textarea>
+                <div class="char-count"><span id="charCount">0</span>/500</div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeFunfactModal()">Batal</button>
+                <button class="btn-save" onclick="saveFunfact()">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CSRF Token -->
+    <input type="hidden" id="csrfToken" value="<?php echo generate_csrf_token(); ?>">
+
+    <script>
+        // --- FUN FACT MODAL ---
+        const funfactModal = document.getElementById('funfactModal');
+        const funfactInput = document.getElementById('funfactInput');
+        const charCount = document.getElementById('charCount');
+
+        function openFunfactModal() {
+            funfactModal.classList.add('active');
+            updateCharCount();
+        }
+
+        function closeFunfactModal() {
+            funfactModal.classList.remove('active');
+        }
+
+        function updateCharCount() {
+            charCount.textContent = funfactInput.value.length;
+        }
+
+        funfactInput.addEventListener('input', updateCharCount);
+
+        function saveFunfact() {
+            const csrfToken = document.getElementById('csrfToken').value;
+            const funfact = funfactInput.value.trim();
+
+            fetch('update_profile.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `action=update_funfact&fun_fact=${encodeURIComponent(funfact)}&csrf_token=${csrfToken}`
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('funfactDisplay').textContent = data.fun_fact || 'Belum ada funfact.';
+                        closeFunfactModal();
+                        showToast('Fun fact berhasil diupdate!', 'success');
+                    } else {
+                        showToast(data.message || 'Gagal menyimpan', 'error');
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    showToast('Terjadi kesalahan', 'error');
+                });
+        }
+
+        // --- PHOTO UPLOAD ---
+        const photoInput = document.getElementById('photoUploadInput');
+        const avatarPreview = document.getElementById('avatarPreview');
+
+        photoInput.addEventListener('change', function () {
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+
+                // Validate file size (2MB)
+                if (file.size > 2 * 1024 * 1024) {
+                    showToast('Ukuran file terlalu besar (max 2MB)', 'error');
+                    return;
+                }
+
+                // Show loading state
+                avatarPreview.style.opacity = '0.5';
+
+                const formData = new FormData();
+                formData.append('action', 'upload_photo');
+                formData.append('profile_photo', file);
+                formData.append('csrf_token', document.getElementById('csrfToken').value);
+
+                fetch('update_profile.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        avatarPreview.style.opacity = '1';
+                        if (data.success) {
+                            // Add cache buster to force reload
+                            avatarPreview.src = '../' + data.photo_url + '?t=' + Date.now();
+                            showToast('Foto profil berhasil diupdate!', 'success');
+                        } else {
+                            showToast(data.message || 'Gagal upload foto', 'error');
+                        }
+                    })
+                    .catch(err => {
+                        avatarPreview.style.opacity = '1';
+                        console.error(err);
+                        showToast('Terjadi kesalahan', 'error');
+                    });
+            }
+        });
+
+        // --- TOAST NOTIFICATION ---
+        function showToast(message, type = 'success') {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `<i class="fa-solid fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Close modal on overlay click
+        funfactModal.addEventListener('click', function (e) {
+            if (e.target === this) closeFunfactModal();
+        });
+    </script>
 </body>
 
 </html>
