@@ -83,7 +83,7 @@ $total_all = $total_nethera + $total_pending + $total_hiatus + $total_out;
         rel="stylesheet" />
 
     <link rel="stylesheet" href="css/style.css" />
-
+    <link rel="stylesheet" href="css/cards.css" />
 </head>
 
 <body>
@@ -128,14 +128,15 @@ $total_all = $total_nethera + $total_pending + $total_hiatus + $total_out;
 
         <!-- Pending Alert Banner -->
         <?php if ($total_pending > 0): ?>
-        <div class="alert-banner alert-warning">
-            <i class="uil uil-exclamation-triangle"></i>
-            <div class="alert-content">
-                <strong><?php echo $total_pending; ?> Pending Registration<?php echo $total_pending > 1 ? 's' : ''; ?></strong>
-                <span>Members menunggu verifikasi akun</span>
+            <div class="alert-banner alert-warning">
+                <i class="uil uil-exclamation-triangle"></i>
+                <div class="alert-content">
+                    <strong><?php echo $total_pending; ?> Pending
+                        Registration<?php echo $total_pending > 1 ? 's' : ''; ?></strong>
+                    <span>Members menunggu verifikasi akun</span>
+                </div>
+                <a href="pages/manage_nethera.php" class="alert-action">Review Now <i class="uil uil-arrow-right"></i></a>
             </div>
-            <a href="pages/manage_nethera.php" class="alert-action">Review Now <i class="uil uil-arrow-right"></i></a>
-        </div>
         <?php endif; ?>
 
         <!-- Quick Actions Bar -->
@@ -237,7 +238,8 @@ $total_all = $total_nethera + $total_pending + $total_hiatus + $total_out;
                                 <div class="user-avatar-small"><?php echo $initial; ?></div>
                                 <div class="user-details">
                                     <span class="user-name"><?php echo htmlspecialchars($user['nama_lengkap']); ?></span>
-                                    <span class="user-sanctuary"><?php echo htmlspecialchars($user['nama_sanctuary'] ?? 'No Sanctuary'); ?></span>
+                                    <span
+                                        class="user-sanctuary"><?php echo htmlspecialchars($user['nama_sanctuary'] ?? 'No Sanctuary'); ?></span>
                                 </div>
                                 <span class="status-badge status-<?php echo str_replace(' ', '', $user['status_akun']); ?>">
                                     <?php echo htmlspecialchars($user['status_akun']); ?>
@@ -251,7 +253,7 @@ $total_all = $total_nethera + $total_pending + $total_hiatus + $total_out;
                     ?>
                 </div>
             </div>
-            
+
             <div class="card card-chart">
                 <div class="card-header">
                     <h3><i class="uil uil-chart-bar"></i> Active Members Distribution</h3>
