@@ -7,8 +7,19 @@
  * All responses are JSON formatted using standardized response helper
  */
 
+// Clean output buffer to prevent any accidental output before JSON
+ob_start();
+
+// Suppress warnings/notices in API responses (errors are still logged)
+error_reporting(E_ERROR | E_PARSE);
+ini_set('display_errors', '0');
+
 require_once '../includes/security_config.php';
 session_start();
+
+// Clean any buffered output that might have been generated
+ob_clean();
+
 header('Content-Type: application/json');
 
 // Prevent caching
@@ -46,12 +57,14 @@ $api_limiter = new RateLimiter($conn);
  * @param string $type Transaction type (transfer, gacha, shop, etc.)
  * @param string $description Transaction description
  */
-function logGoldTransaction($conn, $sender_id, $receiver_id, $amount, $type, $description) {
-    $log_stmt = mysqli_prepare($conn, 
+function logGoldTransaction($conn, $sender_id, $receiver_id, $amount, $type, $description)
+{
+    $log_stmt = mysqli_prepare(
+        $conn,
         "INSERT INTO trapeza_transactions (sender_id, receiver_id, amount, transaction_type, description) 
          VALUES (?, ?, ?, ?, ?)"
     );
-    
+
     if ($log_stmt) {
         mysqli_stmt_bind_param($log_stmt, "iiiss", $sender_id, $receiver_id, $amount, $type, $description);
         mysqli_stmt_execute($log_stmt);
@@ -1427,122 +1440,13 @@ switch ($action) {
                 'unlocked' => $unlocked_count,
                 'newly_unlocked' => $newly_unlocked,
                 'achievements' => $achievements
-    // GET: Achievements list with user progress
-    // ============================================
-    case 'get_achievements':
-        if ($method !== 'GET') {
-            api_method_not_allowed('GET');
-        }
-
-        try {
-            // Get all achievements
-            $achievements_query = "SELECT * FROM achievements ORDER BY category, rarity DESC, id";
-            $achievements_result = mysqli_query($conn, $achievements_query);
-
-            if (!$achievements_result) {
-                throw new Exception(mysqli_error($conn));
-            }
-
-            // Get user's unlocked achievements
-            $unlocked_query = "SELECT achievement_id FROM user_achievements WHERE user_id = ?";
-            $unlocked_stmt = mysqli_prepare($conn, $unlocked_query);
-            mysqli_stmt_bind_param($unlocked_stmt, "i", $user_id);
-            mysqli_stmt_execute($unlocked_stmt);
-            $unlocked_result = mysqli_stmt_get_result($unlocked_stmt);
-
-            $unlocked_ids = [];
-            while ($row = mysqli_fetch_assoc($unlocked_result)) {
-                $unlocked_ids[] = $row['achievement_id'];
-            }
-            mysqli_stmt_close($unlocked_stmt);
-
-            // Get user stats for progress calculation
-            $stats = [];
-
-            // Pets owned
-            $q = mysqli_query($conn, "SELECT COUNT(*) as cnt FROM user_pets WHERE user_id = $user_id AND status != 'DEAD'");
-            $stats['pets_owned'] = mysqli_fetch_assoc($q)['cnt'];
-
-            // Shiny pets
-            $q = mysqli_query($conn, "SELECT COUNT(*) as cnt FROM user_pets WHERE user_id = $user_id AND is_shiny = 1");
-            $stats['shiny_pets'] = mysqli_fetch_assoc($q)['cnt'];
-
-            // Legendary pets
-            $q = mysqli_query($conn, "SELECT COUNT(*) as cnt FROM user_pets up JOIN pet_species ps ON up.species_id = ps.id WHERE up.user_id = $user_id AND ps.rarity = 'legendary'");
-            $stats['legendary_pets'] = mysqli_fetch_assoc($q)['cnt'];
-
-            // Battle wins
-            $q = mysqli_query($conn, "SELECT wins FROM user_pets WHERE user_id = $user_id ORDER BY wins DESC LIMIT 1");
-            $row = mysqli_fetch_assoc($q);
-            $stats['battle_wins'] = $row ? $row['wins'] : 0;
-
-            // Max pet level
-            $q = mysqli_query($conn, "SELECT MAX(level) as max_lvl FROM user_pets WHERE user_id = $user_id");
-            $row = mysqli_fetch_assoc($q);
-            $stats['max_pet_level'] = $row ? $row['max_lvl'] : 0;
-
-            // Login streak
-            $q = mysqli_query($conn, "SELECT total_logins FROM daily_login_streak WHERE user_id = $user_id");
-            $row = mysqli_fetch_assoc($q);
-            $stats['login_streak'] = $row ? $row['total_logins'] : 0;
-
-            // AUTO-UNLOCK: Check and unlock achievements based on progress
-            $newly_unlocked = [];
-            mysqli_data_seek($achievements_result, 0); // Reset result pointer
-            while ($ach = mysqli_fetch_assoc($achievements_result)) {
-                // Skip if already unlocked
-                if (in_array($ach['id'], $unlocked_ids)) {
-                    continue;
-                }
-
-                // Check if requirement is met
-                $current = isset($stats[$ach['requirement_type']]) ? (int) $stats[$ach['requirement_type']] : 0;
-                $required = (int) $ach['requirement_value'];
-
-                if ($current >= $required) {
-                    // Unlock this achievement!
-                    $unlock_stmt = mysqli_prepare($conn, "INSERT IGNORE INTO user_achievements (user_id, achievement_id) VALUES (?, ?)");
-                    mysqli_stmt_bind_param($unlock_stmt, "ii", $user_id, $ach['id']);
-                    mysqli_stmt_execute($unlock_stmt);
-                    mysqli_stmt_close($unlock_stmt);
-
-                    $unlocked_ids[] = $ach['id'];
-                    $newly_unlocked[] = $ach;
-
-                    // Give gold reward if any
-                    if ($ach['reward_gold'] > 0) {
-                        mysqli_query($conn, "UPDATE nethera SET gold = gold + {$ach['reward_gold']} WHERE id_nethera = $user_id");
-                    }
-                }
-            }
-
-            // Build achievements list with progress
-            mysqli_data_seek($achievements_result, 0); // Reset again
-            $achievements = [];
-            while ($ach = mysqli_fetch_assoc($achievements_result)) {
-                $ach['unlocked'] = in_array($ach['id'], $unlocked_ids);
-                $ach['current_progress'] = isset($stats[$ach['requirement_type']]) ? $stats[$ach['requirement_type']] : 0;
-                $achievements[] = $ach;
-            }
-
-            // Count stats
-            $total = count($achievements);
-            $unlocked_count = count($unlocked_ids);
-
-            echo json_encode([
-                'success' => true,
-                'total' => $total,
-                'unlocked' => $unlocked_count,
-                'newly_unlocked' => $newly_unlocked,
-                'achievements' => $achievements
             ]);
         } catch (Exception $e) {
-            echo json_encode([
-                'success' => false,
-                'error' => 'Database error: ' . $e->getMessage()
-            ]);
+            error_log("Achievement auto-unlock error: " . $e->getMessage());
+            api_error('Failed to process achievements', ERR_INTERNAL, HTTP_INTERNAL_ERROR);
         }
         break;
+
 
     // ============================================
     // TRAPEZA BANKING SYSTEM
@@ -1574,8 +1478,8 @@ switch ($action) {
             api_method_not_allowed('GET');
         }
 
-        $limit = isset($_GET['limit']) ? min(100, (int)$_GET['limit']) : 20;
-        $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
+        $limit = isset($_GET['limit']) ? min(100, (int) $_GET['limit']) : 20;
+        $offset = isset($_GET['offset']) ? (int) $_GET['offset'] : 0;
 
         // Get transactions where user is sender or receiver
         $query = "SELECT 
@@ -1646,7 +1550,7 @@ switch ($action) {
 
         $input = json_decode(file_get_contents('php://input'), true);
         $recipient_username = isset($input['recipient_username']) ? trim($input['recipient_username']) : '';
-        $amount = isset($input['amount']) ? (int)$input['amount'] : 0;
+        $amount = isset($input['amount']) ? (int) $input['amount'] : 0;
         $description = isset($input['description']) ? trim($input['description']) : 'Gold transfer';
 
         // Validation
@@ -1687,12 +1591,14 @@ switch ($action) {
         }
 
         // Check daily limit (3000 gold)
-        $daily_check = mysqli_prepare($conn, 
+        $daily_check = mysqli_prepare(
+            $conn,
             "SELECT IFNULL(SUM(amount), 0) as total 
              FROM gold_transactions 
              WHERE sender_id = ? 
              AND transaction_type = 'transfer' 
-             AND DATE(created_at) = CURDATE()");
+             AND DATE(created_at) = CURDATE()"
+        );
         mysqli_stmt_bind_param($daily_check, "i", $user_id);
         mysqli_stmt_execute($daily_check);
         $daily_result = mysqli_stmt_get_result($daily_check);
@@ -1734,9 +1640,11 @@ switch ($action) {
             mysqli_stmt_close($add_stmt);
 
             // Log transaction
-            $log_stmt = mysqli_prepare($conn, 
+            $log_stmt = mysqli_prepare(
+                $conn,
                 "INSERT INTO gold_transactions (sender_id, receiver_id, amount, transaction_type, description) 
-                 VALUES (?, ?, ?, 'transfer', ?)");
+                 VALUES (?, ?, ?, 'transfer', ?)"
+            );
             mysqli_stmt_bind_param($log_stmt, "iiis", $user_id, $recipient_id, $amount, $description);
             mysqli_stmt_execute($log_stmt);
             $transaction_id = mysqli_insert_id($conn);
@@ -1774,14 +1682,16 @@ switch ($action) {
         }
 
         $search_pattern = '%' . $query . '%';
-        $search_stmt = mysqli_prepare($conn, 
+        $search_stmt = mysqli_prepare(
+            $conn,
             "SELECT id_nethera, username, nama_lengkap 
              FROM nethera 
              WHERE (username LIKE ? OR nama_lengkap LIKE ?) 
              AND status_akun = 'Aktif' 
              AND role = 'Nethera'
              AND id_nethera != ?
-             LIMIT 10");
+             LIMIT 10"
+        );
         mysqli_stmt_bind_param($search_stmt, "ssi", $search_pattern, $search_pattern, $user_id);
         mysqli_stmt_execute($search_stmt);
         $search_result = mysqli_stmt_get_result($search_stmt);
