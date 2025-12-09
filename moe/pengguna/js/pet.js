@@ -29,7 +29,23 @@ document.addEventListener('DOMContentLoaded', () => {
     initArenaTabs();
     loadPets();
     checkDailyReward(); // Check for daily login reward
+    checkUrlErrors(); // Check for error messages from redirects
 });
+
+// Check URL for error parameters
+function checkUrlErrors() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const error = urlParams.get('error');
+
+    if (error === 'battle_limit') {
+        showToast('You have used all 3 daily battles! Come back tomorrow.', 'warning');
+        // Clean URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+    } else if (error === 'missing_pets') {
+        showToast('Invalid battle parameters', 'error');
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+}
 
 // ================================================
 // DAILY LOGIN REWARD SYSTEM

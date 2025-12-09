@@ -18,6 +18,21 @@ if (!isset($_SESSION['id_nethera'])) {
 
 $user_id = $_SESSION['id_nethera'];
 
+// Include database connection and rate limiter
+include '../connection.php';
+require_once '../includes/rate_limiter.php';
+
+// Check battle rate limit (3 battles per day)
+$rate_limiter = new RateLimiter($conn);
+$user_id_str = 'user_' . $user_id;
+$current_attempts = $rate_limiter->getAttempts($user_id_str, 'pet_battle');
+
+if ($current_attempts >= 3) {
+    // Redirect back with error
+    header("Location: pet.php?tab=arena&error=battle_limit");
+    exit();
+}
+
 // Get battle parameters from URL
 $defender_pet_id = isset($_GET['defender_id']) ? intval($_GET['defender_id']) : 0;
 $attacker_pet_id = isset($_GET['attacker_id']) ? intval($_GET['attacker_id']) : 0;
@@ -26,9 +41,6 @@ if (!$defender_pet_id || !$attacker_pet_id) {
     header("Location: pet.php?tab=arena&error=missing_pets");
     exit();
 }
-
-// Include database connection
-include '../connection.php';
 
 // Get attacker pet data (user's pet)
 $atk_query = mysqli_prepare(
