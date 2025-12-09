@@ -306,8 +306,8 @@ switch ($action) {
         mysqli_stmt_execute($deduct_stmt);
         mysqli_stmt_close($deduct_stmt);
 
-        // Log transaction
-        logGoldTransaction($conn, $user_id, 0, $total_cost, 'shop', "Purchased {$item['name']} x{$quantity}");
+        // Log transaction (TEMPORARILY DISABLED FOR TESTING)
+        // logGoldTransaction($conn, $user_id, 0, $total_cost, 'shop', "Purchased {$item['name']} x{$quantity}");
 
         // Add to inventory (use INSERT ... ON DUPLICATE KEY UPDATE)
         $inv_stmt = mysqli_prepare(
