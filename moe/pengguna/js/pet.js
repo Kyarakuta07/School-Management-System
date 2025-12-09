@@ -558,12 +558,18 @@ async function handleInventoryClick(itemId, type, itemName, itemDesc, itemImg, m
         return;
     }
 
+    // REVIVE ITEMS: Special handling - show dead pets to select
+    if (type === 'revive') {
+        openReviveModal(itemId, itemName, itemImg);
+        return;
+    }
+
     // Cek Pet Aktif (Untuk item konsumsi)
     if (!activePet) {
         showToast('Kamu butuh Active Pet untuk menggunakan item ini!', 'warning');
         return;
     }
-    if (type !== 'revive' && activePet.status === 'DEAD') {
+    if (activePet.status === 'DEAD') {
         showToast('Pet mati. Hidupkan dulu dengan item Revive!', 'error');
         return;
     }
@@ -661,6 +667,58 @@ async function useItem(itemId, targetPetId = 0, quantity = 1) {
     } catch (error) {
         console.error('Error using item:', error);
     }
+}
+
+// ================================================
+// REVIVE PET MODAL SYSTEM
+// ================================================
+let currentReviveItem = null;
+
+function openReviveModal(itemId, itemName, itemImg) {
+    // Filter only dead pets
+    const deadPets = userPets.filter(pet => pet.status === 'DEAD');
+
+    if (deadPets.length === 0) {
+        showToast('Tidak ada pet yang mati!', 'info');
+        return;
+    }
+
+    currentReviveItem = { id: itemId, name: itemName };
+
+    // Build modal content
+    const modal = document.getElementById('revive-modal');
+    if (!modal) {
+        // Fallback if modal doesn't exist
+        showToast('Revive modal not found', 'error');
+        return;
+    }
+
+    const grid = document.getElementById('revive-pet-grid');
+    grid.innerHTML = deadPets.map(pet => `
+        <div class="revive-pet-card" onclick="revivePet(${pet.id})">
+            <img src="${getPetImagePath(pet)}" alt="${pet.nickname || pet.species_name}" 
+                 onerror="this.src='../assets/placeholder.png'">
+            <span class="revive-pet-name">${pet.nickname || pet.species_name}</span>
+            <span class="revive-pet-level">Lv.${pet.level}</span>
+            <span class="revive-status">💀 DEAD</span>
+        </div>
+    `).join('');
+
+    document.getElementById('revive-item-name').textContent = itemName;
+    modal.classList.add('show');
+}
+
+function closeReviveModal() {
+    document.getElementById('revive-modal').classList.remove('show');
+    currentReviveItem = null;
+}
+
+async function revivePet(petId) {
+    if (!currentReviveItem) return;
+
+    // Use the revive item on the selected dead pet
+    await useItem(currentReviveItem.id, petId, 1);
+    closeReviveModal();
 }
 
 // ================================================

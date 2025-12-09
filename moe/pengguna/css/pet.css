@@ -2731,6 +2731,95 @@
 }
 
 /* ================================================
+   REVIVE PET MODAL - Dead Pet Selection
+   ================================================ */
+.revive-dialog {
+    max-width: 400px;
+    text-align: center;
+}
+
+.revive-dialog h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.5rem;
+    color: #E74C3C;
+    margin: 0 0 var(--space-sm) 0;
+}
+
+.revive-subtitle {
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0 0 var(--space-xs) 0;
+}
+
+.revive-subtitle strong {
+    color: var(--gold);
+}
+
+.revive-hint {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+    margin: 0 0 var(--space-md) 0;
+}
+
+.revive-pet-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: var(--space-md);
+    max-height: 300px;
+    overflow-y: auto;
+    padding: var(--space-sm);
+    margin-bottom: var(--space-lg);
+}
+
+.revive-pet-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--space-md);
+    background: rgba(231, 76, 60, 0.1);
+    border: 2px solid rgba(231, 76, 60, 0.4);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.revive-pet-card:hover {
+    background: rgba(231, 76, 60, 0.2);
+    border-color: #E74C3C;
+    transform: translateY(-3px);
+}
+
+.revive-pet-card img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    filter: grayscale(80%) brightness(0.7);
+    margin-bottom: var(--space-xs);
+}
+
+.revive-pet-card:hover img {
+    filter: grayscale(50%) brightness(0.9);
+}
+
+.revive-pet-name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    color: #FFF;
+    font-weight: 600;
+}
+
+.revive-pet-level {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.revive-status {
+    font-size: 0.7rem;
+    color: #E74C3C;
+    margin-top: 4px;
+    font-weight: 600;
+}
+
+/* ================================================
    SELL PET MODAL - Premium Design
    ================================================ */
 .sell-dialog {

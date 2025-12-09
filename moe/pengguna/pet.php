@@ -686,6 +686,26 @@ mysqli_stmt_close($gold_stmt);
     </div>
 
     <!-- ========================================
+         REVIVE PET MODAL
+         ======================================== -->
+    <div class="modal" id="revive-modal">
+        <div class="modal-backdrop" onclick="closeReviveModal()"></div>
+        <div class="modal-content revive-dialog">
+            <h2>💀 Revive Pet</h2>
+            <p class="revive-subtitle">Using: <strong id="revive-item-name">Ankh of Life</strong></p>
+            <p class="revive-hint">Select a dead pet to revive:</p>
+
+            <div class="revive-pet-grid" id="revive-pet-grid">
+                <!-- Dead pets will be populated here -->
+            </div>
+
+            <div class="modal-actions">
+                <button class="modal-cancel-btn" onclick="closeReviveModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================
          TUTORIAL / HELP MODAL
          ======================================== -->
     <div class="modal" id="help-modal">
