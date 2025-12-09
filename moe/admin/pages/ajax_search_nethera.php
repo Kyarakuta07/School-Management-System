@@ -25,7 +25,7 @@ $search_param = "%{$search_term}%";
 
 
 // 3. Query SQL dengan Prepared Statements (Paling Aman)
-$sql = "SELECT n.id_nethera, n.no_registrasi, n.nama_lengkap, n.username, s.nama_sanctuary, n.periode_masuk, n.status_akun
+$sql = "SELECT n.id_nethera, n.no_registrasi, n.nama_lengkap, n.username, n.noHP, s.nama_sanctuary, n.periode_masuk, n.status_akun
         FROM nethera n
         LEFT JOIN sanctuary s ON n.id_sanctuary = s.id_sanctuary
         WHERE n.nama_lengkap LIKE ? 
@@ -58,6 +58,7 @@ if ($stmt) {
                 $output .= '<td>' . htmlspecialchars($nethera['no_registrasi']) . '</td>';
                 $output .= '<td>' . htmlspecialchars($nethera['nama_lengkap']) . '</td>';
                 $output .= '<td>' . htmlspecialchars($nethera['username']) . '</td>';
+                $output .= '<td>' . htmlspecialchars($nethera['noHP'] ?? '') . '</td>';
                 $output .= '<td>' . htmlspecialchars($nethera['nama_sanctuary']) . '</td>';
                 $output .= '<td>' . htmlspecialchars($nethera['periode_masuk']) . '</td>';
                 $output .= '<td><span class="status-badge status-' . $status_class . '">' . htmlspecialchars($nethera['status_akun']) . '</span></td>';
