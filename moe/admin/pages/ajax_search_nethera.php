@@ -51,37 +51,56 @@ if ($stmt) {
         if (mysqli_num_rows($result) > 0) {
             while ($nethera = mysqli_fetch_assoc($result)) {
                 // Status badge logic
-                $status_class = strtolower($nethera['status_akun']);
-                $status_class = str_replace(' ', '-', $status_class);
+                $status_class = $nethera['status_akun'];
+                $initial = strtoupper(substr($nethera['nama_lengkap'], 0, 1));
 
-                $output .= '<tr>';
-                $output .= '<td>' . htmlspecialchars($nethera['no_registrasi']) . '</td>';
-                $output .= '<td>' . htmlspecialchars($nethera['nama_lengkap']) . '</td>';
-                $output .= '<td>' . htmlspecialchars($nethera['username']) . '</td>';
-                $output .= '<td>' . htmlspecialchars($nethera['noHP'] ?? '') . '</td>';
-                $output .= '<td>' . htmlspecialchars($nethera['nama_sanctuary']) . '</td>';
+                $output .= '<tr data-status="' . htmlspecialchars($nethera['status_akun']) . '">';
+
+                // No. Registrasi with badge
+                $output .= '<td><span class="reg-badge">' . htmlspecialchars($nethera['no_registrasi']) . '</span></td>';
+
+                // Full Name with avatar
+                $output .= '<td>
+                    <div class="user-cell">
+                        <div class="user-avatar">' . $initial . '</div>
+                        <strong>' . htmlspecialchars($nethera['nama_lengkap']) . '</strong>
+                    </div>
+                </td>';
+
+                // Username with code style
+                $output .= '<td><code class="username-code">@' . htmlspecialchars($nethera['username']) . '</code></td>';
+
+                // Phone
+                $output .= '<td>' . htmlspecialchars($nethera['noHP'] ?? '-') . '</td>';
+
+                // Sanctuary with badge
+                $output .= '<td><span class="sanctuary-badge">' . htmlspecialchars($nethera['nama_sanctuary']) . '</span></td>';
+
+                // Period
                 $output .= '<td>' . htmlspecialchars($nethera['periode_masuk']) . '</td>';
+
+                // Status badge
                 $output .= '<td><span class="status-badge status-' . $status_class . '">' . htmlspecialchars($nethera['status_akun']) . '</span></td>';
 
-                $output .= '<td>
-    <div class="action-buttons">
-        
-        <a href="edit_nethera.php?id=' . $nethera['id_nethera'] . '" class="btn-edit" title="Edit">
-            <i class="uil uil-edit"></i>
-        </a>
-        
-        <button class="btn-delete" title="Delete" onclick="confirmDelete(' . $nethera['id_nethera'] . ')">
-            <i class="uil uil-trash-alt"></i>
-        </button>
-    </div>
-</td>';
+                // Actions
+                $output .= '<td style="white-space: nowrap;">
+                    <div class="action-buttons">
+                        <a href="edit_nethera.php?id=' . $nethera['id_nethera'] . '" class="btn-edit" title="Edit">
+                            <i class="uil uil-edit"></i>
+                        </a>
+                        <button class="btn-delete" title="Delete" onclick="confirmDelete(' . $nethera['id_nethera'] . ')">
+                            <i class="uil uil-trash-alt"></i>
+                        </button>
+                    </div>
+                </td>';
                 $output .= '</tr>';
             }
         } else {
             // Jika tidak ditemukan hasil
-            $output = '<tr><td colspan="7" style="text-align: center; padding: 20px;">
-                        <i class="uil uil-search-alt" style="font-size: 1.2rem; margin-right: 5px;"></i> 
-                        No results found for "' . htmlspecialchars($search_term) . '".
+            $output = '<tr><td colspan="8" class="empty-state">
+                        <div class="empty-icon"><i class="uil uil-search-alt"></i></div>
+                        <h4>No Results Found</h4>
+                        <p>Tidak ada hasil untuk "' . htmlspecialchars($search_term) . '"</p>
                        </td></tr>';
         }
 
