@@ -203,6 +203,7 @@ function switchTab(tab) {
             loadInventory();
             break;
         case 'arena':
+            loadActivePet(); // Refresh HP after battles
             loadOpponents();
             break;
         case 'achievements':
