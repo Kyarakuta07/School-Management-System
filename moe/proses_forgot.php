@@ -38,7 +38,10 @@ if (!$check['allowed']) {
 $user_email = trim($_POST['email']);
 $token = bin2hex(random_bytes(32)); // Generate token 64 karakter (aman)
 $expiry_time = date("Y-m-d H:i:s", time() + 1800); // Token berlaku 30 menit
-$reset_link = "http://" . $_SERVER['HTTP_HOST'] . "/reset_password.php?token=" . $token; // GANTI /reset_password.php JIKA PATH BEDA!
+
+// Auto-detect protocol and build reset link
+$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
+$reset_link = $protocol . $_SERVER['HTTP_HOST'] . "/moe/reset_password.php?token=" . $token;
 
 // --- 1. CEK APAKAH EMAIL TERDAFTAR & AMBIL DATA USER ---
 $sql_check = "SELECT id_nethera, username FROM nethera WHERE email = ?";
@@ -121,11 +124,15 @@ if ($stmt_check) {
             }
 
         } else {
-            die("Error updating token: " . mysqli_error($conn));
+            error_log("Password reset token update failed: " . mysqli_error($conn));
+            header("Location: forgot_password.php?status=error");
+            exit();
         }
 
     } else {
-        die("Error preparing statement: " . mysqli_error($conn));
+        error_log("Password reset statement prepare failed: " . mysqli_error($conn));
+        header("Location: forgot_password.php?status=error");
+        exit();
     }
 }
 ?>

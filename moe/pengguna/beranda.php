@@ -20,7 +20,9 @@ $stmt_info = mysqli_prepare($conn, $sql_info);
 
 // --- PERBAIKAN KRITIS: CHECK JIKA QUERY GAGAL ---
 if (!$stmt_info) {
-    die("Error Database. Hubungi Admin: " . mysqli_error($conn));
+    error_log("Beranda query prepare failed for user $id_user: " . mysqli_error($conn));
+    header("Location: ../index.php?pesan=error");
+    exit();
 }
 // --- END PERBAIKAN KRITIS ---
 
