@@ -171,7 +171,7 @@ if ($hour >= 5 && $hour < 12) {
                     <!-- Avatar -->
                     <div class="avatar-container" onclick="document.getElementById('photoUploadInput').click()">
                         <?php if ($profile_photo): ?>
-                            <img src="../uploads/profiles/<?= e($profile_photo) ?>" alt="" class="avatar-img" id="avatarPreview">
+                            <img src="../assets/uploads/profiles/<?= e($profile_photo) ?>" alt="" class="avatar-img" id="avatarPreview">
                         <?php else: ?>
                             <div class="avatar-placeholder" id="avatarPreview">
                                 <i class="fas fa-user"></i>
