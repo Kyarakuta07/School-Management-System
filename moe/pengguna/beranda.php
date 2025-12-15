@@ -70,13 +70,22 @@ $pet_buff_text = null;
 if ($active_pet) {
     $pet_level = $active_pet['level'];
 
-    // Image based on evolution stage
-    if ($pet_level >= 15) {
+    // Image based on evolution stage with proper fallbacks
+    if ($pet_level >= 15 && !empty($active_pet['img_adult'])) {
         $pet_image = '../assets/pets/' . $active_pet['img_adult'];
-    } elseif ($pet_level >= 5) {
+    } elseif ($pet_level >= 5 && !empty($active_pet['img_baby'])) {
         $pet_image = '../assets/pets/' . $active_pet['img_baby'];
+    } elseif (!empty($active_pet['img_egg'])) {
+        $pet_image = '../assets/pets/' . $active_pet['img_egg'];
+    } elseif (!empty($active_pet['img_baby'])) {
+        // Fallback to baby image if egg image doesn't exist
+        $pet_image = '../assets/pets/' . $active_pet['img_baby'];
+    } elseif (!empty($active_pet['img_adult'])) {
+        // Fallback to adult image
+        $pet_image = '../assets/pets/' . $active_pet['img_adult'];
     } else {
-        $pet_image = '../assets/pets/' . ($active_pet['img_egg'] ?? 'default/egg.png');
+        // Ultimate fallback
+        $pet_image = '../assets/placeholder.png';
     }
 
     $pet_display_name = $active_pet['nickname'] ?? $active_pet['species_name'];
