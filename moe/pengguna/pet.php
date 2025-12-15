@@ -49,6 +49,7 @@ mysqli_stmt_close($gold_stmt);
     <!-- Styles -->
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="css/pet.css">
+    <link rel="stylesheet" href="css/pet_animations.css">
     <link rel="stylesheet" href="css/pet_help_guide.css">
     <link rel="stylesheet" href="css/daily_login.css">
 </head>
@@ -997,6 +998,7 @@ mysqli_stmt_close($gold_stmt);
 
     <!-- JavaScript -->
     <script src="js/pet.js"></script>
+    <script src="js/pet_animations.js"></script>
     <script src="js/pet_hardcore_update.js"></script>
 
 </body>

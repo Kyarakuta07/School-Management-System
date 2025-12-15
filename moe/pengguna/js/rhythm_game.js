@@ -130,6 +130,11 @@ function startGame() {
     // Update display
     updateDisplay();
 
+    // Start pet dance animation
+    if (window.PetAnimations) {
+        window.PetAnimations.rhythmStart();
+    }
+
     // Start timer
     GameState.timerInterval = setInterval(() => {
         GameState.timeLeft--;
@@ -163,6 +168,11 @@ function endGame() {
     // Clear remaining notes
     GameState.notes.forEach(note => note.element?.remove());
     GameState.notes = [];
+
+    // Stop pet dance animation
+    if (window.PetAnimations) {
+        window.PetAnimations.rhythmEnd();
+    }
 
     // Submit score to backend
     submitScore();

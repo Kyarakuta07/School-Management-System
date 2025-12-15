@@ -276,10 +276,11 @@ function renderActivePet() {
         <div class="pet-glow"></div>
         <div class="pet-display">
             <img src="${imgPath}" alt="${activePet.species_name}" 
-                 class="pet-image ${shinyClass}" 
+                 class="pet-image pet-anim-idle ${shinyClass}" 
                  style="${shinyStyle}"
                  onerror="this.src='../assets/placeholder.png'">
         </div>
+        ${activePet.is_shiny ? '<div class="pet-sparkles"></div>' : ''}
     `;
 
     // Pet name and level
@@ -515,7 +516,32 @@ function initActionButtons() {
 
 async function playWithPet() {
     if (!activePet) return;
+
+    // Check if pet is alive
+    if (activePet.status === 'DEAD') {
+        showToast('This pet is dead! Use a revival item first.', 'warning');
+        return;
+    }
+
+    // Play jump animation with hearts
+    if (window.PetAnimations) {
+        window.PetAnimations.jump();
+        window.PetAnimations.hearts(3);
+    }
+
     showToast('You played with ' + (activePet.nickname || activePet.species_name) + '! 🎵', 'success');
+
+    // Open rhythm game modal after short delay
+    setTimeout(() => {
+        const rhythmModal = document.getElementById('rhythm-modal');
+        if (rhythmModal) {
+            rhythmModal.classList.add('show');
+            // Start rhythm game if function exists
+            if (typeof startRhythmGame === 'function') {
+                startRhythmGame();
+            }
+        }
+    }, 500);
 }
 
 async function toggleShelter(targetPetId = null) {
@@ -678,7 +704,26 @@ async function useItem(itemId, targetPetId = 0, quantity = 1) {
                 showGachaResult(data.gacha_data);
                 showToast('Telur berhasil menetas!', 'success');
             } else {
-                // Item Biasa
+                // Item Biasa - Show particle effects based on item type
+                if (window.PetAnimations) {
+                    // Determine effect type from item
+                    if (data.effect_type === 'food' || data.hunger_restored) {
+                        window.PetAnimations.food(quantity);
+                        window.PetAnimations.jump();
+                    } else if (data.effect_type === 'potion' || data.health_restored) {
+                        window.PetAnimations.sparkles(6);
+                        window.PetAnimations.lottie('healing', 1500);
+                    } else if (data.effect_type === 'revive') {
+                        window.PetAnimations.revive();
+                        window.PetAnimations.lottie('sparkles', 2000);
+                    }
+
+                    // Show EXP if gained
+                    if (data.exp_gained && data.exp_gained > 0) {
+                        window.PetAnimations.showExp(data.exp_gained);
+                    }
+                }
+
                 showToast(data.message, 'success');
             }
 
@@ -854,6 +899,25 @@ function showGachaResult(data) {
     }
 
     modal.classList.add('show');
+
+    // Enhanced animation effects
+    if (window.PetAnimations) {
+        // Add reveal animation to pet image
+        const resultPet = document.getElementById('result-pet');
+        if (resultPet) {
+            resultPet.classList.add('gacha-result-reveal');
+            setTimeout(() => resultPet.classList.remove('gacha-result-reveal'), 1000);
+        }
+
+        // Play confetti for rare+ pulls
+        const rarityLevel = { 'Common': 1, 'Rare': 2, 'Epic': 3, 'Legendary': 4 };
+        if (rarityLevel[data.rarity] >= 2) {
+            window.PetAnimations.lottie('confetti', 3000, modalContent);
+        }
+        if (rarityLevel[data.rarity] >= 4) {
+            window.PetAnimations.lottie('sparkles', 2500, modalContent);
+        }
+    }
 }
 
 function closeGachaModal() {
