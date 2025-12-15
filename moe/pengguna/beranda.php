@@ -1,9 +1,10 @@
 <?php
 /**
- * Nethera Dashboard (Beranda) - V2 REDESIGN
+ * Nethera Dashboard (Beranda)
  * Mediterranean of Egypt - School Management System
  * 
- * Premium modern dashboard with card-based layout
+ * Main dashboard for Nethera users showing profile,
+ * fun fact, active pet, and sanctuary information.
  */
 
 // ==================================================
@@ -29,7 +30,7 @@ $user_name = htmlspecialchars($_SESSION['nama_lengkap']);
 
 // Get user info with sanctuary (using DB wrapper)
 $user_info = DB::queryOne(
-    "SELECT n.status_akun, n.profile_photo, n.fun_fact, s.nama_sanctuary, s.deskripsi, s.id_sanctuary
+    "SELECT n.status_akun, n.profile_photo, n.fun_fact, s.nama_sanctuary, s.deskripsi
      FROM nethera n
      JOIN sanctuary s ON n.id_sanctuary = s.id_sanctuary
      WHERE n.id_nethera = ?",
@@ -42,39 +43,11 @@ if (!$user_info) {
     redirect('../index.php?pesan=error');
 }
 
-// Extract data
+// Extract data (using e() helper for XSS protection)
 $sanctuary_name = $user_info['nama_sanctuary'];
 $sanctuary_desc = $user_info['deskripsi'] ?? '';
-$sanctuary_id = $user_info['id_sanctuary'];
 $profile_photo = $user_info['profile_photo'];
-$fun_fact = $user_info['fun_fact'] ?? 'Share something interesting about yourself...';
-
-// ==================================================
-// FETCH USER STATS
-// ==================================================
-
-// Get total gold
-$gold_result = DB::queryOne(
-    "SELECT gold FROM user_stats WHERE user_id = ?",
-    [$user_id]
-);
-$total_gold = $gold_result['gold'] ?? 0;
-
-// Get total pets
-$pets_result = DB::queryOne(
-    "SELECT COUNT(*) as total FROM user_pets WHERE user_id = ? AND status = 'ALIVE'",
-    [$user_id]
-);
-$total_pets = $pets_result['total'] ?? 0;
-
-// Get sanctuary ranking
-$rank_result = DB::queryOne(
-    "SELECT COUNT(*) + 1 as rank 
-     FROM nethera 
-     WHERE id_sanctuary = ? AND id_nethera != ?",
-    [$sanctuary_id, $user_id]
-);
-$sanctuary_rank = $rank_result['rank'] ?? '-';
+$fun_fact = $user_info['fun_fact'] ?? 'Belum ada funfact.';
 
 // ==================================================
 // ACTIVE PET DATA
@@ -93,14 +66,11 @@ $active_pet = DB::queryOne(
 
 // Determine pet image and display info
 $pet_image = null;
-$pet_display_name = 'No Active Pet';
+$pet_display_name = null;
 $pet_buff_text = null;
-$pet_level = 0;
-$pet_element = null;
 
 if ($active_pet) {
     $pet_level = $active_pet['level'];
-    $pet_element = $active_pet['element'];
 
     // Image based on evolution stage
     if ($pet_level >= 15) {
@@ -116,24 +86,6 @@ if ($active_pet) {
 }
 
 // ==================================================
-// TIME-BASED GREETING
-// ==================================================
-$hour = date('G');
-if ($hour >= 5 && $hour < 12) {
-    $greeting = 'Good Morning';
-    $greeting_icon = '🌅';
-} elseif ($hour >= 12 && $hour < 17) {
-    $greeting = 'Good Afternoon';
-    $greeting_icon = '☀️';
-} elseif ($hour >= 17 && $hour < 21) {
-    $greeting = 'Good Evening';
-    $greeting_icon = '🌆';
-} else {
-    $greeting = 'Good Night';
-    $greeting_icon = '🌙';
-}
-
-// ==================================================
 // GENERATE CSRF TOKEN
 // ==================================================
 $csrf_token = generate_csrf_token();
@@ -145,12 +97,11 @@ $csrf_token = generate_csrf_token();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Dashboard - <?= e($sanctuary_name) ?> Sanctuary</title>
+    <title>Beranda - <?= e($sanctuary_name) ?> Sanctuary</title>
 
     <link rel="stylesheet" href="../assets/css/global.css" />
     <link rel="stylesheet" href="../assets/css/landing-style.css" />
     <link rel="stylesheet" href="css/beranda_style.css" />
-    <link rel="stylesheet" href="css/beranda_v2_style.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
@@ -161,188 +112,120 @@ $csrf_token = generate_csrf_token();
 
     <div class="main-dashboard-wrapper">
 
-        <!-- HERO SECTION -->
-        <header class="hero-header">
-            <div class="hero-content">
-                <div class="greeting-section">
-                    <span class="greeting-icon"><?= $greeting_icon ?></span>
-                    <div class="greeting-text">
-                        <h2 class="greeting"><?= $greeting ?>,</h2>
-                        <h1 class="user-name-hero"><?= e($user_name) ?></h1>
-                    </div>
-                </div>
-                <div class="hero-actions">
-                    <a href="../logout.php" class="logout-btn-hero" title="Logout">
-                        <i class="fa-solid fa-sign-out-alt"></i>
-                    </a>
-                </div>
-            </div>
-            <div class="sanctuary-badge">
-                <i class="fas fa-shield-alt"></i>
-                <span><?= e($sanctuary_name) ?> Sanctuary</span>
-            </div>
+        <header class="top-user-header">
+            <h1 class="main-h1 cinzel-title">NETHARA COMMAND HUB</h1>
+            <p class="main-h2">Anda adalah anggota dari <?= e($sanctuary_name) ?> Sanctuary.</p>
         </header>
 
-        <!-- MAIN NAVIGATION -->
         <nav class="top-nav-menu">
             <a href="beranda.php" class="nav-btn active"><i class="fa-solid fa-home"></i><span>Home</span></a>
             <a href="class.php" class="nav-btn"><i class="fa-solid fa-book-open"></i><span>Class</span></a>
             <a href="pet.php" class="nav-btn"><i class="fa-solid fa-paw"></i><span>Pet</span></a>
             <a href="trapeza.php" class="nav-btn"><i class="fa-solid fa-credit-card"></i><span>Trapeza</span></a>
             <a href="punishment.php" class="nav-btn"><i class="fa-solid fa-gavel"></i><span>Punishment</span></a>
+            <a href="../logout.php" class="logout-btn-header"><i
+                    class="fa-solid fa-sign-out-alt"></i><span>Logout</span></a>
         </nav>
 
-        <!-- STATS OVERVIEW -->
-        <div class="stats-overview">
-            <div class="stat-card">
-                <div class="stat-icon gold-icon">
-                    <i class="fas fa-coins"></i>
-                </div>
-                <div class="stat-info">
-                    <span class="stat-label">Gold</span>
-                    <span class="stat-value" data-count="<?= $total_gold ?>">0</span>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon pet-icon">
-                    <i class="fas fa-paw"></i>
-                </div>
-                <div class="stat-info">
-                    <span class="stat-label">Pets</span>
-                    <span class="stat-value" data-count="<?= $total_pets ?>">0</span>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon rank-icon">
-                    <i class="fas fa-trophy"></i>
-                </div>
-                <div class="stat-info">
-                    <span class="stat-label">Rank</span>
-                    <span class="stat-value">#<?= $sanctuary_rank ?></span>
-                </div>
-            </div>
-        </div>
+        <main class="profile-main-grid">
 
-        <!-- MAIN CONTENT GRID -->
-        <main class="dashboard-grid">
+            <section class="profile-sidebar-panel">
 
-            <!-- PROFILE CARD -->
-            <div class="dashboard-card profile-card-new">
-                <div class="card-header-new">
-                    <h3><i class="fas fa-user-circle"></i> Profile</h3>
-                </div>
-                <div class="card-body-new">
-                    <div class="avatar-wrapper" onclick="document.getElementById('profilePhotoInput').click()">
-                        <img src="<?= $profile_photo ? '../uploads/profiles/' . e($profile_photo) : '../assets/default-avatar.png' ?>"
-                            alt="Profile" class="profile-avatar-new" id="profileAvatarImg">
+                <div class="profile-avatar-box">
+                    <div class="avatar-wrapper" onclick="document.getElementById('photoUploadInput').click()">
+                        <?php
+                        $avatarSrc = $profile_photo
+                            ? '../assets/uploads/profiles/' . e($profile_photo)
+                            : '../assets/placeholder.png';
+                        ?>
+                        <img src="<?= $avatarSrc ?>" alt="Avatar" class="profile-avatar-lg" id="avatarPreview">
                         <div class="avatar-edit-overlay">
-                            <i class="fas fa-camera"></i>
+                            <i class="fa-solid fa-camera"></i>
                         </div>
                     </div>
-                    <input type="file" id="profilePhotoInput" accept="image/*" style="display: none;"
-                        onchange="uploadProfilePhoto(this)">
+                    <h2 class="user-name-title"><?= e($user_name) ?></h2>
+                    <p class="profile-link">My Profile</p>
 
-                    <div class="profile-info-new">
-                        <h4 class="profile-name"><?= e($user_name) ?></h4>
-                        <p class="profile-role"><i class="fas fa-user-shield"></i> Nethera</p>
+                    <!-- Hidden file input for photo upload -->
+                    <input type="file" id="photoUploadInput" accept="image/jpeg,image/png,image/gif,image/webp"
+                        style="display: none;">
+                </div>
+
+                <div class="profile-card funfact-card">
+                    <div class="card-title-row">
+                        <h3 class="card-title">MY FUNFACT</h3>
+                        <button class="edit-btn" onclick="openFunfactModal()"><i class="fa-solid fa-pen"></i></button>
                     </div>
+                    <p class="card-content" id="funfactDisplay"><?= e($fun_fact) ?></p>
                 </div>
-            </div>
 
-            <!-- ACTIVE PET CARD -->
-            <div class="dashboard-card pet-showcase-card">
-                <div class="card-header-new">
-                    <h3><i class="fas fa-dragon"></i> Active Companion</h3>
-                    <a href="pet.php" class="card-link">View All</a>
-                </div>
-                <div class="card-body-new">
-                    <?php if ($active_pet): ?>
-                        <div class="pet-showcase">
-                            <div class="pet-image-wrapper">
-                                <img src="<?= e($pet_image) ?>" alt="<?= e($pet_display_name) ?>" class="pet-image-large">
-                                <div class="pet-element-badge <?= strtolower($pet_element) ?>">
-                                    <?= e($pet_element) ?>
-                                </div>
+                <?php if ($active_pet): ?>
+                    <!-- STUDY BUDDY PET WIDGET -->
+                    <a href="pet.php" class="profile-card study-buddy-card">
+                        <h3 class="card-title"><i class="fa-solid fa-paw"></i> STUDY BUDDY</h3>
+                        <div class="study-buddy-content">
+                            <div class="study-buddy-pet">
+                                <img src="<?= $pet_image ?>" alt="<?= e($pet_display_name) ?>" class="study-buddy-img"
+                                    onerror="this.src='../assets/placeholder.png'">
                             </div>
-                            <div class="pet-details">
-                                <h4 class="pet-name-large"><?= e($pet_display_name) ?></h4>
-                                <div class="pet-level-badge">Lv. <?= $pet_level ?></div>
-                                <?php if ($pet_buff_text): ?>
-                                    <p class="pet-buff"><i class="fas fa-sparkles"></i> <?= e($pet_buff_text) ?></p>
-                                <?php endif; ?>
+                            <div class="study-buddy-info">
+                                <span class="buddy-name"><?= e($pet_display_name) ?></span>
+                                <span
+                                    class="buddy-element <?= strtolower($active_pet['element']) ?>"><?= $active_pet['element'] ?></span>
+                                <span class="buddy-buff"><?= $pet_buff_text ?></span>
                             </div>
                         </div>
-                    <?php else: ?>
-                        <div class="empty-state">
-                            <i class="fas fa-egg fa-3x"></i>
-                            <p>No active pet</p>
-                            <a href="pet.php" class="btn-primary-small">Get a Pet</a>
-                        </div>
-                    <?php endif; ?>
-                </div>
-            </div>
+                    </a>
+                <?php endif; ?>
 
-            <!-- FUN FACT CARD -->
-            <div class="dashboard-card funfact-card-new">
-                <div class="card-header-new">
-                    <h3><i class="fas fa-lightbulb"></i> My Fun Fact</h3>
-                    <button class="edit-btn" onclick="openFunfactModal()">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                </div>
-                <div class="card-body-new">
-                    <p class="funfact-text" id="funfactDisplay"><?= e($fun_fact) ?></p>
-                </div>
-            </div>
+            </section>
 
-            <!-- SANCTUARY INFO CARD -->
-            <div class="dashboard-card sanctuary-card-new">
-                <div class="card-header-new">
-                    <h3><i class="fas fa-landmark"></i> <?= e($sanctuary_name) ?></h3>
-                </div>
-                <div class="card-body-new">
-                    <p class="sanctuary-desc"><?= e($sanctuary_desc) ?></p>
-                    <div class="sanctuary-stats-mini">
-                        <div class="mini-stat">
-                            <i class="fas fa-users"></i>
-                            <span>Your Rank: #<?= $sanctuary_rank ?></span>
-                        </div>
+
+            <section class="info-command-panel">
+
+                <div class="profile-card sanctuary-card">
+                    <h3 class="card-title">ABOUT MY SANCTUARY</h3>
+                    <div class="card-content">
+                        <i class="fa-solid fa-ankh sanctuary-icon"></i>
+                        <p>Anda adalah anggota dari <?= e($sanctuary_name) ?> Sanctuary.
+                            <br><br>
+                            <?php if (!empty($sanctuary_desc)): ?>
+                                <?= e($sanctuary_desc) ?>
+                            <?php else: ?>
+                                Sanctuary Ammit, the fourth sanctuary "Sanctu #4" was forged for Nethara, bearer of Ammit's
+                                divine blood. It shelters children chosen for their sense of justice, clarity of judgment,
+                                iron strong hearts, and wandering spirits destined for greater paths.
+
+                                In the myths of ancient Kemet, Ammit is the Devourer of Death: a fearsome being with the
+                                crocodile's jaws, the lion's strength, and the hippopotamus's unyielding might. No wicked
+                                soul escapes her shadow.
+
+                                Within the Hall of Two Truths, Anubis weighs each heart against Ma'at's feather. When a
+                                heart sinks with the weight of its deeds, Ammit consumes it severing its path to Osiris and
+                                casting the soul into the eternal silence of the second death.
+
+                                Feared more than worshipped, Ammit keeps vigil at the lake of fire, watching the edges of
+                                the afterlife. There she waits, patient and ancient, for the unworthy to fall into her
+                                grasp.
+                            <?php endif; ?>
+                        </p>
                     </div>
                 </div>
-            </div>
 
-            <!-- QUICK ACTIONS CARD -->
-            <div class="dashboard-card actions-card">
-                <div class="card-header-new">
-                    <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
-                </div>
-                <div class="card-body-new">
-                    <div class="action-grid">
-                        <a href="pet.php" class="action-btn">
-                            <i class="fas fa-paw"></i>
-                            <span>Manage Pets</span>
-                        </a>
-                        <a href="trapeza.php" class="action-btn">
-                            <i class="fas fa-coins"></i>
-                            <span>Banking</span>
-                        </a>
-                        <a href="class.php" class="action-btn">
-                            <i class="fas fa-book-open"></i>
-                            <span>Classes</span>
-                        </a>
-                        <a href="punishment.php" class="action-btn">
-                            <i class="fas fa-scroll"></i>
-                            <span>Rules</span>
-                        </a>
+                <div class="profile-card news-card">
+                    <h3 class="card-title">MOE NEWS AND EVENT</h3>
+                    <div class="card-content">
+                        <p>Data event dan pengumuman terbaru akan muncul di sini.</p>
+                        <a href="class.php" class="more-link">Go to Class Schedule</a>
                     </div>
                 </div>
-            </div>
+
+            </section>
 
         </main>
-
     </div>
 
-    <!-- FUN FACT MODAL -->
+    <!-- Fun Fact Edit Modal -->
     <div class="modal-overlay" id="funfactModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -350,19 +233,133 @@ $csrf_token = generate_csrf_token();
                 <button class="modal-close" onclick="closeFunfactModal()">&times;</button>
             </div>
             <div class="modal-body">
-                <textarea id="funfactInput" placeholder="Share something interesting about yourself..."
-                    maxlength="500"><?= e($fun_fact !== 'Share something interesting about yourself...' ? $fun_fact : '') ?></textarea>
+                <textarea id="funfactInput" placeholder="Tulis fun fact tentang dirimu..."
+                    maxlength="500"><?= e($fun_fact !== 'Belum ada funfact.' ? $fun_fact : '') ?></textarea>
                 <div class="char-count"><span id="charCount">0</span>/500</div>
             </div>
             <div class="modal-footer">
-                <button class="btn-cancel" onclick="closeFunfactModal()">Cancel</button>
-                <button class="btn-save" onclick="saveFunfact()">Save</button>
+                <button class="btn-cancel" onclick="closeFunfactModal()">Batal</button>
+                <button class="btn-save" onclick="saveFunfact()">Simpan</button>
             </div>
         </div>
     </div>
 
     <!-- CSRF Token -->
     <input type="hidden" id="csrfToken" value="<?= $csrf_token ?>">
+
+    <script>
+        // --- FUN FACT MODAL ---
+        const funfactModal = document.getElementById('funfactModal');
+        const funfactInput = document.getElementById('funfactInput');
+        const charCount = document.getElementById('charCount');
+
+        function openFunfactModal() {
+            funfactModal.classList.add('active');
+            updateCharCount();
+        }
+
+        function closeFunfactModal() {
+            funfactModal.classList.remove('active');
+        }
+
+        function updateCharCount() {
+            charCount.textContent = funfactInput.value.length;
+        }
+
+        funfactInput.addEventListener('input', updateCharCount);
+
+        function saveFunfact() {
+            const csrfToken = document.getElementById('csrfToken').value;
+            const funfact = funfactInput.value.trim();
+
+            fetch('update_profile.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `action=update_funfact&fun_fact=${encodeURIComponent(funfact)}&csrf_token=${csrfToken}`
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('funfactDisplay').textContent = data.fun_fact || 'Belum ada funfact.';
+                        closeFunfactModal();
+                        showToast('Fun fact berhasil diupdate!', 'success');
+                    } else {
+                        showToast(data.message || 'Gagal menyimpan', 'error');
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    showToast('Terjadi kesalahan', 'error');
+                });
+        }
+
+        // --- PHOTO UPLOAD ---
+        const photoInput = document.getElementById('photoUploadInput');
+        const avatarPreview = document.getElementById('avatarPreview');
+
+        photoInput.addEventListener('change', function () {
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+
+                // Validate file size (2MB)
+                if (file.size > 2 * 1024 * 1024) {
+                    showToast('Ukuran file terlalu besar (max 2MB)', 'error');
+                    return;
+                }
+
+                // Show loading state
+                avatarPreview.style.opacity = '0.5';
+
+                const formData = new FormData();
+                formData.append('action', 'upload_photo');
+                formData.append('profile_photo', file);
+                formData.append('csrf_token', document.getElementById('csrfToken').value);
+
+                fetch('update_profile.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        avatarPreview.style.opacity = '1';
+                        if (data.success) {
+                            // Add cache buster to force reload
+                            avatarPreview.src = '../' + data.photo_url + '?t=' + Date.now();
+                            showToast('Foto profil berhasil diupdate!', 'success');
+                        } else {
+                            showToast(data.message || 'Gagal upload foto', 'error');
+                        }
+                    })
+                    .catch(err => {
+                        avatarPreview.style.opacity = '1';
+                        console.error(err);
+                        showToast('Terjadi kesalahan', 'error');
+                    });
+            }
+        });
+
+        // --- TOAST NOTIFICATION ---
+        function showToast(message, type = 'success') {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `<i class="fa-solid fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Close modal on overlay click
+        funfactModal.addEventListener('click', function (e) {
+            if (e.target === this) closeFunfactModal();
+        });
+    </script>
 
     <!-- BOTTOM NAVIGATION (Mobile Only) -->
     <nav class="bottom-nav">
@@ -387,123 +384,6 @@ $csrf_token = generate_csrf_token();
             <span>Rules</span>
         </a>
     </nav>
-
-    <script>
-        // ==================================================
-        // ANIMATED COUNTER
-        // ==================================================
-        function animateCounter(element) {
-            const target = parseInt(element.dataset.count);
-            const duration = 1500;
-            const step = target / (duration / 16);
-            let current = 0;
-
-            const timer = setInterval(() => {
-                current += step;
-                if (current >= target) {
-                    element.textContent = target.toLocaleString();
-                    clearInterval(timer);
-                } else {
-                    element.textContent = Math.floor(current).toLocaleString();
-                }
-            }, 16);
-        }
-
-        // Animate all counters on page load
-        window.addEventListener('load', () => {
-            document.querySelectorAll('.stat-value[data-count]').forEach(animateCounter);
-        });
-
-        // ==================================================
-        // PROFILE PHOTO UPLOAD
-        // ==================================================
-        function uploadProfilePhoto(input) {
-            if (input.files && input.files[0]) {
-                const formData = new FormData();
-                formData.append('profile_photo', input.files[0]);
-                formData.append('csrf_token', document.getElementById('csrfToken').value);
-
-                fetch('update_profile.php', {
-                    method: 'POST',
-                    body: formData
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            document.getElementById('profileAvatarImg').src = data.photo_url + '?t=' + Date.now();
-                            showNotification('Profile photo updated!', 'success');
-                        } else {
-                            showNotification(data.message || 'Upload failed', 'error');
-                        }
-                    })
-                    .catch(() => showNotification('Upload error', 'error'));
-            }
-        }
-
-        // ==================================================
-        // FUN FACT MODAL
-        // ==================================================
-        const funfactModal = document.getElementById('funfactModal');
-        const funfactInput = document.getElementById('funfactInput');
-        const charCount = document.getElementById('charCount');
-
-        function openFunfactModal() {
-            funfactModal.classList.add('show');
-            updateCharCount();
-        }
-
-        function closeFunfactModal() {
-            funfactModal.classList.remove('show');
-        }
-
-        funfactInput.addEventListener('input', updateCharCount);
-
-        function updateCharCount() {
-            charCount.textContent = funfactInput.value.length;
-        }
-
-        function saveFunfact() {
-            const funfact = funfactInput.value.trim();
-
-            fetch('update_profile.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `fun_fact=${encodeURIComponent(funfact)}&csrf_token=${document.getElementById('csrfToken').value}`
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        document.getElementById('funfactDisplay').textContent = funfact || 'Share something interesting about yourself...';
-                        closeFunfactModal();
-                        showNotification('Fun fact updated!', 'success');
-                    } else {
-                        showNotification(data.message || 'Update failed', 'error');
-                    }
-                })
-                .catch(() => showNotification('Update error', 'error'));
-        }
-
-        // Close modal on overlay click
-        funfactModal.addEventListener('click', function (e) {
-            if (e.target === this) closeFunfactModal();
-        });
-
-        // ==================================================
-        // NOTIFICATION SYSTEM
-        // ==================================================
-        function showNotification(message, type = 'info') {
-            const notification = document.createElement('div');
-            notification.className = `notification notification-${type}`;
-            notification.textContent = message;
-            document.body.appendChild(notification);
-
-            setTimeout(() => notification.classList.add('show'), 10);
-            setTimeout(() => {
-                notification.classList.remove('show');
-                setTimeout(() => notification.remove(), 300);
-            }, 3000);
-        }
-    </script>
 
 </body>
 

@@ -38,8 +38,8 @@ $user_info = DB::queryOne(
 
 // Handle missing user data
 if (!$user_info) {
-    app_log("User info not found for ID: $user_id", 'ERROR');
-    redirect('../index.php?pesan=error');
+    header("Location: ../index.php?pesan=error");
+    exit();
 }
 
 // Extract data

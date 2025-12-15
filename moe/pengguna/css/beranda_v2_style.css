@@ -450,7 +450,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    color: vargold);
+    color: var(--gold);
     font-weight: 600;
 }
 
