@@ -216,7 +216,7 @@
                     
                     =====================================================
                     -->
-                    <spline-viewer id="spline-viewer" url="https://prod.spline.design/6Wq1Q7YGyM-iab9i/scene.splinecode"
+                    <spline-viewer id="spline-viewer" url="https://prod.spline.design/3S1f5MDCY9SgD6uF/scene.splinecode"
                         loading-anim events-target="global" style="width: 100%; height: 100%;">
                     </spline-viewer>
                 </div>
