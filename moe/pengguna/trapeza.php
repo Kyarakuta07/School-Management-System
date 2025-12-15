@@ -7,7 +7,7 @@ if (!isset($_SESSION['status_login']) || $_SESSION['role'] != 'Nethera') {
     exit();
 }
 
-$username = $_SESSION['username'];
+$username = $_SESSION['nama_lengkap'] ?? $_SESSION['username'] ?? 'User';
 $id_nethera = $_SESSION['id_nethera'];
 ?>
 
