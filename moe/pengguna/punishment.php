@@ -171,12 +171,11 @@ $code_of_conduct = [
         </header>
 
         <nav class="top-nav-menu">
+            <a href="beranda.php" class="nav-btn"><i class="fa-solid fa-home"></i><span>Home</span></a>
             <a href="class.php" class="nav-btn"><i class="fa-solid fa-book-open"></i><span>Class</span></a>
             <a href="pet.php" class="nav-btn"><i class="fa-solid fa-paw"></i><span>Pet</span></a>
             <a href="trapeza.php" class="nav-btn"><i class="fa-solid fa-credit-card"></i><span>Trapeza</span></a>
             <a href="punishment.php" class="nav-btn active"><i class="fa-solid fa-gavel"></i><span>Punishment</span></a>
-            <a href="staff.php" class="nav-btn"><i class="fa-solid fa-users"></i><span>Staff</span></a>
-            <a href="beranda.php" class="nav-btn"><i class="fa-solid fa-home"></i><span>Home</span></a>
             <a href="../logout.php" class="logout-btn-header"><i
                     class="fa-solid fa-sign-out-alt"></i><span>Logout</span></a>
         </nav>
