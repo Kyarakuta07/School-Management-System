@@ -1,118 +1,92 @@
 <?php
-require_once '../includes/security_config.php';
-session_start();
-require_once '../includes/csrf.php';
-include '../connection.php';
+/**
+ * Nethera Dashboard (Beranda)
+ * Mediterranean of Egypt - School Management System
+ * 
+ * Main dashboard for Nethera users showing profile,
+ * fun fact, active pet, and sanctuary information.
+ * 
+ * REFACTORED - Uses new bootstrap system
+ */
 
-// 1. CEK AUTENTIKASI DASAR
-if (!isset($_SESSION['status_login']) || $_SESSION['role'] != 'Nethera') {
-    header("Location: ../index.php?pesan=gagal_akses");
-    exit();
+// ==================================================
+// BOOTSTRAP - Single line replaces 5+ includes
+// ==================================================
+require_once '../includes/bootstrap.php';
+
+// ==================================================
+// AUTHENTICATION - One line instead of 10+
+// ==================================================
+Auth::requireNethera();
+
+// ==================================================
+// DATA FETCHING - Now using DB class
+// ==================================================
+
+$user_id = Auth::id();
+$user_name = Auth::name();
+
+// Get user info with sanctuary (using DB wrapper)
+$user_info = DB::queryOne(
+    "SELECT n.status_akun, n.profile_photo, n.fun_fact, s.nama_sanctuary, s.deskripsi
+     FROM nethera n
+     JOIN sanctuary s ON n.id_sanctuary = s.id_sanctuary
+     WHERE n.id_nethera = ?",
+    [$user_id]
+);
+
+// Handle missing user data
+if (!$user_info) {
+    app_log("User info not found for ID: $user_id", 'ERROR');
+    redirect('../index.php?pesan=error');
 }
 
-$id_user = $_SESSION['id_nethera'];
+// Extract data (using e() helper for XSS protection)
+$sanctuary_name = $user_info['nama_sanctuary'];
+$sanctuary_desc = $user_info['deskripsi'] ?? '';
+$profile_photo = $user_info['profile_photo'];
+$fun_fact = $user_info['fun_fact'] ?? 'Belum ada funfact.';
 
-// 2. QUERY: CEK STATUS DAN AMBIL NAMA SANCTUARY + PROFILE PHOTO
-$sql_info = "SELECT n.status_akun, n.profile_photo, s.nama_sanctuary
-             FROM nethera n
-             JOIN sanctuary s ON n.id_sanctuary = s.id_sanctuary
-             WHERE n.id_nethera = ?";
+// ==================================================
+// ACTIVE PET DATA
+// ==================================================
 
-$stmt_info = mysqli_prepare($conn, $sql_info);
+$active_pet = DB::queryOne(
+    "SELECT up.*, ps.name as species_name, ps.element, 
+            ps.img_baby, ps.img_adult, ps.img_egg,
+            ps.passive_buff_type, ps.passive_buff_value
+     FROM user_pets up 
+     JOIN pet_species ps ON up.species_id = ps.id 
+     WHERE up.user_id = ? AND up.is_active = 1 AND up.status = 'ALIVE'
+     LIMIT 1",
+    [$user_id]
+);
 
-// --- PERBAIKAN KRITIS: CHECK JIKA QUERY GAGAL ---
-if (!$stmt_info) {
-    error_log("Beranda query prepare failed for user $id_user: " . mysqli_error($conn));
-    header("Location: ../index.php?pesan=error");
-    exit();
-}
-// --- END PERBAIKAN KRITIS ---
-
-mysqli_stmt_bind_param($stmt_info, "i", $id_user);
-mysqli_stmt_execute($stmt_info);
-$result_info = mysqli_stmt_get_result($stmt_info);
-$user_info_data = mysqli_fetch_assoc($result_info);
-mysqli_stmt_close($stmt_info);
-
-// 3. PEMBERSIHAN DATA DAN ENFORCEMENT
-$user_status = trim($user_info_data['status_akun']);
-$sanctuary_name = htmlspecialchars($user_info_data['nama_sanctuary']);
-$nama_pengguna = htmlspecialchars($_SESSION['nama_lengkap']);
-$profile_photo = $user_info_data['profile_photo']; // Profile photo filename
-
-// ENFORCEMENT: Cek status harus SAMA PERSIS dengan string 'Aktif'
-if ($user_status !== 'Aktif') {
-    session_destroy();
-
-    $redirect_message = 'access_denied';
-    if ($user_status === 'Pending') {
-        $redirect_message = 'pending_approval';
-    }
-
-    header("Location: ../index.php?pesan=" . $redirect_message);
-    exit();
-}
-
-// 1. Siapkan kerangka query dengan tanda tanya (?) sebagai placeholder
-$stmt = mysqli_prepare($conn, "SELECT fun_fact FROM nethera WHERE id_nethera = ?");
-
-// 2. Cek apakah prepare berhasil (penting untuk debugging)
-if ($stmt) {
-    // 3. Masukkan data ke placeholder
-    // "i" artinya integer (karena id_nethera adalah angka)
-    mysqli_stmt_bind_param($stmt, "i", $id_user);
-
-    // 4. Jalankan query
-    mysqli_stmt_execute($stmt);
-
-    // 5. Ambil hasilnya
-    $result = mysqli_stmt_get_result($stmt);
-
-    // Ambil data sebagai array asosiatif
-    $row = mysqli_fetch_assoc($result);
-
-    // Tutup statement
-    mysqli_stmt_close($stmt);
-} else {
-    // Log error jika query gagal disiapkan (jangan tampilkan ke user)
-    error_log("Query prepare failed: " . mysqli_error($conn));
-    $row = null; // Set default jika gagal
-}
-
-$fun_fact = htmlspecialchars($row['fun_fact'] ?? 'Belum ada funfact.');
-
-// 5. STUDY BUDDY - Get active pet for dashboard display
-$active_pet = null;
-$pet_query = "SELECT up.*, ps.name as species_name, ps.element, ps.img_baby, ps.img_adult, ps.passive_buff_type, ps.passive_buff_value
-              FROM user_pets up 
-              JOIN pet_species ps ON up.species_id = ps.id 
-              WHERE up.user_id = ? AND up.is_active = 1 AND up.status = 'ALIVE'
-              LIMIT 1";
-$pet_stmt = mysqli_prepare($conn, $pet_query);
-if ($pet_stmt) {
-    mysqli_stmt_bind_param($pet_stmt, "i", $id_user);
-    mysqli_stmt_execute($pet_stmt);
-    $pet_result = mysqli_stmt_get_result($pet_stmt);
-    $active_pet = mysqli_fetch_assoc($pet_result);
-    mysqli_stmt_close($pet_stmt);
-}
-
-// Determine pet image path based on level
+// Determine pet image and display info
 $pet_image = null;
 $pet_display_name = null;
 $pet_buff_text = null;
+
 if ($active_pet) {
     $pet_level = $active_pet['level'];
+
+    // Image based on evolution stage
     if ($pet_level >= 15) {
         $pet_image = '../assets/pets/' . $active_pet['img_adult'];
-    } else if ($pet_level >= 5) {
+    } elseif ($pet_level >= 5) {
         $pet_image = '../assets/pets/' . $active_pet['img_baby'];
     } else {
         $pet_image = '../assets/pets/' . ($active_pet['img_egg'] ?? 'default/egg.png');
     }
+
     $pet_display_name = $active_pet['nickname'] ?? $active_pet['species_name'];
     $pet_buff_text = '+' . $active_pet['passive_buff_value'] . '% ' . ucfirst(str_replace('_', ' ', $active_pet['passive_buff_type']));
 }
+
+// ==================================================
+// GENERATE CSRF TOKEN
+// ==================================================
+$csrf_token = generate_csrf_token();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -121,13 +95,12 @@ if ($active_pet) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Beranda - <?php echo htmlspecialchars($sanctuary_name); ?> Sanctuary</title>
+    <title>Beranda - <?= e($sanctuary_name) ?> Sanctuary</title>
 
     <link rel="stylesheet" href="../assets/css/global.css" />
     <link rel="stylesheet" href="../assets/css/landing-style.css" />
     <link rel="stylesheet" href="css/beranda_style.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
 </head>
 
 <body>
@@ -139,14 +112,14 @@ if ($active_pet) {
 
         <header class="top-user-header">
             <h1 class="main-h1 cinzel-title">NETHARA COMMAND HUB</h1>
-            <p class="main-h2">Anda adalah anggota dari <?php echo htmlspecialchars($sanctuary_name); ?> Sanctuary.</p>
+            <p class="main-h2">Anda adalah anggota dari <?= e($sanctuary_name) ?> Sanctuary.</p>
         </header>
 
         <nav class="top-nav-menu">
             <a href="class.php" class="nav-btn"><i class="fa-solid fa-book-open"></i><span>Class</span></a>
             <a href="pet.php" class="nav-btn"><i class="fa-solid fa-paw"></i><span>Pet</span></a>
             <a href="trapeza.php" class="nav-btn"><i class="fa-solid fa-credit-card"></i><span>Trapeza</span></a>
-            <a href="punish.php" class="nav-btn"><i class="fa-solid fa-gavel"></i><span>Punishment</span></a>
+            <a href="punishment.php" class="nav-btn"><i class="fa-solid fa-gavel"></i><span>Punishment</span></a>
             <a href="staff.php" class="nav-btn"><i class="fa-solid fa-users"></i><span>Staff</span></a>
             <a href="../logout.php" class="logout-btn-header"><i
                     class="fa-solid fa-sign-out-alt"></i><span>Logout</span></a>
@@ -160,15 +133,15 @@ if ($active_pet) {
                     <div class="avatar-wrapper" onclick="document.getElementById('photoUploadInput').click()">
                         <?php
                         $avatarSrc = $profile_photo
-                            ? '../assets/uploads/profiles/' . htmlspecialchars($profile_photo)
+                            ? '../assets/uploads/profiles/' . e($profile_photo)
                             : '../assets/placeholder.png';
                         ?>
-                        <img src="<?php echo $avatarSrc; ?>" alt="Avatar" class="profile-avatar-lg" id="avatarPreview">
+                        <img src="<?= $avatarSrc ?>" alt="Avatar" class="profile-avatar-lg" id="avatarPreview">
                         <div class="avatar-edit-overlay">
                             <i class="fa-solid fa-camera"></i>
                         </div>
                     </div>
-                    <h2 class="user-name-title"><?php echo $nama_pengguna; ?></h2>
+                    <h2 class="user-name-title"><?= e($user_name) ?></h2>
                     <p class="profile-link">My Profile</p>
 
                     <!-- Hidden file input for photo upload -->
@@ -181,7 +154,7 @@ if ($active_pet) {
                         <h3 class="card-title">MY FUNFACT</h3>
                         <button class="edit-btn" onclick="openFunfactModal()"><i class="fa-solid fa-pen"></i></button>
                     </div>
-                    <p class="card-content" id="funfactDisplay"><?php echo $fun_fact; ?></p>
+                    <p class="card-content" id="funfactDisplay"><?= e($fun_fact) ?></p>
                 </div>
 
                 <?php if ($active_pet): ?>
@@ -190,14 +163,14 @@ if ($active_pet) {
                         <h3 class="card-title"><i class="fa-solid fa-paw"></i> STUDY BUDDY</h3>
                         <div class="study-buddy-content">
                             <div class="study-buddy-pet">
-                                <img src="<?php echo $pet_image; ?>" alt="<?php echo $pet_display_name; ?>"
-                                    class="study-buddy-img" onerror="this.src='../assets/placeholder.png'">
+                                <img src="<?= $pet_image ?>" alt="<?= e($pet_display_name) ?>" class="study-buddy-img"
+                                    onerror="this.src='../assets/placeholder.png'">
                             </div>
                             <div class="study-buddy-info">
-                                <span class="buddy-name"><?php echo htmlspecialchars($pet_display_name); ?></span>
+                                <span class="buddy-name"><?= e($pet_display_name) ?></span>
                                 <span
-                                    class="buddy-element <?php echo strtolower($active_pet['element']); ?>"><?php echo $active_pet['element']; ?></span>
-                                <span class="buddy-buff"><?php echo $pet_buff_text; ?></span>
+                                    class="buddy-element <?= strtolower($active_pet['element']) ?>"><?= $active_pet['element'] ?></span>
+                                <span class="buddy-buff"><?= $pet_buff_text ?></span>
                             </div>
                         </div>
                     </a>
@@ -212,23 +185,27 @@ if ($active_pet) {
                     <h3 class="card-title">ABOUT MY SANCTUARY</h3>
                     <div class="card-content">
                         <i class="fa-solid fa-ankh sanctuary-icon"></i>
-                        <p>Anda adalah anggota dari <?php echo htmlspecialchars($sanctuary_name); ?> Sanctuary.
+                        <p>Anda adalah anggota dari <?= e($sanctuary_name) ?> Sanctuary.
                             <br><br>
-                            Sanctuary Ammit, the fourth sanctuary "Sanctu #4" was forged for Nethara, bearer of Ammit’s
-                            divine blood. It shelters children chosen for their sense of justice, clarity of judgment,
-                            iron strong hearts, and wandering spirits destined for greater paths.
+                            <?php if (!empty($sanctuary_desc)): ?>
+                                <?= e($sanctuary_desc) ?>
+                            <?php else: ?>
+                                Sanctuary Ammit, the fourth sanctuary "Sanctu #4" was forged for Nethara, bearer of Ammit's
+                                divine blood. It shelters children chosen for their sense of justice, clarity of judgment,
+                                iron strong hearts, and wandering spirits destined for greater paths.
 
-                            In the myths of ancient Kemet, Ammit is the Devourer of Death: a fearsome being with the
-                            crocodile’s jaws, the lion’s strength, and the hippopotamus’s unyielding might. No wicked
-                            soul escapes her shadow.
+                                In the myths of ancient Kemet, Ammit is the Devourer of Death: a fearsome being with the
+                                crocodile's jaws, the lion's strength, and the hippopotamus's unyielding might. No wicked
+                                soul escapes her shadow.
 
-                            Within the Hall of Two Truths, Anubis weighs each heart against Ma’at’s feather. When a
-                            heart sinks with the weight of its deeds, Ammit consumes it severing its path to Osiris and
-                            casting the soul into the eternal silence of the second death.
+                                Within the Hall of Two Truths, Anubis weighs each heart against Ma'at's feather. When a
+                                heart sinks with the weight of its deeds, Ammit consumes it severing its path to Osiris and
+                                casting the soul into the eternal silence of the second death.
 
-                            Feared more than worshipped, Ammit keeps vigil at the lake of fire, watching the edges of
-                            the afterlife. There she waits, patient and ancient, for the unworthy to fall into her
-                            grasp.
+                                Feared more than worshipped, Ammit keeps vigil at the lake of fire, watching the edges of
+                                the afterlife. There she waits, patient and ancient, for the unworthy to fall into her
+                                grasp.
+                            <?php endif; ?>
                         </p>
                     </div>
                 </div>
@@ -255,7 +232,7 @@ if ($active_pet) {
             </div>
             <div class="modal-body">
                 <textarea id="funfactInput" placeholder="Tulis fun fact tentang dirimu..."
-                    maxlength="500"><?php echo htmlspecialchars($row['fun_fact'] ?? ''); ?></textarea>
+                    maxlength="500"><?= e($fun_fact !== 'Belum ada funfact.' ? $fun_fact : '') ?></textarea>
                 <div class="char-count"><span id="charCount">0</span>/500</div>
             </div>
             <div class="modal-footer">
@@ -266,7 +243,7 @@ if ($active_pet) {
     </div>
 
     <!-- CSRF Token -->
-    <input type="hidden" id="csrfToken" value="<?php echo generate_csrf_token(); ?>">
+    <input type="hidden" id="csrfToken" value="<?= $csrf_token ?>">
 
     <script>
         // --- FUN FACT MODAL ---
