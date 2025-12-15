@@ -208,37 +208,6 @@ $csrf_token = generate_csrf_token();
             <a href="punishment.php" class="nav-btn"><i class="fa-solid fa-gavel"></i><span>Punishment</span></a>
         </nav>
 
-        <!-- STATS OVERVIEW -->
-        <div class="stats-overview">
-            <div class="stat-card">
-                <div class="stat-icon gold-icon">
-                    <i class="fas fa-coins"></i>
-                </div>
-                <div class="stat-info">
-                    <span class="stat-label">Gold</span>
-                    <span class="stat-value" data-count="<?= $total_gold ?>">0</span>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon pet-icon">
-                    <i class="fas fa-paw"></i>
-                </div>
-                <div class="stat-info">
-                    <span class="stat-label">Pets</span>
-                    <span class="stat-value" data-count="<?= $total_pets ?>">0</span>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon rank-icon">
-                    <i class="fas fa-trophy"></i>
-                </div>
-                <div class="stat-info">
-                    <span class="stat-label">Rank</span>
-                    <span class="stat-value">#<?= $sanctuary_rank ?></span>
-                </div>
-            </div>
-        </div>
-
         <!-- MAIN CONTENT GRID -->
         <main class="dashboard-grid">
 
