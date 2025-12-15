@@ -1,0 +1,413 @@
+/* ================================================
+   PUNISHMENT PAGE STYLES
+   Mediterranean of Egypt - Dark Egyptian Theme
+   ================================================ */
+
+/* Main Layout */
+.punishment-main-content {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 24px;
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* ================================================
+   SIDEBAR STYLES
+   ================================================ */
+.punishment-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Stats Card */
+.stats-card .card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    border-left: 3px solid var(--gold);
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-value {
+    font-size: 1.8rem;
+    font-weight: bold;
+    font-family: 'Cinzel', serif;
+}
+
+.stat-value.safe {
+    color: #2ecc71;
+}
+
+.stat-value.warning {
+    color: #f39c12;
+}
+
+.stat-value.danger {
+    color: #e74c3c;
+}
+
+.clean-record-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    background: linear-gradient(135deg, rgba(46, 204, 113, 0.2), rgba(39, 174, 96, 0.1));
+    border: 1px solid #2ecc71;
+    border-radius: 8px;
+    color: #2ecc71;
+    margin-top: 10px;
+    animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes glow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 10px rgba(46, 204, 113, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 20px rgba(46, 204, 113, 0.5);
+    }
+}
+
+/* Active Punishments */
+.active-punishment-item {
+    padding: 12px;
+    background: rgba(231, 76, 60, 0.1);
+    border-left: 3px solid #e74c3c;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.active-punishment-item:last-child {
+    margin-bottom: 0;
+}
+
+.punishment-title {
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 5px;
+}
+
+.punishment-points {
+    color: #e74c3c;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.punishment-end {
+    color: #999;
+    font-size: 0.85rem;
+    margin-top: 5px;
+}
+
+.no-active-card .card-body {
+    padding: 30px;
+}
+
+/* ================================================
+   MAIN CONTENT - CARDS
+   ================================================ */
+.punishment-card {
+    background: linear-gradient(145deg, rgba(30, 30, 35, 0.95), rgba(20, 20, 25, 0.98));
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.punishment-card:hover {
+    border-color: rgba(212, 175, 55, 0.5);
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.7);
+}
+
+.card-header {
+    padding: 20px 24px;
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.1), rgba(184, 134, 11, 0.05));
+    border-bottom: 2px solid rgba(218, 165, 32, 0.3);
+}
+
+.card-header h2,
+.card-header h3 {
+    font-family: 'Cinzel', serif;
+    color: var(--gold);
+    font-size: 1.3rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.card-header h3 {
+    font-size: 1.1rem;
+}
+
+.header-subtitle {
+    color: #999;
+    font-size: 0.85rem;
+    margin: 5px 0 0 0;
+}
+
+.card-body {
+    padding: 24px;
+}
+
+/* ================================================
+   CODE OF CONDUCT GRID
+   ================================================ */
+.code-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.code-category {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.code-category:hover {
+    background: rgba(0, 0, 0, 0.5);
+    border-color: var(--gold);
+    transform: translateY(-4px);
+}
+
+.code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.code-header h4 {
+    font-family: 'Cinzel', serif;
+    color: var(--gold);
+    font-size: 1rem;
+    margin: 0;
+}
+
+.severity-badge {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.severity-badge.high {
+    background: rgba(231, 76, 60, 0.2);
+    border: 1px solid #e74c3c;
+    color: #e74c3c;
+}
+
+.severity-badge.medium {
+    background: rgba(243, 156, 18, 0.2);
+    border: 1px solid #f39c12;
+    color: #f39c12;
+}
+
+.severity-badge.low {
+    background: rgba(46, 204, 113, 0.2);
+    border: 1px solid #2ecc71;
+    color: #2ecc71;
+}
+
+.code-rules {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0;
+}
+
+.code-rules li {
+    padding: 8px 0;
+    color: #ccc;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: start;
+    gap: 10px;
+}
+
+.code-rules li i {
+    color: var(--gold);
+    margin-top: 3px;
+    flex-shrink: 0;
+}
+
+.code-points {
+    padding: 10px;
+    background: rgba(218, 165, 32, 0.1);
+    border-left: 3px solid var(--gold);
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: #999;
+    margin-top: 15px;
+}
+
+.code-points strong {
+    color: var(--gold);
+}
+
+/* ================================================
+   PUNISHMENT HISTORY TABLE
+   ================================================ */
+.history-table {
+    overflow-x: auto;
+}
+
+.history-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.history-table thead {
+    background: rgba(218, 165, 32, 0.1);
+}
+
+.history-table th {
+    padding: 15px;
+    text-align: left;
+    color: var(--gold);
+    font-family: 'Cinzel', serif;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid rgba(218, 165, 32, 0.3);
+}
+
+.history-table td {
+    padding: 15px;
+    color: #ccc;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.history-table tr:hover {
+    background: rgba(218, 165, 32, 0.05);
+}
+
+.points-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    background: rgba(231, 76, 60, 0.2);
+    border: 1px solid #e74c3c;
+    border-radius: 12px;
+    color: #e74c3c;
+    font-weight: bold;
+    font-size: 0.85rem;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.status-badge.active {
+    background: rgba(231, 76, 60, 0.2);
+    border: 1px solid #e74c3c;
+    color: #e74c3c;
+}
+
+.status-badge.completed {
+    background: rgba(46, 204, 113, 0.2);
+    border: 1px solid #2ecc71;
+    color: #2ecc71;
+}
+
+.status-badge.pending {
+    background: rgba(243, 156, 18, 0.2);
+    border: 1px solid #f39c12;
+    color: #f39c12;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.empty-state i {
+    color: var(--gold);
+    margin-bottom: 20px;
+    opacity: 0.5;
+}
+
+.empty-state h3 {
+    font-family: 'Cinzel', serif;
+    color: var(--gold);
+    font-size: 1.5rem;
+    margin: 20px 0 10px 0;
+}
+
+.empty-state p {
+    color: #999;
+    font-size: 1rem;
+}
+
+/* ================================================
+   RESPONSIVE DESIGN
+   ================================================ */
+@media (max-width: 1024px) {
+    .punishment-main-content {
+        grid-template-columns: 1fr;
+    }
+
+    .punishment-sidebar {
+        order: 2;
+    }
+
+    .punishment-main {
+        order: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .code-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .history-table {
+        font-size: 0.85rem;
+    }
+
+    .history-table th,
+    .history-table td {
+        padding: 10px;
+    }
+
+    .card-header h2 {
+        font-size: 1.1rem;
+    }
+
+    .punishment-main-content {
+        padding: 10px;
+    }
+}
