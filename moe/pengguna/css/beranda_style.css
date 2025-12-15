@@ -544,6 +544,157 @@ body {
 }
 
 /* =========================================
+   BOTTOM NAVIGATION - MOBILE ONLY
+   ========================================= */
+
+/* Hide by default on desktop */
+.bottom-nav {
+    display: none;
+}
+
+/* Show on mobile/tablet */
+@media (max-width: 768px) {
+    .bottom-nav {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 12px 8px 20px 8px;
+        /* Extra padding for safe area */
+        background: linear-gradient(180deg,
+                rgba(18, 18, 22, 0.98),
+                rgba(12, 12, 15, 0.98));
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-top: 2px solid rgba(218, 165, 32, 0.3);
+        box-shadow:
+            0 -10px 40px rgba(0, 0, 0, 0.7),
+            0 0 60px rgba(218, 165, 32, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        z-index: 1000;
+        transition: transform 0.3s ease;
+    }
+
+    .bottom-nav::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg,
+                transparent,
+                var(--gold) 30%,
+                var(--gold) 70%,
+                transparent);
+        box-shadow: 0 0 15px rgba(218, 165, 32, 0.5);
+    }
+
+    .bottom-nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        text-decoration: none;
+        color: #999;
+        padding: 8px 12px;
+        border-radius: 12px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        min-width: 60px;
+    }
+
+    .bottom-nav-item i {
+        font-size: 1.4rem;
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    }
+
+    .bottom-nav-item span {
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+    }
+
+    .bottom-nav-item:active {
+        transform: scale(0.95);
+    }
+
+    /* Active State */
+    .bottom-nav-item.active {
+        color: var(--gold);
+    }
+
+    .bottom-nav-item.active i {
+        color: var(--gold);
+        transform: scale(1.2);
+        filter: drop-shadow(0 0 10px rgba(218, 165, 32, 1));
+        animation: bottomIconPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes bottomIconPulse {
+
+        0%,
+        100% {
+            filter: drop-shadow(0 0 10px rgba(218, 165, 32, 1));
+        }
+
+        50% {
+            filter: drop-shadow(0 0 15px rgba(218, 165, 32, 1));
+            transform: scale(1.25);
+        }
+    }
+
+    .bottom-nav-item.active::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 30px;
+        height: 3px;
+        background: var(--gold);
+        border-radius: 0 0 3px 3px;
+        box-shadow: 0 0 10px rgba(218, 165, 32, 0.8);
+    }
+
+    /* Logout Special Styling */
+    .bottom-nav-item.logout {
+        color: #ff6b6b;
+    }
+
+    .bottom-nav-item.logout i {
+        color: #ff6b6b;
+    }
+
+    /* Hide top navigation on mobile */
+    .top-nav-menu {
+        display: none;
+    }
+
+    /* Add bottom padding to main content */
+    .main-dashboard-wrapper {
+        padding-bottom: 100px;
+        /* Space for bottom nav */
+    }
+}
+
+/* Extra small screens - slightly smaller icons */
+@media (max-width: 480px) {
+    .bottom-nav-item i {
+        font-size: 1.3rem;
+    }
+
+    .bottom-nav-item span {
+        font-size: 0.65rem;
+    }
+}
+
+
+/* =========================================
    RESPONSIVE NETHERA DASHBOARD
    ========================================= */
 

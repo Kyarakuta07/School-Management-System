@@ -261,6 +261,30 @@ $csrf_token = generate_csrf_token();
         </main>
     </div>
 
+    <!-- BOTTOM NAVIGATION (Mobile Only) -->
+    <nav class="bottom-nav">
+        <a href="beranda.php" class="bottom-nav-item">
+            <i class="fa-solid fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="class.php" class="bottom-nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Class</span>
+        </a>
+        <a href="pet.php" class="bottom-nav-item">
+            <i class="fa-solid fa-paw"></i>
+            <span>Pet</span>
+        </a>
+        <a href="trapeza.php" class="bottom-nav-item">
+            <i class="fa-solid fa-credit-card"></i>
+            <span>Bank</span>
+        </a>
+        <a href="punishment.php" class="bottom-nav-item">
+            <i class="fa-solid fa-gavel"></i>
+            <span>Rules</span>
+        </a>
+    </nav>
+
 </body>
 
 </html>
