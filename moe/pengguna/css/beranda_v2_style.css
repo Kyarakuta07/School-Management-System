@@ -433,65 +433,135 @@
 }
 
 /* ==================================================
-   SANCTUARY CARD
+   SANCTUARY INFO CARD - ENHANCED
    ================================================== */
-.sanctuary-desc {
-    color: #bbb;
-    line-height: 1.6;
-    margin-bottom: 16px;
+.sanctuary-info-card {
+    grid-column: span 2;
 }
 
-.sanctuary-stats-mini {
-    display: flex;
-    gap: 16px;
+.sanctuary-content {
+    text-align: center;
 }
 
-.mini-stat {
+.sanctuary-icon-large {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    background: linear-gradient(135deg,
+            rgba(218, 165, 32, 0.2),
+            rgba(184, 134, 11, 0.1));
+    border-radius: 50%;
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    box-shadow:
+        0 0 40px rgba(218, 165, 32, 0.3),
+        0 8px 24px rgba(0, 0, 0, 0.5);
+    animation: iconGlow 3s ease-in-out infinite;
+}
+
+@keyframes iconGlow {
+
+    0%,
+    100% {
+        box-shadow:
+            0 0 40px rgba(218, 165, 32, 0.3),
+            0 8px 24px rgba(0, 0, 0, 0.5);
+    }
+
+    50% {
+        box-shadow:
+            0 0 60px rgba(218, 165, 32, 0.5),
+            0 12px 32px rgba(0, 0, 0, 0.7);
+    }
+}
+
+.sanctuary-icon-large i {
+    font-size: 2.5rem;
     color: var(--gold);
-    font-weight: 600;
+    filter: drop-shadow(0 0 10px rgba(218, 165, 32, 0.8));
+}
+
+.sanctuary-title-large {
+    font-family: 'Cinzel', serif;
+    font-size: 1.6rem;
+    color: var(--gold);
+    margin: 0 0 16px 0;
+    text-shadow: 0 2px 20px rgba(218, 165, 32, 0.4);
+}
+
+.sanctuary-description {
+    color: #ccc;
+    line-height: 1.8;
+    font-size: 0.95rem;
+    text-align: left;
+    margin: 0;
 }
 
 /* ==================================================
-   QUICK ACTIONS CARD
+   NEWS & EVENTS CARD - ENHANCED
    ================================================== */
-.action-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+.news-content {
+    text-align: center;
 }
 
-.action-btn {
+.news-icon-large {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 20px;
+    background: linear-gradient(135deg,
+            rgba(108, 92, 231, 0.2),
+            rgba(84, 72, 200, 0.1));
+    border-radius: 50%;
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 30px rgba(108, 92, 231, 0.3);
+}
+
+.news-icon-large i {
+    font-size: 2rem;
+    color: #6c5ce7;
+    filter: drop-shadow(0 0 10px rgba(108, 92, 231, 0.6));
+}
+
+.news-text {
+    color: #bbb;
+    font-size: 0.95rem;
+    margin-bottom: 24px;
+}
+
+.news-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.news-link {
+    display: flex;
     align-items: center;
     gap: 8px;
-    padding: 20px;
-    background: rgba(0, 0, 0, 0.3);
-    border: 2px solid rgba(218, 165, 32, 0.2);
-    border-radius: 12px;
+    padding: 12px 20px;
+    background: rgba(108, 92, 231, 0.1);
+    border: 2px solid rgba(108, 92, 231, 0.3);
+    border-radius: 10px;
     text-decoration: none;
-    color: #fff;
+    color: #6c5ce7;
+    font-weight: 700;
+    font-size: 0.9rem;
     transition: all 0.3s ease;
 }
 
-.action-btn:hover {
-    background: rgba(218, 165, 32, 0.1);
-    border-color: var(--gold);
-    transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(218, 165, 32, 0.2);
+.news-link:hover {
+    background: rgba(108, 92, 231, 0.2);
+    border-color: #6c5ce7;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(108, 92, 231, 0.3);
 }
 
-.action-btn i {
-    font-size: 1.8rem;
-    color: var(--gold);
-}
-
-.action-btn span {
-    font-size: 0.9rem;
-    font-weight: 600;
+.news-link i {
+    font-size: 1.1rem;
 }
 
 /* ==================================================

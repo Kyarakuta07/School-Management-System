@@ -311,45 +311,55 @@ $csrf_token = generate_csrf_token();
                 </div>
             </div>
 
-            <!-- SANCTUARY INFO CARD -->
-            <div class="dashboard-card sanctuary-card-new">
+            <!-- ABOUT MY SANCTUARY CARD -->
+            <div class="dashboard-card sanctuary-info-card">
                 <div class="card-header-new">
-                    <h3><i class="fas fa-landmark"></i> <?= e($sanctuary_name) ?></h3>
+                    <h3><i class="fas fa-ankh"></i> About My Sanctuary</h3>
                 </div>
                 <div class="card-body-new">
-                    <p class="sanctuary-desc"><?= e($sanctuary_desc) ?></p>
-                    <div class="sanctuary-stats-mini">
-                        <div class="mini-stat">
-                            <i class="fas fa-users"></i>
-                            <span>Your Rank: #<?= $sanctuary_rank ?></span>
+                    <div class="sanctuary-content">
+                        <div class="sanctuary-icon-large">
+                            <i class="fas fa-ankh"></i>
                         </div>
+                        <h4 class="sanctuary-title-large"><?= e($sanctuary_name) ?> Sanctuary</h4>
+                        <p class="sanctuary-description">
+                            <?php if (!empty($sanctuary_desc)): ?>
+                                <?= e($sanctuary_desc) ?>
+                            <?php else: ?>
+                                Sanctuary Ammit, the fourth sanctuary "Sanctu #4" was forged for Nethara, bearer of Ammit's
+                                divine blood. It shelters children chosen for their sense of justice, clarity of judgment,
+                                iron strong hearts, and wandering spirits destined for greater paths.
+                                <br><br>
+                                In the myths of ancient Kemet, Ammit is the Devourer of Death: a fearsome being with the
+                                crocodile's jaws, the lion's strength, and the hippopotamus's unyielding might. No wicked
+                                soul escapes her shadow.
+                            <?php endif; ?>
+                        </p>
                     </div>
                 </div>
             </div>
 
-            <!-- QUICK ACTIONS CARD -->
-            <div class="dashboard-card actions-card">
+            <!-- MOE NEWS AND EVENTS CARD -->
+            <div class="dashboard-card news-events-card">
                 <div class="card-header-new">
-                    <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+                    <h3><i class="fas fa-newspaper"></i> MOE News & Events</h3>
                 </div>
                 <div class="card-body-new">
-                    <div class="action-grid">
-                        <a href="pet.php" class="action-btn">
-                            <i class="fas fa-paw"></i>
-                            <span>Manage Pets</span>
-                        </a>
-                        <a href="trapeza.php" class="action-btn">
-                            <i class="fas fa-coins"></i>
-                            <span>Banking</span>
-                        </a>
-                        <a href="class.php" class="action-btn">
-                            <i class="fas fa-book-open"></i>
-                            <span>Classes</span>
-                        </a>
-                        <a href="punishment.php" class="action-btn">
-                            <i class="fas fa-scroll"></i>
-                            <span>Rules</span>
-                        </a>
+                    <div class="news-content">
+                        <div class="news-icon-large">
+                            <i class="fas fa-bullhorn"></i>
+                        </div>
+                        <p class="news-text">Latest announcements and events will appear here.</p>
+                        <div class="news-actions">
+                            <a href="class.php" class="news-link">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>View Class Schedule</span>
+                            </a>
+                            <a href="punishment.php" class="news-link">
+                                <i class="fas fa-scroll"></i>
+                                <span>Code of Conduct</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
