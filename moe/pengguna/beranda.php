@@ -52,8 +52,10 @@ $fun_fact = $user_info['fun_fact'] ?? 'Belum ada funfact.';
 // ==================================================
 
 $active_pet = DB::queryOne(
-    "SELECT up.*, ps.name as species_name, ps.element, 
-            ps.img_baby, ps.img_adult, ps.img_egg,
+    "SELECT up.id, up.user_id, up.species_id, up.nickname, up.level, up.exp,
+            up.hunger, up.happiness, up.health, up.mood, up.is_active, up.status,
+            ps.name as species_name, ps.element, ps.rarity,
+            ps.img_egg as pet_img_egg, ps.img_baby as pet_img_baby, ps.img_adult as pet_img_adult,
             ps.passive_buff_type, ps.passive_buff_value
      FROM user_pets up 
      JOIN pet_species ps ON up.species_id = ps.id 
@@ -71,18 +73,19 @@ if ($active_pet) {
     $pet_level = $active_pet['level'];
 
     // Image based on evolution stage with proper fallbacks
-    if ($pet_level >= 15 && !empty($active_pet['img_adult'])) {
-        $pet_image = '../assets/pets/' . $active_pet['img_adult'];
-    } elseif ($pet_level >= 5 && !empty($active_pet['img_baby'])) {
-        $pet_image = '../assets/pets/' . $active_pet['img_baby'];
-    } elseif (!empty($active_pet['img_egg'])) {
-        $pet_image = '../assets/pets/' . $active_pet['img_egg'];
-    } elseif (!empty($active_pet['img_baby'])) {
+    // Using aliased column names: pet_img_adult, pet_img_baby, pet_img_egg
+    if ($pet_level >= 15 && !empty($active_pet['pet_img_adult'])) {
+        $pet_image = '../assets/pets/' . $active_pet['pet_img_adult'];
+    } elseif ($pet_level >= 5 && !empty($active_pet['pet_img_baby'])) {
+        $pet_image = '../assets/pets/' . $active_pet['pet_img_baby'];
+    } elseif (!empty($active_pet['pet_img_egg'])) {
+        $pet_image = '../assets/pets/' . $active_pet['pet_img_egg'];
+    } elseif (!empty($active_pet['pet_img_baby'])) {
         // Fallback to baby image if egg image doesn't exist
-        $pet_image = '../assets/pets/' . $active_pet['img_baby'];
-    } elseif (!empty($active_pet['img_adult'])) {
+        $pet_image = '../assets/pets/' . $active_pet['pet_img_baby'];
+    } elseif (!empty($active_pet['pet_img_adult'])) {
         // Fallback to adult image
-        $pet_image = '../assets/pets/' . $active_pet['img_adult'];
+        $pet_image = '../assets/pets/' . $active_pet['pet_img_adult'];
     } else {
         // Ultimate fallback
         $pet_image = '../assets/placeholder.png';
