@@ -49,8 +49,536 @@ body {
 }
 
 /* ==================================
-   TOP HEADER - PREMIUM DESIGN
+   HERO HEADER - REDESIGN
    ================================== */
+.hero-header {
+    padding: 24px 28px;
+    margin-bottom: 24px;
+    background: linear-gradient(135deg, rgba(25, 25, 30, 0.98), rgba(18, 18, 22, 0.95));
+    border: 2px solid rgba(218, 165, 32, 0.2);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.hero-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.greeting-section {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.greeting-emoji {
+    font-size: 2.5rem;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.greeting-text .greeting-line {
+    color: #aaa;
+    font-size: 1rem;
+    margin: 0;
+}
+
+.greeting-text .user-name-hero {
+    font-family: var(--font-head);
+    font-size: 1.8rem;
+    color: var(--gold);
+    margin: 0;
+    background: linear-gradient(135deg, #FFD700, #DAA520);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.logout-btn-hero {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255, 107, 107, 0.1);
+    border: 2px solid rgba(255, 107, 107, 0.3);
+    color: #ff6b6b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.logout-btn-hero:hover {
+    background: rgba(255, 107, 107, 0.2);
+    border-color: #ff6b6b;
+    transform: scale(1.05);
+}
+
+.sanctuary-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(218, 165, 32, 0.1);
+    border: 1px solid rgba(218, 165, 32, 0.3);
+    border-radius: 20px;
+    color: var(--gold);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* ==================================
+   DASHBOARD GRID
+   ================================== */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* ==================================
+   DASHBOARD CARDS - BASE
+   ================================== */
+.dashboard-card {
+    background: linear-gradient(145deg, rgba(30, 30, 35, 0.98), rgba(20, 20, 25, 0.95));
+    border: 2px solid rgba(218, 165, 32, 0.15);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    color: inherit;
+}
+
+.dashboard-card:hover {
+    border-color: rgba(218, 165, 32, 0.35);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+
+.card-header {
+    padding: 18px 24px;
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.1), rgba(184, 134, 11, 0.05));
+    border-bottom: 2px solid rgba(218, 165, 32, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-header h3 {
+    font-family: var(--font-head);
+    color: var(--gold);
+    font-size: 1rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.card-link {
+    color: var(--gold);
+    font-size: 0.8rem;
+    font-weight: 600;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+
+.dashboard-card:hover .card-link {
+    opacity: 1;
+}
+
+.card-body {
+    padding: 24px;
+}
+
+/* ==================================
+   PROFILE CARD
+   ================================== */
+.profile-body {
+    text-align: center;
+}
+
+.avatar-container {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 16px;
+    position: relative;
+    cursor: pointer;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 3px solid var(--gold);
+    object-fit: cover;
+    background: #1a1a1f;
+    transition: transform 0.3s ease;
+}
+
+.avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 3px solid var(--gold);
+    background: linear-gradient(135deg, #2a2a30, #1a1a1f);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatar-placeholder i {
+    font-size: 3rem;
+    color: rgba(218, 165, 32, 0.5);
+}
+
+.avatar-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatar-container:hover .avatar-overlay {
+    display: flex;
+}
+
+.avatar-container:hover .avatar-img {
+    transform: scale(1.05);
+}
+
+.avatar-overlay i {
+    font-size: 2rem;
+    color: var(--gold);
+}
+
+.profile-name {
+    font-family: var(--font-head);
+    font-size: 1.4rem;
+    color: #fff;
+    margin: 0 0 6px 0;
+    word-wrap: break-word;
+}
+
+.profile-role {
+    color: var(--gold);
+    font-size: 0.9rem;
+    margin: 0 0 16px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.profile-divider {
+    width: 80%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(218, 165, 32, 0.4), transparent);
+    margin: 0 auto 16px;
+}
+
+/* Fun Fact Section */
+.funfact-section {
+    text-align: left;
+}
+
+.funfact-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    color: var(--gold);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.edit-btn-mini {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    padding: 0;
+    margin-left: auto;
+}
+
+.edit-btn-mini:hover {
+    background: var(--gold);
+    color: #000;
+}
+
+.edit-btn-mini i {
+    font-size: 0.7rem;
+}
+
+.funfact-text {
+    color: #ccc;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    font-style: italic;
+    word-wrap: break-word;
+    margin: 0;
+}
+
+/* ==================================
+   STUDY BUDDY CARD
+   ================================== */
+.study-buddy-card.empty .buddy-empty {
+    text-align: center;
+    padding: 20px 0;
+    color: #888;
+}
+
+.buddy-empty i {
+    font-size: 3rem;
+    color: rgba(218, 165, 32, 0.4);
+    margin-bottom: 12px;
+}
+
+.buddy-empty p {
+    margin: 0 0 12px 0;
+}
+
+.get-pet-btn {
+    color: var(--gold);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.buddy-body {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.buddy-pet {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.buddy-img {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
+    animation: petFloat 3s ease-in-out infinite;
+}
+
+@keyframes petFloat {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(-2deg);
+    }
+
+    50% {
+        transform: translateY(-8px) rotate(2deg);
+    }
+}
+
+.element-badge {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 4px 10px;
+    border-radius: 10px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.element-badge.fire {
+    background: #ff6b35;
+    color: #fff;
+}
+
+.element-badge.water {
+    background: #4ecdc4;
+    color: #000;
+}
+
+.element-badge.earth {
+    background: #c4a77d;
+    color: #000;
+}
+
+.element-badge.air {
+    background: #a8dadc;
+    color: #000;
+}
+
+.element-badge.dark {
+    background: #6c5ce7;
+    color: #fff;
+}
+
+.element-badge.light {
+    background: #FFD700;
+    color: #000;
+}
+
+.buddy-info {
+    flex: 1;
+}
+
+.buddy-info .buddy-name {
+    font-family: var(--font-head);
+    font-size: 1.2rem;
+    color: #fff;
+    margin: 0 0 8px 0;
+}
+
+.buddy-level {
+    display: inline-block;
+    padding: 4px 12px;
+    background: linear-gradient(135deg, var(--gold), #B8860B);
+    border-radius: 12px;
+    color: #000;
+    font-weight: 700;
+    font-size: 0.75rem;
+    margin-bottom: 8px;
+}
+
+.buddy-info .buddy-buff {
+    color: #2ecc71;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* ==================================
+   SANCTUARY CARD
+   ================================== */
+.sanctuary-body {
+    text-align: center;
+}
+
+.sanctuary-icon-wrapper {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 16px;
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.2), rgba(184, 134, 11, 0.1));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 30px rgba(218, 165, 32, 0.3);
+    animation: iconGlow 3s ease-in-out infinite;
+}
+
+@keyframes iconGlow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 30px rgba(218, 165, 32, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 50px rgba(218, 165, 32, 0.5);
+    }
+}
+
+.sanctuary-icon-wrapper i {
+    font-size: 2rem;
+    color: var(--gold);
+}
+
+.sanctuary-name {
+    font-family: var(--font-head);
+    font-size: 1.3rem;
+    color: var(--gold);
+    margin: 0 0 16px 0;
+}
+
+.sanctuary-lore {
+    text-align: left;
+}
+
+.sanctuary-lore p {
+    color: #bbb;
+    line-height: 1.7;
+    font-size: 0.9rem;
+    margin: 0 0 12px 0;
+}
+
+.sanctuary-lore p:last-child {
+    margin-bottom: 0;
+}
+
+/* ==================================
+   RESPONSIVE - MOBILE
+   ================================== */
+@media (max-width: 900px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-content {
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .greeting-section {
+        width: 100%;
+    }
+
+    .logout-btn-hero {
+        position: absolute;
+        top: 24px;
+        right: 24px;
+    }
+
+    .hero-header {
+        position: relative;
+    }
+}
+
+@media (max-width: 600px) {
+    .main-dashboard-wrapper {
+        padding: 16px 16px 80px 16px;
+    }
+
+    .greeting-emoji {
+        font-size: 2rem;
+    }
+
+    .greeting-text .user-name-hero {
+        font-size: 1.4rem;
+    }
+
+    .buddy-body {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .buddy-info {
+        text-align: center;
+    }
+}
+
+
 .top-user-header {
     padding: 30px 35px;
     margin-bottom: 32px;

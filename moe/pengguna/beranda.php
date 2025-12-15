@@ -89,6 +89,24 @@ if ($active_pet) {
 // GENERATE CSRF TOKEN
 // ==================================================
 $csrf_token = generate_csrf_token();
+
+// ==================================================
+// TIME-BASED GREETING
+// ==================================================
+$hour = (int) date('G');
+if ($hour >= 5 && $hour < 12) {
+    $greeting = 'Good Morning';
+    $greeting_emoji = '🌅';
+} elseif ($hour >= 12 && $hour < 17) {
+    $greeting = 'Good Afternoon';
+    $greeting_emoji = '☀️';
+} elseif ($hour >= 17 && $hour < 21) {
+    $greeting = 'Good Evening';
+    $greeting_emoji = '🌆';
+} else {
+    $greeting = 'Good Night';
+    $greeting_emoji = '🌙';
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -112,111 +130,131 @@ $csrf_token = generate_csrf_token();
 
     <div class="main-dashboard-wrapper">
 
-        <header class="top-user-header">
-            <h1 class="main-h1 cinzel-title">NETHARA COMMAND HUB</h1>
-            <p class="main-h2">Anda adalah anggota dari <?= e($sanctuary_name) ?> Sanctuary.</p>
+        <!-- REDESIGNED HEADER -->
+        <header class="hero-header">
+            <div class="hero-content">
+                <div class="greeting-section">
+                    <span class="greeting-emoji"><?= $greeting_emoji ?></span>
+                    <div class="greeting-text">
+                        <p class="greeting-line"><?= $greeting ?>,</p>
+                        <h1 class="user-name-hero"><?= e($user_name) ?></h1>
+                    </div>
+                </div>
+                <a href="../logout.php" class="logout-btn-hero" title="Logout">
+                    <i class="fa-solid fa-sign-out-alt"></i>
+                </a>
+            </div>
+            <div class="sanctuary-badge">
+                <i class="fas fa-shield-alt"></i>
+                <span><?= e($sanctuary_name) ?> Sanctuary</span>
+            </div>
         </header>
 
+        <!-- TOP NAVIGATION -->
         <nav class="top-nav-menu">
             <a href="beranda.php" class="nav-btn active"><i class="fa-solid fa-home"></i><span>Home</span></a>
             <a href="class.php" class="nav-btn"><i class="fa-solid fa-book-open"></i><span>Class</span></a>
             <a href="pet.php" class="nav-btn"><i class="fa-solid fa-paw"></i><span>Pet</span></a>
             <a href="trapeza.php" class="nav-btn"><i class="fa-solid fa-credit-card"></i><span>Trapeza</span></a>
             <a href="punishment.php" class="nav-btn"><i class="fa-solid fa-gavel"></i><span>Punishment</span></a>
-            <a href="../logout.php" class="logout-btn-header"><i
-                    class="fa-solid fa-sign-out-alt"></i><span>Logout</span></a>
         </nav>
 
-        <main class="profile-main-grid">
+        <!-- MAIN DASHBOARD GRID -->
+        <main class="dashboard-grid">
 
-            <section class="profile-sidebar-panel">
-
-                <div class="profile-avatar-box">
-                    <div class="avatar-wrapper" onclick="document.getElementById('photoUploadInput').click()">
-                        <?php
-                        $avatarSrc = $profile_photo
-                            ? '../assets/uploads/profiles/' . e($profile_photo)
-                            : '../assets/placeholder.png';
-                        ?>
-                        <img src="<?= $avatarSrc ?>" alt="Avatar" class="profile-avatar-lg" id="avatarPreview">
-                        <div class="avatar-edit-overlay">
-                            <i class="fa-solid fa-camera"></i>
+            <!-- LEFT COLUMN: PROFILE + FUNFACT -->
+            <section class="dashboard-card profile-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-user-circle"></i> My Profile</h3>
+                </div>
+                <div class="card-body profile-body">
+                    <!-- Avatar -->
+                    <div class="avatar-container" onclick="document.getElementById('photoUploadInput').click()">
+                        <?php if ($profile_photo): ?>
+                            <img src="../uploads/profiles/<?= e($profile_photo) ?>" alt="" class="avatar-img" id="avatarPreview">
+                        <?php else: ?>
+                            <div class="avatar-placeholder" id="avatarPreview">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        <?php endif; ?>
+                        <div class="avatar-overlay">
+                            <i class="fas fa-camera"></i>
                         </div>
                     </div>
-                    <h2 class="user-name-title"><?= e($user_name) ?></h2>
-                    <p class="profile-link">My Profile</p>
-
-                    <!-- Hidden file input for photo upload -->
-                    <input type="file" id="photoUploadInput" accept="image/jpeg,image/png,image/gif,image/webp"
-                        style="display: none;">
-                </div>
-
-                <div class="profile-card funfact-card">
-                    <div class="card-title-row">
-                        <h3 class="card-title">MY FUNFACT</h3>
-                        <button class="edit-btn" onclick="openFunfactModal()"><i class="fa-solid fa-pen"></i></button>
-                    </div>
-                    <p class="card-content" id="funfactDisplay"><?= e($fun_fact) ?></p>
-                </div>
-
-                <?php if ($active_pet): ?>
-                    <!-- STUDY BUDDY PET WIDGET -->
-                    <a href="pet.php" class="profile-card study-buddy-card">
-                        <h3 class="card-title"><i class="fa-solid fa-paw"></i> STUDY BUDDY</h3>
-                        <div class="study-buddy-content">
-                            <div class="study-buddy-pet">
-                                <img src="<?= $pet_image ?>" alt="<?= e($pet_display_name) ?>" class="study-buddy-img"
-                                    onerror="this.src='../assets/placeholder.png'">
-                            </div>
-                            <div class="study-buddy-info">
-                                <span class="buddy-name"><?= e($pet_display_name) ?></span>
-                                <span
-                                    class="buddy-element <?= strtolower($active_pet['element']) ?>"><?= $active_pet['element'] ?></span>
-                                <span class="buddy-buff"><?= $pet_buff_text ?></span>
-                            </div>
+                    <input type="file" id="photoUploadInput" accept="image/jpeg,image/png,image/gif,image/webp" style="display: none;">
+                    
+                    <h2 class="profile-name"><?= e($user_name) ?></h2>
+                    <p class="profile-role"><i class="fas fa-user-shield"></i> Nethera</p>
+                    
+                    <div class="profile-divider"></div>
+                    
+                    <!-- Fun Fact Section -->
+                    <div class="funfact-section">
+                        <div class="funfact-header">
+                            <i class="fas fa-lightbulb"></i>
+                            <span>My Fun Fact</span>
+                            <button class="edit-btn-mini" onclick="openFunfactModal()">
+                                <i class="fas fa-pen"></i>
+                            </button>
                         </div>
-                    </a>
-                <?php endif; ?>
-
+                        <p class="funfact-text" id="funfactDisplay"><?= e($fun_fact) ?></p>
+                    </div>
+                </div>
             </section>
 
-
-            <section class="info-command-panel">
-
-                <div class="profile-card sanctuary-card">
-                    <h3 class="card-title">ABOUT MY SANCTUARY</h3>
-                    <div class="card-content">
-                        <i class="fa-solid fa-ankh sanctuary-icon"></i>
-                        <p>Anda adalah anggota dari <?= e($sanctuary_name) ?> Sanctuary.
-                            <br><br>
-                            <?php if (!empty($sanctuary_desc)): ?>
-                                <?= e($sanctuary_desc) ?>
-                            <?php else: ?>
-                                Sanctuary Ammit, the fourth sanctuary "Sanctu #4" was forged for Nethara, bearer of Ammit's
-                                divine blood. It shelters children chosen for their sense of justice, clarity of judgment,
-                                iron strong hearts, and wandering spirits destined for greater paths.
-
-                                In the myths of ancient Kemet, Ammit is the Devourer of Death: a fearsome being with the
-                                crocodile's jaws, the lion's strength, and the hippopotamus's unyielding might. No wicked
-                                soul escapes her shadow.
-
-                                Within the Hall of Two Truths, Anubis weighs each heart against Ma'at's feather. When a
-                                heart sinks with the weight of its deeds, Ammit consumes it severing its path to Osiris and
-                                casting the soul into the eternal silence of the second death.
-
-                                Feared more than worshipped, Ammit keeps vigil at the lake of fire, watching the edges of
-                                the afterlife. There she waits, patient and ancient, for the unworthy to fall into her
-                                grasp.
-                            <?php endif; ?>
-                        </p>
+            <!-- RIGHT COLUMN: STUDY BUDDY + SANCTUARY -->
+            <section class="right-column">
+                
+                <!-- STUDY BUDDY -->
+                <?php if ($active_pet): ?>
+                <a href="pet.php" class="dashboard-card study-buddy-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-dragon"></i> Study Buddy</h3>
+                        <span class="card-link">View All →</span>
                     </div>
-                </div>
+                    <div class="card-body buddy-body">
+                        <div class="buddy-pet">
+                            <img src="<?= $pet_image ?>" alt="<?= e($pet_display_name) ?>" class="buddy-img" onerror="this.src='../assets/placeholder.png'">
+                            <span class="element-badge <?= strtolower($active_pet['element']) ?>"><?= $active_pet['element'] ?></span>
+                        </div>
+                        <div class="buddy-info">
+                            <h4 class="buddy-name"><?= e($pet_display_name) ?></h4>
+                            <span class="buddy-level">Level <?= $active_pet['level'] ?></span>
+                            <p class="buddy-buff"><i class="fas fa-sparkles"></i> <?= $pet_buff_text ?></p>
+                        </div>
+                    </div>
+                </a>
+                <?php else: ?>
+                <a href="pet.php" class="dashboard-card study-buddy-card empty">
+                    <div class="card-header">
+                        <h3><i class="fas fa-dragon"></i> Study Buddy</h3>
+                    </div>
+                    <div class="card-body buddy-empty">
+                        <i class="fas fa-egg"></i>
+                        <p>No active companion</p>
+                        <span class="get-pet-btn">Get Your Pet →</span>
+                    </div>
+                </a>
+                <?php endif; ?>
 
-                <div class="profile-card news-card">
-                    <h3 class="card-title">MOE NEWS AND EVENT</h3>
-                    <div class="card-content">
-                        <p>Data event dan pengumuman terbaru akan muncul di sini.</p>
-                        <a href="class.php" class="more-link">Go to Class Schedule</a>
+                <!-- ABOUT MY SANCTUARY -->
+                <div class="dashboard-card sanctuary-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-ankh"></i> About My Sanctuary</h3>
+                    </div>
+                    <div class="card-body sanctuary-body">
+                        <div class="sanctuary-icon-wrapper">
+                            <i class="fas fa-ankh"></i>
+                        </div>
+                        <h4 class="sanctuary-name"><?= e($sanctuary_name) ?> Sanctuary</h4>
+                        <div class="sanctuary-lore">
+                            <?php if (!empty($sanctuary_desc)): ?>
+                                <p><?= e($sanctuary_desc) ?></p>
+                            <?php else: ?>
+                                <p>Sanctuary Ammit, the fourth sanctuary "Sanctu #4" was forged for Nethara, bearer of Ammit's divine blood. It shelters children chosen for their sense of justice, clarity of judgment, iron strong hearts, and wandering spirits destined for greater paths.</p>
+                                <p>In the myths of ancient Kemet, Ammit is the Devourer of Death: a fearsome being with the crocodile's jaws, the lion's strength, and the hippopotamus's unyielding might. No wicked soul escapes her shadow.</p>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
 
