@@ -597,8 +597,11 @@
 .pet-name-row {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 8px;
     margin-bottom: var(--space-sm);
+    flex-wrap: nowrap;
+    min-width: 0;
+    max-width: 100%;
 }
 
 .pet-name {
@@ -608,6 +611,13 @@
     color: #FFF;
     margin: 0;
     text-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
+    /* Ellipsis for long names */
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: calc(100% - 100px);
 }
 
 .pet-level {

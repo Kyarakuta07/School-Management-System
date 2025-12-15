@@ -50,6 +50,7 @@ mysqli_stmt_close($gold_stmt);
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="css/pet.css">
     <link rel="stylesheet" href="css/pet_animations.css">
+    <link rel="stylesheet" href="css/pet_hardcore_update.css">
     <link rel="stylesheet" href="css/pet_help_guide.css">
     <link rel="stylesheet" href="css/daily_login.css">
 </head>
