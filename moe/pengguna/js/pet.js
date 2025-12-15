@@ -248,6 +248,11 @@ async function loadActivePet() {
         if (data.success && data.pet) {
             activePet = data.pet;
             renderActivePet();
+
+            // Load pet into PixiJS for GPU-accelerated rendering
+            if (window.PixiPet && window.PixiPet.isReady()) {
+                window.PixiPet.load(activePet);
+            }
         } else {
             showNoPetMessage();
         }
