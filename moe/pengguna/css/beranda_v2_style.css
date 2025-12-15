@@ -264,21 +264,33 @@
 }
 
 /* ==================================================
-   PROFILE CARD
+   PROFILE CARD - ENHANCED
    ================================================== */
+.profile-card-new {
+    min-height: 320px;
+}
+
+.profile-card-new .card-body-new {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 24px;
+}
+
 .profile-card-new .avatar-wrapper {
     display: flex;
     justify-content: center;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
     cursor: pointer;
     position: relative;
-    width: 120px;
-    margin: 0 auto 16px;
+    width: 140px;
+    height: 140px;
+    margin: 0 auto 20px;
 }
 
 .profile-avatar-new {
-    width: 120px;
-    height: 120px;
+    width: 140px;
+    height: 140px;
     border-radius: 50%;
     border: 4px solid var(--gold);
     object-fit: cover;
@@ -295,21 +307,51 @@
         0 12px 32px rgba(0, 0, 0, 0.7);
 }
 
+.avatar-edit-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.avatar-wrapper:hover .avatar-edit-overlay {
+    opacity: 1;
+}
+
+.avatar-edit-overlay i {
+    font-size: 2.5rem;
+    color: var(--gold);
+}
+
 .profile-info-new {
     text-align: center;
+    width: 100%;
 }
 
 .profile-name {
     font-family: 'Cinzel', serif;
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     color: #fff;
-    margin: 0 0 8px 0;
+    margin: 0 0 10px 0;
+    word-wrap: break-word;
 }
 
 .profile-role {
     color: var(--gold);
-    font-size: 0.9rem;
+    font-size: 1rem;
     margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
 /* ==================================================
@@ -317,6 +359,7 @@
    ================================================== */
 .pet-showcase-card {
     grid-column: span 2;
+    min-height: 300px;
 }
 
 .pet-showcase {
@@ -423,13 +466,53 @@
 }
 
 /* ==================================================
-   FUN FACT CARD
+   FUN FACT CARD - ENHANCED
    ================================================== */
+.funfact-card-new {
+    min-height: 220px;
+}
+
+.funfact-card-new .card-body-new {
+    padding: 28px 24px;
+}
+
 .funfact-text {
-    color: #ccc;
-    font-size: 1rem;
-    line-height: 1.6;
+    color: #ddd;
+    font-size: 1.05rem;
+    line-height: 1.8;
     font-style: italic;
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.edit-btn {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+.edit-btn:hover {
+    background: var(--gold);
+    color: #000;
+    transform: rotate(90deg);
+}
+
+.edit-btn i {
+    font-size: 0.85rem;
 }
 
 /* ==================================================
@@ -496,78 +579,6 @@
     font-size: 0.95rem;
     text-align: left;
     margin: 0;
-}
-
-/* ==================================================
-   NEWS & EVENTS CARD - ENHANCED
-   ================================================== */
-.news-content {
-    text-align: center;
-}
-
-.news-icon-large {
-    width: 70px;
-    height: 70px;
-    margin: 0 auto 20px;
-    background: linear-gradient(135deg,
-            rgba(108, 92, 231, 0.2),
-            rgba(84, 72, 200, 0.1));
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 0 30px rgba(108, 92, 231, 0.3);
-}
-
-.news-icon-large i {
-    font-size: 2rem;
-    color: #6c5ce7;
-    filter: drop-shadow(0 0 10px rgba(108, 92, 231, 0.6));
-}
-
-.news-text {
-    color: #bbb;
-    font-size: 0.95rem;
-    margin-bottom: 24px;
-}
-
-.news-actions {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.news-link {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 20px;
-    background: rgba(108, 92, 231, 0.1);
-    border: 2px solid rgba(108, 92, 231, 0.3);
-    border-radius: 10px;
-    text-decoration: none;
-    color: #6c5ce7;
-    font-weight: 700;
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
-}
-
-.news-link:hover {
-    background: rgba(108, 92, 231, 0.2);
-    border-color: #6c5ce7;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(108, 92, 231, 0.3);
-}
-
-.news-link i {
-    font-size: 1.1rem;
-}
-
-/* ==================================================
-   EMPTY STATE
-   ================================================== */
-.empty-state {
     text-align: center;
     padding: 40px 20px;
     color: #999;
