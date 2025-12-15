@@ -998,9 +998,8 @@ mysqli_stmt_close($gold_stmt);
     </div>
 
     <!-- PixiJS for GPU-accelerated pet rendering -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/8.6.6/pixi.min.js"
-        integrity="sha512-V2P2xQ5zg7ppIoXOHvAJmhwOl1UXSy7IspOASV30yTIxhVFDbW+rWj8rH5A4MbqbxJ6xqy/XMl0j0jQNI4bBjQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/8.6.6/pixi.min.js" crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
 
     <!-- JavaScript -->
     <script src="js/pet.js"></script>
