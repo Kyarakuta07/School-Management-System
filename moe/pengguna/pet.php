@@ -47,7 +47,7 @@ mysqli_stmt_close($gold_stmt);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../assets/css/global.css">
     <link rel="stylesheet" href="css/pet.css">
     <link rel="stylesheet" href="css/pet_animations.css">
     <link rel="stylesheet" href="css/pet_hardcore_update.css">

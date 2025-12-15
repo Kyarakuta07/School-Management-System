@@ -16,7 +16,7 @@ require_once 'includes/csrf.php';
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Lato:wght@400;700&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="assets/css/global.css" />
     <style>
         .login-container {
             max-width: 450px !important;
