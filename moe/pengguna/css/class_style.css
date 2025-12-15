@@ -1,0 +1,490 @@
+/**
+ * Class Page Styles
+ * Mediterranean of Egypt - School Management System
+ */
+
+/* ================================================
+   LAYOUT
+   ================================================ */
+
+.class-main-content {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 24px;
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.class-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.class-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* ================================================
+   CARDS
+   ================================================ */
+
+.class-card {
+    background: linear-gradient(145deg, rgba(30, 30, 35, 0.95), rgba(20, 20, 25, 0.98));
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.class-card .card-title {
+    color: #d4af37;
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.class-card .card-title i {
+    font-size: 1.1rem;
+}
+
+/* ================================================
+   GRADES CARD
+   ================================================ */
+
+.grades-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding: 16px;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(212, 175, 55, 0.05));
+    border-radius: 12px;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.total-pp {
+    display: flex;
+    flex-direction: column;
+}
+
+.pp-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #d4af37;
+    font-family: 'Cinzel', serif;
+}
+
+.pp-label {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.rank-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #d4af37, #b8962e);
+    border-radius: 20px;
+    color: #1a1a1a;
+    font-weight: 700;
+}
+
+.rank-badge i {
+    font-size: 1rem;
+}
+
+.grades-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.grade-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    border-left: 3px solid var(--subject-color, #d4af37);
+    transition: all 0.3s ease;
+}
+
+.grade-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+    transform: translateX(4px);
+}
+
+.grade-item i {
+    font-size: 1.2rem;
+    color: var(--subject-color, #d4af37);
+    width: 24px;
+    text-align: center;
+}
+
+.grade-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.grade-name {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.grade-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.no-grades {
+    text-align: center;
+    padding: 30px 20px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.no-grades i {
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+    color: rgba(212, 175, 55, 0.3);
+}
+
+.no-grades small {
+    display: block;
+    margin-top: 8px;
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+/* ================================================
+   RANKING CARD
+   ================================================ */
+
+.ranking-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ranking-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.ranking-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.ranking-item.my-sanctuary {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(212, 175, 55, 0.05));
+    border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.rank-position {
+    font-weight: 700;
+    font-size: 0.9rem;
+    min-width: 40px;
+    padding: 6px 10px;
+    text-align: center;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.rank-position.rank-1 {
+    background: linear-gradient(135deg, #d4af37, #b8962e);
+    color: #1a1a1a;
+}
+
+.rank-position.rank-2 {
+    background: linear-gradient(135deg, #c0c0c0, #a0a0a0);
+    color: #1a1a1a;
+}
+
+.rank-position.rank-3 {
+    background: linear-gradient(135deg, #cd7f32, #a66626);
+    color: #1a1a1a;
+}
+
+.rank-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.rank-name {
+    font-weight: 600;
+    color: #fff;
+}
+
+.rank-members {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.rank-points {
+    font-weight: 600;
+    color: #d4af37;
+    font-size: 0.9rem;
+}
+
+/* ================================================
+   SCHEDULE CARD
+   ================================================ */
+
+.schedule-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.schedule-item {
+    display: flex;
+    gap: 16px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+}
+
+.schedule-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(212, 175, 55, 0.3);
+}
+
+.schedule-day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px;
+    padding: 12px;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.1));
+    border-radius: 10px;
+}
+
+.day-name {
+    font-weight: 700;
+    color: #d4af37;
+    font-size: 0.85rem;
+}
+
+.day-time {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 4px;
+}
+
+.schedule-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+}
+
+.class-name {
+    font-weight: 600;
+    color: #fff;
+    font-size: 1rem;
+}
+
+.teacher-name {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.teacher-name i {
+    margin-right: 4px;
+    color: rgba(212, 175, 55, 0.7);
+}
+
+.no-schedule {
+    text-align: center;
+    padding: 40px 20px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.no-schedule i {
+    font-size: 3rem;
+    margin-bottom: 12px;
+    color: rgba(212, 175, 55, 0.3);
+}
+
+/* ================================================
+   SUBJECTS CARD
+   ================================================ */
+
+.subjects-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.subject-card {
+    padding: 24px;
+    border-radius: 14px;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.subject-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0.1;
+    z-index: 0;
+}
+
+.subject-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+.subject-card>* {
+    position: relative;
+    z-index: 1;
+}
+
+/* Subject-specific colors */
+.subject-card.english {
+    background: linear-gradient(145deg, rgba(74, 144, 217, 0.2), rgba(74, 144, 217, 0.05));
+    border: 1px solid rgba(74, 144, 217, 0.3);
+}
+
+.subject-card.english:hover {
+    border-color: rgba(74, 144, 217, 0.5);
+}
+
+.subject-card.english .subject-icon {
+    color: #4a90d9;
+}
+
+.subject-card.herbology {
+    background: linear-gradient(145deg, rgba(39, 174, 96, 0.2), rgba(39, 174, 96, 0.05));
+    border: 1px solid rgba(39, 174, 96, 0.3);
+}
+
+.subject-card.herbology:hover {
+    border-color: rgba(39, 174, 96, 0.5);
+}
+
+.subject-card.herbology .subject-icon {
+    color: #27ae60;
+}
+
+.subject-card.oceanology {
+    background: linear-gradient(145deg, rgba(0, 188, 212, 0.2), rgba(0, 188, 212, 0.05));
+    border: 1px solid rgba(0, 188, 212, 0.3);
+}
+
+.subject-card.oceanology:hover {
+    border-color: rgba(0, 188, 212, 0.5);
+}
+
+.subject-card.oceanology .subject-icon {
+    color: #00bcd4;
+}
+
+.subject-card.astronomy {
+    background: linear-gradient(145deg, rgba(155, 89, 182, 0.2), rgba(155, 89, 182, 0.05));
+    border: 1px solid rgba(155, 89, 182, 0.3);
+}
+
+.subject-card.astronomy:hover {
+    border-color: rgba(155, 89, 182, 0.5);
+}
+
+.subject-card.astronomy .subject-icon {
+    color: #9b59b6;
+}
+
+.subject-icon {
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+}
+
+.subject-card h4 {
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.subject-card p {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.5;
+}
+
+/* ================================================
+   RESPONSIVE
+   ================================================ */
+
+@media (max-width: 1024px) {
+    .class-main-content {
+        grid-template-columns: 1fr;
+    }
+
+    .class-sidebar {
+        order: 2;
+    }
+
+    .class-content {
+        order: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .class-main-content {
+        padding: 16px;
+    }
+
+    .grades-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .subjects-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .grades-summary {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+    }
+
+    .schedule-item {
+        flex-direction: column;
+    }
+
+    .schedule-day {
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 12px;
+    }
+}
