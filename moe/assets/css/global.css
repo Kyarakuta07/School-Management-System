@@ -39,7 +39,7 @@ body {
     width: 100%;
     height: 100%;
     /* Pastikan path gambar background benar */
-    background: url('assets/landing/2.png') no-repeat center center/cover;
+    background: url('../landing/2.png') no-repeat center center/cover;
     z-index: -2;
     transform: scale(1.05);
 }
@@ -432,7 +432,7 @@ h1 {
     width: 100%;
     height: 100%;
     /* Path harus dari root ke folder assets */
-    background: url('assets/landing/2.png') no-repeat center center/cover;
+    background: url('../landing/2.png') no-repeat center center/cover;
     z-index: -2;
     opacity: 0.4;
 }
