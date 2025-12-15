@@ -153,6 +153,7 @@ $code_of_conduct = [
 
     <link rel="stylesheet" href="../assets/css/global.css" />
     <link rel="stylesheet" href="../assets/css/landing-style.css" />
+    <link rel="stylesheet" href="css/beranda_style.css" />
     <link rel="stylesheet" href="css/punishment_style.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -228,7 +229,8 @@ $code_of_conduct = [
                                     <div class="punishment-title"><?= e($punishment['jenis_pelanggaran']) ?></div>
                                     <div class="punishment-points"><?= $punishment['poin_pelanggaran'] ?> pts</div>
                                     <div class="punishment-end">Ends:
-                                        <?= date('d M Y', strtotime($punishment['tanggal_selesai'])) ?></div>
+                                        <?= date('d M Y', strtotime($punishment['tanggal_selesai'])) ?>
+                                    </div>
                                 </div>
                             <?php endforeach; ?>
                         </div>
