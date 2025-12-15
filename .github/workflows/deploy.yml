@@ -1,22 +1,45 @@
-name: Deployment Otomatis ke cPanel
+name: 🚀 Deployment Otomatis ke cPanel
 
 on:
   push:
     branches:
       - main
 
+# Pastikan deploy hanya berjalan satu kali dalam satu waktu
+concurrency:
+  group: production-deploy
+  cancel-in-progress: true
+
 jobs:
-  deploy:
+  # Job 1: PHP Lint Check (opsional tapi recommended)
+  lint:
     runs-on: ubuntu-latest
     steps:
-      
-      - name: Checkout Kode
+      - name: 📥 Checkout Kode
+        uses: actions/checkout@v4
+
+      - name: 🐘 Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: mbstring, pdo, pdo_mysql
+
+      - name: � Check PHP Syntax
+        run: |
+          echo "Checking PHP syntax in moe folder..."
+          find moe -name "*.php" -print0 | xargs -0 -n1 php -l
+          echo "✅ Syntax check passed!"
+
+  # Job 2: Deploy ke cPanel (hanya jika lint berhasil)
+  deploy:
+    runs-on: ubuntu-latest
+    needs: lint  # Tunggu lint selesai dulu
+    
+    steps:
+      - name: 📥 Checkout Kode
         uses: actions/checkout@v4
       
-      
-      
-      
-      - name: 🚀 Deploy File Langsung ke public_html
+      - name: 🚀 Deploy ke cPanel via SCP
         uses: appleboy/scp-action@v0.1.7 
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -24,17 +47,18 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }} 
           port: 3759
-          
-          
-          
-          source: "*" 
-          
-
-          
-          
-          
-          
+          source: "moe/*"
           target: "/home/akevyrfm/public_html"
-
-
-          #Example Action
+          strip_components: 1
+          # Exclude file development (tidak perlu di production)
+          # .git dan .github otomatis tidak ter-upload karena source hanya moe/*
+      
+      - name: ✅ Deploy Berhasil
+        run: |
+          echo "=========================================="
+          echo "🎉 DEPLOYMENT BERHASIL!"
+          echo "=========================================="
+          echo "📅 Waktu: $(TZ='Asia/Jakarta' date '+%Y-%m-%d %H:%M:%S WIB')"
+          echo "🌐 Website: https://your-domain.com"
+          echo "📂 Target: /home/akevyrfm/public_html"
+          echo "=========================================="

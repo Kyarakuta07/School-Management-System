@@ -1,1 +1,42 @@
+# Environment & Credentials
 .env
+.env.local
+.env.production
+*.env
+
+# IDE & Editor
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS Generated
+.DS_Store
+.DS_Store?
+Thumbs.db
+Desktop.ini
+
+# Logs
+*.log
+logs/
+error_log
+
+# Cache & Temp
+*.cache
+*.tmp
+.cache/
+tmp/
+
+# Dependencies (jika pakai composer/npm)
+/vendor/
+/node_modules/
+
+# Backup files
+*.bak
+*.backup
+*.sql
+*.sql.gz
+
+# Development files
+*.md
+!README.md

@@ -12,18 +12,19 @@ jobs:
 
     steps:
     # 1. Ambil kode dari repo
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     # 2. Setup PHP di environment GitHub
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.1' # Bisa diganti sesuai versi PHP di XAMPP/Server kamu (misal 8.0 atau 8.2)
+        php-version: '8.1'
         extensions: mbstring, intl, pdo, pdo_mysql
 
-    # 3. Jalankan Syntax Check (Linting) khusus di folder MOE
-    - name: Check PHP Syntax inside MOE folder
+    # 3. Jalankan Syntax Check (Linting) khusus di folder moe
+    - name: Check PHP Syntax inside moe folder
       run: |
-        echo "Checking PHP syntax..."
-        # Perintah ini mencari semua file .php di folder MOE dan mengecek syntax-nya
-        find MOE -name "*.php" -print0 | xargs -0 -n1 php -l
+        echo "🔍 Checking PHP syntax..."
+        # Perintah ini mencari semua file .php di folder moe dan mengecek syntax-nya
+        find moe -name "*.php" -print0 | xargs -0 -n1 php -l
+        echo "✅ PHP syntax check completed!"
