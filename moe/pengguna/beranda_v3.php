@@ -180,11 +180,12 @@ $csrf_token = generate_csrf_token();
                 <div class="combined-body">
                     <!-- Avatar -->
                     <div class="avatar-section" onclick="document.getElementById('profilePhotoInput').click()">
-                        <img src="<?= $profile_photo ? '../uploads/profiles/' . e($profile_photo) : '../assets/default-avatar.png' ?>"
-                            alt="Profile" class="avatar-v3" id="profileAvatarImg">
-                        <div class="avatar-hover">
-                            <i class="fas fa-camera"></i>
-                        </div>
+                        <?php if ($profile_photo): ?>
+                            <img src="../uploads/profiles/<?= e($profile_photo) ?>" alt="" class="avatar-v3" id="profileAvatarImg">
+                        <?php else: ?>
+                            <div class="avatar-placeholder" id="profileAvatarImg"><i class="fas fa-user"></i></div>
+                        <?php endif; ?>
+                        <div class="avatar-hover"><i class="fas fa-camera"></i></div>
                     </div>
                     <input type="file" id="profilePhotoInput" accept="image/*" style="display: none;"
                         onchange="uploadProfilePhoto(this)">
