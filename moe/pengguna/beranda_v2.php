@@ -50,46 +50,62 @@ $profile_photo = $user_info['profile_photo'];
 $fun_fact = $user_info['fun_fact'] ?? 'Share something interesting about yourself...';
 
 // ==================================================
-// FETCH USER STATS
+// FETCH USER STATS (with error handling)
 // ==================================================
 
 // Get total gold
-$gold_result = DB::queryOne(
-    "SELECT gold FROM user_stats WHERE user_id = ?",
-    [$user_id]
-);
-$total_gold = $gold_result['gold'] ?? 0;
+try {
+    $gold_result = DB::queryOne(
+        "SELECT gold FROM user_stats WHERE user_id = ?",
+        [$user_id]
+    );
+    $total_gold = $gold_result['gold'] ?? 0;
+} catch (Exception $e) {
+    $total_gold = 0;
+}
 
 // Get total pets
-$pets_result = DB::queryOne(
-    "SELECT COUNT(*) as total FROM user_pets WHERE user_id = ? AND status = 'ALIVE'",
-    [$user_id]
-);
-$total_pets = $pets_result['total'] ?? 0;
+try {
+    $pets_result = DB::queryOne(
+        "SELECT COUNT(*) as total FROM user_pets WHERE user_id = ? AND status = 'ALIVE'",
+        [$user_id]
+    );
+    $total_pets = $pets_result['total'] ?? 0;
+} catch (Exception $e) {
+    $total_pets = 0;
+}
 
 // Get sanctuary ranking
-$rank_result = DB::queryOne(
-    "SELECT COUNT(*) + 1 as rank 
-     FROM nethera 
-     WHERE id_sanctuary = ? AND id_nethera != ?",
-    [$sanctuary_id, $user_id]
-);
-$sanctuary_rank = $rank_result['rank'] ?? '-';
+try {
+    $rank_result = DB::queryOne(
+        "SELECT COUNT(*) + 1 as rank 
+         FROM nethera 
+         WHERE id_sanctuary = ? AND id_nethera != ?",
+        [$sanctuary_id, $user_id]
+    );
+    $sanctuary_rank = $rank_result['rank'] ?? '-';
+} catch (Exception $e) {
+    $sanctuary_rank = '-';
+}
 
 // ==================================================
-// ACTIVE PET DATA
+// ACTIVE PET DATA (with error handling)
 // ==================================================
 
-$active_pet = DB::queryOne(
-    "SELECT up.*, ps.name as species_name, ps.element, 
-            ps.img_baby, ps.img_adult, ps.img_egg,
-            ps.passive_buff_type, ps.passive_buff_value
-     FROM user_pets up 
-     JOIN pet_species ps ON up.species_id = ps.id 
-     WHERE up.user_id = ? AND up.is_active = 1 AND up.status = 'ALIVE'
-     LIMIT 1",
-    [$user_id]
-);
+try {
+    $active_pet = DB::queryOne(
+        "SELECT up.*, ps.name as species_name, ps.element, 
+                ps.img_baby, ps.img_adult, ps.img_egg,
+                ps.passive_buff_type, ps.passive_buff_value
+         FROM user_pets up 
+         JOIN pet_species ps ON up.species_id = ps.id 
+         WHERE up.user_id = ? AND up.is_active = 1 AND up.status = 'ALIVE'
+         LIMIT 1",
+        [$user_id]
+    );
+} catch (Exception $e) {
+    $active_pet = null;
+}
 
 // Determine pet image and display info
 $pet_image = null;
