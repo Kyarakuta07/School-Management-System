@@ -48,7 +48,7 @@ jobs:
           passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }} 
           port: 3759
           source: "moe/*"
-          target: "/home/akevyrfm/public_html"
+          target: "/home/akevyrfm/public_html/moe"
           strip_components: 1
           # Exclude file development (tidak perlu di production)
           # .git dan .github otomatis tidak ter-upload karena source hanya moe/*
