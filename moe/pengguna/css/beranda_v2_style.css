@@ -297,6 +297,7 @@
 
 .profile-info-new {
     text-align: center;
+    width: 100%;
 }
 
 .profile-name {
@@ -304,12 +305,15 @@
     font-size: 1.3rem;
     color: #fff;
     margin: 0 0 8px 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .profile-role {
     color: var(--gold);
     font-size: 0.9rem;
     margin: 0;
+    word-wrap: break-word;
 }
 
 /* ==================================================
@@ -430,6 +434,8 @@
     font-size: 1rem;
     line-height: 1.6;
     font-style: italic;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 /* ==================================================
@@ -529,6 +535,8 @@
     color: #bbb;
     font-size: 0.95rem;
     margin-bottom: 24px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .news-actions {
