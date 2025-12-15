@@ -251,7 +251,7 @@
     </footer>
 
     <!-- Spline Viewer Component -->
-    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.48/build/spline-viewer.js"></script>
+
 
     <!-- Particle Generator Script -->
     <script>
