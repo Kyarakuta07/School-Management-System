@@ -53,12 +53,34 @@ jobs:
           # Exclude file development (tidak perlu di production)
           # .git dan .github otomatis tidak ter-upload karena source hanya moe/*
       
-      - name: ✅ Deploy Berhasil
+      - name: 🏥 Health Check
+        run: |
+          echo "⏳ Menunggu server siap (15 detik)..."
+          sleep 15
+          echo "🔍 Mengecek https://www.moegypt.com ..."
+          
+          # Coba akses website, retry sampai 3x
+          for i in 1 2 3; do
+            if curl -f -s -o /dev/null -w "%{http_code}" https://www.moegypt.com; then
+              echo ""
+              echo "✅ Website accessible! (HTTP 200)"
+              exit 0
+            else
+              echo "⚠️ Attempt $i gagal, retry..."
+              sleep 5
+            fi
+          done
+          
+          echo "❌ Website tidak bisa diakses setelah 3x percobaan!"
+          exit 1
+
+      - name: 📋 Deploy Summary
+        if: success()
         run: |
           echo "=========================================="
           echo "🎉 DEPLOYMENT BERHASIL!"
           echo "=========================================="
           echo "📅 Waktu: $(TZ='Asia/Jakarta' date '+%Y-%m-%d %H:%M:%S WIB')"
-          echo "🌐 Website: https://your-domain.com"
+          echo "🌐 Website: https://www.moegypt.com"
           echo "📂 Target: /home/akevyrfm/public_html"
           echo "=========================================="
