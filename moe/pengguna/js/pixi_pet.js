@@ -229,7 +229,8 @@ async function loadPixiPet(petData) {
 // Get pet image path (mirror of getPetImagePath in pet.js)
 function getPetImagePathForPixi(pet) {
     const stage = pet.evolution_stage || 'egg';
-    const ASSETS_BASE = '../assets/pets/';
+    // Use absolute path for PixiJS asset loading (relative paths don't work correctly)
+    const ASSETS_BASE = '/moe/assets/pets/';
 
     let imgKeys;
     switch (stage) {
