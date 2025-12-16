@@ -179,7 +179,7 @@ if (empty($battle_id)) {
     <!-- Battle Config -->
     <script>
         const BATTLE_ID = '<?php echo htmlspecialchars($battle_id); ?>';
-        const API_BASE = 'api/router.php';
+        const API_BASE = 'pet_api.php';
     </script>
 
     <!-- Battle JS -->
