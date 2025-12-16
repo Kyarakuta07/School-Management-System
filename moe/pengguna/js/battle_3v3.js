@@ -86,6 +86,17 @@ async function loadBattleState() {
         // Render UI
         renderBattleUI();
 
+        // Enable controls if it's player's turn
+        if (BattleState.currentTurn === 'player' && BattleState.status === 'active') {
+            disableControls(false);
+        }
+
+        // If it's enemy's turn (page loaded mid-battle), trigger enemy attack
+        if (BattleState.currentTurn === 'enemy' && BattleState.status === 'active') {
+            await sleep(500);
+            await enemyTurn();
+        }
+
     } catch (error) {
         console.error('Error loading battle state:', error);
     }
