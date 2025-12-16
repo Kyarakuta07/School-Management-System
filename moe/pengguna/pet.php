@@ -779,7 +779,7 @@ mysqli_stmt_close($gold_stmt);
     <!-- ========================================
          TUTORIAL / HELP MODAL
          ======================================== -->
-    <div class="modal" id="help-modal">
+    <div class="modal hidden" id="help-modal">
         <div class="modal-backdrop" onclick="closeHelpModal()"></div>
         <div class="modal-content help-guide">
             <button class="modal-close-btn" onclick="closeHelpModal()">
