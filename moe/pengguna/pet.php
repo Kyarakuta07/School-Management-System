@@ -53,9 +53,16 @@ mysqli_stmt_close($gold_stmt);
     <link rel="stylesheet" href="css/pet_hardcore_update.css">
     <link rel="stylesheet" href="css/pet_help_guide.css">
     <link rel="stylesheet" href="css/daily_login.css">
+    <link rel="stylesheet" href="css/pet_premium.css">
+
+    <!-- PixiJS for particle effects -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.3.2/pixi.min.js"></script>
 </head>
 
 <body class="pet-page">
+
+    <!-- PixiJS Background Particles -->
+    <div id="pixi-bg-container"></div>
 
     <div class="bg-fixed"></div>
     <div class="bg-overlay"></div>
@@ -1048,11 +1055,8 @@ mysqli_stmt_close($gold_stmt);
         </div>
     </div>
 
-    <!-- PixiJS for GPU-accelerated pet rendering -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/8.6.6/pixi.min.js" crossorigin="anonymous"
-        referrerpolicy="no-referrer"></script>
-
     <!-- JavaScript -->
+    <script src="js/pixi_bg.js"></script>
     <script src="js/pet.js"></script>
     <script src="js/pixi_pet.js"></script>
     <script src="js/pet_animations.js"></script>

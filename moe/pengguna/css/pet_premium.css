@@ -1,0 +1,478 @@
+/* ================================================
+   PET PAGE PREMIUM ENHANCEMENTS
+   Modern Dark Fantasy Gaming Aesthetic
+   ================================================ */
+
+/* ================================================
+   1. PIXI.JS BACKGROUND CONTAINER
+   ================================================ */
+#pixi-bg-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+#pixi-bg-container canvas {
+    display: block;
+}
+
+/* ================================================
+   2. ENHANCED TAB NAVIGATION
+   ================================================ */
+.pet-tabs {
+    position: relative;
+    background: linear-gradient(135deg,
+            rgba(15, 15, 25, 0.95) 0%,
+            rgba(10, 10, 18, 0.98) 100%);
+    border: 1px solid rgba(218, 165, 32, 0.15);
+    box-shadow:
+        0 4px 30px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.tab-btn {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tab-btn i {
+    transition: all 0.3s ease;
+}
+
+.tab-btn:hover i {
+    transform: translateY(-2px) scale(1.1);
+    filter: drop-shadow(0 4px 8px rgba(218, 165, 32, 0.3));
+}
+
+.tab-btn.active {
+    background: linear-gradient(135deg,
+            rgba(218, 165, 32, 0.2) 0%,
+            rgba(218, 165, 32, 0.08) 100%);
+    box-shadow:
+        0 0 20px rgba(218, 165, 32, 0.15),
+        inset 0 0 20px rgba(218, 165, 32, 0.05);
+}
+
+.tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    border-radius: 2px;
+    animation: tabIndicatorPulse 2s ease-in-out infinite;
+}
+
+@keyframes tabIndicatorPulse {
+
+    0%,
+    100% {
+        opacity: 0.8;
+        width: 20px;
+    }
+
+    50% {
+        opacity: 1;
+        width: 28px;
+    }
+}
+
+/* ================================================
+   3. PREMIUM PET STAGE
+   ================================================ */
+.pet-stage {
+    position: relative;
+    background: linear-gradient(180deg,
+            rgba(8, 8, 15, 0.9) 0%,
+            rgba(5, 5, 10, 0.95) 100%);
+    border: 1px solid rgba(218, 165, 32, 0.12);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow:
+        0 8px 40px rgba(0, 0, 0, 0.5),
+        inset 0 0 60px rgba(218, 165, 32, 0.03);
+}
+
+.pet-stage::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at center,
+            rgba(218, 165, 32, 0.03) 0%,
+            transparent 60%);
+    animation: ambientGlow 8s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes ambientGlow {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: translate(5%, 5%) scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+/* Pet Display Enhancement */
+.pet-display {
+    animation: petFloat 4s ease-in-out infinite;
+}
+
+@keyframes petFloat {
+
+    0%,
+    100% {
+        transform: translateY(0) scale(1);
+    }
+
+    50% {
+        transform: translateY(-10px) scale(1.02);
+    }
+}
+
+.pet-display img {
+    filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5));
+    transition: all 0.5s ease;
+}
+
+.pet-display:hover img {
+    filter: drop-shadow(0 25px 50px rgba(218, 165, 32, 0.3));
+    transform: scale(1.05);
+}
+
+/* ================================================
+   4. GLASS TUBE STATUS BARS
+   ================================================ */
+.status-bar .bar-container {
+    background: rgba(0, 0, 0, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    box-shadow:
+        inset 0 2px 10px rgba(0, 0, 0, 0.5),
+        0 1px 0 rgba(255, 255, 255, 0.03);
+    overflow: hidden;
+    position: relative;
+}
+
+.status-bar .bar-fill {
+    position: relative;
+    border-radius: 10px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.status-bar .bar-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(to bottom,
+            rgba(255, 255, 255, 0.25) 0%,
+            rgba(255, 255, 255, 0.05) 100%);
+    border-radius: 10px 10px 0 0;
+}
+
+/* Animated shine on bars */
+.status-bar .bar-fill::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.3) 50%,
+            transparent 100%);
+    animation: shineBar 3s ease-in-out infinite;
+}
+
+@keyframes shineBar {
+    0% {
+        left: -100%;
+    }
+
+    50%,
+    100% {
+        left: 100%;
+    }
+}
+
+/* Health bar gradient */
+.bar-fill.health {
+    background: linear-gradient(90deg, #e74c3c, #ff6b6b);
+}
+
+/* Hunger bar gradient */
+.bar-fill.hunger {
+    background: linear-gradient(90deg, #f39c12, #f1c40f);
+}
+
+/* Mood bar gradient */
+.bar-fill.mood {
+    background: linear-gradient(90deg, #27ae60, #2ecc71);
+}
+
+/* ================================================
+   5. PREMIUM ACTION BUTTONS
+   ================================================ */
+.action-btn {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+}
+
+.action-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.2) 50%,
+            transparent 100%);
+    transition: left 0.5s ease;
+}
+
+.action-btn:hover::before {
+    left: 100%;
+}
+
+.action-btn.primary {
+    background: linear-gradient(135deg,
+            var(--gold) 0%,
+            var(--gold-dark) 100%);
+    border: none;
+    box-shadow:
+        0 4px 15px rgba(218, 165, 32, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.action-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 8px 25px rgba(218, 165, 32, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.action-btn.primary:active {
+    transform: translateY(0);
+    box-shadow:
+        0 2px 10px rgba(218, 165, 32, 0.3),
+        inset 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* ================================================
+   6. ENHANCED PET INFO CARD
+   ================================================ */
+.pet-info-card {
+    background: linear-gradient(135deg,
+            rgba(15, 15, 25, 0.95) 0%,
+            rgba(10, 10, 18, 0.98) 100%);
+    border: 1px solid rgba(218, 165, 32, 0.15);
+    border-radius: 20px;
+    box-shadow:
+        0 8px 40px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.pet-name {
+    background: linear-gradient(90deg, #fff, var(--gold-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
+}
+
+/* ================================================
+   7. ENHANCED ELEMENT BADGES
+   ================================================ */
+.element-badge {
+    position: relative;
+    padding: 4px 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-radius: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    animation: badgePulse 3s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+
+    0%,
+    100% {
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 2px 20px currentColor;
+    }
+}
+
+.element-badge.fire {
+    background: linear-gradient(135deg, #ff6b35, #ff4500);
+    color: #fff;
+}
+
+.element-badge.water {
+    background: linear-gradient(135deg, #4ecdc4, #00bcd4);
+    color: #fff;
+}
+
+.element-badge.earth {
+    background: linear-gradient(135deg, #c4a77d, #8d6e63);
+    color: #fff;
+}
+
+.element-badge.air {
+    background: linear-gradient(135deg, #a8dadc, #81d4fa);
+    color: #333;
+}
+
+.element-badge.dark {
+    background: linear-gradient(135deg, #6c5ce7, #512da8);
+    color: #fff;
+}
+
+.element-badge.light {
+    background: linear-gradient(135deg, #ffd93d, #ffeb3b);
+    color: #333;
+}
+
+/* ================================================
+   8. GACHA SECTION ENHANCEMENT
+   ================================================ */
+.gacha-egg {
+    animation: eggFloat 3s ease-in-out infinite, eggGlow 2s ease-in-out infinite alternate;
+    filter: drop-shadow(0 10px 30px rgba(218, 165, 32, 0.3));
+}
+
+@keyframes eggFloat {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(-2deg);
+    }
+
+    50% {
+        transform: translateY(-15px) rotate(2deg);
+    }
+}
+
+@keyframes eggGlow {
+    from {
+        filter: drop-shadow(0 10px 30px rgba(218, 165, 32, 0.3));
+    }
+
+    to {
+        filter: drop-shadow(0 15px 50px rgba(218, 165, 32, 0.6));
+    }
+}
+
+/* ================================================
+   9. COLLECTION GRID ENHANCEMENT
+   ================================================ */
+.pet-card {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+.pet-card:hover {
+    transform: translateY(-8px) rotateX(5deg);
+    box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.4),
+        0 0 30px rgba(218, 165, 32, 0.1);
+}
+
+/* Rarity glow borders */
+.pet-card.rare {
+    border-color: rgba(52, 152, 219, 0.5);
+    box-shadow: 0 0 20px rgba(52, 152, 219, 0.2);
+}
+
+.pet-card.epic {
+    border-color: rgba(155, 89, 182, 0.5);
+    box-shadow: 0 0 20px rgba(155, 89, 182, 0.2);
+}
+
+.pet-card.legendary {
+    border-color: rgba(255, 152, 0, 0.5);
+    box-shadow: 0 0 30px rgba(255, 152, 0, 0.3);
+    animation: legendaryGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes legendaryGlow {
+    from {
+        box-shadow: 0 0 20px rgba(255, 152, 0, 0.3);
+    }
+
+    to {
+        box-shadow: 0 0 40px rgba(255, 152, 0, 0.5);
+    }
+}
+
+/* ================================================
+   10. SCROLLBAR STYLING
+   ================================================ */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--gold), var(--gold-dark));
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--gold-light);
+}
+
+/* ================================================
+   11. LOADING SHIMMER EFFECT
+   ================================================ */
+.loading-shimmer {
+    background: linear-gradient(90deg,
+            rgba(30, 30, 40, 0.5) 0%,
+            rgba(50, 50, 60, 0.5) 50%,
+            rgba(30, 30, 40, 0.5) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
