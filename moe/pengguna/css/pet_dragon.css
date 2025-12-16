@@ -1,0 +1,772 @@
+/* ================================================
+   PET DRAGON STYLE - Egyptian Gold Theme
+   Inspired by Dragon City / Genshin Impact
+   ================================================ */
+
+/* ================================================
+   1. CSS VARIABLES
+   ================================================ */
+:root {
+    /* Egyptian Gold Theme */
+    --gold-primary: #DAA520;
+    --gold-light: #F4D03F;
+    --gold-dark: #B8860B;
+    --gold-glow: rgba(218, 165, 32, 0.5);
+
+    /* Backgrounds */
+    --bg-dark: #0a0a0f;
+    --bg-card: rgba(15, 15, 20, 0.95);
+    --bg-glass: rgba(20, 20, 30, 0.9);
+
+    /* Status Colors */
+    --hp-red: #E74C3C;
+    --atk-orange: #FF9800;
+    --def-blue: #3498DB;
+
+    /* Element Colors */
+    --elem-fire: #FF6B35;
+    --elem-water: #00D4FF;
+    --elem-earth: #8B7355;
+    --elem-air: #A8DADC;
+    --elem-dark: #9B59B6;
+    --elem-light: #FFD93D;
+}
+
+/* ================================================
+   2. BASE & CONTAINER
+   ================================================ */
+.pet-page {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    background: var(--bg-dark);
+    font-family: 'Lato', -apple-system, sans-serif;
+    color: #E8E8E8;
+    overflow-x: hidden;
+}
+
+.pet-page .bg-fixed {
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at 50% 30%, rgba(218, 165, 32, 0.06) 0%, transparent 60%),
+        linear-gradient(180deg, #0a0a12 0%, #050508 100%);
+    z-index: -2;
+}
+
+.pet-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    max-width: 480px;
+    margin: 0 auto;
+    position: relative;
+    border-left: 2px solid rgba(218, 165, 32, 0.2);
+    border-right: 2px solid rgba(218, 165, 32, 0.2);
+}
+
+/* ================================================
+   3. HEADER - Egyptian Style
+   ================================================ */
+.pet-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: linear-gradient(180deg, rgba(15, 15, 22, 0.98) 0%, rgba(10, 10, 15, 0.95) 100%);
+    border-bottom: 2px solid var(--gold-primary);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+/* Gold corner decorations */
+.pet-header::before,
+.pet-header::after {
+    content: '𓂀';
+    font-size: 1.2rem;
+    color: var(--gold-primary);
+    opacity: 0.6;
+}
+
+.back-btn {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
+    border: none;
+    border-radius: 50%;
+    color: #000;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(218, 165, 32, 0.3);
+}
+
+.back-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(218, 165, 32, 0.5);
+}
+
+.header-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--gold-primary);
+    text-shadow: 0 2px 10px rgba(218, 165, 32, 0.4);
+    letter-spacing: 2px;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.gold-display {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.2) 0%, rgba(218, 165, 32, 0.08) 100%);
+    border: 1px solid var(--gold-primary);
+    border-radius: 20px;
+    font-weight: 700;
+    color: var(--gold-light);
+    font-size: 1rem;
+}
+
+.gold-display i {
+    color: #FFD700;
+    filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.6));
+}
+
+.btn-help {
+    display: none;
+}
+
+/* ================================================
+   4. TAB NAVIGATION - Pill Style with Egyptian Border
+   ================================================ */
+.pet-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 10px 12px;
+    margin: 12px;
+    background: var(--bg-card);
+    border: 2px solid rgba(218, 165, 32, 0.3);
+    border-radius: 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.pet-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.tab-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 12px;
+    min-width: 52px;
+    background: transparent;
+    border: none;
+    border-radius: 12px;
+    color: #666;
+    font-family: inherit;
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.tab-btn i {
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.tab-btn span {
+    white-space: nowrap;
+}
+
+.tab-btn:hover:not(.active) {
+    color: #999;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.tab-btn.active {
+    color: var(--gold-primary);
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.25) 0%, rgba(218, 165, 32, 0.1) 100%);
+    border: 1px solid var(--gold-primary);
+    box-shadow:
+        0 0 20px rgba(218, 165, 32, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.tab-btn.active i {
+    filter: drop-shadow(0 0 8px var(--gold-glow));
+    animation: iconGlow 2s ease-in-out infinite;
+}
+
+@keyframes iconGlow {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 0 8px var(--gold-glow));
+    }
+
+    50% {
+        filter: drop-shadow(0 0 15px var(--gold-glow));
+    }
+}
+
+/* ================================================
+   5. PET SHOWCASE STAGE
+   ================================================ */
+.pet-stage {
+    position: relative;
+    min-height: 260px;
+    margin: 0 12px;
+    background:
+        radial-gradient(ellipse at center, rgba(218, 165, 32, 0.08) 0%, transparent 70%),
+        linear-gradient(180deg, rgba(15, 15, 22, 0.6) 0%, rgba(10, 10, 15, 0.9) 100%);
+    border: 2px solid rgba(218, 165, 32, 0.25);
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Egyptian hieroglyph pattern overlay */
+.pet-stage::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Ctext x='10' y='30' fill='%23DAA520' fill-opacity='0.03' font-size='20'%3E𓂀%3C/text%3E%3Ctext x='35' y='50' fill='%23DAA520' fill-opacity='0.03' font-size='16'%3E𓃭%3C/text%3E%3C/svg%3E");
+    pointer-events: none;
+}
+
+.pet-display {
+    position: relative;
+    z-index: 5;
+    animation: petFloat 3s ease-in-out infinite;
+}
+
+@keyframes petFloat {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.pet-display img {
+    max-width: 180px;
+    max-height: 180px;
+    object-fit: contain;
+    filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.6));
+}
+
+.no-pet-message {
+    text-align: center;
+    color: #666;
+    padding: 40px;
+}
+
+.no-pet-message i {
+    color: var(--gold-primary);
+    margin-bottom: 15px;
+}
+
+/* ================================================
+   6. PET INFO CARD
+   ================================================ */
+.pet-info-card {
+    margin: 12px;
+    padding: 20px;
+    background: var(--bg-card);
+    border: 2px solid rgba(218, 165, 32, 0.25);
+    border-radius: 16px;
+}
+
+.pet-name-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.pet-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--gold-primary);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-shadow: 0 2px 15px rgba(218, 165, 32, 0.4);
+}
+
+.btn-rename-icon {
+    display: none;
+}
+
+.pet-level {
+    padding: 6px 16px;
+    background: linear-gradient(135deg, var(--gold-primary) 0%, var(--gold-dark) 100%);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #000;
+    box-shadow: 0 4px 10px rgba(218, 165, 32, 0.3);
+}
+
+.pet-element {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.element-badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.element-badge.fire {
+    background: linear-gradient(135deg, #FF6B35, #FF4500);
+    color: #fff;
+}
+
+.element-badge.water {
+    background: linear-gradient(135deg, #00D4FF, #0099CC);
+    color: #fff;
+}
+
+.element-badge.earth {
+    background: linear-gradient(135deg, #8B7355, #6B5344);
+    color: #fff;
+}
+
+.element-badge.air {
+    background: linear-gradient(135deg, #A8DADC, #81C4C6);
+    color: #333;
+}
+
+.element-badge.dark {
+    background: linear-gradient(135deg, #9B59B6, #8E44AD);
+    color: #fff;
+}
+
+.element-badge.light {
+    background: linear-gradient(135deg, #FFD93D, #F1C40F);
+    color: #333;
+}
+
+.rarity-badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.rarity-badge.common {
+    background: rgba(158, 158, 158, 0.2);
+    color: #9E9E9E;
+    border: 1px solid #9E9E9E;
+}
+
+.rarity-badge.rare {
+    background: rgba(0, 212, 255, 0.15);
+    color: #00D4FF;
+    border: 1px solid #00D4FF;
+}
+
+.rarity-badge.epic {
+    background: rgba(155, 89, 182, 0.15);
+    color: #9B59B6;
+    border: 1px solid #9B59B6;
+}
+
+.rarity-badge.legendary {
+    background: rgba(255, 152, 0, 0.15);
+    color: #FF9800;
+    border: 1px solid #FF9800;
+}
+
+/* ================================================
+   7. STATUS BARS - Dragon City Style
+   ================================================ */
+.status-bars {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.status-bar {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(218, 165, 32, 0.2);
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+}
+
+.status-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 8px;
+}
+
+.status-label i {
+    font-size: 1.4rem;
+}
+
+.status-label span {
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #888;
+}
+
+/* Health = HP (red) */
+.status-bar:nth-child(1) .status-label i {
+    color: var(--hp-red);
+}
+
+.status-bar:nth-child(1) .bar-fill {
+    background: linear-gradient(90deg, #c0392b, var(--hp-red));
+}
+
+/* Hunger = ATK (orange) */
+.status-bar:nth-child(2) .status-label i {
+    color: var(--atk-orange);
+}
+
+.status-bar:nth-child(2) .bar-fill {
+    background: linear-gradient(90deg, #E67E22, var(--atk-orange));
+}
+
+/* Mood = DEF (blue) */
+.status-bar:nth-child(3) .status-label i {
+    color: var(--def-blue);
+}
+
+.status-bar:nth-child(3) .bar-fill {
+    background: linear-gradient(90deg, #2980B9, var(--def-blue));
+}
+
+.bar-container {
+    height: 8px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 6px;
+}
+
+.bar-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.5s ease;
+    position: relative;
+}
+
+.bar-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px 10px 0 0;
+}
+
+.status-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+/* ================================================
+   8. EXP BAR
+   ================================================ */
+.exp-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.exp-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--gold-primary);
+    text-transform: uppercase;
+}
+
+.exp-bar-container {
+    flex: 1;
+    height: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(218, 165, 32, 0.3);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.exp-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold-dark), var(--gold-primary), var(--gold-light));
+    border-radius: 10px;
+    transition: width 0.5s ease;
+    position: relative;
+}
+
+.exp-bar-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px 10px 0 0;
+}
+
+.exp-text {
+    font-size: 0.8rem;
+    color: #888;
+    white-space: nowrap;
+}
+
+/* ================================================
+   9. ACTION BUTTONS - Egyptian Style
+   ================================================ */
+.action-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin: 12px;
+    padding-bottom: 20px;
+}
+
+.action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 14px 8px;
+    background: rgba(15, 15, 20, 0.95);
+    border: 2px solid rgba(218, 165, 32, 0.4);
+    border-radius: 12px;
+    color: var(--gold-primary);
+    font-family: inherit;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.action-btn i {
+    font-size: 1.4rem;
+    filter: drop-shadow(0 2px 4px rgba(218, 165, 32, 0.3));
+}
+
+.action-btn:hover {
+    background: rgba(218, 165, 32, 0.15);
+    border-color: var(--gold-primary);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(218, 165, 32, 0.3);
+}
+
+.action-btn:active {
+    transform: translateY(0);
+}
+
+/* ================================================
+   10. MODALS
+   ================================================ */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-backdrop {
+    position: absolute;
+    inset: 0;
+    cursor: pointer;
+}
+
+.modal-content {
+    position: relative;
+    background: var(--bg-card);
+    border: 2px solid rgba(218, 165, 32, 0.3);
+    border-radius: 20px;
+    padding: 24px;
+    max-width: 400px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    z-index: 1;
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #888;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: all 0.3s ease;
+}
+
+.modal-close-btn:hover {
+    background: rgba(231, 76, 60, 0.2);
+    border-color: #e74c3c;
+    color: #e74c3c;
+}
+
+/* ================================================
+   11. CONTENT SECTIONS
+   ================================================ */
+.pet-content {
+    flex: 1;
+    padding-bottom: 20px;
+}
+
+.tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ================================================
+   12. COLLECTION GRID
+   ================================================ */
+.collection-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    padding: 12px;
+}
+
+.pet-card {
+    background: var(--bg-card);
+    border: 2px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.pet-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(218, 165, 32, 0.4);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.pet-card.active {
+    border-color: var(--gold-primary);
+    box-shadow: 0 0 20px rgba(218, 165, 32, 0.3);
+}
+
+.pet-card img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    margin-bottom: 8px;
+}
+
+/* ================================================
+   13. UTILITY CLASSES
+   ================================================ */
+.hidden {
+    display: none !important;
+}
+
+.text-gold {
+    color: var(--gold-primary);
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* ================================================
+   14. RESPONSIVE
+   ================================================ */
+@media (max-width: 380px) {
+    .tab-btn {
+        min-width: 46px;
+        padding: 8px 10px;
+    }
+
+    .tab-btn i {
+        font-size: 1rem;
+    }
+
+    .action-btn {
+        padding: 12px 6px;
+        font-size: 0.6rem;
+    }
+
+    .action-btn i {
+        font-size: 1.2rem;
+    }
+}
