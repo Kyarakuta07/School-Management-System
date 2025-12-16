@@ -41,8 +41,8 @@
 .pet-container .bg-overlay::after {
     content: '';
     position: fixed;
-    width: 30px;
-    height: 30px;
+    width: clamp(24px, 5vw, 30px);
+    height: clamp(24px, 5vw, 30px);
     border: 2px solid var(--gold);
     z-index: 1000;
     pointer-events: none;
@@ -177,7 +177,7 @@
     border: none;
     border-radius: 20px;
     color: #888;
-    font-size: 0.6rem;
+    font-size: 0.7rem;
     font-weight: 600;
     text-transform: uppercase;
     cursor: pointer;
@@ -186,7 +186,7 @@
 }
 
 .tab-btn i {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
 }
 
 .tab-btn.active {
@@ -277,8 +277,8 @@
 }
 
 .pet-display img {
-    max-width: 200px;
-    max-height: 200px;
+    max-width: min(200px, 50vw);
+    max-height: min(200px, 30vh);
     filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.7));
 }
 
@@ -303,12 +303,14 @@
 
 .pet-name {
     font-family: 'Cinzel', serif;
-    font-size: 1.8rem;
+    font-size: clamp(1.2rem, 5vw, 1.8rem);
     font-weight: 700;
     color: var(--gold);
     text-transform: uppercase;
-    letter-spacing: 4px;
+    letter-spacing: clamp(1px, 0.3vw, 4px);
     text-shadow: 0 2px 20px rgba(218, 165, 32, 0.5);
+    word-break: break-word;
+    text-align: center;
 }
 
 /* Decorative flourishes */
@@ -444,7 +446,7 @@
 }
 
 .status-value {
-    font-size: 1.1rem;
+    font-size: clamp(1rem, 3vw, 1.2rem);
     font-weight: 700;
     color: #fff;
 }
@@ -454,8 +456,8 @@
    ================================================ */
 .action-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
     margin: 16px 12px;
     padding-bottom: 20px;
 }
@@ -464,15 +466,16 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px;
-    padding: 16px 8px;
+    gap: 8px;
+    padding: 20px 12px;
+    min-height: 88px;
     background: linear-gradient(180deg,
             rgba(30, 28, 22, 0.95) 0%,
             rgba(20, 18, 15, 0.9) 100%);
     border: 2px solid var(--gold);
     border-radius: 14px;
     color: var(--gold);
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 700;
     text-transform: uppercase;
     cursor: pointer;
@@ -538,6 +541,7 @@
 /* ================================================
    10. RESPONSIVE
    ================================================ */
+/* Small screens */
 @media (max-width: 380px) {
     .status-bars {
         gap: 8px;
@@ -552,16 +556,39 @@
     }
 
     .action-btn {
-        padding: 12px 6px;
-        font-size: 0.65rem;
+        padding: 16px 8px;
+        font-size: 0.7rem;
+        min-height: 80px;
     }
 
     .action-btn i {
-        font-size: 1.2rem;
+        font-size: 1.3rem;
+    }
+}
+
+/* Very small screens */
+@media (max-width: 360px) {
+    .status-bars {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: auto auto;
     }
 
-    .action-btn::before,
-    .action-btn::after {
-        display: none;
+    .status-bar:nth-child(3) {
+        grid-column: 1 / -1;
+    }
+
+    .pet-name {
+        font-size: 1.1rem;
+        letter-spacing: 1px;
+    }
+
+    .header-title {
+        font-size: 1.2rem;
+        letter-spacing: 1px;
+    }
+
+    .corner-decoration {
+        width: 22px;
+        height: 22px;
     }
 }

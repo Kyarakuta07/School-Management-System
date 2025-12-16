@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initActionButtons();
     initShopTabs();
     initArenaTabs();
+    initGoldToggle(); // Initialize gold toggle
     loadPets();
     checkDailyReward(); // Check for daily login reward
     checkUrlErrors(); // Check for error messages from redirects
@@ -1243,17 +1244,64 @@ async function loadBattleHistory() {
 // ================================================
 // UTILITY FUNCTIONS
 // ================================================
+
+// Gold formatting state (compact or full)
+let isGoldCompact = true; // Default to compact on mobile
+
+// Format gold with compact notation for mobile
+function formatGold(amount, compact = true) {
+    if (!compact) {
+        return amount.toLocaleString();
+    }
+
+    // Compact formatting for large numbers
+    if (amount >= 1000000) {
+        return (amount / 1000000).toFixed(1) + 'M';
+    } else if (amount >= 1000) {
+        return (amount / 1000).toFixed(1) + 'K';
+    }
+    return amount.toLocaleString();
+}
+
 function updateGoldDisplay(gold) {
+    const goldEl = document.getElementById('user-gold');
+    if (!goldEl) return;
+
     if (gold !== undefined) {
-        document.getElementById('user-gold').textContent = gold.toLocaleString();
+        goldEl.textContent = formatGold(gold, isGoldCompact);
+        goldEl.dataset.fullAmount = gold; // Store full amount
     } else {
         fetch(`${API_BASE}?action=get_shop`)
             .then(r => r.json())
             .then(d => {
                 if (d.user_gold !== undefined) {
-                    document.getElementById('user-gold').textContent = d.user_gold.toLocaleString();
+                    goldEl.textContent = formatGold(d.user_gold, isGoldCompact);
+                    goldEl.dataset.fullAmount = d.user_gold;
                 }
             });
+    }
+}
+
+// Toggle gold display format on click
+function initGoldToggle() {
+    const goldEl = document.getElementById('user-gold');
+    if (goldEl) {
+        goldEl.style.cursor = 'pointer';
+        goldEl.title = 'Click to toggle format';
+
+        goldEl.addEventListener('click', (e) => {
+            e.stopPropagation();
+            isGoldCompact = !isGoldCompact;
+
+            const amount = parseInt(goldEl.dataset.fullAmount || 0);
+            goldEl.textContent = formatGold(amount, isGoldCompact);
+
+            // Brief animation
+            goldEl.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                goldEl.style.transform = 'scale(1)';
+            }, 150);
+        });
     }
 }
 
