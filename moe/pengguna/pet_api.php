@@ -1739,9 +1739,205 @@ switch ($action) {
         break;
 
     // ============================================
+    // ARENA 3v3 BATTLE SYSTEM
+    // ============================================
+
+    // GET: Get opponents for 3v3 battle (users with 3+ alive pets)
+    case 'get_opponents_3v3':
+        if ($method !== 'GET') {
+            api_method_not_allowed('GET');
+        }
+
+        // Find users with at least 3 alive pets (exclude self)
+        $query = "SELECT 
+                    n.id_nethera as user_id,
+                    n.username,
+                    n.nama_lengkap as name
+                  FROM nethera n
+                  WHERE n.id_nethera != ? 
+                    AND n.status_akun = 'Aktif'
+                    AND n.role = 'Nethera'
+                    AND (SELECT COUNT(*) FROM user_pets WHERE user_id = n.id_nethera AND status = 'ALIVE') >= 3
+                  ORDER BY RAND()
+                  LIMIT 10";
+
+        $stmt = mysqli_prepare($conn, $query);
+        mysqli_stmt_bind_param($stmt, "i", $user_id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        $opponents = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            // Get 3 random pets for each opponent
+            $pets_query = "SELECT up.id, ps.name as species_name, ps.img_adult, ps.element
+                           FROM user_pets up
+                           JOIN pet_species ps ON up.species_id = ps.id
+                           WHERE up.user_id = ? AND up.status = 'ALIVE'
+                           ORDER BY RAND() LIMIT 3";
+            $pets_stmt = mysqli_prepare($conn, $pets_query);
+            mysqli_stmt_bind_param($pets_stmt, "i", $row['user_id']);
+            mysqli_stmt_execute($pets_stmt);
+            $pets_result = mysqli_stmt_get_result($pets_stmt);
+
+            $pets = [];
+            while ($pet = mysqli_fetch_assoc($pets_result)) {
+                $pets[] = $pet;
+            }
+            mysqli_stmt_close($pets_stmt);
+
+            $row['pets'] = $pets;
+            $opponents[] = $row;
+        }
+        mysqli_stmt_close($stmt);
+
+        echo json_encode([
+            'success' => true,
+            'opponents' => $opponents
+        ]);
+        break;
+
+    // POST: Start a 3v3 battle
+    case 'start_battle_3v3':
+        if ($method !== 'POST') {
+            api_method_not_allowed('POST');
+        }
+
+        $input = json_decode(file_get_contents('php://input'), true);
+        $pet_ids = isset($input['pet_ids']) ? $input['pet_ids'] : [];
+        $opponent_user_id = isset($input['opponent_user_id']) ? (int) $input['opponent_user_id'] : 0;
+
+        // Validate 3 pet IDs
+        if (count($pet_ids) !== 3) {
+            echo json_encode(['success' => false, 'error' => 'Must select exactly 3 pets']);
+            break;
+        }
+
+        // Validate pet ownership
+        foreach ($pet_ids as $pid) {
+            $check = mysqli_prepare($conn, "SELECT id FROM user_pets WHERE id = ? AND user_id = ? AND status = 'ALIVE'");
+            mysqli_stmt_bind_param($check, "ii", $pid, $user_id);
+            mysqli_stmt_execute($check);
+            $check_result = mysqli_stmt_get_result($check);
+            if (!mysqli_fetch_assoc($check_result)) {
+                mysqli_stmt_close($check);
+                echo json_encode(['success' => false, 'error' => 'Invalid pet selection']);
+                break 2;
+            }
+            mysqli_stmt_close($check);
+        }
+
+        // Get player pets data
+        $player_pets = [];
+        foreach ($pet_ids as $pid) {
+            $pq = mysqli_prepare($conn, "SELECT up.*, ps.name as species_name, ps.img_adult, ps.element, ps.base_attack, ps.base_defense
+                                         FROM user_pets up 
+                                         JOIN pet_species ps ON up.species_id = ps.id 
+                                         WHERE up.id = ?");
+            mysqli_stmt_bind_param($pq, "i", $pid);
+            mysqli_stmt_execute($pq);
+            $pr = mysqli_stmt_get_result($pq);
+            $pet_data = mysqli_fetch_assoc($pr);
+            mysqli_stmt_close($pq);
+
+            $player_pets[] = [
+                'id' => $pet_data['id'],
+                'species_name' => $pet_data['species_name'],
+                'nickname' => $pet_data['nickname'],
+                'level' => $pet_data['level'],
+                'hp' => $pet_data['health'],
+                'max_hp' => 100,
+                'element' => $pet_data['element'],
+                'img_adult' => $pet_data['img_adult'],
+                'attack' => $pet_data['base_attack'] + ($pet_data['level'] * 2),
+                'defense' => $pet_data['base_defense'] + $pet_data['level'],
+                'is_fainted' => false
+            ];
+        }
+
+        // Get enemy pets data
+        $enemy_query = "SELECT up.*, ps.name as species_name, ps.img_adult, ps.element, ps.base_attack, ps.base_defense
+                        FROM user_pets up 
+                        JOIN pet_species ps ON up.species_id = ps.id 
+                        WHERE up.user_id = ? AND up.status = 'ALIVE'
+                        ORDER BY RAND() LIMIT 3";
+        $eq = mysqli_prepare($conn, $enemy_query);
+        mysqli_stmt_bind_param($eq, "i", $opponent_user_id);
+        mysqli_stmt_execute($eq);
+        $er = mysqli_stmt_get_result($eq);
+
+        $enemy_pets = [];
+        while ($enemy_data = mysqli_fetch_assoc($er)) {
+            $enemy_pets[] = [
+                'id' => $enemy_data['id'],
+                'species_name' => $enemy_data['species_name'],
+                'nickname' => $enemy_data['nickname'],
+                'level' => $enemy_data['level'],
+                'hp' => $enemy_data['health'],
+                'max_hp' => 100,
+                'element' => $enemy_data['element'],
+                'img_adult' => $enemy_data['img_adult'],
+                'attack' => $enemy_data['base_attack'] + ($enemy_data['level'] * 2),
+                'defense' => $enemy_data['base_defense'] + $enemy_data['level'],
+                'is_fainted' => false
+            ];
+        }
+        mysqli_stmt_close($eq);
+
+        if (count($enemy_pets) < 3) {
+            echo json_encode(['success' => false, 'error' => 'Opponent does not have enough pets']);
+            break;
+        }
+
+        // Create battle state in session
+        $battle_id = uniqid('battle_3v3_', true);
+        if (!isset($_SESSION['battles_3v3'])) {
+            $_SESSION['battles_3v3'] = [];
+        }
+
+        $_SESSION['battles_3v3'][$battle_id] = [
+            'user_id' => $user_id,
+            'opponent_user_id' => $opponent_user_id,
+            'player_pets' => $player_pets,
+            'enemy_pets' => $enemy_pets,
+            'active_player_index' => 0,
+            'active_enemy_index' => 0,
+            'current_turn' => 'player',
+            'turn_count' => 1,
+            'status' => 'active',
+            'created_at' => time()
+        ];
+
+        echo json_encode([
+            'success' => true,
+            'battle_id' => $battle_id
+        ]);
+        break;
+
+    // GET: Get battle state
+    case 'battle_state':
+        if ($method !== 'GET') {
+            api_method_not_allowed('GET');
+        }
+
+        $battle_id = isset($_GET['battle_id']) ? $_GET['battle_id'] : '';
+
+        if (empty($battle_id) || !isset($_SESSION['battles_3v3'][$battle_id])) {
+            echo json_encode(['success' => false, 'error' => 'Battle not found']);
+            break;
+        }
+
+        $battle = $_SESSION['battles_3v3'][$battle_id];
+
+        echo json_encode([
+            'success' => true,
+            'battle_state' => $battle
+        ]);
+        break;
+
+    // ============================================
     // Default: Unknown action
     // ============================================
     default:
-        api_not_found('Unknown action. Available: get_pets, get_active_pet, get_shop, get_inventory, gacha, buy_item, use_item, set_active, rename, shelter, get_opponents, battle, battle_history, get_buff, play_finish, get_evolution_candidates, evolve_manual, sell_pet, battle_result, get_daily_reward, claim_daily_reward, get_leaderboard, get_achievements, get_balance, get_transactions, transfer_gold, search_nethera');
+        api_not_found('Unknown action. Available: get_pets, get_active_pet, get_shop, get_inventory, gacha, buy_item, use_item, set_active, rename, shelter, get_opponents, battle, battle_history, get_buff, play_finish, get_evolution_candidates, evolve_manual, sell_pet, battle_result, get_daily_reward, claim_daily_reward, get_leaderboard, get_achievements, get_balance, get_transactions, transfer_gold, search_nethera, get_opponents_3v3, start_battle_3v3, battle_state');
 }
 ?>
