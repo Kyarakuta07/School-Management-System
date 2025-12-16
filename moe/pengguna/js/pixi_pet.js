@@ -160,7 +160,7 @@ function mountPixiCanvas() {
 // ================================================
 // LOAD PET SPRITE INTO PIXI
 // ================================================
-async function loadPixiPet(petData) {
+function loadPixiPet(petData) {
     if (!isPixiReady || !pixiApp) {
         console.log('PixiJS not ready, skipping pet load');
         return;
@@ -172,8 +172,8 @@ async function loadPixiPet(petData) {
     const imgPath = getPetImagePathForPixi(petData);
 
     try {
-        // Load texture
-        const texture = await PIXI.Assets.load(imgPath);
+        // Load texture (PixiJS v7 uses Texture.from)
+        const texture = PIXI.Texture.from(imgPath);
 
         // Remove old sprite
         if (petSprite) {
@@ -187,16 +187,29 @@ async function loadPixiPet(petData) {
         petSprite.x = PIXI_CONFIG.stageWidth / 2;
         petSprite.y = PIXI_CONFIG.stageHeight / 2;
 
-        // Scale to fit
-        const maxSize = 160;
-        const scale = Math.min(maxSize / petSprite.width, maxSize / petSprite.height);
-        petSprite.scale.set(scale);
+        // Wait for texture to load then scale
+        texture.baseTexture.on('loaded', () => {
+            const maxSize = 160;
+            const scale = Math.min(maxSize / petSprite.width, maxSize / petSprite.height);
+            petSprite.scale.set(scale);
+        });
+
+        // If already loaded, scale immediately
+        if (texture.baseTexture.valid) {
+            const maxSize = 160;
+            const scale = Math.min(maxSize / petSprite.width, maxSize / petSprite.height);
+            petSprite.scale.set(scale);
+        }
 
         // Apply shiny effect if applicable
         if (petData.is_shiny && petData.shiny_hue) {
-            const hueFilter = new PIXI.ColorMatrixFilter();
-            hueFilter.hue(petData.shiny_hue, false);
-            petSprite.filters = [hueFilter];
+            try {
+                const hueFilter = new PIXI.filters.ColorMatrixFilter();
+                hueFilter.hue(petData.shiny_hue, false);
+                petSprite.filters = [hueFilter];
+            } catch (e) {
+                // ColorMatrixFilter may not be available
+            }
         }
 
         // Add glow effect for rare+ pets
