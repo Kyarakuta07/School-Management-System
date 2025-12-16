@@ -1965,6 +1965,44 @@ switch ($action) {
         $player_pet = &$battle['player_pets'][$battle['active_player_index']];
         $enemy_pet = &$battle['enemy_pets'][$battle['active_enemy_index']];
 
+        // VALIDATION: Ensure active player pet is not fainted
+        if ($player_pet['is_fainted'] || $player_pet['hp'] <= 0) {
+            // Find next alive player pet
+            $found_alive = false;
+            for ($i = 0; $i < count($battle['player_pets']); $i++) {
+                if (!$battle['player_pets'][$i]['is_fainted'] && $battle['player_pets'][$i]['hp'] > 0) {
+                    $battle['active_player_index'] = $i;
+                    $player_pet = &$battle['player_pets'][$i];
+                    $found_alive = true;
+                    break;
+                }
+            }
+            if (!$found_alive) {
+                $battle['status'] = 'defeat';
+                echo json_encode(['success' => false, 'error' => 'All your pets are fainted!', 'battle_state' => $battle]);
+                break;
+            }
+        }
+
+        // VALIDATION: Ensure active enemy pet is not fainted
+        if ($enemy_pet['is_fainted'] || $enemy_pet['hp'] <= 0) {
+            // Find next alive enemy pet
+            $found_alive = false;
+            for ($i = 0; $i < count($battle['enemy_pets']); $i++) {
+                if (!$battle['enemy_pets'][$i]['is_fainted'] && $battle['enemy_pets'][$i]['hp'] > 0) {
+                    $battle['active_enemy_index'] = $i;
+                    $enemy_pet = &$battle['enemy_pets'][$i];
+                    $found_alive = true;
+                    break;
+                }
+            }
+            if (!$found_alive) {
+                $battle['status'] = 'victory';
+                echo json_encode(['success' => false, 'error' => 'All enemy pets are fainted! You win!', 'battle_state' => $battle]);
+                break;
+            }
+        }
+
         // Calculate base damage based on skill
         $skill_damage = [
             1 => 25,  // Basic Attack
@@ -2098,6 +2136,45 @@ switch ($action) {
         // Get active pets
         $player_pet = &$battle['player_pets'][$battle['active_player_index']];
         $enemy_pet = &$battle['enemy_pets'][$battle['active_enemy_index']];
+
+        // VALIDATION: Ensure active enemy pet is not fainted (enemy must be alive to attack)
+        if ($enemy_pet['is_fainted'] || $enemy_pet['hp'] <= 0) {
+            // Find next alive enemy pet
+            $found_alive = false;
+            for ($i = 0; $i < count($battle['enemy_pets']); $i++) {
+                if (!$battle['enemy_pets'][$i]['is_fainted'] && $battle['enemy_pets'][$i]['hp'] > 0) {
+                    $battle['active_enemy_index'] = $i;
+                    $enemy_pet = &$battle['enemy_pets'][$i];
+                    $found_alive = true;
+                    break;
+                }
+            }
+            if (!$found_alive) {
+                $battle['status'] = 'victory';
+                $battle['current_turn'] = 'player';
+                echo json_encode(['success' => true, 'damage_dealt' => 0, 'logs' => ['All enemy pets are defeated! You win!'], 'battle_state' => $battle]);
+                break;
+            }
+        }
+
+        // VALIDATION: Ensure active player pet is not fainted (target must be valid)
+        if ($player_pet['is_fainted'] || $player_pet['hp'] <= 0) {
+            // Find next alive player pet
+            $found_alive = false;
+            for ($i = 0; $i < count($battle['player_pets']); $i++) {
+                if (!$battle['player_pets'][$i]['is_fainted'] && $battle['player_pets'][$i]['hp'] > 0) {
+                    $battle['active_player_index'] = $i;
+                    $player_pet = &$battle['player_pets'][$i];
+                    $found_alive = true;
+                    break;
+                }
+            }
+            if (!$found_alive) {
+                $battle['status'] = 'defeat';
+                echo json_encode(['success' => true, 'damage_dealt' => 0, 'logs' => ['All your pets are defeated!'], 'battle_state' => $battle]);
+                break;
+            }
+        }
 
         // Enemy calculates simple attack (random skill 1-4)
         $skill_id = rand(1, 4);
