@@ -2090,16 +2090,9 @@ switch ($action) {
             }
         }
 
-        // Switch turn logic
+        // Switch turn to enemy (validation at start of battle_enemy_turn handles fainted pets)
         if ($battle['status'] === 'active') {
-            if ($is_fainted) {
-                // Enemy pet just fainted - player keeps the turn (continuation)
-                // The new enemy pet doesn't get to attack immediately
-                $battle['current_turn'] = 'player';
-            } else {
-                // Normal case - enemy pet alive, switch to enemy turn
-                $battle['current_turn'] = 'enemy';
-            }
+            $battle['current_turn'] = 'enemy';
         }
 
         echo json_encode([
