@@ -46,9 +46,15 @@ if (empty($battle_id)) {
 
     <!-- Battle 3v3 CSS -->
     <link rel="stylesheet" href="css/battle_3v3.css">
+
+    <!-- PixiJS for visual effects -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.3.2/pixi.min.js"></script>
 </head>
 
 <body>
+    <!-- PixiJS Effects Container -->
+    <div id="pixi-container"></div>
+
     <!-- Rotate Device Overlay (shows in portrait) -->
     <div class="rotate-overlay" id="rotate-overlay">
         <div class="rotate-content">
@@ -184,6 +190,7 @@ if (empty($battle_id)) {
 
     <!-- Battle JS -->
     <script src="js/sound_manager.js"></script>
+    <script src="js/pixi_battle.js"></script>
     <script src="js/battle_3v3.js"></script>
 </body>
 

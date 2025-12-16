@@ -176,6 +176,11 @@ async function handleAttack(skillId) {
             SoundManager.damage();
         }
 
+        // PixiJS damage sparks effect
+        if (typeof showDamageSparks === 'function') {
+            showDamageSparks(false, data.is_critical);
+        }
+
         // Show floating damage
         showFloatingDamage(DOM.enemySprite, data.damage_dealt, data.is_critical, data.element_advantage);
 
@@ -280,6 +285,11 @@ async function enemyTurn() {
         // Show damage to player
         DOM.playerSprite.classList.add('hit');
         if (typeof SoundManager !== 'undefined') SoundManager.damage();
+
+        // PixiJS damage sparks effect (player hit)
+        if (typeof showDamageSparks === 'function') {
+            showDamageSparks(true, false);
+        }
 
         showFloatingDamage(DOM.playerSprite, data.damage_dealt, false, 'neutral');
 
@@ -615,6 +625,17 @@ function endBattle(playerWon) {
 
     const goldReward = playerWon ? 50 + Math.floor(Math.random() * 100) : 0;
     const expReward = playerWon ? 60 + Math.floor(Math.random() * 60) : 0;
+
+    // Trigger PixiJS effects
+    if (playerWon) {
+        if (typeof showVictoryEffects === 'function') {
+            showVictoryEffects();
+        }
+    } else {
+        if (typeof showDefeatEffects === 'function') {
+            showDefeatEffects();
+        }
+    }
 
     setTimeout(() => {
         const resultTitle = document.getElementById('result-title');
