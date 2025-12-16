@@ -48,13 +48,12 @@ mysqli_stmt_close($gold_stmt);
 
     <!-- Styles -->
     <link rel="stylesheet" href="../assets/css/global.css">
+    <!-- Base Pet CSS -->
+    <link rel="stylesheet" href="css/pet.css">
+    <link rel="stylesheet" href="css/pet_hardcore_update.css">
     <?php if (isset($_GET['dragon']) && $_GET['dragon'] == '1'): ?>
-        <!-- Dragon Style - Egyptian Gold Theme (TEST MODE) -->
+        <!-- Dragon Gold Enhancement Layer (TEST MODE) -->
         <link rel="stylesheet" href="css/pet_dragon.css">
-    <?php else: ?>
-        <!-- Original Pet CSS -->
-        <link rel="stylesheet" href="css/pet.css">
-        <link rel="stylesheet" href="css/pet_hardcore_update.css">
     <?php endif; ?>
     <link rel="stylesheet" href="css/pet_animations.css">
     <link rel="stylesheet" href="css/pet_help_guide.css">
