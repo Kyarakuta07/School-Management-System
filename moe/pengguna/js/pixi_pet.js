@@ -255,28 +255,10 @@ function getPetImagePathForPixi(pet) {
 function applyRarityGlow(rarity) {
     if (!petSprite) return;
 
-    const glowColors = {
-        'Common': null,
-        'Rare': 0x3498db,
-        'Epic': 0x9b59b6,
-        'Legendary': 0xf1c40f
-    };
-
-    const color = glowColors[rarity];
-
-    if (!color) {
-        petSprite.filters = petSprite.filters?.filter(f => f !== glowFilter) || [];
-        return;
-    }
-
-    // Create glow using blur + brightness
-    glowFilter = new PIXI.BlurFilter({
-        strength: 2,
-        quality: 4
-    });
-
-    const currentFilters = petSprite.filters || [];
-    petSprite.filters = [...currentFilters, glowFilter];
+    // NOTE: Blur filter causes image quality loss
+    // Using CSS drop-shadow in HTML instead for rarity glow
+    // Just ensure no blur filters are applied
+    petSprite.filters = petSprite.filters?.filter(f => !(f instanceof PIXI.BlurFilter)) || [];
 }
 
 // ================================================
