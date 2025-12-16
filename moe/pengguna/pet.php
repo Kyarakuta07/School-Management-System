@@ -552,7 +552,7 @@ mysqli_stmt_close($gold_stmt);
     <!-- ========================================
          SELL PET CONFIRMATION MODAL
          ======================================== -->
-    <div class="modal" id="sell-modal">
+    <div class="modal hidden" id="sell-modal">
         <div class="modal-backdrop" onclick="closeSellModal()"></div>
         <div class="modal-content sell-dialog">
             <h2>💰 Sell Pet</h2>
@@ -589,7 +589,7 @@ mysqli_stmt_close($gold_stmt);
     <!-- ========================================
          RHYTHM GAME MODAL
          ======================================== -->
-    <div class="modal" id="rhythm-modal">
+    <div class="modal hidden" id="rhythm-modal">
         <div class="modal-backdrop" onclick="closeRhythmGame()"></div>
         <div class="modal-content rhythm-game-container">
             <div class="rhythm-header">
@@ -628,7 +628,7 @@ mysqli_stmt_close($gold_stmt);
     <!-- ========================================
          EVOLUTION SELECTOR MODAL
          ======================================== -->
-    <div class="modal" id="evolution-modal">
+    <div class="modal hidden" id="evolution-modal">
         <div class="modal-backdrop" onclick="closeEvolutionModal()"></div>
         <div class="modal-content evolution-selector">
             <h2>🔮 <span id="evo-title">Evolution</span></h2>
@@ -671,7 +671,7 @@ mysqli_stmt_close($gold_stmt);
     <!-- ========================================
          EVOLUTION CONFIRM MODAL
          ======================================== -->
-    <div class="modal" id="evolution-confirm-modal">
+    <div class="modal hidden" id="evolution-confirm-modal">
         <div class="modal-backdrop" onclick="closeEvoConfirmModal()"></div>
         <div class="modal-content evo-confirm-dialog">
             <h2>⚠️ Confirm Evolution</h2>
@@ -695,7 +695,7 @@ mysqli_stmt_close($gold_stmt);
     <!-- ========================================
          RENAME PET MODAL
          ======================================== -->
-    <div class="modal" id="rename-modal">
+    <div class="modal hidden" id="rename-modal">
         <div class="modal-backdrop" onclick="closeRenameModal()"></div>
         <div class="modal-content rename-dialog">
             <h2>✏️ Rename Pet</h2>
@@ -713,7 +713,7 @@ mysqli_stmt_close($gold_stmt);
     <!-- ========================================
          SHOP PURCHASE MODAL
          ======================================== -->
-    <div class="modal" id="shop-purchase-modal">
+    <div class="modal hidden" id="shop-purchase-modal">
         <div class="modal-backdrop" onclick="closeShopPurchaseModal()"></div>
         <div class="modal-content shop-purchase-dialog">
             <h2>🛒 Purchase Item</h2>
@@ -759,7 +759,7 @@ mysqli_stmt_close($gold_stmt);
     <!-- ========================================
          REVIVE PET MODAL
          ======================================== -->
-    <div class="modal" id="revive-modal">
+    <div class="modal hidden" id="revive-modal">
         <div class="modal-backdrop" onclick="closeReviveModal()"></div>
         <div class="modal-content revive-dialog">
             <h2>💀 Revive Pet</h2>
