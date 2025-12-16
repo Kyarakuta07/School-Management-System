@@ -1934,10 +1934,141 @@ switch ($action) {
         ]);
         break;
 
+    // POST: Execute an attack in 3v3 battle
+    case 'battle_attack':
+        if ($method !== 'POST') {
+            api_method_not_allowed('POST');
+        }
+
+        $input = json_decode(file_get_contents('php://input'), true);
+        $battle_id = isset($input['battle_id']) ? $input['battle_id'] : '';
+        $skill_id = isset($input['skill_id']) ? (int) $input['skill_id'] : 1;
+
+        if (empty($battle_id) || !isset($_SESSION['battles_3v3'][$battle_id])) {
+            echo json_encode(['success' => false, 'error' => 'Battle not found or expired']);
+            break;
+        }
+
+        $battle = &$_SESSION['battles_3v3'][$battle_id];
+
+        if ($battle['status'] !== 'active') {
+            echo json_encode(['success' => false, 'error' => 'Battle has ended']);
+            break;
+        }
+
+        if ($battle['current_turn'] !== 'player') {
+            echo json_encode(['success' => false, 'error' => 'Not your turn']);
+            break;
+        }
+
+        // Get active pets
+        $player_pet = &$battle['player_pets'][$battle['active_player_index']];
+        $enemy_pet = &$battle['enemy_pets'][$battle['active_enemy_index']];
+
+        // Calculate base damage based on skill
+        $skill_damage = [
+            1 => 25,  // Basic Attack
+            2 => 40,  // Power Strike
+            3 => 60,  // Special Attack
+            4 => 80   // Ultimate
+        ];
+        $base_damage = $skill_damage[$skill_id] ?? 25;
+
+        // Add pet attack stat
+        $base_damage += $player_pet['attack'] ?? 0;
+
+        // Element advantage (simplified)
+        $element_chart = [
+            'Fire' => 'Earth',
+            'Water' => 'Fire',
+            'Earth' => 'Air',
+            'Air' => 'Water',
+            'Light' => 'Dark',
+            'Dark' => 'Light'
+        ];
+
+        $element_advantage = 'neutral';
+        $multiplier = 1.0;
+        if (isset($element_chart[$player_pet['element']]) && $element_chart[$player_pet['element']] === $enemy_pet['element']) {
+            $multiplier = 2.0;
+            $element_advantage = 'super_effective';
+        } elseif (isset($element_chart[$enemy_pet['element']]) && $element_chart[$enemy_pet['element']] === $player_pet['element']) {
+            $multiplier = 0.5;
+            $element_advantage = 'not_effective';
+        }
+
+        // Apply multiplier and add RNG (±5%)
+        $rng = (rand(95, 105) / 100);
+        $final_damage = (int) ($base_damage * $multiplier * $rng);
+
+        // Critical hit (10% chance)
+        $is_critical = (rand(1, 100) <= 10);
+        if ($is_critical) {
+            $final_damage = (int) ($final_damage * 1.5);
+        }
+
+        // Apply damage
+        $enemy_pet['hp'] = max(0, $enemy_pet['hp'] - $final_damage);
+
+        // Build log
+        $logs = [];
+        $logs[] = "{$player_pet['species_name']} used attack and dealt {$final_damage} damage!";
+        if ($is_critical) {
+            $logs[] = "CRITICAL HIT!";
+        }
+        if ($element_advantage === 'super_effective') {
+            $logs[] = "It's super effective!";
+        } elseif ($element_advantage === 'not_effective') {
+            $logs[] = "It's not very effective...";
+        }
+
+        $is_fainted = false;
+        // Check if enemy pet fainted
+        if ($enemy_pet['hp'] <= 0) {
+            $enemy_pet['is_fainted'] = true;
+            $is_fainted = true;
+            $logs[] = "{$enemy_pet['species_name']} fainted!";
+
+            // Find next alive enemy pet
+            $next_enemy = -1;
+            for ($i = 0; $i < 3; $i++) {
+                if (!$battle['enemy_pets'][$i]['is_fainted']) {
+                    $next_enemy = $i;
+                    break;
+                }
+            }
+
+            if ($next_enemy >= 0) {
+                $battle['active_enemy_index'] = $next_enemy;
+                $logs[] = "Enemy sends out {$battle['enemy_pets'][$next_enemy]['species_name']}!";
+            } else {
+                // All enemy pets fainted - player wins!
+                $battle['status'] = 'victory';
+                $logs[] = "All enemy pets defeated! You WIN!";
+            }
+        }
+
+        // Switch turn to enemy if battle still active
+        if ($battle['status'] === 'active') {
+            $battle['current_turn'] = 'enemy';
+        }
+
+        echo json_encode([
+            'success' => true,
+            'damage_dealt' => $final_damage,
+            'is_critical' => $is_critical,
+            'element_advantage' => $element_advantage,
+            'new_enemy_hp' => $enemy_pet['hp'],
+            'is_fainted' => $is_fainted,
+            'logs' => $logs,
+            'battle_state' => $battle
+        ]);
+        break;
+
     // ============================================
     // Default: Unknown action
     // ============================================
     default:
-        api_not_found('Unknown action. Available: get_pets, get_active_pet, get_shop, get_inventory, gacha, buy_item, use_item, set_active, rename, shelter, get_opponents, battle, battle_history, get_buff, play_finish, get_evolution_candidates, evolve_manual, sell_pet, battle_result, get_daily_reward, claim_daily_reward, get_leaderboard, get_achievements, get_balance, get_transactions, transfer_gold, search_nethera, get_opponents_3v3, start_battle_3v3, battle_state');
+        api_not_found('Unknown action. Available: get_pets, get_active_pet, get_shop, get_inventory, gacha, buy_item, use_item, set_active, rename, shelter, get_opponents, battle, battle_history, get_buff, play_finish, get_evolution_candidates, evolve_manual, sell_pet, battle_result, get_daily_reward, claim_daily_reward, get_leaderboard, get_achievements, get_balance, get_transactions, transfer_gold, search_nethera, get_opponents_3v3, start_battle_3v3, battle_state, battle_attack');
 }
 ?>
