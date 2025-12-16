@@ -745,22 +745,28 @@
 }
 
 /* ================================================
-   15. MODALS
+   15. MODALS - Hidden by Default
    ================================================ */
 .modal {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(10px);
-    display: flex;
+    display: none;
+    /* Hidden by default */
     align-items: center;
     justify-content: center;
     z-index: 1000;
     padding: var(--space-lg);
 }
 
+/* Show modal when .show class is added */
+.modal.show {
+    display: flex;
+}
+
 .modal.hidden {
-    display: none;
+    display: none !important;
 }
 
 .modal-content {
