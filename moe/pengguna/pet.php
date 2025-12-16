@@ -158,7 +158,7 @@ mysqli_stmt_close($gold_stmt);
                         <div class="status-bar">
                             <div class="status-label">
                                 <i class="fas fa-heart"></i>
-                                <span>Health</span>
+                                <span>HP</span>
                             </div>
                             <div class="bar-container">
                                 <div class="bar-fill health" id="health-bar" style="width: 100%"></div>
