@@ -2025,14 +2025,18 @@ switch ($action) {
         $is_fainted = false;
         // Check if enemy pet fainted
         if ($enemy_pet['hp'] <= 0) {
-            $enemy_pet['is_fainted'] = true;
+            // Mark as fainted in the battle array directly
+            $battle['enemy_pets'][$battle['active_enemy_index']]['is_fainted'] = true;
+            $battle['enemy_pets'][$battle['active_enemy_index']]['hp'] = 0;
             $is_fainted = true;
             $logs[] = "{$enemy_pet['species_name']} fainted!";
 
-            // Find next alive enemy pet
+            // Find next alive enemy pet (skip current fainted one)
             $next_enemy = -1;
-            for ($i = 0; $i < 3; $i++) {
-                if (!$battle['enemy_pets'][$i]['is_fainted']) {
+            $count = count($battle['enemy_pets']);
+            for ($i = 0; $i < $count; $i++) {
+                // Skip if same as current (just fainted) or already fainted
+                if ($i !== $battle['active_enemy_index'] && !$battle['enemy_pets'][$i]['is_fainted']) {
                     $next_enemy = $i;
                     break;
                 }
@@ -2113,14 +2117,18 @@ switch ($action) {
         $player_fainted = false;
         // Check if player pet fainted
         if ($player_pet['hp'] <= 0) {
-            $player_pet['is_fainted'] = true;
+            // Mark as fainted in the battle array directly
+            $battle['player_pets'][$battle['active_player_index']]['is_fainted'] = true;
+            $battle['player_pets'][$battle['active_player_index']]['hp'] = 0;
             $player_fainted = true;
             $logs[] = "{$player_pet['species_name']} fainted!";
 
-            // Find next alive player pet
+            // Find next alive player pet (skip current fainted one)
             $next_player = -1;
-            for ($i = 0; $i < 3; $i++) {
-                if (!$battle['player_pets'][$i]['is_fainted']) {
+            $count = count($battle['player_pets']);
+            for ($i = 0; $i < $count; $i++) {
+                // Skip if same as current (just fainted) or already fainted
+                if ($i !== $battle['active_player_index'] && !$battle['player_pets'][$i]['is_fainted']) {
                     $next_player = $i;
                     break;
                 }
