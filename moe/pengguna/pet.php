@@ -102,6 +102,10 @@ mysqli_stmt_close($gold_stmt);
                 <i class="fas fa-swords"></i>
                 <span>Arena</span>
             </button>
+            <button class="tab-btn" data-tab="arena3v3">
+                <i class="fas fa-dragon"></i>
+                <span>3v3</span>
+            </button>
             <button class="tab-btn" data-tab="achievements">
                 <i class="fas fa-trophy"></i>
                 <span>Badges</span>
@@ -347,6 +351,53 @@ mysqli_stmt_close($gold_stmt);
                         <div class="loading-spinner">
                             <i class="fas fa-spinner fa-spin fa-2x"></i>
                             <p>Loading leaderboard...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ARENA 3v3 TAB -->
+            <section id="arena3v3" class="tab-content">
+                <div class="arena-header">
+                    <h2>⚔️ Battle Arena 3v3</h2>
+                    <p>Dragon City style 3-on-3 turn-based combat!</p>
+                </div>
+
+                <!-- Team Selection -->
+                <div class="team-selection-panel" id="team-selection">
+                    <h3>Select Your Team (3 Pets)</h3>
+                    <p class="selection-hint">Choose 3 pets to battle with:</p>
+
+                    <div class="selected-team" id="selected-team">
+                        <div class="team-slot empty" data-slot="0">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                        <div class="team-slot empty" data-slot="1">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                        <div class="team-slot empty" data-slot="2">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                    </div>
+
+                    <div class="pet-pool" id="pet-pool-3v3">
+                        <div class="loading-spinner">
+                            <i class="fas fa-spinner fa-spin fa-2x"></i>
+                            <p>Loading your pets...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Opponent Selection (shown after team is full) -->
+                <div class="opponent-selection" id="opponent-selection-3v3" style="display: none;">
+                    <h3>Choose Your Opponent</h3>
+                    <button class="btn-refresh" onclick="loadOpponents3v3()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <div class="opponent-list" id="opponent-list-3v3">
+                        <div class="loading-spinner">
+                            <i class="fas fa-spinner fa-spin fa-2x"></i>
+                            <p>Finding opponents...</p>
                         </div>
                     </div>
                 </div>

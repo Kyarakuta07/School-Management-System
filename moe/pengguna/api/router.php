@@ -77,6 +77,13 @@ $routes = [
     'battle_wins' => ['BattleController', 'battleWins'],
     'streak' => ['BattleController', 'streak'],
 
+    // 3v3 Battle Controller
+    'start_battle_3v3' => ['BattleController', 'startBattle3v3'],
+    'battle_attack' => ['BattleController', 'attack'],
+    'battle_state' => ['BattleController', 'getBattleState'],
+    'battle_switch' => ['BattleController', 'switchPet'],
+    'get_opponents_3v3' => ['BattleController', 'getOpponents3v3'],
+
     // Evolution Controller
     'get_evolution_candidates' => ['EvolutionController', 'getEvolutionCandidates'],
     'evolve_manual' => ['EvolutionController', 'evolveManual'],

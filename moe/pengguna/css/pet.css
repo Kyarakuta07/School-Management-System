@@ -3805,3 +3805,250 @@
         transition-duration: 0.01ms !important;
     }
 }
+
+/* ================================================
+   ARENA 3v3 - TEAM SELECTION
+   ================================================ */
+
+/* Dragon icon fallback */
+.tab-btn[data-tab="arena3v3"] i::before {
+    content: "🐉";
+    font-family: inherit;
+}
+
+/* Team Selection Panel */
+.team-selection-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-gold);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-lg);
+}
+
+.team-selection-panel h3 {
+    font-family: 'Cinzel', serif;
+    color: var(--gold);
+    margin-bottom: var(--space-xs);
+}
+
+.selection-hint {
+    color: #888;
+    font-size: 0.85rem;
+    margin-bottom: var(--space-md);
+}
+
+/* Selected Team Display (3 slots) */
+.selected-team {
+    display: flex;
+    gap: var(--space-md);
+    justify-content: center;
+    margin-bottom: var(--space-lg);
+    padding: var(--space-md);
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-md);
+}
+
+.team-slot {
+    width: 80px;
+    height: 80px;
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px dashed rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    cursor: pointer;
+    position: relative;
+}
+
+.team-slot.empty i {
+    color: #555;
+    font-size: 1.5rem;
+}
+
+.team-slot.filled {
+    border-style: solid;
+    border-color: var(--gold);
+}
+
+.team-slot.filled img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 5px;
+}
+
+.team-slot:hover {
+    border-color: var(--gold);
+    background: rgba(218, 165, 32, 0.1);
+}
+
+.team-slot .remove-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #e74c3c;
+    border: none;
+    color: white;
+    font-size: 0.6rem;
+    cursor: pointer;
+    display: none;
+}
+
+.team-slot.filled:hover .remove-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Pet Pool (pet selection grid) */
+.pet-pool {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-sm);
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.pet-pool-item {
+    aspect-ratio: 1;
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    padding: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.pet-pool-item:hover:not(.selected):not(.disabled) {
+    border-color: var(--gold);
+    transform: scale(1.05);
+}
+
+.pet-pool-item.selected {
+    border-color: var(--gold);
+    background: rgba(218, 165, 32, 0.2);
+}
+
+.pet-pool-item.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.pet-pool-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.pet-pool-item .pet-level-badge {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    background: rgba(0, 0, 0, 0.8);
+    color: var(--gold);
+    font-size: 0.6rem;
+    padding: 2px 5px;
+    border-radius: 4px;
+}
+
+/* Opponent Selection */
+.opponent-selection {
+    background: var(--bg-card);
+    border: 1px solid var(--border-gold);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+}
+
+.opponent-selection h3 {
+    font-family: 'Cinzel', serif;
+    color: var(--gold);
+    margin-bottom: var(--space-md);
+    text-align: center;
+}
+
+.btn-refresh {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 auto var(--space-md);
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-sm);
+    color: #888;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-refresh:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+}
+
+.opponent-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.opponent-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-md);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    transition: all 0.2s;
+}
+
+.opponent-row:hover {
+    border-color: var(--border-gold);
+}
+
+.opponent-row .opponent-info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.opponent-row .opponent-name {
+    font-weight: 600;
+}
+
+.opponent-row .opponent-pets {
+    display: flex;
+    gap: 4px;
+}
+
+.opponent-row .opponent-pets img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.opponent-row .battle-3v3-btn {
+    padding: 8px 20px;
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    border: none;
+    border-radius: var(--radius-sm);
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.opponent-row .battle-3v3-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+}

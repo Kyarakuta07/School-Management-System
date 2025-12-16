@@ -1473,3 +1473,223 @@ document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
         backdrop.closest('.modal').classList.remove('show');
     });
 });
+
+// ================================================
+// ARENA 3v3 TEAM SELECTION
+// ================================================
+let selectedTeam3v3 = []; // Array of pet objects [pet1, pet2, pet3]
+const MAX_TEAM_SIZE = 3;
+
+/**
+ * Load pets for 3v3 team selection
+ */
+async function loadPetsFor3v3() {
+    const pool = document.getElementById('pet-pool-3v3');
+    if (!pool) return;
+
+    try {
+        const response = await fetch(`${API_BASE}?action=get_pets`);
+        const data = await response.json();
+
+        if (data.success && data.pets.length > 0) {
+            // Filter only alive pets
+            const alivePets = data.pets.filter(p => p.status === 'ALIVE');
+
+            if (alivePets.length < 3) {
+                pool.innerHTML = `<div class="empty-message" style="grid-column: 1/-1;">
+                    You need at least 3 alive pets for 3v3 battle.<br>
+                    Currently: ${alivePets.length} alive pets.
+                </div>`;
+                return;
+            }
+
+            pool.innerHTML = alivePets.map(pet => `
+                <div class="pet-pool-item" 
+                     data-pet-id="${pet.id}" 
+                     onclick="togglePetSelection(${pet.id}, this)">
+                    <img src="${getPetImagePath(pet)}" 
+                         alt="${pet.nickname || pet.species_name}"
+                         onerror="this.src='../assets/placeholder.png'">
+                    <div class="pet-level-badge">Lv.${pet.level}</div>
+                </div>
+            `).join('');
+
+        } else {
+            pool.innerHTML = '<div class="empty-message" style="grid-column: 1/-1;">No pets available</div>';
+        }
+    } catch (error) {
+        console.error('Error loading pets for 3v3:', error);
+    }
+}
+
+/**
+ * Toggle pet selection for 3v3 team
+ */
+function togglePetSelection(petId, element) {
+    const index = selectedTeam3v3.findIndex(p => p.id === petId);
+
+    if (index > -1) {
+        // Already selected, deselect
+        selectedTeam3v3.splice(index, 1);
+        element.classList.remove('selected');
+    } else {
+        // Not selected
+        if (selectedTeam3v3.length >= MAX_TEAM_SIZE) {
+            showToast('You can only select 3 pets!', 'warning');
+            return;
+        }
+
+        // Find pet data from userPets array
+        const pet = userPets.find(p => p.id === petId);
+        if (pet) {
+            selectedTeam3v3.push(pet);
+            element.classList.add('selected');
+        }
+    }
+
+    updateTeamSlots();
+}
+
+/**
+ * Remove pet from team (click on slot)
+ */
+function removePetFromTeam(slotIndex) {
+    if (selectedTeam3v3[slotIndex]) {
+        const petId = selectedTeam3v3[slotIndex].id;
+
+        // Remove from array
+        selectedTeam3v3.splice(slotIndex, 1);
+
+        // Update pool item
+        const poolItem = document.querySelector(`.pet-pool-item[data-pet-id="${petId}"]`);
+        if (poolItem) poolItem.classList.remove('selected');
+
+        updateTeamSlots();
+    }
+}
+
+/**
+ * Update team slots display
+ */
+function updateTeamSlots() {
+    const slots = document.querySelectorAll('.team-slot');
+
+    slots.forEach((slot, i) => {
+        if (selectedTeam3v3[i]) {
+            const pet = selectedTeam3v3[i];
+            slot.innerHTML = `
+                <img src="${getPetImagePath(pet)}" alt="${pet.nickname || pet.species_name}"
+                     onerror="this.src='../assets/placeholder.png'">
+                <button class="remove-btn" onclick="event.stopPropagation(); removePetFromTeam(${i})">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            slot.classList.remove('empty');
+            slot.classList.add('filled');
+            slot.onclick = () => removePetFromTeam(i);
+        } else {
+            slot.innerHTML = '<i class="fas fa-plus"></i>';
+            slot.classList.add('empty');
+            slot.classList.remove('filled');
+            slot.onclick = null;
+        }
+    });
+
+    // Show opponent selection if team is full
+    const opponentSection = document.getElementById('opponent-selection-3v3');
+    if (opponentSection) {
+        if (selectedTeam3v3.length === MAX_TEAM_SIZE) {
+            opponentSection.style.display = 'block';
+            loadOpponents3v3();
+        } else {
+            opponentSection.style.display = 'none';
+        }
+    }
+}
+
+/**
+ * Load opponents for 3v3 battle
+ */
+async function loadOpponents3v3() {
+    const container = document.getElementById('opponent-list-3v3');
+    if (!container) return;
+
+    container.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Finding opponents...</p></div>';
+
+    try {
+        const response = await fetch(`${API_BASE}?action=get_opponents_3v3`);
+        const data = await response.json();
+
+        if (data.success && data.opponents && data.opponents.length > 0) {
+            container.innerHTML = data.opponents.map(opp => `
+                <div class="opponent-row">
+                    <div class="opponent-info">
+                        <div class="opponent-name">${opp.name || opp.username}</div>
+                        <div class="opponent-pets">
+                            ${opp.pets.map(p => `
+                                <img src="../assets/pets/${p.img_adult}" 
+                                     alt="${p.species_name}"
+                                     onerror="this.src='../assets/placeholder.png'">
+                            `).join('')}
+                        </div>
+                    </div>
+                    <button class="battle-3v3-btn" onclick="startBattle3v3(${opp.user_id})">
+                        <i class="fas fa-dragon"></i> Battle!
+                    </button>
+                </div>
+            `).join('');
+        } else {
+            container.innerHTML = '<div class="empty-message">No opponents with 3+ pets found. Try again later!</div>';
+        }
+    } catch (error) {
+        console.error('Error loading 3v3 opponents:', error);
+        container.innerHTML = '<div class="empty-message">Failed to load opponents</div>';
+    }
+}
+
+/**
+ * Start 3v3 battle
+ */
+async function startBattle3v3(opponentUserId) {
+    if (selectedTeam3v3.length !== 3) {
+        showToast('Select exactly 3 pets first!', 'warning');
+        return;
+    }
+
+    const petIds = selectedTeam3v3.map(p => p.id);
+
+    try {
+        const response = await fetch(`${API_BASE}?action=start_battle_3v3`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                pet_ids: petIds,
+                opponent_user_id: opponentUserId
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            // Redirect to battle page
+            window.location.href = `battle_3v3.php?battle_id=${data.battle_id}`;
+        } else {
+            showToast(data.error || 'Failed to start battle', 'error');
+        }
+    } catch (error) {
+        console.error('Error starting 3v3 battle:', error);
+        showToast('Network error', 'error');
+    }
+}
+
+// Load 3v3 pets when arena3v3 tab is activated
+document.addEventListener('DOMContentLoaded', () => {
+    const arena3v3Tab = document.querySelector('.tab-btn[data-tab="arena3v3"]');
+    if (arena3v3Tab) {
+        arena3v3Tab.addEventListener('click', () => {
+            selectedTeam3v3 = [];
+            loadPetsFor3v3();
+            updateTeamSlots();
+        });
+    }
+});
