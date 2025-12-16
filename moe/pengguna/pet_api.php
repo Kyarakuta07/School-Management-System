@@ -2065,10 +2065,97 @@ switch ($action) {
         ]);
         break;
 
+    // POST: Process enemy turn in 3v3 battle
+    case 'battle_enemy_turn':
+        if ($method !== 'POST') {
+            api_method_not_allowed('POST');
+        }
+
+        $input = json_decode(file_get_contents('php://input'), true);
+        $battle_id = isset($input['battle_id']) ? $input['battle_id'] : '';
+
+        if (empty($battle_id) || !isset($_SESSION['battles_3v3'][$battle_id])) {
+            echo json_encode(['success' => false, 'error' => 'Battle not found']);
+            break;
+        }
+
+        $battle = &$_SESSION['battles_3v3'][$battle_id];
+
+        if ($battle['status'] !== 'active') {
+            echo json_encode(['success' => false, 'error' => 'Battle has ended']);
+            break;
+        }
+
+        if ($battle['current_turn'] !== 'enemy') {
+            echo json_encode(['success' => false, 'error' => 'Not enemy turn']);
+            break;
+        }
+
+        // Get active pets
+        $player_pet = &$battle['player_pets'][$battle['active_player_index']];
+        $enemy_pet = &$battle['enemy_pets'][$battle['active_enemy_index']];
+
+        // Enemy calculates simple attack (random skill 1-4)
+        $skill_id = rand(1, 4);
+        $skill_damage = [1 => 25, 2 => 40, 3 => 60, 4 => 80];
+        $base_damage = $skill_damage[$skill_id] + ($enemy_pet['attack'] ?? 0);
+
+        // Apply RNG (±10%)
+        $rng = rand(90, 110) / 100;
+        $final_damage = (int) ($base_damage * $rng);
+
+        // Apply damage to player pet
+        $player_pet['hp'] = max(0, $player_pet['hp'] - $final_damage);
+
+        $logs = [];
+        $logs[] = "{$enemy_pet['species_name']} attacks and deals {$final_damage} damage!";
+
+        $player_fainted = false;
+        // Check if player pet fainted
+        if ($player_pet['hp'] <= 0) {
+            $player_pet['is_fainted'] = true;
+            $player_fainted = true;
+            $logs[] = "{$player_pet['species_name']} fainted!";
+
+            // Find next alive player pet
+            $next_player = -1;
+            for ($i = 0; $i < 3; $i++) {
+                if (!$battle['player_pets'][$i]['is_fainted']) {
+                    $next_player = $i;
+                    break;
+                }
+            }
+
+            if ($next_player >= 0) {
+                $battle['active_player_index'] = $next_player;
+                $logs[] = "Switch to {$battle['player_pets'][$next_player]['species_name']}!";
+            } else {
+                // All player pets fainted - player loses!
+                $battle['status'] = 'defeat';
+                $logs[] = "All your pets defeated! You LOSE!";
+            }
+        }
+
+        // Switch turn back to player and increment turn count
+        if ($battle['status'] === 'active') {
+            $battle['current_turn'] = 'player';
+            $battle['turn_count']++;
+        }
+
+        echo json_encode([
+            'success' => true,
+            'damage_dealt' => $final_damage,
+            'new_player_hp' => $player_pet['hp'],
+            'player_fainted' => $player_fainted,
+            'logs' => $logs,
+            'battle_state' => $battle
+        ]);
+        break;
+
     // ============================================
     // Default: Unknown action
     // ============================================
     default:
-        api_not_found('Unknown action. Available: get_pets, get_active_pet, get_shop, get_inventory, gacha, buy_item, use_item, set_active, rename, shelter, get_opponents, battle, battle_history, get_buff, play_finish, get_evolution_candidates, evolve_manual, sell_pet, battle_result, get_daily_reward, claim_daily_reward, get_leaderboard, get_achievements, get_balance, get_transactions, transfer_gold, search_nethera, get_opponents_3v3, start_battle_3v3, battle_state, battle_attack');
+        api_not_found('Unknown action. Available: get_pets, get_active_pet, get_shop, get_inventory, gacha, buy_item, use_item, set_active, rename, shelter, get_opponents, battle, battle_history, get_buff, play_finish, get_evolution_candidates, evolve_manual, sell_pet, battle_result, get_daily_reward, claim_daily_reward, get_leaderboard, get_achievements, get_balance, get_transactions, transfer_gold, search_nethera, get_opponents_3v3, start_battle_3v3, battle_state, battle_attack, battle_enemy_turn');
 }
 ?>

@@ -214,69 +214,92 @@ async function handleAttack(skillId) {
 }
 
 /**
- * Enemy AI turn (simulated client-side, could also be server-side)
+ * Enemy AI turn - now uses server-side API for consistency
  */
 async function enemyTurn() {
     if (BattleState.status !== 'active') return;
+    if (BattleState.currentTurn !== 'enemy') return;
 
     addBattleLog("Enemy is thinking...", 'enemy-action');
-    await sleep(1000);
+    await sleep(800);
 
-    // For now, we just refresh state - server handles enemy turn
-    // In a real implementation, you'd want the server to also process enemy attacks
-    // For simplicity, we'll simulate enemy attack here
+    try {
+        // Call server to process enemy turn
+        const response = await fetch(`${API_BASE}?action=battle_enemy_turn`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                battle_id: BattleState.battleId
+            })
+        });
 
-    const enemyPet = BattleState.enemyPets[BattleState.activeEnemyIndex];
-    const playerPet = BattleState.playerPets[BattleState.activePlayerIndex];
+        const data = await response.json();
 
-    // Play enemy attack animation
-    DOM.enemySprite.classList.add('attacking');
-    if (typeof SoundManager !== 'undefined') SoundManager.attack();
+        if (!data.success) {
+            console.error('Enemy turn failed:', data.error);
+            addBattleLog(data.error, 'enemy-action');
+            return;
+        }
 
-    await sleep(300);
-    DOM.enemySprite.classList.remove('attacking');
+        // Play enemy attack animation
+        DOM.enemySprite.classList.add('attacking');
+        if (typeof SoundManager !== 'undefined') SoundManager.attack();
 
-    // Simulate damage (for demo - in production this should be server-side)
-    const baseDamage = 25 + (enemyPet.level * 2);
-    const damage = Math.floor(baseDamage * (0.9 + Math.random() * 0.2));
+        await sleep(300);
+        DOM.enemySprite.classList.remove('attacking');
 
-    DOM.playerSprite.classList.add('hit');
-    if (typeof SoundManager !== 'undefined') SoundManager.damage();
+        // Show damage to player
+        DOM.playerSprite.classList.add('hit');
+        if (typeof SoundManager !== 'undefined') SoundManager.damage();
 
-    showFloatingDamage(DOM.playerSprite, damage, false, 'neutral');
-    addBattleLog(`${enemyPet.species_name} dealt ${damage} damage!`, 'enemy-action');
+        showFloatingDamage(DOM.playerSprite, data.damage_dealt, false, 'neutral');
 
-    // Update player HP
-    playerPet.hp = Math.max(0, playerPet.hp - damage);
-    updatePlayerHp(playerPet.hp, playerPet.hp <= 0);
+        // Add logs
+        data.logs.forEach(log => {
+            addBattleLog(log, 'enemy-action');
+        });
 
-    await sleep(400);
-    DOM.playerSprite.classList.remove('hit');
+        await sleep(400);
+        DOM.playerSprite.classList.remove('hit');
 
-    // Check if player's pet fainted
-    if (playerPet.hp <= 0) {
-        playerPet.is_fainted = true;
-        addBattleLog(`${playerPet.species_name} fainted!`, 'enemy-action');
+        // Update state from server response
+        const battleState = data.battle_state;
+        BattleState.currentTurn = battleState.current_turn;
+        BattleState.turnCount = battleState.turn_count;
+        BattleState.status = battleState.status;
+        BattleState.activePlayerIndex = battleState.active_player_index;
+        BattleState.activeEnemyIndex = battleState.active_enemy_index;
+        BattleState.playerPets = battleState.player_pets;
+        BattleState.enemyPets = battleState.enemy_pets;
+
+        // Re-render UI
         renderTeamIndicators();
+        renderActivePets();
+        updateTurnDisplay();
 
-        // Check if all player pets fainted
-        const allFainted = BattleState.playerPets.every(p => p.is_fainted);
-        if (allFainted) {
-            BattleState.status = 'defeat';
+        // Check for battle end
+        if (BattleState.status === 'defeat') {
             endBattle(false);
             return;
         }
 
-        // Force swap
-        openSwapModal();
-        return;
-    }
+        // If player pet fainted and needs to swap
+        if (data.player_fainted) {
+            const hasAlive = BattleState.playerPets.some(p => !p.is_fainted);
+            if (hasAlive) {
+                openSwapModal();
+                return;
+            }
+        }
 
-    // Back to player turn
-    BattleState.currentTurn = 'player';
-    BattleState.turnCount++;
-    updateTurnDisplay();
-    disableControls(false);
+        // Back to player's turn
+        if (BattleState.currentTurn === 'player') {
+            disableControls(false);
+        }
+
+    } catch (error) {
+        console.error('Enemy turn error:', error);
+    }
 }
 
 /**
