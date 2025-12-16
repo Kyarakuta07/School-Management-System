@@ -619,13 +619,13 @@ playWithPet = function () {
 // ================================================
 
 function openHelpModal() {
-    document.getElementById('help-modal').classList.remove('hidden');
+    document.getElementById('help-modal').classList.add('show');
     // Reset to overview tab
     switchHelpTab('overview');
 }
 
 function closeHelpModal() {
-    document.getElementById('help-modal').classList.add('hidden');
+    document.getElementById('help-modal').classList.remove('show');
 }
 
 function switchHelpTab(tabName) {
