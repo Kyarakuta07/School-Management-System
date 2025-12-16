@@ -131,11 +131,20 @@ async function handleAttack(skillId) {
     disableControls(true);
 
     try {
+        // Get player's element for projectile
+        const playerPet = BattleState.playerPets[BattleState.activePlayerIndex];
+        const playerElement = playerPet.element || 'fire';
+
         // Play attack animation
         DOM.playerSprite.classList.add('attacking');
         if (typeof SoundManager !== 'undefined') SoundManager.attack();
 
-        await sleep(300);
+        await sleep(200);
+
+        // Show projectile flying to enemy
+        showProjectile(DOM.playerSprite, DOM.enemySprite, playerElement);
+
+        await sleep(200);
         DOM.playerSprite.classList.remove('attacking');
 
         // Call API (ALL DAMAGE CALCULATED SERVER-SIDE)
@@ -252,11 +261,20 @@ async function enemyTurn() {
             return;
         }
 
+        // Get enemy element for projectile
+        const enemyPet = BattleState.enemyPets[BattleState.activeEnemyIndex];
+        const enemyElement = enemyPet.element || 'fire';
+
         // Play enemy attack animation
         DOM.enemySprite.classList.add('attacking');
         if (typeof SoundManager !== 'undefined') SoundManager.attack();
 
-        await sleep(300);
+        await sleep(200);
+
+        // Show projectile flying to player
+        showProjectile(DOM.enemySprite, DOM.playerSprite, enemyElement);
+
+        await sleep(200);
         DOM.enemySprite.classList.remove('attacking');
 
         // Show damage to player
@@ -464,11 +482,68 @@ function updateTurnDisplay() {
     DOM.turnIndicator.textContent = BattleState.currentTurn === 'player' ? 'YOUR TURN' : 'ENEMY TURN';
     DOM.turnIndicator.classList.toggle('enemy-turn', BattleState.currentTurn === 'enemy');
     DOM.turnCount.textContent = `Turn ${BattleState.turnCount}`;
+
+    // Update turn glow effects
+    const playerActive = document.getElementById('player-active');
+    const enemyActive = document.getElementById('enemy-active');
+
+    if (BattleState.currentTurn === 'player') {
+        playerActive.classList.add('your-turn');
+        playerActive.classList.remove('enemy-turn-glow');
+        enemyActive.classList.remove('enemy-turn-glow');
+        enemyActive.classList.remove('your-turn');
+    } else {
+        playerActive.classList.remove('your-turn');
+        enemyActive.classList.add('enemy-turn-glow');
+    }
 }
 
 // ================================================
 // UI HELPERS
 // ================================================
+
+/**
+ * Show projectile animation from attacker to defender
+ * @param {Element} fromEl - Attacker sprite element
+ * @param {Element} toEl - Defender sprite element
+ * @param {string} element - Element type for projectile color
+ */
+function showProjectile(fromEl, toEl, element = 'fire') {
+    const projectile = document.createElement('div');
+    projectile.className = `projectile ${element.toLowerCase()}`;
+
+    const fromRect = fromEl.getBoundingClientRect();
+    const toRect = toEl.getBoundingClientRect();
+
+    // Start position (center of attacker)
+    const startX = fromRect.left + fromRect.width / 2;
+    const startY = fromRect.top + fromRect.height / 2;
+
+    // End position (center of defender)
+    const endX = toRect.left + toRect.width / 2;
+    const endY = toRect.top + toRect.height / 2;
+
+    projectile.style.left = startX + 'px';
+    projectile.style.top = startY + 'px';
+
+    document.body.appendChild(projectile);
+
+    // Animate to target
+    requestAnimationFrame(() => {
+        projectile.style.transition = 'all 0.4s ease-out';
+        projectile.style.left = endX + 'px';
+        projectile.style.top = endY + 'px';
+        projectile.style.transform = 'scale(1.3)';
+    });
+
+    // Remove after animation
+    setTimeout(() => {
+        projectile.style.opacity = '0';
+        projectile.style.transform = 'scale(2)';
+        setTimeout(() => projectile.remove(), 200);
+    }, 400);
+}
+
 function showFloatingDamage(targetElement, damage, isCritical, advantage) {
     const popup = document.createElement('div');
     popup.className = 'damage-popup';
