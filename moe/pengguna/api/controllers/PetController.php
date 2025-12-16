@@ -12,7 +12,7 @@
  * - sell_pet: Sell a pet for gold
  */
 
-require_once __DIR__ . '/BaseController.php';
+require_once __DIR__ . '/../BaseController.php';
 
 class PetController extends BaseController
 {
