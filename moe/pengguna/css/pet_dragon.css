@@ -34,49 +34,64 @@
         0 0 30px rgba(0, 0, 0, 0.8);
 }
 
-/* Corner Decorations - Egyptian Wings */
+/* Corner Decorations - CSS-based gold triangles */
 .pet-container::before,
-.pet-container::after {
-    content: '𓅃';
+.pet-container::after,
+.pet-container .bg-overlay::before,
+.pet-container .bg-overlay::after {
+    content: '';
     position: fixed;
-    font-size: 2rem;
-    color: var(--gold);
-    filter: drop-shadow(0 0 10px var(--gold-glow));
+    width: 30px;
+    height: 30px;
+    border: 2px solid var(--gold);
     z-index: 1000;
+    pointer-events: none;
 }
 
+/* Top left */
 .pet-container::before {
     top: 8px;
     left: 8px;
+    border-right: none;
+    border-bottom: none;
+    box-shadow: -2px -2px 10px rgba(218, 165, 32, 0.4);
 }
 
+/* Top right */
 .pet-container::after {
     top: 8px;
     right: 8px;
-    transform: scaleX(-1);
+    border-left: none;
+    border-bottom: none;
+    box-shadow: 2px -2px 10px rgba(218, 165, 32, 0.4);
 }
 
-/* Bottom corners via bg-overlay */
+/* Bottom corners */
 .bg-overlay::before,
 .bg-overlay::after {
-    content: '𓅃';
+    content: '';
     position: fixed;
-    font-size: 2rem;
-    color: var(--gold);
-    filter: drop-shadow(0 0 10px var(--gold-glow));
+    width: 30px;
+    height: 30px;
+    border: 2px solid var(--gold);
     z-index: 1000;
-    transform: scaleY(-1);
+    pointer-events: none;
 }
 
 .bg-overlay::before {
     bottom: 8px;
     left: 8px;
+    border-right: none;
+    border-top: none;
+    box-shadow: -2px 2px 10px rgba(218, 165, 32, 0.4);
 }
 
 .bg-overlay::after {
     bottom: 8px;
     right: 8px;
-    transform: scale(-1, -1);
+    border-left: none;
+    border-top: none;
+    box-shadow: 2px 2px 10px rgba(218, 165, 32, 0.4);
 }
 
 /* ================================================
@@ -214,31 +229,33 @@
     border: 2px solid var(--gold);
     border-radius: 20px;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* Hieroglyph side pattern */
-.pet-stage::before {
-    content: '𓂀𓃭𓆣𓅃𓃠𓂋𓃻';
+/* Decorative side borders */
+.pet-stage::before,
+.pet-stage::after {
+    content: '';
     position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    writing-mode: vertical-rl;
-    font-size: 1.2rem;
-    color: rgba(218, 165, 32, 0.15);
-    letter-spacing: 10px;
+    top: 20px;
+    bottom: 20px;
+    width: 2px;
+    background: repeating-linear-gradient(to bottom,
+            var(--gold) 0px,
+            var(--gold) 8px,
+            transparent 8px,
+            transparent 16px);
+    opacity: 0.3;
+}
+
+.pet-stage::before {
+    left: 15px;
 }
 
 .pet-stage::after {
-    content: '𓂀𓃭𓆣𓅃𓃠𓂋𓃻';
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%) scaleX(-1);
-    writing-mode: vertical-rl;
-    font-size: 1.2rem;
-    color: rgba(218, 165, 32, 0.15);
-    letter-spacing: 10px;
+    right: 15px;
 }
 
 .pet-display {
@@ -463,24 +480,17 @@
     position: relative;
 }
 
-/* Wing decorations on buttons */
-.action-btn::before,
-.action-btn::after {
-    content: '𓅃';
-    position: absolute;
-    top: -8px;
-    font-size: 0.8rem;
-    color: var(--gold);
-    opacity: 0.7;
-}
-
+/* Top accent border on buttons */
 .action-btn::before {
-    left: 4px;
-}
-
-.action-btn::after {
-    right: 4px;
-    transform: scaleX(-1);
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    border-radius: 2px;
 }
 
 .action-btn i {
