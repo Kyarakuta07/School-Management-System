@@ -73,7 +73,7 @@ let currentPetData = null;
 // ================================================
 // INITIALIZATION
 // ================================================
-async function initPixiPet() {
+function initPixiPet() {
     // Check if PixiJS is loaded
     if (typeof PIXI === 'undefined') {
         console.warn('PixiJS not loaded, falling back to CSS');
@@ -88,10 +88,8 @@ async function initPixiPet() {
     }
 
     try {
-        // Create PixiJS Application
-        pixiApp = new PIXI.Application();
-
-        await pixiApp.init({
+        // Create PixiJS Application (v7 constructor API)
+        pixiApp = new PIXI.Application({
             width: PIXI_CONFIG.stageWidth,
             height: PIXI_CONFIG.stageHeight,
             backgroundColor: PIXI_CONFIG.backgroundColor,
@@ -101,13 +99,13 @@ async function initPixiPet() {
             backgroundAlpha: 0
         });
 
-        // Style the canvas
-        pixiApp.canvas.style.position = 'absolute';
-        pixiApp.canvas.style.top = '50%';
-        pixiApp.canvas.style.left = '50%';
-        pixiApp.canvas.style.transform = 'translate(-50%, -50%)';
-        pixiApp.canvas.style.borderRadius = '16px';
-        pixiApp.canvas.style.zIndex = '5';
+        // Style the canvas (v7 uses 'view' not 'canvas')
+        pixiApp.view.style.position = 'absolute';
+        pixiApp.view.style.top = '50%';
+        pixiApp.view.style.left = '50%';
+        pixiApp.view.style.transform = 'translate(-50%, -50%)';
+        pixiApp.view.style.borderRadius = '16px';
+        pixiApp.view.style.zIndex = '5';
 
         // Create containers
         petContainer = new PIXI.Container();
@@ -153,8 +151,8 @@ function mountPixiCanvas() {
         existingDisplay.style.display = 'none';
     }
 
-    // Append PixiJS canvas
-    stageContainer.appendChild(pixiApp.canvas);
+    // Append PixiJS canvas (v7 uses 'view')
+    stageContainer.appendChild(pixiApp.view);
 
     return true;
 }

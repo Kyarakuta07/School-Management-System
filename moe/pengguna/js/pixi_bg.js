@@ -22,7 +22,7 @@ let bgInitialized = false;
 /**
  * Initialize background particles
  */
-async function initBackgroundParticles() {
+function initBackgroundParticles() {
     if (typeof PIXI === 'undefined') {
         console.log('PixiJS not available, skipping background particles');
         return false;
@@ -35,9 +35,8 @@ async function initBackgroundParticles() {
     }
 
     try {
-        bgApp = new PIXI.Application();
-
-        await bgApp.init({
+        // PixiJS v7 uses constructor, not async init
+        bgApp = new PIXI.Application({
             width: window.innerWidth,
             height: window.innerHeight,
             backgroundAlpha: 0,
@@ -46,12 +45,12 @@ async function initBackgroundParticles() {
             autoDensity: true
         });
 
-        bgApp.canvas.style.position = 'fixed';
-        bgApp.canvas.style.top = '0';
-        bgApp.canvas.style.left = '0';
-        bgApp.canvas.style.pointerEvents = 'none';
+        bgApp.view.style.position = 'fixed';
+        bgApp.view.style.top = '0';
+        bgApp.view.style.left = '0';
+        bgApp.view.style.pointerEvents = 'none';
 
-        container.appendChild(bgApp.canvas);
+        container.appendChild(bgApp.view);
 
         // Create particles
         createBackgroundParticles();
