@@ -93,8 +93,10 @@ function createParticle() {
     const size = BG_CONFIG.particleMinSize + Math.random() * (BG_CONFIG.particleMaxSize - BG_CONFIG.particleMinSize);
     const color = BG_CONFIG.particleColors[Math.floor(Math.random() * BG_CONFIG.particleColors.length)];
 
-    graphics.circle(0, 0, size);
-    graphics.fill({ color, alpha: 1 });
+    // PixiJS v7 Graphics API
+    graphics.beginFill(color, 1);
+    graphics.drawCircle(0, 0, size);
+    graphics.endFill();
 
     const texture = bgApp.renderer.generateTexture(graphics);
     const sprite = new PIXI.Sprite(texture);

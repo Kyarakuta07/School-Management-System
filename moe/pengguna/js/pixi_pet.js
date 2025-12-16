@@ -389,8 +389,10 @@ function createSparkleParticle(config, centerX, centerY) {
     const size = config.size.min + Math.random() * (config.size.max - config.size.min);
     const color = config.colors[Math.floor(Math.random() * config.colors.length)];
 
-    graphics.circle(0, 0, size);
-    graphics.fill({ color, alpha: 1 });
+    // PixiJS v7 Graphics API
+    graphics.beginFill(color, 1);
+    graphics.drawCircle(0, 0, size);
+    graphics.endFill();
 
     // Random position around pet
     graphics.x = centerX + (Math.random() - 0.5) * 100;
@@ -410,11 +412,12 @@ function createHeartParticle(config, centerX, centerY) {
     const graphics = new PIXI.Graphics();
     const size = config.size;
 
-    // Draw heart shape
+    // Draw heart shape (PixiJS v7)
+    graphics.beginFill(0xff6b9d, 1);
     graphics.moveTo(0, -size * 0.3);
     graphics.bezierCurveTo(-size * 0.5, -size * 0.8, -size, -size * 0.3, 0, size * 0.5);
     graphics.bezierCurveTo(size, -size * 0.3, size * 0.5, -size * 0.8, 0, -size * 0.3);
-    graphics.fill({ color: 0xff6b9d, alpha: 1 });
+    graphics.endFill();
 
     graphics.x = centerX + (Math.random() - 0.5) * 60;
     graphics.y = centerY;
@@ -453,6 +456,8 @@ function createStarParticle(config, centerX, centerY) {
 function drawStar(graphics, x, y, points, outerRadius, innerRadius, color) {
     const step = Math.PI / points;
 
+    // PixiJS v7: beginFill before drawing
+    graphics.beginFill(color, 1);
     graphics.moveTo(x, y - outerRadius);
 
     for (let i = 0; i < points * 2; i++) {
@@ -465,7 +470,7 @@ function drawStar(graphics, x, y, points, outerRadius, innerRadius, color) {
     }
 
     graphics.closePath();
-    graphics.fill({ color, alpha: 1 });
+    graphics.endFill();
 }
 
 function updateParticles(delta) {
