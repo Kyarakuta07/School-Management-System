@@ -48,12 +48,12 @@ mysqli_stmt_close($gold_stmt);
 
     <!-- Styles -->
     <link rel="stylesheet" href="../assets/css/global.css">
-    <link rel="stylesheet" href="css/pet.css">
+    <!-- Pet V2 - Dragon City/Genshin Style (Primary) -->
+    <link rel="stylesheet" href="css/pet_v2.css">
+    <!-- Legacy CSS for compatibility -->
     <link rel="stylesheet" href="css/pet_animations.css">
-    <link rel="stylesheet" href="css/pet_hardcore_update.css">
     <link rel="stylesheet" href="css/pet_help_guide.css">
     <link rel="stylesheet" href="css/daily_login.css">
-    <link rel="stylesheet" href="css/pet_premium.css">
 
     <!-- PixiJS for particle effects -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.3.2/pixi.min.js"></script>
@@ -149,33 +149,40 @@ mysqli_stmt_close($gold_stmt);
                         <span class="rarity-badge common">Common</span>
                     </div>
 
-                    <!-- Status Bars -->
-                    <div class="status-bars">
+                    <!-- Stat Cards - Dragon City Style -->
+                    <div class="stat-cards" id="stat-cards">
+                        <div class="stat-card hp">
+                            <i class="fas fa-heart"></i>
+                            <div class="stat-value" id="hp-value">100</div>
+                            <div class="stat-label">HP</div>
+                        </div>
+                        <div class="stat-card atk">
+                            <i class="fas fa-sword"></i>
+                            <div class="stat-value" id="atk-value">0</div>
+                            <div class="stat-label">ATK</div>
+                        </div>
+                        <div class="stat-card def">
+                            <i class="fas fa-shield"></i>
+                            <div class="stat-value" id="def-value">0</div>
+                            <div class="stat-label">DEF</div>
+                        </div>
+                    </div>
+
+                    <!-- Legacy Status Bars (hidden, for JS compatibility) -->
+                    <div class="status-bars" style="display:none;">
                         <div class="status-bar">
-                            <div class="status-label">
-                                <i class="fas fa-heart"></i>
-                                <span>Health</span>
-                            </div>
                             <div class="bar-container">
                                 <div class="bar-fill health" id="health-bar" style="width: 100%"></div>
                             </div>
                             <span class="status-value" id="health-value">100</span>
                         </div>
                         <div class="status-bar">
-                            <div class="status-label">
-                                <i class="fas fa-drumstick-bite"></i>
-                                <span>Hunger</span>
-                            </div>
                             <div class="bar-container">
                                 <div class="bar-fill hunger" id="hunger-bar" style="width: 100%"></div>
                             </div>
                             <span class="status-value" id="hunger-value">100</span>
                         </div>
                         <div class="status-bar">
-                            <div class="status-label">
-                                <i class="fas fa-smile"></i>
-                                <span>Mood</span>
-                            </div>
                             <div class="bar-container">
                                 <div class="bar-fill mood" id="mood-bar" style="width: 100%"></div>
                             </div>
@@ -193,21 +200,21 @@ mysqli_stmt_close($gold_stmt);
                     </div>
                 </div>
 
-                <!-- Action Buttons -->
-                <div class="action-grid" id="action-buttons" style="display: none;">
-                    <button class="action-btn feed" id="btn-feed">
-                        <i class="fas fa-bone"></i>
+                <!-- Action Buttons - Premium Grid -->
+                <div class="action-buttons" id="action-buttons" style="display: none;">
+                    <button class="action-btn" id="btn-feed">
+                        <i class="fas fa-drumstick-bite"></i>
                         <span>Feed</span>
                     </button>
-                    <button class="action-btn play" id="btn-play">
-                        <i class="fas fa-futbol"></i>
+                    <button class="action-btn" id="btn-play">
+                        <i class="fas fa-gamepad"></i>
                         <span>Play</span>
                     </button>
-                    <button class="action-btn heal" id="btn-heal">
+                    <button class="action-btn" id="btn-heal">
                         <i class="fas fa-flask"></i>
                         <span>Heal</span>
                     </button>
-                    <button class="action-btn shelter" id="btn-shelter">
+                    <button class="action-btn primary" id="btn-shelter">
                         <i class="fas fa-home"></i>
                         <span>Shelter</span>
                     </button>
