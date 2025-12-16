@@ -2237,10 +2237,75 @@ switch ($action) {
         ]);
         break;
 
+    // POST: Switch active pet in 3v3 battle (uses a turn)
+    case 'battle_switch':
+        if ($method !== 'POST') {
+            api_method_not_allowed('POST');
+        }
+
+        $input = json_decode(file_get_contents('php://input'), true);
+        $battle_id = isset($input['battle_id']) ? $input['battle_id'] : '';
+        $pet_index = isset($input['pet_index']) ? (int) $input['pet_index'] : -1;
+
+        if (empty($battle_id) || !isset($_SESSION['battles_3v3'][$battle_id])) {
+            echo json_encode(['success' => false, 'error' => 'Battle not found or expired']);
+            break;
+        }
+
+        $battle = &$_SESSION['battles_3v3'][$battle_id];
+
+        if ($battle['status'] !== 'active') {
+            echo json_encode(['success' => false, 'error' => 'Battle has ended']);
+            break;
+        }
+
+        if ($battle['current_turn'] !== 'player') {
+            echo json_encode(['success' => false, 'error' => 'Not your turn']);
+            break;
+        }
+
+        // Validate pet index
+        if ($pet_index < 0 || $pet_index >= count($battle['player_pets'])) {
+            echo json_encode(['success' => false, 'error' => 'Invalid pet index']);
+            break;
+        }
+
+        // Can't switch to current pet
+        if ($pet_index === $battle['active_player_index']) {
+            echo json_encode(['success' => false, 'error' => 'Already using this pet']);
+            break;
+        }
+
+        // Can't switch to fainted pet
+        $target_pet = $battle['player_pets'][$pet_index];
+        if ($target_pet['is_fainted'] || $target_pet['hp'] <= 0) {
+            echo json_encode(['success' => false, 'error' => 'Cannot switch to fainted pet']);
+            break;
+        }
+
+        $logs = [];
+        $old_pet = $battle['player_pets'][$battle['active_player_index']];
+        $logs[] = "{$old_pet['species_name']} returns!";
+
+        // Switch pet
+        $battle['active_player_index'] = $pet_index;
+        $new_pet = $battle['player_pets'][$pet_index];
+        $logs[] = "Go, {$new_pet['species_name']}!";
+
+        // Switching uses the turn - switch to enemy
+        $battle['current_turn'] = 'enemy';
+
+        echo json_encode([
+            'success' => true,
+            'logs' => $logs,
+            'battle_state' => $battle
+        ]);
+        break;
+
     // ============================================
     // Default: Unknown action
     // ============================================
     default:
-        api_not_found('Unknown action. Available: get_pets, get_active_pet, get_shop, get_inventory, gacha, buy_item, use_item, set_active, rename, shelter, get_opponents, battle, battle_history, get_buff, play_finish, get_evolution_candidates, evolve_manual, sell_pet, battle_result, get_daily_reward, claim_daily_reward, get_leaderboard, get_achievements, get_balance, get_transactions, transfer_gold, search_nethera, get_opponents_3v3, start_battle_3v3, battle_state, battle_attack, battle_enemy_turn');
+        api_not_found('Unknown action. Available: get_pets, get_active_pet, get_shop, get_inventory, gacha, buy_item, use_item, set_active, rename, shelter, get_opponents, battle, battle_history, get_buff, play_finish, get_evolution_candidates, evolve_manual, sell_pet, battle_result, get_daily_reward, claim_daily_reward, get_leaderboard, get_achievements, get_balance, get_transactions, transfer_gold, search_nethera, get_opponents_3v3, start_battle_3v3, battle_state, battle_attack, battle_enemy_turn, battle_switch');
 }
 ?>

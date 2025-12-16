@@ -615,6 +615,83 @@ function closeSwapModal() {
     DOM.swapModal.classList.add('hidden');
 }
 
+async function switchToPet(index) {
+    // Can't switch to current pet
+    if (index === BattleState.activePlayerIndex) {
+        closeSwapModal();
+        return;
+    }
+
+    // Can't switch to fainted pet
+    const pet = BattleState.playerPets[index];
+    if (pet.is_fainted || pet.hp <= 0) {
+        alert('Cannot switch to a fainted pet!');
+        return;
+    }
+
+    // Can only switch on player turn
+    if (BattleState.currentTurn !== 'player') {
+        alert('Can only switch on your turn!');
+        return;
+    }
+
+    closeSwapModal();
+    disableControls(true);
+    BattleState.isAnimating = true;
+
+    try {
+        // Call API to switch pet (uses a turn)
+        const response = await fetch(`${API_BASE}?action=battle_switch`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                battle_id: BATTLE_ID,
+                pet_index: index
+            })
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+            throw new Error(data.error || 'Switch failed');
+        }
+
+        // Update state
+        const battleState = data.battle_state;
+        BattleState.currentTurn = battleState.current_turn;
+        BattleState.turnCount = battleState.turn_count;
+        BattleState.status = battleState.status;
+        BattleState.activePlayerIndex = battleState.active_player_index;
+        BattleState.activeEnemyIndex = battleState.active_enemy_index;
+        BattleState.playerPets = battleState.player_pets;
+        BattleState.enemyPets = battleState.enemy_pets;
+
+        // Log
+        data.logs?.forEach(log => addBattleLog(log, 'player-action'));
+
+        // Re-render UI
+        renderTeamIndicators();
+        renderActivePets();
+        renderSkills();
+        updateTurnDisplay();
+
+        // If enemy turn, trigger it
+        if (BattleState.currentTurn === 'enemy' && BattleState.status === 'active') {
+            await sleep(500);
+            await enemyTurn();
+        }
+
+    } catch (error) {
+        console.error('Switch error:', error);
+        alert('Failed to switch pet: ' + error.message);
+    } finally {
+        BattleState.isAnimating = false;
+        if (BattleState.currentTurn === 'player' && BattleState.status === 'active') {
+            disableControls(false);
+        }
+    }
+}
+
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
