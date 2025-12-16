@@ -2003,12 +2003,12 @@ switch ($action) {
             }
         }
 
-        // Calculate base damage based on skill
+        // Calculate base damage based on skill (balanced for HP 100)
         $skill_damage = [
-            1 => 25,  // Basic Attack
-            2 => 40,  // Power Strike
-            3 => 60,  // Special Attack
-            4 => 80   // Ultimate
+            1 => 10,  // Basic Attack
+            2 => 15,  // Power Strike
+            3 => 20,  // Special Attack
+            4 => 30   // Ultimate
         ];
         $base_damage = $skill_damage[$skill_id] ?? 25;
 
@@ -2178,7 +2178,7 @@ switch ($action) {
 
         // Enemy calculates simple attack (random skill 1-4)
         $skill_id = rand(1, 4);
-        $skill_damage = [1 => 25, 2 => 40, 3 => 60, 4 => 80];
+        $skill_damage = [1 => 10, 2 => 15, 3 => 20, 4 => 30];  // Balanced for HP 100
         $base_damage = $skill_damage[$skill_id] + ($enemy_pet['attack'] ?? 0);
 
         // Apply RNG (±10%)
