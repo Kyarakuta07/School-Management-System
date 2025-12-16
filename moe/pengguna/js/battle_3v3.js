@@ -209,8 +209,10 @@ async function handleAttack(skillId) {
         BattleState.playerPets = battleState.player_pets;
         BattleState.enemyPets = battleState.enemy_pets;
 
-        // Re-render indicators
+        // Re-render full UI (important after pet switch)
         renderTeamIndicators();
+        renderActivePets();
+        renderSkills();
         updateTurnDisplay();
 
         // Check for battle end
