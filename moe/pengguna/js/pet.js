@@ -970,7 +970,7 @@ function initShopTabs() {
         tab.addEventListener('click', () => {
             document.querySelectorAll('.shop-tab').forEach(t => t.classList.remove('active'));
             tab.classList.add('active');
-            renderShopItems(tab.dataset.category);
+            renderShopItems(tab.dataset.shop);
         });
     });
 }
