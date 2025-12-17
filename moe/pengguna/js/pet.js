@@ -288,8 +288,18 @@ function renderActivePet() {
     const shinyClass = activePet.is_shiny ? 'shiny' : '';
     const shinyStyle = activePet.is_shiny ? `filter: hue-rotate(${activePet.shiny_hue}deg);` : '';
 
+    // Status badge with icon
+    const statusIcon = activePet.status === 'ALIVE' ? 'fa-heart' :
+        activePet.status === 'DEAD' ? 'fa-skull' : 'fa-home';
+    const statusClass = activePet.status.toLowerCase();
+
     stage.innerHTML = `
-        <div class="pet-status-indicator ${activePet.status.toLowerCase()}">${activePet.status}</div>
+        <div class="ambient-particles"></div>
+        <div class="floor-glow"></div>
+        <div class="pet-status-badge ${statusClass}">
+            <i class="fas ${statusIcon}"></i>
+            ${activePet.status}
+        </div>
         <div class="pet-glow"></div>
         <div class="pet-display">
             <img src="${imgPath}" alt="${activePet.species_name}" 

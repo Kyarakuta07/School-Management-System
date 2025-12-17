@@ -562,36 +562,75 @@ body.pet-page {
     }
 }
 
-/* Pet Status Badge */
+/* Pet Status Badge - Premium Style */
 .pet-status-badge {
     position: absolute;
     top: var(--space-md);
-    right: var(--space-md);
-    padding: 6px 14px;
+    left: var(--space-md);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
     border-radius: var(--radius-full);
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
     z-index: 10;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all 0.3s var(--ease-out);
 }
 
+.pet-status-badge i {
+    font-size: 0.7rem;
+}
+
+.pet-status-badge:hover {
+    transform: scale(1.05);
+}
+
+/* Alive Status */
 .pet-status-badge.alive {
-    background: rgba(46, 204, 113, 0.15);
-    border: 1px solid var(--mood);
-    color: var(--mood);
+    background: linear-gradient(135deg, rgba(46, 204, 113, 0.25), rgba(39, 174, 96, 0.15));
+    border: 1px solid rgba(46, 204, 113, 0.6);
+    color: #2ECC71;
+    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.2),
+        inset 0 0 20px rgba(46, 204, 113, 0.1);
 }
 
+.pet-status-badge.alive i {
+    animation: heartPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes heartPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+}
+
+/* Dead Status */
 .pet-status-badge.dead {
-    background: rgba(231, 76, 60, 0.15);
-    border: 1px solid var(--health);
-    color: var(--health);
+    background: linear-gradient(135deg, rgba(231, 76, 60, 0.25), rgba(192, 57, 43, 0.15));
+    border: 1px solid rgba(231, 76, 60, 0.6);
+    color: #E74C3C;
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.2),
+        inset 0 0 20px rgba(231, 76, 60, 0.1);
 }
 
+/* Shelter Status */
 .pet-status-badge.shelter {
-    background: rgba(52, 152, 219, 0.15);
-    border: 1px solid var(--exp);
-    color: var(--exp);
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.25), rgba(41, 128, 185, 0.15));
+    border: 1px solid rgba(52, 152, 219, 0.6);
+    color: #3498DB;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2),
+        inset 0 0 20px rgba(52, 152, 219, 0.1);
 }
 
 /* Pet Display */
