@@ -68,20 +68,25 @@ mysqli_stmt_close($gold_stmt);
     <!-- Main Container -->
     <div class="pet-container">
 
-        <!-- Header -->
-        <header class="pet-header">
-            <a href="beranda.php" class="back-btn">
-                <i class="fas fa-arrow-left"></i>
-            </a>
-            <h1 class="header-title">Pet Companion</h1>
-            <div class="header-actions">
-                <div class="gold-display">
-                    <i class="fas fa-coins"></i>
-                    <span id="user-gold"><?php echo number_format($user_gold); ?></span>
+        <!-- Enhanced Hero Header - Consistent with beranda.php -->
+        <header class="pet-header hero-style">
+            <div class="header-row">
+                <a href="beranda.php" class="back-btn" title="Back to Dashboard">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <div class="header-title-section">
+                    <h1 class="header-title">Pet Companion</h1>
+                    <div class="pet-count-badge" id="pet-count-badge">0 / 25</div>
                 </div>
-                <button class="btn-help" onclick="openHelpModal()" title="Tutorial & Help">
-                    <i class="fas fa-question-circle"></i>
-                </button>
+                <div class="header-actions">
+                    <div class="gold-display" title="Your Gold Balance">
+                        <i class="fas fa-coins"></i>
+                        <span id="user-gold"><?php echo number_format($user_gold); ?></span>
+                    </div>
+                    <button class="btn-help" onclick="openHelpModal()" title="Tutorial & Help">
+                        <i class="fas fa-question-circle"></i>
+                    </button>
+                </div>
             </div>
         </header>
 
