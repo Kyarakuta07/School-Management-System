@@ -1216,6 +1216,123 @@ body.pet-page {
     color: var(--gold);
 }
 
+/* Collection Card Rarity Badge (top-left corner) */
+.pet-card .rarity-badge {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 900;
+    border-radius: 6px;
+    text-transform: uppercase;
+    z-index: 5;
+}
+
+.pet-card .rarity-badge.common {
+    background: linear-gradient(135deg, rgba(158, 158, 158, 0.3), rgba(120, 120, 120, 0.2));
+    border: 1px solid var(--common);
+    color: var(--common);
+}
+
+.pet-card .rarity-badge.rare {
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.3), rgba(41, 128, 185, 0.2));
+    border: 1px solid var(--rare);
+    color: var(--rare);
+}
+
+.pet-card .rarity-badge.epic {
+    background: linear-gradient(135deg, rgba(155, 89, 182, 0.3), rgba(142, 68, 173, 0.2));
+    border: 1px solid var(--epic);
+    color: var(--epic);
+    box-shadow: 0 0 10px rgba(155, 89, 182, 0.3);
+}
+
+.pet-card .rarity-badge.legendary {
+    background: linear-gradient(135deg, rgba(255, 152, 0, 0.4), rgba(255, 193, 7, 0.3));
+    border: 1px solid var(--legendary);
+    color: var(--legendary);
+    box-shadow: 0 0 12px rgba(255, 152, 0, 0.4);
+    animation: legendaryCardBadge 2s ease-in-out infinite;
+}
+
+@keyframes legendaryCardBadge {
+
+    0%,
+    100% {
+        box-shadow: 0 0 8px rgba(255, 152, 0, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 16px rgba(255, 152, 0, 0.6);
+    }
+}
+
+/* Pet Action Row - Bottom buttons */
+.pet-action-row {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border-subtle);
+}
+
+.pet-action-btn {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    color: #666;
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-out);
+}
+
+.pet-action-btn:hover {
+    transform: scale(1.1);
+}
+
+.pet-action-btn.btn-sell {
+    border-color: rgba(255, 193, 7, 0.4);
+    color: #F1C40F;
+}
+
+.pet-action-btn.btn-sell:hover {
+    background: rgba(255, 193, 7, 0.15);
+    box-shadow: 0 0 10px rgba(255, 193, 7, 0.3);
+}
+
+.pet-action-btn.btn-evolve {
+    border-color: rgba(155, 89, 182, 0.4);
+    color: #9B59B6;
+}
+
+.pet-action-btn.btn-evolve:hover {
+    background: rgba(155, 89, 182, 0.15);
+    box-shadow: 0 0 10px rgba(155, 89, 182, 0.3);
+}
+
+.pet-action-btn.btn-retrieve {
+    width: auto;
+    padding: 6px 12px;
+    font-size: 0.65rem;
+    border-color: rgba(52, 152, 219, 0.4);
+    color: #3498DB;
+}
+
+.pet-action-btn.btn-retrieve:hover {
+    background: rgba(52, 152, 219, 0.15);
+}
+
 /* ================================================
    12. GACHA SECTION
    ================================================ */
