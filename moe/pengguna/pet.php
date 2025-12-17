@@ -138,8 +138,13 @@ mysqli_stmt_close($gold_stmt);
             <!-- MY PET TAB -->
             <section id="my-pet" class="tab-panel active">
 
-                <!-- Pet Showcase -->
+                <!-- Pet Showcase - Premium Stage -->
                 <div class="pet-showcase" id="pet-stage">
+                    <!-- Ambient particle effects -->
+                    <div class="ambient-particles"></div>
+                    <!-- Floor glow effect -->
+                    <div class="floor-glow"></div>
+
                     <div class="no-pet-state" id="no-pet-message">
                         <i class="fas fa-egg"></i>
                         <p>No active pet!</p>
