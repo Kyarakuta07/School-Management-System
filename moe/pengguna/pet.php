@@ -1,9 +1,10 @@
 <?php
 /**
- * MOE Pet System - Main Pet Page
+ * MOE Pet System - Main Pet Page V2
  * Mediterranean of Egypt Virtual Pet Companion
  * 
- * Mobile-First Design with "Fake 3D" CSS Animations
+ * Complete Redesign - Premium Dark Egyptian Fantasy Theme
+ * Mobile-First with Desktop Support
  */
 
 session_start();
@@ -18,7 +19,7 @@ if (!isset($_SESSION['status_login']) || $_SESSION['role'] != 'Nethera') {
 $user_id = $_SESSION['id_nethera'];
 $nama_pengguna = htmlspecialchars($_SESSION['nama_lengkap']);
 
-// Get user gold (add column if doesn't exist)
+// Get user gold
 $gold_stmt = mysqli_prepare($conn, "SELECT gold FROM nethera WHERE id_nethera = ?");
 mysqli_stmt_bind_param($gold_stmt, "i", $user_id);
 mysqli_stmt_execute($gold_stmt);
@@ -35,6 +36,7 @@ mysqli_stmt_close($gold_stmt);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0a0a0a">
     <title>Pet Companion - MOE</title>
 
     <!-- Fonts -->
@@ -47,43 +49,42 @@ mysqli_stmt_close($gold_stmt);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="../assets/css/global.css">
-    <!-- Unified Pet CSS - Consolidated from pet.css + animations + hardcore + help_guide -->
-    <link rel="stylesheet" href="css/pet_unified.css">
+    <link rel="stylesheet" href="css/pet_v2.css">
     <link rel="stylesheet" href="css/daily_login.css">
 
-
-    <!-- PixiJS for particle effects -->
+    <!-- PixiJS for particles -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.3.2/pixi.min.js"></script>
 </head>
 
 <body class="pet-page">
-
-    <!-- PixiJS Background Particles -->
-    <div id="pixi-bg-container"></div>
-
+    <!-- Background -->
     <div class="bg-fixed"></div>
     <div class="bg-overlay"></div>
 
-    <!-- Main Container -->
-    <div class="pet-container">
+    <!-- PixiJS Container -->
+    <div id="pixi-bg-container"></div>
 
-        <!-- Enhanced Hero Header - Consistent with beranda.php -->
-        <header class="pet-header hero-style">
-            <div class="header-row">
-                <a href="beranda.php" class="back-btn" title="Back to Dashboard">
-                    <i class="fas fa-arrow-left"></i>
-                </a>
-                <div class="header-title-section">
-                    <h1 class="header-title">Pet Companion</h1>
-                    <div class="pet-count-badge" id="pet-count-badge">0 / 25</div>
-                </div>
-                <div class="header-actions">
-                    <div class="gold-display" title="Your Gold Balance">
-                        <i class="fas fa-coins"></i>
-                        <span id="user-gold"><?php echo number_format($user_gold); ?></span>
+    <!-- App Container -->
+    <div class="app-container">
+
+        <!-- Hero Header -->
+        <header class="hero-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <a href="beranda.php" class="back-btn" title="Back to Dashboard">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                    <div class="header-title-group">
+                        <h1 class="header-title">Pet Companion</h1>
+                        <span class="header-subtitle">Virtual Pet System</span>
                     </div>
-                    <button class="btn-help" onclick="openHelpModal()" title="Tutorial & Help">
+                </div>
+                <div class="header-right">
+                    <div class="gold-display" title="Your Gold">
+                        <i class="fas fa-coins"></i>
+                        <span id="user-gold"><?= number_format($user_gold) ?></span>
+                    </div>
+                    <button class="btn-icon" onclick="openHelpModal()" title="Help & Tutorial">
                         <i class="fas fa-question-circle"></i>
                     </button>
                 </div>
@@ -91,7 +92,7 @@ mysqli_stmt_close($gold_stmt);
         </header>
 
         <!-- Tab Navigation -->
-        <nav class="pet-tabs">
+        <nav class="tab-nav">
             <button class="tab-btn active" data-tab="my-pet">
                 <i class="fas fa-paw"></i>
                 <span>My Pet</span>
@@ -109,7 +110,7 @@ mysqli_stmt_close($gold_stmt);
                 <span>Shop</span>
             </button>
             <button class="tab-btn" data-tab="arena">
-                <i class="fas fa-swords"></i>
+                <i class="fas fa-shield-alt"></i>
                 <span>Arena</span>
             </button>
             <button class="tab-btn" data-tab="arena3v3">
@@ -122,77 +123,83 @@ mysqli_stmt_close($gold_stmt);
             </button>
         </nav>
 
-        <!-- Tab Content -->
-        <main class="pet-content">
+        <!-- Main Content -->
+        <main class="main-content">
 
             <!-- MY PET TAB -->
-            <section id="my-pet" class="tab-content active">
-                <div class="pet-stage" id="pet-stage">
-                    <!-- Pet will be rendered here -->
-                    <div class="no-pet-message">
-                        <i class="fas fa-egg fa-3x"></i>
+            <section id="my-pet" class="tab-panel active">
+
+                <!-- Pet Showcase -->
+                <div class="pet-showcase" id="pet-stage">
+                    <div class="no-pet-state" id="no-pet-message">
+                        <i class="fas fa-egg"></i>
                         <p>No active pet!</p>
-                        <button class="action-btn primary" onclick="switchTab('gacha')">
+                        <button class="btn-primary" onclick="switchTab('gacha')">
+                            <i class="fas fa-sparkles"></i>
                             Get Your First Pet
                         </button>
                     </div>
+                    <!-- Pet will be rendered here by JS -->
                 </div>
 
                 <!-- Pet Info Card -->
-                <div class="pet-info-card" id="pet-info" style="display: none;">
+                <div class="info-card" id="pet-info" style="display: none;">
                     <div class="pet-name-row">
                         <h2 class="pet-name" id="pet-name">Loading...</h2>
-                        <button class="btn-rename-icon" onclick="openRenameModal()" title="Rename Pet">
+                        <button class="btn-rename" onclick="openRenameModal()" title="Rename">
                             <i class="fas fa-edit"></i>
                         </button>
                         <span class="pet-level" id="pet-level">Lv.1</span>
                     </div>
-                    <div class="pet-element" id="pet-element">
-                        <span class="element-badge fire">Fire</span>
-                        <span class="rarity-badge common">Common</span>
+
+                    <div class="badge-row" id="pet-element">
+                        <span class="badge fire">Fire</span>
+                        <span class="badge common">Common</span>
                     </div>
 
                     <!-- Status Bars -->
-                    <div class="status-bars">
-                        <div class="status-bar">
-                            <div class="status-label">
+                    <div class="stats-grid">
+                        <div class="stat-row">
+                            <div class="stat-label">
                                 <i class="fas fa-heart"></i>
                                 <span>HP</span>
                             </div>
-                            <div class="bar-container">
-                                <div class="bar-fill health" id="health-bar" style="width: 100%"></div>
+                            <div class="stat-bar">
+                                <div class="stat-bar-fill health" id="health-bar" style="width: 100%"></div>
                             </div>
-                            <span class="status-value" id="health-value">100</span>
+                            <span class="stat-value" id="health-value">100</span>
                         </div>
-                        <div class="status-bar">
-                            <div class="status-label">
+                        <div class="stat-row">
+                            <div class="stat-label">
                                 <i class="fas fa-drumstick-bite"></i>
                                 <span>Hunger</span>
                             </div>
-                            <div class="bar-container">
-                                <div class="bar-fill hunger" id="hunger-bar" style="width: 100%"></div>
+                            <div class="stat-bar">
+                                <div class="stat-bar-fill hunger" id="hunger-bar" style="width: 100%"></div>
                             </div>
-                            <span class="status-value" id="hunger-value">100</span>
+                            <span class="stat-value" id="hunger-value">100</span>
                         </div>
-                        <div class="status-bar">
-                            <div class="status-label">
+                        <div class="stat-row">
+                            <div class="stat-label">
                                 <i class="fas fa-smile"></i>
                                 <span>Mood</span>
                             </div>
-                            <div class="bar-container">
-                                <div class="bar-fill mood" id="mood-bar" style="width: 100%"></div>
+                            <div class="stat-bar">
+                                <div class="stat-bar-fill mood" id="mood-bar" style="width: 100%"></div>
                             </div>
-                            <span class="status-value" id="mood-value">100</span>
+                            <span class="stat-value" id="mood-value">100</span>
                         </div>
                     </div>
 
                     <!-- EXP Bar -->
-                    <div class="exp-container">
-                        <div class="exp-label">EXP</div>
-                        <div class="exp-bar-container">
+                    <div class="exp-section">
+                        <div class="exp-header">
+                            <span class="exp-label">Experience</span>
+                            <span class="exp-text" id="exp-text">0 / 100</span>
+                        </div>
+                        <div class="exp-bar">
                             <div class="exp-bar-fill" id="exp-bar" style="width: 0%"></div>
                         </div>
-                        <span class="exp-text" id="exp-text">0 / 100</span>
                     </div>
                 </div>
 
@@ -203,11 +210,11 @@ mysqli_stmt_close($gold_stmt);
                         <span>Feed</span>
                     </button>
                     <button class="action-btn play" id="btn-play">
-                        <i class="fas fa-futbol"></i>
+                        <i class="fas fa-gamepad"></i>
                         <span>Play</span>
                     </button>
                     <button class="action-btn heal" id="btn-heal">
-                        <i class="fas fa-flask"></i>
+                        <i class="fas fa-heart"></i>
                         <span>Heal</span>
                     </button>
                     <button class="action-btn shelter" id="btn-shelter">
@@ -218,813 +225,227 @@ mysqli_stmt_close($gold_stmt);
             </section>
 
             <!-- COLLECTION TAB -->
-            <section id="collection" class="tab-content">
+            <section id="collection" class="tab-panel">
                 <div class="collection-header">
-                    <h3>My Collection</h3>
-                    <span class="pet-count-badge" id="pet-count-badge">0 / 25</span>
+                    <h3 class="collection-title">My Pets</h3>
+                    <span class="collection-count" id="pet-count-badge">0 / 25</span>
                 </div>
                 <div class="collection-grid" id="collection-grid">
-                    <div class="loading-spinner">
-                        <i class="fas fa-spinner fa-spin fa-2x"></i>
-                        <p>Loading pets...</p>
-                    </div>
+                    <!-- Pet cards rendered by JS -->
                 </div>
             </section>
 
             <!-- GACHA TAB -->
-            <section id="gacha" class="tab-content">
-                <div class="gacha-stage">
-                    <div class="gacha-egg-container">
-                        <img src="../assets/pets/gacha_egg.png" alt="Gacha Egg" class="gacha-egg" id="gacha-egg">
-                        <div class="gacha-glow"></div>
+            <section id="gacha" class="tab-panel">
+                <div class="gacha-section">
+                    <div class="gacha-display">
+                        <img src="../assets/pets/default/egg.png" alt="Gacha Egg" class="gacha-egg" id="gacha-egg">
                     </div>
-                </div>
-
-                <div class="gacha-options">
-                    <div class="gacha-card" data-type="1">
-                        <div class="gacha-icon bronze">
+                    <div class="gacha-buttons">
+                        <button class="gacha-btn normal" onclick="performGacha('normal')">
                             <i class="fas fa-egg"></i>
-                        </div>
-                        <h3>Bronze Summon</h3>
-                        <p>All rarities available</p>
-                        <div class="gacha-price">
-                            <i class="fas fa-coins"></i>
-                            <span>100</span>
-                        </div>
-                        <button class="gacha-btn" onclick="performGacha(1)">Summon</button>
-                    </div>
-
-                    <div class="gacha-card" data-type="2">
-                        <div class="gacha-icon silver">
-                            <i class="fas fa-egg"></i>
-                        </div>
-                        <h3>Silver Summon</h3>
-                        <p>Rare+ guaranteed</p>
-                        <div class="gacha-price">
-                            <i class="fas fa-coins"></i>
-                            <span>150</span>
-                        </div>
-                        <button class="gacha-btn" onclick="performGacha(2)">Summon</button>
-                    </div>
-
-                    <div class="gacha-card" data-type="3">
-                        <div class="gacha-icon gold">
-                            <i class="fas fa-egg"></i>
-                        </div>
-                        <h3>Golden Summon</h3>
-                        <p>Epic+ guaranteed</p>
-                        <div class="gacha-price">
-                            <i class="fas fa-coins"></i>
-                            <span>500</span>
-                        </div>
-                        <button class="gacha-btn" onclick="performGacha(3)">Summon</button>
-                    </div>
-                </div>
-
-                <div class="gacha-rates">
-                    <h4>Drop Rates (Bronze)</h4>
-                    <div class="rate-row">
-                        <span class="rate-label common">Common</span>
-                        <span class="rate-value">60%</span>
-                    </div>
-                    <div class="rate-row">
-                        <span class="rate-label rare">Rare</span>
-                        <span class="rate-value">25%</span>
-                    </div>
-                    <div class="rate-row">
-                        <span class="rate-label epic">Epic</span>
-                        <span class="rate-value">12%</span>
-                    </div>
-                    <div class="rate-row">
-                        <span class="rate-label legendary">Legendary</span>
-                        <span class="rate-value">3%</span>
+                            Normal Gacha
+                            <span class="gacha-cost">
+                                <i class="fas fa-coins"></i> 100
+                            </span>
+                        </button>
+                        <button class="gacha-btn premium" onclick="performGacha('premium')">
+                            <i class="fas fa-star"></i>
+                            Premium Gacha
+                            <span class="gacha-cost">
+                                <i class="fas fa-coins"></i> 500
+                            </span>
+                        </button>
                     </div>
                 </div>
             </section>
 
             <!-- SHOP TAB -->
-            <section id="shop" class="tab-content">
-                <div class="shop-tabs">
-                    <button class="shop-tab active" data-category="food">Food</button>
-                    <button class="shop-tab" data-category="potion">Potions</button>
-                    <button class="shop-tab" data-category="special">Special</button>
+            <section id="shop" class="tab-panel">
+                <div class="shop-tabs" id="shop-tabs">
+                    <button class="shop-tab active" data-shop="food">Food</button>
+                    <button class="shop-tab" data-shop="potion">Potions</button>
+                    <button class="shop-tab" data-shop="special">Special</button>
                 </div>
                 <div class="shop-grid" id="shop-grid">
-                    <div class="loading-spinner">
-                        <i class="fas fa-spinner fa-spin fa-2x"></i>
-                        <p>Loading shop...</p>
-                    </div>
+                    <!-- Shop items rendered by JS -->
                 </div>
-
-                <!-- Inventory Section -->
                 <div class="inventory-section">
-                    <h3 class="section-title">My Inventory</h3>
+                    <h3 class="collection-title">My Inventory</h3>
                     <div class="inventory-grid" id="inventory-grid">
-                        <p class="empty-message">No items yet</p>
+                        <!-- Inventory items rendered by JS -->
                     </div>
                 </div>
             </section>
 
             <!-- ARENA TAB -->
-            <section id="arena" class="tab-content">
-                <div class="arena-header">
-                    <h2>Battle Arena</h2>
-                    <p>Challenge other pets to async battles!</p>
-                </div>
-
-                <div class="arena-tabs">
-                    <button class="arena-tab active" data-view="opponents">Find Opponent</button>
-                    <button class="arena-tab" data-view="history">Battle History</button>
-                    <button class="arena-tab" data-view="leaderboard">🏆 Leaderboard</button>
-                </div>
-
-                <div class="arena-content" id="arena-opponents">
-                    <div class="loading-spinner">
-                        <i class="fas fa-spinner fa-spin fa-2x"></i>
-                        <p>Finding opponents...</p>
+            <section id="arena" class="tab-panel">
+                <div class="arena-content">
+                    <div class="arena-header">
+                        <h3 class="collection-title">Battle Arena</h3>
+                        <span class="arena-battles" id="arena-battles">3 / 3 Battles</span>
                     </div>
-                </div>
-
-                <div class="arena-content" id="arena-history" style="display: none;">
-                    <div class="battle-history-list" id="battle-history">
-                        <p class="empty-message">No battles yet</p>
-                    </div>
-                </div>
-
-                <div class="arena-content" id="arena-leaderboard" style="display: none;">
-                    <div class="leaderboard-tabs">
-                        <button class="lb-tab active" data-category="top_level">Top Level</button>
-                        <button class="lb-tab" data-category="battle_wins">Battle Wins</button>
-                        <button class="lb-tab" data-category="streak">Login Streak</button>
-                    </div>
-                    <div class="leaderboard-list" id="leaderboard-list">
-                        <div class="loading-spinner">
-                            <i class="fas fa-spinner fa-spin fa-2x"></i>
-                            <p>Loading leaderboard...</p>
-                        </div>
+                    <div class="opponents-grid" id="opponents-grid">
+                        <!-- Opponents rendered by JS -->
                     </div>
                 </div>
             </section>
 
-            <!-- ARENA 3v3 TAB -->
-            <section id="arena3v3" class="tab-content">
-                <div class="arena-header">
-                    <h2>⚔️ Battle Arena 3v3</h2>
-                    <p>Dragon City style 3-on-3 turn-based combat!</p>
-                </div>
-
-                <!-- Team Selection -->
-                <div class="team-selection-panel" id="team-selection">
-                    <h3>Select Your Team (3 Pets)</h3>
-                    <p class="selection-hint">Choose 3 pets to battle with:</p>
-
-                    <div class="selected-team" id="selected-team">
-                        <div class="team-slot empty" data-slot="0">
-                            <i class="fas fa-plus"></i>
-                        </div>
-                        <div class="team-slot empty" data-slot="1">
-                            <i class="fas fa-plus"></i>
-                        </div>
-                        <div class="team-slot empty" data-slot="2">
-                            <i class="fas fa-plus"></i>
-                        </div>
+            <!-- 3V3 ARENA TAB -->
+            <section id="arena3v3" class="tab-panel">
+                <div class="arena-content">
+                    <div class="arena-header">
+                        <h3 class="collection-title">3v3 Team Battle</h3>
                     </div>
-
-                    <div class="pet-pool" id="pet-pool-3v3">
-                        <div class="loading-spinner">
-                            <i class="fas fa-spinner fa-spin fa-2x"></i>
-                            <p>Loading your pets...</p>
-                        </div>
+                    <div class="team-selection" id="team-selection">
+                        <!-- Team selection rendered by JS -->
                     </div>
-                </div>
-
-                <!-- Opponent Selection (shown after team is full) -->
-                <div class="opponent-selection" id="opponent-selection-3v3" style="display: none;">
-                    <h3>Choose Your Opponent</h3>
-                    <button class="btn-refresh" onclick="loadOpponents3v3()">
-                        <i class="fas fa-sync-alt"></i> Refresh
-                    </button>
-                    <div class="opponent-list" id="opponent-list-3v3">
-                        <div class="loading-spinner">
-                            <i class="fas fa-spinner fa-spin fa-2x"></i>
-                            <p>Finding opponents...</p>
-                        </div>
-                    </div>
+                    <a href="battle_3v3.php" class="btn-primary" style="width: 100%; text-align: center;">
+                        <i class="fas fa-dragon"></i>
+                        Enter 3v3 Arena
+                    </a>
                 </div>
             </section>
 
             <!-- ACHIEVEMENTS TAB -->
-            <section id="achievements" class="tab-content">
-                <div class="achievements-header">
-                    <h2>🏆 Achievements</h2>
-                    <p class="ach-progress"><span id="ach-unlocked">0</span>/<span id="ach-total">0</span> Unlocked</p>
-                </div>
-
-                <div class="ach-category-tabs">
-                    <button class="ach-tab active" data-category="all">All</button>
-                    <button class="ach-tab" data-category="collection">Collection</button>
-                    <button class="ach-tab" data-category="battle">Battle</button>
-                    <button class="ach-tab" data-category="level">Level</button>
-                    <button class="ach-tab" data-category="login">Login</button>
-                </div>
-
-                <div class="achievements-list" id="achievements-list">
-                    <div class="loading-spinner">
-                        <i class="fas fa-spinner fa-spin fa-2x"></i>
-                        <p>Loading achievements...</p>
-                    </div>
+            <section id="achievements" class="tab-panel">
+                <div class="achievements-grid" id="achievements-grid">
+                    <!-- Achievements rendered by JS -->
                 </div>
             </section>
 
         </main>
-
     </div>
 
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="beranda.php" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="class.php" class="nav-item">
+            <i class="fas fa-book-open"></i>
+            <span>Class</span>
+        </a>
+        <a href="pet.php" class="nav-item active">
+            <i class="fas fa-paw"></i>
+            <span>Pet</span>
+        </a>
+        <a href="trapeza.php" class="nav-item">
+            <i class="fas fa-credit-card"></i>
+            <span>Bank</span>
+        </a>
+        <a href="punishment.php" class="nav-item">
+            <i class="fas fa-gavel"></i>
+            <span>Rules</span>
+        </a>
+    </nav>
+
+    <!-- MODALS -->
+
     <!-- Gacha Result Modal -->
-    <div class="modal" id="gacha-modal">
-        <div class="modal-backdrop" onclick="closeGachaModal()"></div>
-        <div class="modal-content gacha-result">
-            <div class="result-glow" id="result-glow"></div>
-
-            <!-- Pet Display Area -->
-            <div class="result-pet" id="result-pet">
-                <img src="" alt="New Pet" id="result-pet-img">
+    <div class="modal-overlay" id="gacha-result-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">New Pet!</h3>
+                <button class="modal-close" onclick="closeGachaModal()">&times;</button>
             </div>
-
-            <!-- Info Section -->
-            <div class="result-info">
-                <h2 class="result-title" id="result-title">Congratulations!</h2>
-                <span class="result-name" id="result-name">Pet Name</span>
-                <span class="result-rarity" id="result-rarity">Common</span>
-                <p class="result-shiny" id="result-shiny" style="display: none;">✨ SHINY! ✨</p>
+            <div class="modal-body" style="text-align: center;">
+                <img src="" alt="" class="gacha-result-img" id="gacha-result-img"
+                    style="width: 150px; height: 150px; object-fit: contain; margin-bottom: 16px;">
+                <h2 class="gacha-result-name" id="gacha-result-name"></h2>
+                <div class="badge-row" id="gacha-result-badges" style="justify-content: center;"></div>
             </div>
-
-            <button class="modal-close-btn" onclick="closeGachaModal()">Awesome!</button>
+            <div class="modal-footer">
+                <button class="btn-primary" onclick="closeGachaModal()" style="width: 100%;">
+                    <i class="fas fa-check"></i> Awesome!
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- Battle Result Modal -->
-    <div class="modal" id="battle-modal">
-        <div class="modal-backdrop"></div>
-        <div class="modal-content battle-result">
-            <h2 class="battle-title" id="battle-title">Battle Result</h2>
-            <div class="battle-pets">
-                <div class="battle-pet attacker">
-                    <div class="battle-pet-img"></div>
-                    <span class="battle-pet-name" id="battle-atk-name">Your Pet</span>
-                    <div class="battle-hp">
-                        <span id="battle-atk-hp">100</span> HP
-                    </div>
-                </div>
-                <div class="battle-vs">VS</div>
-                <div class="battle-pet defender">
-                    <div class="battle-pet-img"></div>
-                    <span class="battle-pet-name" id="battle-def-name">Opponent</span>
-                    <div class="battle-hp">
-                        <span id="battle-def-hp">100</span> HP
-                    </div>
-                </div>
+    <!-- Rename Modal -->
+    <div class="modal-overlay" id="rename-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Rename Pet</h3>
+                <button class="modal-close" onclick="closeRenameModal()">&times;</button>
             </div>
-            <div class="battle-log" id="battle-log">
-                <!-- Battle log entries will be inserted here -->
+            <div class="modal-body">
+                <input type="text" class="form-input" id="new-name-input" placeholder="Enter new name" maxlength="50">
             </div>
-            <div class="battle-rewards" id="battle-rewards" style="display: none;">
-                <span class="reward-item"><i class="fas fa-coins"></i> +<span id="reward-gold">0</span></span>
-                <span class="reward-item"><i class="fas fa-star"></i> +<span id="reward-exp">0</span> EXP</span>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeRenameModal()">Cancel</button>
+                <button class="btn-primary" onclick="savePetName()">Save</button>
             </div>
-            <button class="modal-close-btn" onclick="closeBattleModal()">Close</button>
         </div>
     </div>
 
     <!-- Item Use Modal -->
-    <div class="modal" id="item-modal">
-        <div class="modal-backdrop" onclick="closeItemModal()"></div>
-        <div class="modal-content item-select">
-            <h2>Select Item</h2>
-            <div class="item-list" id="item-list">
-                <!-- Items will be loaded here -->
+    <div class="modal-overlay" id="item-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="item-modal-title">Use Item</h3>
+                <button class="modal-close" onclick="closeItemModal()">&times;</button>
             </div>
-            <button class="modal-cancel-btn" onclick="closeItemModal()">Cancel</button>
-        </div>
-    </div>
-
-    <!-- Toast Notification -->
-    <div class="toast" id="toast">
-        <i class="toast-icon fas fa-check-circle"></i>
-        <span class="toast-message">Message</span>
-    </div>
-
-    <div class="modal" id="bulk-use-modal">
-        <div class="modal-backdrop"></div>
-        <div class="modal-content item-detail-card">
-            <div class="item-header">
-                <img src="" id="bulk-item-img" class="item-detail-img">
-                <div class="item-detail-info">
-                    <h3 id="bulk-item-name">Item Name</h3>
-                    <p id="bulk-item-desc">Description here...</p>
-                    <span class="item-stock">Owned: <b id="bulk-item-stock">0</b></span>
+            <div class="modal-body">
+                <div class="item-list" id="item-list">
+                    <!-- Items rendered by JS -->
                 </div>
-            </div>
-
-            <div class="quantity-selector">
-                <label>Use Quantity:</label>
-                <div class="qty-controls">
-                    <button type="button" class="qty-btn" onclick="adjustQty(-1)">-</button>
-                    <input type="number" id="bulk-item-qty" value="1" min="1" readonly>
-                    <button type="button" class="qty-btn" onclick="adjustQty(1)">+</button>
-                    <button type="button" class="qty-btn max" onclick="setMaxQty()">MAX</button>
-                </div>
-            </div>
-
-            <div class="modal-actions">
-                <button class="modal-cancel-btn" onclick="closeBulkModal()">Cancel</button>
-                <button class="modal-confirm-btn" onclick="confirmBulkUse()">
-                    Use Item
-                </button>
             </div>
         </div>
     </div>
 
-    <!-- ========================================
-         SELL PET CONFIRMATION MODAL
-         ======================================== -->
-    <div class="modal hidden" id="sell-modal">
-        <div class="modal-backdrop" onclick="closeSellModal()"></div>
-        <div class="modal-content sell-dialog">
-            <h2>💰 Sell Pet</h2>
-
-            <div class="sell-pet-preview">
-                <img src="" id="sell-pet-img" alt="Pet">
-                <div class="sell-pet-info">
-                    <span class="sell-pet-name" id="sell-pet-name">Pet Name</span>
-                    <span class="sell-pet-level" id="sell-pet-level">Lv.1</span>
-                </div>
+    <!-- Shop Buy Modal -->
+    <div class="modal-overlay" id="shop-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Buy Item</h3>
+                <button class="modal-close" onclick="closeShopModal()">&times;</button>
             </div>
-
-            <div class="sell-price-box">
-                <span class="sell-label">You will receive:</span>
-                <div class="sell-amount">
-                    <i class="fas fa-coins"></i>
-                    <span id="sell-price">0</span> Gold
-                </div>
+            <div class="modal-body" id="shop-modal-body">
+                <!-- Item details rendered by JS -->
             </div>
-
-            <div class="sell-warning">
-                ⚠️ This action cannot be undone!
-            </div>
-
-            <div class="modal-actions">
-                <button class="modal-cancel-btn" onclick="closeSellModal()">Cancel</button>
-                <button class="modal-confirm-btn sell-confirm" id="confirm-sell-btn" onclick="confirmSellPet()">
-                    <i class="fas fa-check"></i> Confirm Sell
-                </button>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeShopModal()">Cancel</button>
+                <button class="btn-primary" id="shop-buy-btn">Buy</button>
             </div>
         </div>
     </div>
 
-    <!-- ========================================
-         RHYTHM GAME MODAL
-         ======================================== -->
-    <div class="modal hidden" id="rhythm-modal">
-        <div class="modal-backdrop" onclick="closeRhythmGame()"></div>
-        <div class="modal-content rhythm-game-container">
-            <div class="rhythm-header">
-                <h2>🎵 Rhythm Game</h2>
-                <div class="rhythm-stats">
-                    <span class="rhythm-score">Score: <b id="rhythm-score-display">0</b></span>
-                    <span class="rhythm-timer" id="rhythm-timer">30s</span>
+    <!-- Help Modal -->
+    <div class="modal-overlay" id="help-modal">
+        <div class="modal-content" style="max-width: 500px; max-height: 80vh;">
+            <div class="modal-header">
+                <h3 class="modal-title">Help & Tutorial</h3>
+                <button class="modal-close" onclick="closeHelpModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="overflow-y: auto;">
+                <div class="help-section">
+                    <h4 style="color: var(--gold); margin-bottom: 12px;"><i class="fas fa-paw"></i> Getting Started</h4>
+                    <p style="color: #aaa; line-height: 1.6; margin-bottom: 16px;">
+                        Get your first pet from the Gacha tab! Use gold to roll for random pets with different elements
+                        and rarities.
+                    </p>
                 </div>
-            </div>
-
-            <div class="rhythm-game-area" id="rhythm-game-area">
-                <!-- Pet Dancing Animation -->
-                <div class="rhythm-pet-container">
-                    <img id="rhythm-pet-img" src="" alt="Dancing Pet" class="rhythm-pet-dance">
+                <div class="help-section">
+                    <h4 style="color: var(--gold); margin-bottom: 12px;"><i class="fas fa-heart"></i> Taking Care</h4>
+                    <p style="color: #aaa; line-height: 1.6; margin-bottom: 16px;">
+                        Feed your pet to restore hunger, play to boost mood, and heal when health is low. Stats decay
+                        over time!
+                    </p>
                 </div>
-
-                <!-- Falling Notes Container -->
-                <div class="rhythm-notes-container" id="rhythm-notes-container">
-                    <!-- Notes will be spawned dynamically via JS -->
+                <div class="help-section">
+                    <h4 style="color: var(--gold); margin-bottom: 12px;"><i class="fas fa-shield-alt"></i> Battle</h4>
+                    <p style="color: #aaa; line-height: 1.6;">
+                        Enter the Arena to battle other pets! Win to earn EXP, gold, and level up your companion.
+                    </p>
                 </div>
-
-                <!-- Hit Zone Indicator -->
-                <div class="rhythm-hit-zone">
-                    <div class="hit-indicator">TAP HERE!</div>
-                </div>
-            </div>
-
-            <div class="rhythm-instructions">
-                <p>Tap/Click the falling notes when they reach the bottom!</p>
-            </div>
-
-            <button class="modal-cancel-btn" onclick="closeRhythmGame()">Exit</button>
-        </div>
-    </div>
-
-    <!-- ========================================
-         EVOLUTION SELECTOR MODAL
-         ======================================== -->
-    <div class="modal hidden" id="evolution-modal">
-        <div class="modal-backdrop" onclick="closeEvolutionModal()"></div>
-        <div class="modal-content evolution-selector">
-            <h2>🔮 <span id="evo-title">Evolution</span></h2>
-
-            <div class="evolution-info">
-                <p><strong>Current Stage:</strong> <span id="evo-current-stage">Egg</span></p>
-                <p><strong>Evolve To:</strong> <span id="evo-next-stage">Baby</span></p>
-                <p><strong>Requirements:</strong></p>
-                <ul>
-                    <li>Level: <span id="evo-required-level">10</span>+</li>
-                    <li>Sacrifice: 3 pets of <span id="evo-required-rarity">same rarity</span></li>
-                    <li>Cost: <i class="fas fa-coins"></i> 500 Gold</li>
-                </ul>
-            </div>
-
-            <div class="evolution-warning">
-                ⚠️ Sacrificed pets will be permanently deleted!
-            </div>
-
-            <div class="fodder-selection-title">
-                <h3>Select 3 Fodder Pets (<span id="evo-selected-count">0</span>/3)</h3>
-            </div>
-
-            <div class="fodder-grid" id="fodder-grid">
-                <div class="loading-spinner">
-                    <i class="fas fa-spinner fa-spin fa-2x"></i>
-                    <p>Loading candidates...</p>
-                </div>
-            </div>
-
-            <div class="modal-actions">
-                <button class="modal-cancel-btn" onclick="closeEvolutionModal()">Cancel</button>
-                <button class="modal-confirm-btn" id="confirm-evolution-btn" onclick="confirmEvolution()" disabled>
-                    <i class="fas fa-star"></i> Evolve (500 Gold)
-                </button>
             </div>
         </div>
     </div>
 
-    <!-- ========================================
-         EVOLUTION CONFIRM MODAL
-         ======================================== -->
-    <div class="modal hidden" id="evolution-confirm-modal">
-        <div class="modal-backdrop" onclick="closeEvoConfirmModal()"></div>
-        <div class="modal-content evo-confirm-dialog">
-            <h2>⚠️ Confirm Evolution</h2>
-
-            <div class="evo-confirm-message">
-                <p>This will <strong>permanently sacrifice</strong> the 3 selected pets and cost <strong><i
-                            class="fas fa-coins"></i> 500 Gold</strong>.</p>
-                <p class="evo-confirm-warning">This action cannot be undone!</p>
-            </div>
-
-            <div class="modal-actions">
-                <button class="modal-cancel-btn" onclick="closeEvoConfirmModal()">Cancel</button>
-                <button class="modal-confirm-btn evo-proceed-btn" id="proceed-evolution-btn"
-                    onclick="proceedEvolution()">
-                    <i class="fas fa-star"></i> Proceed with Evolution
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========================================
-         RENAME PET MODAL
-         ======================================== -->
-    <div class="modal hidden" id="rename-modal">
-        <div class="modal-backdrop" onclick="closeRenameModal()"></div>
-        <div class="modal-content rename-dialog">
-            <h2>✏️ Rename Pet</h2>
-            <input type="text" id="rename-input" class="rename-input" placeholder="Enter new nickname..."
-                maxlength="50">
-            <div class="modal-actions">
-                <button class="modal-cancel-btn" onclick="closeRenameModal()">Cancel</button>
-                <button class="modal-confirm-btn" onclick="confirmRename()">
-                    <i class="fas fa-check"></i> Save
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========================================
-         SHOP PURCHASE MODAL
-         ======================================== -->
-    <div class="modal hidden" id="shop-purchase-modal">
-        <div class="modal-backdrop" onclick="closeShopPurchaseModal()"></div>
-        <div class="modal-content shop-purchase-dialog">
-            <h2>🛒 Purchase Item</h2>
-
-            <!-- Item Preview -->
-            <div class="shop-modal-item">
-                <img src="" alt="Item" id="shop-modal-img" class="shop-modal-img">
-                <div class="shop-modal-info">
-                    <span class="shop-modal-name" id="shop-modal-name">Item Name</span>
-                    <span class="shop-modal-desc" id="shop-modal-desc">Description</span>
-                </div>
-            </div>
-
-            <!-- Quantity Selector -->
-            <div class="shop-qty-controls">
-                <button class="qty-btn" onclick="adjustShopQty(-10)">-10</button>
-                <button class="qty-btn" onclick="adjustShopQty(-1)">-</button>
-                <input type="number" id="shop-qty-input" class="qty-input" value="1" min="1" max="99"
-                    onchange="updateShopTotal()">
-                <button class="qty-btn" onclick="adjustShopQty(1)">+</button>
-                <button class="qty-btn" onclick="adjustShopQty(10)">+10</button>
-            </div>
-
-            <!-- Price Calculation -->
-            <div class="shop-price-row">
-                <span class="shop-price-label">Unit Price:</span>
-                <span class="shop-price-value"><i class="fas fa-coins"></i> <span id="shop-unit-price">0</span></span>
-            </div>
-            <div class="shop-price-row total">
-                <span class="shop-price-label">Total:</span>
-                <span class="shop-price-value"><i class="fas fa-coins"></i> <span id="shop-total-price">0</span></span>
-            </div>
-
-            <div class="modal-actions">
-                <button class="modal-cancel-btn" onclick="closeShopPurchaseModal()">Cancel</button>
-                <button class="modal-confirm-btn shop-confirm-btn" onclick="confirmShopPurchase()">
-                    <i class="fas fa-shopping-cart"></i> Buy Now
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========================================
-         REVIVE PET MODAL
-         ======================================== -->
-    <div class="modal hidden" id="revive-modal">
-        <div class="modal-backdrop" onclick="closeReviveModal()"></div>
-        <div class="modal-content revive-dialog">
-            <h2>💀 Revive Pet</h2>
-            <p class="revive-subtitle">Using: <strong id="revive-item-name">Ankh of Life</strong></p>
-            <p class="revive-hint">Select a dead pet to revive:</p>
-
-            <div class="revive-pet-grid" id="revive-pet-grid">
-                <!-- Dead pets will be populated here -->
-            </div>
-
-            <div class="modal-actions">
-                <button class="modal-cancel-btn" onclick="closeReviveModal()">Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========================================
-         TUTORIAL / HELP MODAL
-         ======================================== -->
-    <div class="modal hidden" id="help-modal">
-        <div class="modal-backdrop" onclick="closeHelpModal()"></div>
-        <div class="modal-content help-guide">
-            <button class="modal-close-btn" onclick="closeHelpModal()">
-                <i class="fas fa-times"></i>
-            </button>
-
-            <h2>📖 Tutorial & Panduan Fitur</h2>
-
-            <div class="help-tabs">
-                <button class="help-tab active" onclick="switchHelpTab('overview')">Overview</button>
-                <button class="help-tab" onclick="switchHelpTab('rhythm')">Rhythm Game</button>
-                <button class="help-tab" onclick="switchHelpTab('battle')">Hardcore Battle</button>
-                <button class="help-tab" onclick="switchHelpTab('evolution')">Evolution</button>
-                <button class="help-tab" onclick="switchHelpTab('economy')">Sell & Rename</button>
-            </div>
-
-            <!-- Overview Tab -->
-            <div class="help-content" id="help-overview">
-                <h3>🎮 Fitur Baru: Hardcore & Rhythm Game Update</h3>
-                <p>Sistem Pet sekarang lebih menantang dengan fitur baru:</p>
-
-                <div class="feature-list">
-                    <div class="feature-item">
-                        <i class="fas fa-music feature-icon"></i>
-                        <div>
-                            <strong>Rhythm Game</strong>
-                            <p>Main mini-game untuk dapat Mood & EXP</p>
-                        </div>
-                    </div>
-
-                    <div class="feature-item">
-                        <i class="fas fa-heart-broken feature-icon"></i>
-                        <div>
-                            <strong>Hardcore Battle</strong>
-                            <p>Pet bisa MATI kalau HP habis! (-20 HP per kalah)</p>
-                        </div>
-                    </div>
-
-                    <div class="feature-item">
-                        <i class="fas fa-star feature-icon"></i>
-                        <div>
-                            <strong>Manual Evolution</strong>
-                            <p>Korbankan 3 pet untuk evolve pet utama (Lv.20+)</p>
-                        </div>
-                    </div>
-
-                    <div class="feature-item">
-                        <i class="fas fa-coins feature-icon"></i>
-                        <div>
-                            <strong>Sell & Rename</strong>
-                            <p>Jual pet untuk gold, atau ganti nama sesuai keinginan</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Rhythm Game Tab -->
-            <div class="help-content" id="help-rhythm" style="display: none;">
-                <h3>🎵 Rhythm Game</h3>
-
-                <div class="tutorial-step">
-                    <span class="step-number">1</span>
-                    <div class="step-content">
-                        <h4>Cara Main</h4>
-                        <p>Klik tombol <strong>"Play"</strong> di tab "My Pet" (hanya jika pet status ALIVE)</p>
-                    </div>
-                </div>
-
-                <div class="tutorial-step">
-                    <span class="step-number">2</span>
-                    <div class="step-content">
-                        <h4>Gameplay</h4>
-                        <p>• Not akan jatuh dari atas ke bawah<br>
-                            • <strong>Klik/Tap</strong> not saat mencapai zona hijau di bawah<br>
-                            • Tiap hit = <strong>+10 poin</strong><br>
-                            • Durasi: <strong>30 detik</strong></p>
-                    </div>
-                </div>
-
-                <div class="tutorial-step">
-                    <span class="step-number">3</span>
-                    <div class="step-content">
-                        <h4>Reward</h4>
-                        <p>• Score 0-100 = Mood +0-10, EXP +0-16<br>
-                            • Score 100-300 = Mood +10-30, EXP +16-50<br>
-                            • <strong>Max reward:</strong> Mood +30, EXP +50</p>
-                    </div>
-                </div>
-
-                <div class="help-tip warning">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <strong>Perhatian:</strong> Pet yang DEAD tidak bisa main rhythm game!
-                </div>
-            </div>
-
-            <!--Hardcore Battle Tab -->
-            <div class="help-content" id="help-battle" style="display: none;">
-                <h3>⚔️ Hardcore Battle System</h3>
-
-                <div class="tutorial-step">
-                    <span class="step-number">1</span>
-                    <div class="step-content">
-                        <h4>HP System</h4>
-                        <p>Setiap pet punya <strong>HP (Hit Points)</strong> terpisah dari Health/Mood.<br>
-                            HP awal: <strong>100</strong></p>
-                    </div>
-                </div>
-
-                <div class="tutorial-step">
-                    <span class="step-number">2</span>
-                    <div class="step-content">
-                        <h4>Konsekuensi Battle</h4>
-                        <p>• <strong>Menang:</strong> Dapat Gold & EXP (HP tetap)<br>
-                            • <strong>Kalah:</strong> HP berkurang <strong>-20</strong><br>
-                            • <strong>Seri:</strong> Tidak ada perubahan HP</p>
-                    </div>
-                </div>
-
-                <div class="tutorial-step">
-                    <span class="step-number">3</span>
-                    <div class="step-content">
-                        <h4>Death Mechanic</h4>
-                        <p>Jika HP mencapai <strong>0</strong>, pet akan <strong>MATI (status: DEAD)</strong><br>
-                            • Pet mati tidak bisa battle<br>
-                            • Tidak bisa jadi pet aktif<br>
-                            • Tidak bisa dipakai item (kecuali revive)</p>
-                    </div>
-                </div>
-
-                <div class="help-tip danger">
-                    <i class="fas fa-skull"></i>
-                    <strong>PENTING:</strong> Kalah 5x berturut-turut = MATI! Pastiin pet kamu cukup kuat sebelum
-                    battle.
-                </div>
-
-                <div class="help-tip info">
-                    <i class="fas fa-shield-alt"></i>
-                    <strong>Tips:</strong> Beli "Divine Shield" di Shop untuk melindungi pet dari 1x serangan!
-                </div>
-            </div>
-
-            <!-- Evolution Tab -->
-            <div class="help-content" id="help-evolution" style="display: none;">
-                <h3>🌟 Manual Evolution (Sacrifice System)</h3>
-
-                <div class="tutorial-step">
-                    <span class="step-number">1</span>
-                    <div class="step-content">
-                        <h4>Syarat Evolution</h4>
-                        <p>• Pet utama harus <strong>Level 20+</strong><br>
-                            • Punya minimal <strong>3 pet lain</strong> dengan rarity yang SAMA<br>
-                            • Gold minimal <strong>500</strong></p>
-                    </div>
-                </div>
-
-                <div class="tutorial-step">
-                    <span class="step-number">2</span>
-                    <div class="step-content">
-                        <h4>Cara Evolve</h4>
-                        <p>1. Buka tab <strong>Collection</strong><br>
-                            2. Cari pet Level 20+, klik tombol <strong>⭐ (Evolve)</strong><br>
-                            3. <strong>PILIH 3 pet</strong> yang mau dikorbankan (centang checkbox)<br>
-                            4. Pastikan rarity sama semua!<br>
-                            5. Klik <strong>"Evolve (500 Gold)"</strong></p>
-                    </div>
-                </div>
-
-                <div class="tutorial-step">
-                    <span class="step-number">3</span>
-                    <div class="step-content">
-                        <h4>Hasil Evolution</h4>
-                        <p>• Pet utama naik <strong>1 level</strong><br>
-                            • Status berubah jadi <strong>Adult</strong><br>
-                            • 3 pet yang dipilih <strong>DIHAPUS PERMANEN</strong><br>
-                            • Gold berkurang <strong>-500</strong></p>
-                    </div>
-                </div>
-
-                <div class="help-tip danger">
-                    <i class="fas fa-fire"></i>
-                    <strong>PERHATIAN!</strong> Pet yang dikorbankan akan DIHAPUS PERMANEN! Pilih dengan hati-hati.
-                </div>
-
-                <div class="help-tip info">
-                    <i class="fas fa-lightbulb"></i>
-                    <strong>Tips:</strong> Korbankan pet level rendah untuk evolve pet favorit kamu!
-                </div>
-            </div>
-
-            <!-- Economy Tab -->
-            <div class="help-content" id="help-economy" style="display: none;">
-                <h3>💰 Sell Pet & Rename</h3>
-
-                <div class="tutorial-section">
-                    <h4><i class="fas fa-coins"></i> Sell Pet</h4>
-
-                    <div class="tutorial-step">
-                        <span class="step-number">1</span>
-                        <div class="step-content">
-                            <p>Di tab <strong>Collection</strong>, klik tombol <strong>💰 (Sell)</strong> pada pet yang
-                                tidak aktif</p>
-                        </div>
-                    </div>
-
-                    <div class="tutorial-step">
-                        <span class="step-number">2</span>
-                        <div class="step-content">
-                            <h4>Harga Jual</h4>
-                            <p>• <strong>Common:</strong> 50 + (Level × 10)<br>
-                                • <strong>Rare:</strong> 100 + (Level × 10)<br>
-                                • <strong>Epic:</strong> 200 + (Level × 10)<br>
-                                • <strong>Legendary:</strong> 500 + (Level × 10)</p>
-                            <p class="example">Contoh: Rare Lv.15 = 100 + 150 = <strong>250 Gold</strong></p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="tutorial-section">
-                    <h4><i class="fas fa-edit"></i> Rename Pet</h4>
-
-                    <div class="tutorial-step">
-                        <span class="step-number">1</span>
-                        <div class="step-content">
-                            <p>Di tab <strong>My Pet</strong>, klik icon <strong>✏️ (Edit)</strong> di samping nama pet
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="tutorial-step">
-                        <span class="step-number">2</span>
-                        <div class="step-content">
-                            <p>Masukkan nama baru (max 50 karakter), klik <strong>Save</strong></p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="help-tip warning">
-                    <i class="fas fa-ban"></i>
-                    <strong>Tidak bisa:</strong> Jual pet yang sedang aktif! Set pet lain sebagai aktif dulu.
-                </div>
-            </div>
-
-            <div class="help-footer">
-                <p>💡 <strong>Butuh bantuan lebih?</strong> Hubungi admin atau lihat dokumentasi lengkap.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Daily Login Reward Modal -->
+    <!-- Daily Login Modal -->
     <div class="daily-login-modal" id="daily-login-modal">
         <div class="daily-login-content">
             <button class="daily-close-btn" onclick="closeDailyModal()">
@@ -1034,11 +455,7 @@ mysqli_stmt_close($gold_stmt);
                 <h2>🎁 Daily Login Reward!</h2>
                 <p>Day <span id="daily-current-day">1</span> of 30</p>
             </div>
-
-            <div class="daily-calendar" id="daily-calendar">
-                <!-- Calendar days will be generated by JS -->
-            </div>
-
+            <div class="daily-calendar" id="daily-calendar"></div>
             <div class="daily-reward-display">
                 <div class="reward-label">Today's Reward</div>
                 <div class="reward-content" id="daily-reward-content">
@@ -1046,41 +463,15 @@ mysqli_stmt_close($gold_stmt);
                     <span id="daily-reward-text">50 Gold</span>
                 </div>
             </div>
-
             <div class="streak-counter">
                 <i class="fas fa-fire"></i>
                 <span>Total Logins: <strong id="daily-total-logins">0</strong></span>
             </div>
-
             <button class="claim-reward-btn" id="claim-reward-btn" onclick="claimDailyReward()">
                 <i class="fas fa-gift"></i> Claim Reward!
             </button>
         </div>
     </div>
-
-    <!-- Bottom Navigation (Mobile) - Consistent with beranda.php -->
-    <nav class="bottom-nav">
-        <a href="beranda.php" class="bottom-nav-item">
-            <i class="fa-solid fa-home"></i>
-            <span>Home</span>
-        </a>
-        <a href="class.php" class="bottom-nav-item">
-            <i class="fa-solid fa-book-open"></i>
-            <span>Class</span>
-        </a>
-        <a href="pet.php" class="bottom-nav-item active">
-            <i class="fa-solid fa-paw"></i>
-            <span>Pet</span>
-        </a>
-        <a href="trapeza.php" class="bottom-nav-item">
-            <i class="fa-solid fa-credit-card"></i>
-            <span>Bank</span>
-        </a>
-        <a href="punishment.php" class="bottom-nav-item">
-            <i class="fa-solid fa-gavel"></i>
-            <span>Rules</span>
-        </a>
-    </nav>
 
     <!-- JavaScript -->
     <script src="js/pixi_bg.js"></script>
@@ -1088,6 +479,259 @@ mysqli_stmt_close($gold_stmt);
     <script src="js/pixi_pet.js"></script>
     <script src="js/pet_animations.js"></script>
     <script src="js/pet_hardcore_update.js"></script>
+
+    <style>
+        /* Additional inline styles for modals and forms */
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-gold);
+            border-radius: var(--radius-md);
+            color: #fff;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--gold);
+            background: rgba(0, 0, 0, 0.6);
+            box-shadow: 0 0 20px rgba(218, 165, 32, 0.2);
+        }
+
+        .shop-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .shop-tab {
+            padding: 10px 20px;
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-full);
+            color: #666;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .shop-tab.active {
+            background: rgba(218, 165, 32, 0.15);
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .shop-grid,
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .shop-item,
+        .inventory-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .shop-item:hover,
+        .inventory-item:hover {
+            border-color: var(--border-gold);
+            transform: translateY(-2px);
+        }
+
+        .shop-item img,
+        .inventory-item img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            margin-bottom: 8px;
+        }
+
+        .shop-item-name,
+        .inventory-item-name {
+            font-size: 0.75rem;
+            color: #ccc;
+            margin-bottom: 4px;
+        }
+
+        .shop-item-price {
+            font-size: 0.7rem;
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        .inventory-item-qty {
+            font-size: 0.65rem;
+            color: #888;
+        }
+
+        .inventory-section {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .arena-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .arena-battles {
+            padding: 6px 14px;
+            background: rgba(218, 165, 32, 0.1);
+            border: 1px solid var(--border-gold);
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            color: var(--gold);
+        }
+
+        .opponents-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .opponent-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .opponent-card:hover {
+            border-color: var(--border-gold);
+            transform: translateX(4px);
+        }
+
+        .opponent-img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+
+        .opponent-info {
+            flex: 1;
+        }
+
+        .opponent-name {
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .opponent-level {
+            font-size: 0.8rem;
+            color: var(--gold);
+        }
+
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .achievement-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            text-align: center;
+        }
+
+        .achievement-card.unlocked {
+            border-color: var(--gold);
+        }
+
+        .achievement-card.locked {
+            opacity: 0.5;
+            filter: grayscale(50%);
+        }
+
+        .achievement-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .achievement-name {
+            font-size: 0.75rem;
+            color: #ccc;
+        }
+
+        .item-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .item-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .item-row:hover {
+            background: rgba(218, 165, 32, 0.1);
+        }
+
+        .item-row img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-name {
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .item-qty {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        @media (min-width: 480px) {
+
+            .shop-grid,
+            .inventory-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .achievements-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
 
 </body>
 
