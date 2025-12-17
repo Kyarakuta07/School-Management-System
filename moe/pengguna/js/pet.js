@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initTabs();
     initActionButtons();
     initShopTabs();
-    initArenaTabs();
+    // initArenaTabs(); // TODO: implement arena tabs
     initGoldToggle(); // Initialize gold toggle
     loadPets();
     checkDailyReward(); // Check for daily login reward
