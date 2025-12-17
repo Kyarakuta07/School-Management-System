@@ -895,6 +895,9 @@ mysqli_stmt_close($gold_stmt);
         }
     </style>
 
+    <!-- Arena & Achievements Module -->
+    <script src="js/pet_arena.js"></script>
+
 </body>
 
 </html>
