@@ -389,25 +389,42 @@ mysqli_stmt_close($gold_stmt);
 
     <!-- MODALS -->
 
-    <!-- Gacha Result Modal -->
-    <div class="modal-overlay" id="gacha-result-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">New Pet!</h3>
+    <!-- Gacha Result Modal (Dragon City/Genshin Style) -->
+    <div class="modal-overlay" id="gacha-modal">
+        <div class="modal-content gacha-result" style="max-width: 340px;">
+            <!-- Rarity Glow Background -->
+            <div class="gacha-result-glow"></div>
+
+            <div class="modal-header" style="border: none; text-align: center; padding-bottom: 0;">
+                <h3 class="modal-title" id="result-title" style="width: 100%; text-align: center;">New Pet!</h3>
                 <button class="modal-close" onclick="closeGachaModal()">&times;</button>
             </div>
-            <div class="modal-body" style="text-align: center;">
-                <img src="" alt="" class="gacha-result-img" id="gacha-result-img"
-                    style="width: 150px; height: 150px; object-fit: contain; margin-bottom: 16px;">
-                <h2 class="gacha-result-name" id="gacha-result-name"></h2>
-                <div class="badge-row" id="gacha-result-badges" style="justify-content: center;"></div>
+
+            <div class="modal-body gacha-result-body">
+                <!-- Pet Display Area -->
+                <div class="gacha-pet-showcase">
+                    <div class="gacha-result-ring"></div>
+                    <div class="gacha-result-particles"></div>
+                    <img src="" alt="" id="result-pet-img" class="gacha-result-pet">
+                    <div id="result-shiny" class="shiny-badge" style="display: none;">
+                        <i class="fas fa-star"></i> SHINY
+                    </div>
+                </div>
+
+                <!-- Pet Info -->
+                <div class="gacha-pet-info">
+                    <h2 id="result-name" class="gacha-pet-name">Pet Name</h2>
+                    <span id="result-rarity" class="result-rarity rarity-badge common">Common</span>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button class="btn-primary" onclick="closeGachaModal()" style="width: 100%;">
+
+            <div class="modal-footer" style="border: none;">
+                <button class="btn-primary gacha-confirm-btn" onclick="closeGachaModal()">
                     <i class="fas fa-check"></i> Awesome!
                 </button>
             </div>
         </div>
+    </div>
     </div>
 
     <!-- Rename Modal -->
