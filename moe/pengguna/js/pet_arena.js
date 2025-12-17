@@ -50,20 +50,36 @@ async function loadOpponents() {
 }
 
 // Start battle with selected opponent
-function startBattle(defenderPetId) {
-    // Note: activePet is defined in main pet.js
-    if (!window.activePet) {
-        showToast('You need an active pet to battle!', 'warning');
+window.startBattle = function (defenderPetId) {
+    console.log('Starting battle with defender:', defenderPetId);
+
+    // Get activePet from window (set by main pet.js)
+    const activePet = window.activePet;
+
+    // Check if user has active pet
+    if (!activePet) {
+        // Use showToast if available, otherwise alert
+        if (typeof showToast === 'function') {
+            showToast('You need an active pet to battle!', 'warning');
+        } else {
+            alert('You need an active pet to battle!');
+        }
         return;
     }
 
-    if (window.activePet.status === 'DEAD') {
-        showToast('Cannot battle with a dead pet!', 'error');
+    // Check if pet is alive
+    if (activePet.status === 'DEAD') {
+        if (typeof showToast === 'function') {
+            showToast('Cannot battle with a dead pet!', 'error');
+        } else {
+            alert('Your pet is dead! Revive it first.');
+        }
         return;
     }
 
     // Redirect to battle arena page
-    window.location.href = `battle_arena.php?attacker_id=${window.activePet.id}&defender_id=${defenderPetId}`;
+    console.log('Redirecting to battle arena...');
+    window.location.href = `battle_arena.php?attacker_id=${activePet.id}&defender_id=${defenderPetId}`;
 }
 
 // ================================================
