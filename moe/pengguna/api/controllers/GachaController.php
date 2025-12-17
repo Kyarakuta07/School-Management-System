@@ -22,8 +22,8 @@ class GachaController extends BaseController
     {
         $this->requirePost();
 
-        // Rate limiting - 20 gacha rolls per hour
-        $this->checkRateLimit('gacha', 20, 60);
+        // Rate limiting - 100 gacha rolls per hour
+        $this->checkRateLimit('gacha', 100, 60);
 
         $input = $this->getInput();
         $gacha_type = isset($input['type']) ? strtolower($input['type']) : 'standard';
