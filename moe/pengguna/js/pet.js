@@ -337,20 +337,26 @@ function renderActivePet() {
     info.style.display = 'block';
     actions.style.display = 'grid';
 
-    // Update shelter button text
+    // Update shelter button text (with null check)
     const shelterBtn = document.getElementById('btn-shelter');
-    if (activePet.status === 'SHELTER') {
-        shelterBtn.querySelector('span').textContent = 'Retrieve';
-        shelterBtn.querySelector('i').className = 'fas fa-door-open';
-    } else {
-        shelterBtn.querySelector('span').textContent = 'Shelter';
-        shelterBtn.querySelector('i').className = 'fas fa-home';
+    if (shelterBtn) {
+        const spanEl = shelterBtn.querySelector('span');
+        const iconEl = shelterBtn.querySelector('i');
+        if (activePet.status === 'SHELTER') {
+            if (spanEl) spanEl.textContent = 'Retrieve';
+            if (iconEl) iconEl.className = 'fas fa-door-open';
+        } else {
+            if (spanEl) spanEl.textContent = 'Shelter';
+            if (iconEl) iconEl.className = 'fas fa-home';
+        }
     }
 }
 
 function updateStatusBar(type, value) {
     const bar = document.getElementById(`${type}-bar`);
     const valueEl = document.getElementById(`${type}-value`);
+
+    if (!bar || !valueEl) return; // Safety check
 
     bar.style.width = `${value}%`;
     valueEl.textContent = Math.round(value);
@@ -1327,7 +1333,18 @@ function initGoldToggle() {
 }
 
 function showToast(message, type = 'success') {
-    const toast = document.getElementById('toast');
+    // Get or create toast element
+    let toast = document.getElementById('toast');
+
+    if (!toast) {
+        // Create toast dynamically if it doesn't exist
+        toast = document.createElement('div');
+        toast.id = 'toast';
+        toast.className = 'toast';
+        toast.innerHTML = '<i class="toast-icon fas"></i><span class="toast-message"></span>';
+        document.body.appendChild(toast);
+    }
+
     const icon = toast.querySelector('.toast-icon');
     const msg = toast.querySelector('.toast-message');
 
@@ -1337,8 +1354,9 @@ function showToast(message, type = 'success') {
         warning: 'fa-exclamation-circle'
     };
 
-    icon.className = `toast-icon fas ${icons[type] || icons.success}`;
-    msg.textContent = message;
+    if (icon) icon.className = `toast-icon fas ${icons[type] || icons.success}`;
+    if (msg) msg.textContent = message;
+
     toast.className = `toast ${type}`;
     toast.classList.add('show');
 
