@@ -53,8 +53,14 @@ async function loadOpponents() {
 window.startBattle = function (defenderPetId) {
     console.log('Starting battle with defender:', defenderPetId);
 
-    // Get activePet from window (set by main pet.js)
-    const activePet = window.activePet;
+    // Get active pet - try window.activePet first, then search in userPets
+    let activePet = window.activePet;
+
+    // Fallback: find from userPets array if window.activePet not set
+    if (!activePet && window.userPets && window.userPets.length > 0) {
+        activePet = window.userPets.find(pet => pet.is_active === 1 || pet.is_active === '1');
+        console.log('Found active pet from userPets:', activePet);
+    }
 
     // Check if user has active pet
     if (!activePet) {
@@ -62,8 +68,9 @@ window.startBattle = function (defenderPetId) {
         if (typeof showToast === 'function') {
             showToast('You need an active pet to battle!', 'warning');
         } else {
-            alert('You need an active pet to battle!');
+            alert('You need an active pet to battle! Please select a pet first.');
         }
+        console.error('No active pet found. window.userPets:', window.userPets);
         return;
     }
 
