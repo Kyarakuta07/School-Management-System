@@ -916,6 +916,11 @@ mysqli_stmt_close($gold_stmt);
                     if (targetTab === 'achievements') {
                         setTimeout(() => loadAchievements(), 100);
                     }
+                    
+                    // Load team selection when 3v3 tab is clicked
+                    if (targetTab === 'arena3v3') {
+                        setTimeout(() => loadTeamSelection(), 100);
+                    }
                 });
             });
 

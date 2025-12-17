@@ -125,5 +125,88 @@ async function loadAchievements() {
     }
 }
 
+// ================================================
+// 3V3 TEAM BATTLE SYSTEM
+// ================================================
+
+// Load team selection for 3v3 battles
+async function loadTeamSelection() {
+    const container = document.getElementById('team-selection');
+    if (!container) {
+        console.error('team-selection element not found');
+        return;
+    }
+
+    container.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Loading your pets...</p></div>';
+
+    try {
+        // Get user's pets from main pet.js
+        const userPets = window.userPets;
+
+        if (!userPets || userPets.length === 0) {
+            container.innerHTML = `
+                <div class="empty-message">
+                    <i class="fas fa-paw"></i>
+                    <p>You need pets to form a team! Visit the Gacha tab to get pets.</p>
+                </div>
+            `;
+            return;
+        }
+
+        // Filter alive pets only
+        const alivePets = userPets.filter(pet => pet.status !== 'DEAD');
+
+        if (alivePets.length < 3) {
+            container.innerHTML = `
+                <div class="empty-message">
+                    <i class="fas fa-heart-broken"></i>
+                    <p>You need at least 3 alive pets for team battles!</p>
+                    <p class="text-small">You have ${alivePets.length} alive pet(s). Heal or get more pets.</p>
+                </div>
+            `;
+            return;
+        }
+
+        // Render team selection
+        container.innerHTML = `
+            <div class="team-info">
+                <p class="team-instruction">
+                    <i class="fas fa-info-circle"></i>
+                    Select 3 pets for your team. Battles use your top 3 strongest pets.
+                </p>
+            </div>
+            <div class="team-grid">
+                ${alivePets.slice(0, 6).map((pet, index) => `
+                    <div class="team-pet-card ${index < 3 ? 'team-member' : ''}">
+                        <img src="${ASSETS_BASE}${pet.img_adult}" 
+                             alt="${pet.nickname || pet.species_name}"
+                             onerror="this.src='../assets/placeholder.png'">
+                        <div class="team-pet-info">
+                            <h4>${pet.nickname || pet.species_name}</h4>
+                            <div class="team-pet-stats">
+                                <span class="stat-label">Lv.${pet.level}</span>
+                                <span class="element-badge ${pet.element.toLowerCase()}">${pet.element}</span>
+                            </div>
+                            <div class="team-pet-combat">
+                                <span title="Attack"><i class="fas fa-sword"></i> ${pet.atk}</span>
+                                <span title="Defense"><i class="fas fa-shield"></i> ${pet.def}</span>
+                                <span title="HP"><i class="fas fa-heart"></i> ${pet.hp}</span>
+                            </div>
+                        </div>
+                        ${index < 3 ? '<div class="team-badge">Team</div>' : ''}
+                    </div>
+                `).join('')}
+            </div>
+            <div class="team-summary">
+                <p><strong>Team Power:</strong> ${alivePets.slice(0, 3).reduce((sum, p) => sum + (p.atk + p.def + p.hp), 0)}</p>
+            </div>
+        `;
+
+    } catch (error) {
+        console.error('Error loading team selection:', error);
+        container.innerHTML = '<div class="empty-message">Failed to load team selection</div>';
+    }
+}
+
 // Initialize arena module
 console.log('✓ Arena module loaded');
