@@ -1423,7 +1423,193 @@ body.pet-page {
 }
 
 /* ================================================
-   13. BOTTOM NAVIGATION
+   13. MODAL SYSTEM
+   ================================================ */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-md);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s var(--ease-out);
+}
+
+.modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background: linear-gradient(135deg, rgba(25, 25, 30, 0.98), rgba(18, 18, 22, 0.95));
+    border: 1px solid var(--border-gold);
+    border-radius: var(--radius-xl);
+    width: 100%;
+    max-width: 380px;
+    max-height: 85vh;
+    overflow: hidden;
+    transform: scale(0.9) translateY(20px);
+    transition: transform 0.3s var(--ease-bounce);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(218, 165, 32, 0.1);
+}
+
+.modal-overlay.show .modal-content {
+    transform: scale(1) translateY(0);
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-lg);
+    border-bottom: 1px solid var(--border-gold);
+}
+
+.modal-title {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0;
+}
+
+.modal-close {
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    color: #666;
+    font-size: 1.4rem;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-out);
+}
+
+.modal-close:hover {
+    background: rgba(231, 76, 60, 0.2);
+    border-color: #E74C3C;
+    color: #E74C3C;
+}
+
+.modal-body {
+    padding: var(--space-lg);
+    overflow-y: auto;
+    max-height: 50vh;
+}
+
+.modal-footer {
+    display: flex;
+    gap: var(--space-sm);
+    justify-content: flex-end;
+    padding: var(--space-lg);
+    border-top: 1px solid var(--border-subtle);
+}
+
+/* Modal Buttons */
+.btn-secondary {
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    color: #888;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-out);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--border-gold);
+    color: #fff;
+}
+
+.btn-primary {
+    padding: 12px 20px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    border: none;
+    border-radius: var(--radius-md);
+    color: #000;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-out);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(218, 165, 32, 0.4);
+}
+
+.btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Fodder Card for Evolution */
+.fodder-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.fodder-card:has(.fodder-checkbox:checked) {
+    border-color: #9B59B6;
+    background: rgba(155, 89, 182, 0.15);
+}
+
+.fodder-checkbox {
+    display: none;
+}
+
+.fodder-label {
+    cursor: pointer;
+    display: block;
+}
+
+.fodder-img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    margin-bottom: 4px;
+}
+
+.fodder-name {
+    font-size: 0.65rem;
+    color: #ccc;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.fodder-level {
+    font-size: 0.6rem;
+    color: var(--gold);
+}
+
+/* ================================================
+   14. BOTTOM NAVIGATION
    ================================================ */
 .bottom-nav {
     position: fixed;
