@@ -1657,6 +1657,8 @@ body.pet-page {
 .gacha-result {
     position: relative;
     overflow: hidden;
+    max-height: 500px;
+    height: auto !important;
 }
 
 /* Rarity Glow Background */
