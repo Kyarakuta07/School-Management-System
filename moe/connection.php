@@ -53,4 +53,4 @@ if (!$conn) {
     die("Connection failed. Please try again later.");
 }
 
-?>
+// NO CLOSING PHP TAG - Prevents accidental whitespace/newlines in JSON API responses

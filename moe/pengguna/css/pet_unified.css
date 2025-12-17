@@ -1,0 +1,6003 @@
+/* ================================================
+   MOE PET COMPANION - PREMIUM REDESIGN
+   Egyptian Gold Theme with Modern Glassmorphism
+   
+   Design Philosophy:
+   - Mobile-first responsive (360px-480px priority)
+   - Premium glassmorphism with depth
+   - Smooth micro-animations
+   - Touch-friendly 44px+ targets
+   - Consistent Egyptian gold accent color
+   ================================================ */
+
+/* ================================================
+   1. CSS VARIABLES - Design Tokens
+   ================================================ */
+:root {
+    /* Primary Colors */
+    --gold: #DAA520;
+    --gold-light: #F4D03F;
+    --gold-dark: #B8860B;
+    --gold-glow: rgba(218, 165, 32, 0.5);
+
+    /* Backgrounds */
+    --bg-primary: #050505;
+    --bg-card: rgba(12, 12, 12, 0.92);
+    --bg-glass: rgba(18, 18, 18, 0.85);
+    --bg-hover: rgba(255, 255, 255, 0.03);
+
+    /* Borders */
+    --border-subtle: rgba(255, 255, 255, 0.06);
+    --border-gold: rgba(218, 165, 32, 0.25);
+    --border-gold-strong: rgba(218, 165, 32, 0.5);
+
+    /* Elements */
+    --fire: #FF6B35;
+    --water: #4ECDC4;
+    --earth: #C4A77D;
+    --air: #A8DADC;
+    --dark: #6C5CE7;
+    --light: #FFD93D;
+
+    /* Rarity */
+    --common: #9E9E9E;
+    --rare: #3498DB;
+    --epic: #9B59B6;
+    --legendary: #FF9800;
+
+    /* Status */
+    --health: #E74C3C;
+    --hunger: #F39C12;
+    --mood: #2ECC71;
+    --exp: #3498DB;
+
+    /* Spacing */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 32px;
+
+    /* Radius */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --radius-full: 9999px;
+
+    /* Shadows */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.5);
+    --shadow-glow: 0 0 30px rgba(218, 165, 32, 0.15);
+
+    /* Transitions */
+    --ease-out: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    /* Layout */
+    --header-height: 70px;
+    --safe-bottom: env(safe-area-inset-bottom, 20px);
+}
+
+/* ================================================
+   2. BASE RESET & TYPOGRAPHY
+   ================================================ */
+.pet-page {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    background: var(--bg-primary);
+    font-family: 'Lato', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #E0E0E0;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Background layers */
+.pet-page .bg-fixed {
+    position: fixed;
+    inset: 0;
+    background: url('../../assets/landing/2.png') center/cover no-repeat;
+    opacity: 0.15;
+    z-index: -2;
+}
+
+.pet-page .bg-overlay {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.6) 0%, #000 100%);
+    z-index: -1;
+}
+
+/* ================================================
+   3. MAIN LAYOUT CONTAINER
+   ================================================ */
+.pet-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 0 var(--space-md);
+    position: relative;
+}
+
+/* ================================================
+   4. HEADER - Premium Glassmorphism
+   ================================================ */
+.pet-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-md) 0;
+    margin-bottom: var(--space-md);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: linear-gradient(to bottom, var(--bg-primary) 0%, transparent 100%);
+}
+
+.back-btn {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    background: var(--bg-glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-gold);
+    border-radius: var(--radius-md);
+    color: var(--gold);
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: all 0.3s var(--ease-out);
+}
+
+.back-btn:hover {
+    background: rgba(218, 165, 32, 0.15);
+    border-color: var(--gold);
+    transform: translateX(-4px);
+    box-shadow: var(--shadow-glow);
+}
+
+.header-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-shadow: 0 2px 20px rgba(218, 165, 32, 0.4);
+    margin: 0;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.gold-display {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: 10px 16px;
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.12), rgba(184, 134, 11, 0.06));
+    border: 1px solid var(--border-gold);
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--gold);
+    transition: all 0.3s var(--ease-out);
+}
+
+.gold-display:hover {
+    border-color: var(--gold);
+    box-shadow: var(--shadow-glow);
+}
+
+.gold-display i {
+    color: #FFD700;
+    font-size: 1rem;
+    animation: coinPulse 2s ease-in-out infinite;
+}
+
+@keyframes coinPulse {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.4));
+        transform: scale(1);
+    }
+
+    50% {
+        filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.8));
+        transform: scale(1.1);
+    }
+}
+
+.btn-help {
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    background: var(--bg-hover);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    color: #666;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-out);
+}
+
+.btn-help:hover {
+    background: rgba(218, 165, 32, 0.1);
+    border-color: var(--border-gold);
+    color: var(--gold);
+}
+
+/* ================================================
+   5. TAB NAVIGATION - Floating Pill Design
+   ================================================ */
+.pet-tabs {
+    display: flex;
+    justify-content: flex-start;
+    gap: 2px;
+    padding: var(--space-sm);
+    margin-bottom: var(--space-lg);
+    background: var(--bg-glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.pet-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.tab-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 10px 12px;
+    min-width: 52px;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-md);
+    color: #555;
+    font-family: inherit;
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-out);
+    position: relative;
+    flex-shrink: 0;
+}
+
+.tab-btn i {
+    font-size: 1.25rem;
+    transition: transform 0.3s var(--ease-out);
+}
+
+.tab-btn span {
+    opacity: 0.8;
+}
+
+.tab-btn:hover:not(.active) {
+    color: #888;
+    background: var(--bg-hover);
+}
+
+.tab-btn:hover:not(.active) i {
+    transform: translateY(-2px);
+}
+
+.tab-btn.active {
+    color: var(--gold);
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.18), rgba(218, 165, 32, 0.08));
+    box-shadow: inset 0 0 0 1px var(--border-gold);
+}
+
+.tab-btn.active i {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 8px rgba(218, 165, 32, 0.5));
+}
+
+.tab-btn.active span {
+    opacity: 1;
+}
+
+/* Fallback for swords icon */
+.tab-btn[data-tab="arena"] i::before {
+    content: "⚔️";
+    font-family: inherit;
+}
+
+/* ================================================
+   6. TAB CONTENT AREA
+   ================================================ */
+.pet-content {
+    flex: 1;
+    padding-bottom: calc(var(--space-xl) + var(--safe-bottom));
+}
+
+.tab-content {
+    display: none;
+    animation: slideIn 0.4s var(--ease-out);
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ================================================
+   7. PET STAGE - 3D Depth Display
+   ================================================ */
+.pet-stage {
+    position: relative;
+    height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--space-lg);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+
+    /* Enhanced visibility - darker inner bg + border */
+    background:
+        radial-gradient(ellipse 100% 60% at center bottom, rgba(218, 165, 32, 0.15) 0%, transparent 60%),
+        radial-gradient(circle at 50% 120%, rgba(218, 165, 32, 0.1) 0%, transparent 50%),
+        rgba(8, 8, 8, 0.85);
+    border: 1px solid rgba(218, 165, 32, 0.25);
+    box-shadow:
+        inset 0 0 60px rgba(0, 0, 0, 0.5),
+        0 4px 20px rgba(0, 0, 0, 0.4),
+        0 0 40px rgba(218, 165, 32, 0.08);
+}
+
+/* Animated spotlight effect */
+.pet-stage::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: 50%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(218, 165, 32, 0.15) 0%, transparent 70%);
+    transform: translateX(-50%);
+    animation: spotlight 8s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes spotlight {
+
+    0%,
+    100% {
+        transform: translateX(-50%) scale(1);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: translateX(-50%) scale(1.5);
+        opacity: 0.8;
+    }
+}
+
+/* Ground shadow */
+.pet-stage::after {
+    content: '';
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    width: 140px;
+    height: 25px;
+    background: radial-gradient(ellipse, rgba(0, 0, 0, 0.5) 0%, transparent 70%);
+    transform: translateX(-50%);
+    border-radius: 50%;
+    animation: shadowBreath 3s ease-in-out infinite;
+}
+
+@keyframes shadowBreath {
+
+    0%,
+    100% {
+        transform: translateX(-50%) scale(1);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: translateX(-50%) scale(0.8);
+        opacity: 0.7;
+    }
+}
+
+.pet-display {
+    position: relative;
+    z-index: 2;
+}
+
+.pet-image {
+    width: 160px;
+    height: 160px;
+    object-fit: contain;
+    animation: petFloat 4s ease-in-out infinite;
+    filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.6));
+}
+
+@keyframes petFloat {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(-1deg) scale(1);
+    }
+
+    25% {
+        transform: translateY(-15px) rotate(0.5deg) scale(1.02);
+    }
+
+    50% {
+        transform: translateY(-20px) rotate(1deg) scale(1.04);
+    }
+
+    75% {
+        transform: translateY(-12px) rotate(0deg) scale(1.01);
+    }
+}
+
+.pet-image.shiny {
+    animation: petFloat 4s ease-in-out infinite, petShine 2s ease-in-out infinite;
+}
+
+@keyframes petShine {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 20px rgba(255, 215, 0, 0.4));
+    }
+
+    50% {
+        filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 40px rgba(255, 215, 0, 0.8));
+    }
+}
+
+/* Breathing glow behind pet */
+.pet-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 220px;
+    height: 220px;
+    background: radial-gradient(circle, var(--gold-glow) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    animation: glowPulse 4s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 1;
+}
+
+@keyframes glowPulse {
+
+    0%,
+    100% {
+        opacity: 0.3;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    50% {
+        opacity: 0.6;
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+}
+
+/* Status indicator badge */
+.pet-status-indicator {
+    position: absolute;
+    top: var(--space-md);
+    right: var(--space-md);
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.pet-status-indicator.alive {
+    background: rgba(46, 204, 113, 0.15);
+    border: 1px solid var(--mood);
+    color: var(--mood);
+}
+
+.pet-status-indicator.dead {
+    background: rgba(231, 76, 60, 0.15);
+    border: 1px solid var(--health);
+    color: var(--health);
+}
+
+.pet-status-indicator.shelter {
+    background: rgba(52, 152, 219, 0.15);
+    border: 1px solid var(--exp);
+    color: var(--exp);
+}
+
+/* No pet placeholder */
+.no-pet-message {
+    text-align: center;
+    color: #666;
+    padding: var(--space-xl);
+}
+
+.no-pet-message i {
+    font-size: 4rem;
+    color: var(--gold);
+    margin-bottom: var(--space-md);
+    animation: eggWobble 2s ease-in-out infinite;
+    display: block;
+}
+
+@keyframes eggWobble {
+
+    0%,
+    100% {
+        transform: rotate(-5deg);
+    }
+
+    50% {
+        transform: rotate(5deg);
+    }
+}
+
+.no-pet-message p {
+    font-size: 1.1rem;
+    margin-bottom: var(--space-lg);
+}
+
+/* ================================================
+   8. PET INFO CARD - Premium Glass Card
+   ================================================ */
+.pet-info-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-gold);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-md);
+    box-shadow: var(--shadow-lg), var(--shadow-glow);
+    transition: all 0.3s var(--ease-out);
+}
+
+.pet-info-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-2px);
+}
+
+.pet-name-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: var(--space-sm);
+    flex-wrap: nowrap;
+    min-width: 0;
+    max-width: 100%;
+}
+
+.pet-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #FFF;
+    margin: 0;
+    text-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
+    /* Ellipsis for long names */
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: calc(100% - 100px);
+}
+
+.pet-level {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--gold);
+    padding: 6px 14px;
+    background: rgba(218, 165, 32, 0.12);
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border-gold);
+}
+
+/* Rename Button - Premium Pill Style */
+.btn-rename-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 24px;
+    padding: 0 8px;
+    margin-left: 8px;
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.15) 0%, rgba(184, 134, 11, 0.08) 100%);
+    border: 1px solid rgba(218, 165, 32, 0.4);
+    border-radius: 12px;
+    color: var(--gold);
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: all 0.25s var(--ease-out);
+    flex-shrink: 0;
+}
+
+.btn-rename-icon:hover {
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.3) 0%, rgba(255, 215, 0, 0.2) 100%);
+    border-color: var(--gold);
+    color: var(--gold-light);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 12px rgba(218, 165, 32, 0.3);
+}
+
+.btn-rename-icon:focus {
+    outline: none;
+}
+
+.btn-rename-icon:active {
+    transform: translateY(0);
+}
+
+.pet-element {
+    display: flex;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+}
+
+.element-badge,
+.rarity-badge {
+    padding: 5px 14px;
+    border-radius: var(--radius-full);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Element colors */
+.element-badge.fire {
+    background: rgba(255, 107, 53, 0.15);
+    color: var(--fire);
+    border: 1px solid var(--fire);
+}
+
+.element-badge.water {
+    background: rgba(78, 205, 196, 0.15);
+    color: var(--water);
+    border: 1px solid var(--water);
+}
+
+.element-badge.earth {
+    background: rgba(196, 167, 125, 0.15);
+    color: var(--earth);
+    border: 1px solid var(--earth);
+}
+
+.element-badge.air {
+    background: rgba(168, 218, 220, 0.15);
+    color: var(--air);
+    border: 1px solid var(--air);
+}
+
+.element-badge.dark {
+    background: rgba(108, 92, 231, 0.15);
+    color: var(--dark);
+    border: 1px solid var(--dark);
+}
+
+.element-badge.light {
+    background: rgba(255, 217, 61, 0.15);
+    color: var(--light);
+    border: 1px solid var(--light);
+}
+
+/* Rarity colors */
+.rarity-badge.common {
+    background: rgba(158, 158, 158, 0.15);
+    color: var(--common);
+    border: 1px solid var(--common);
+}
+
+.rarity-badge.rare {
+    background: rgba(52, 152, 219, 0.15);
+    color: var(--rare);
+    border: 1px solid var(--rare);
+}
+
+.rarity-badge.epic {
+    background: rgba(155, 89, 182, 0.15);
+    color: var(--epic);
+    border: 1px solid var(--epic);
+}
+
+.rarity-badge.legendary {
+    background: linear-gradient(135deg, rgba(255, 152, 0, 0.15), rgba(255, 193, 7, 0.15));
+    color: var(--legendary);
+    border: 1px solid var(--legendary);
+    animation: legendaryGlow 2s ease-in-out infinite;
+}
+
+@keyframes legendaryGlow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 8px rgba(255, 152, 0, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 20px rgba(255, 152, 0, 0.6);
+    }
+}
+
+/* ================================================
+   9. STATUS BARS - Animated Progress
+   ================================================ */
+.status-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: var(--space-md);
+}
+
+.status-bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.status-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 85px;
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.status-label i {
+    width: 18px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.status-label i.fa-heart {
+    color: var(--health);
+}
+
+.status-label i.fa-drumstick-bite {
+    color: var(--hunger);
+}
+
+.status-label i.fa-smile {
+    color: var(--mood);
+}
+
+.bar-container {
+    flex: 1;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    position: relative;
+}
+
+.bar-fill {
+    height: 100%;
+    border-radius: var(--radius-full);
+    transition: width 0.6s var(--ease-out);
+    position: relative;
+    overflow: hidden;
+}
+
+.bar-fill.health {
+    background: linear-gradient(90deg, #C0392B, var(--health));
+}
+
+.bar-fill.hunger {
+    background: linear-gradient(90deg, #D35400, var(--hunger));
+}
+
+.bar-fill.mood {
+    background: linear-gradient(90deg, #27AE60, var(--mood));
+}
+
+/* Animated shine */
+.bar-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    animation: barShine 3s ease-in-out infinite;
+}
+
+@keyframes barShine {
+    0% {
+        left: -100%;
+    }
+
+    50%,
+    100% {
+        left: 200%;
+    }
+}
+
+.status-value {
+    min-width: 35px;
+    text-align: right;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #AAA;
+}
+
+/* EXP Bar */
+.exp-container {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--border-subtle);
+}
+
+.exp-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--exp);
+    min-width: 35px;
+}
+
+.exp-bar-container {
+    flex: 1;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.exp-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #2980B9, var(--exp));
+    border-radius: var(--radius-full);
+    transition: width 0.6s var(--ease-out);
+}
+
+.exp-text {
+    font-size: 0.75rem;
+    color: #888;
+    min-width: 75px;
+    text-align: right;
+}
+
+/* ================================================
+   10. ACTION BUTTONS - Color-Coded Grid
+   ================================================ */
+.action-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-sm);
+}
+
+.action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: var(--space-md) var(--space-sm);
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-out);
+    min-height: 80px;
+    position: relative;
+    overflow: hidden;
+}
+
+.action-btn i {
+    font-size: 1.5rem;
+    transition: transform 0.3s var(--ease-out);
+}
+
+/* Button variants */
+.action-btn.feed {
+    background: linear-gradient(135deg, rgba(243, 156, 18, 0.15), rgba(241, 196, 15, 0.08));
+    border-color: rgba(243, 156, 18, 0.3);
+    color: #F1C40F;
+}
+
+.action-btn.play {
+    background: linear-gradient(135deg, rgba(46, 204, 113, 0.15), rgba(39, 174, 96, 0.08));
+    border-color: rgba(46, 204, 113, 0.3);
+    color: #2ECC71;
+}
+
+.action-btn.heal {
+    background: linear-gradient(135deg, rgba(231, 76, 60, 0.15), rgba(192, 57, 43, 0.08));
+    border-color: rgba(231, 76, 60, 0.3);
+    color: #E74C3C;
+}
+
+.action-btn.shelter {
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.15), rgba(41, 128, 185, 0.08));
+    border-color: rgba(52, 152, 219, 0.3);
+    color: #3498DB;
+}
+
+.action-btn.primary {
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.2), rgba(184, 134, 11, 0.1));
+    border-color: var(--gold);
+    color: var(--gold);
+}
+
+.action-btn:hover {
+    transform: translateY(-4px);
+    border-color: currentColor;
+}
+
+.action-btn:hover i {
+    transform: scale(1.2);
+}
+
+.action-btn.feed:hover {
+    box-shadow: 0 8px 25px rgba(243, 156, 18, 0.25);
+}
+
+.action-btn.play:hover {
+    box-shadow: 0 8px 25px rgba(46, 204, 113, 0.25);
+}
+
+.action-btn.heal:hover {
+    box-shadow: 0 8px 25px rgba(231, 76, 60, 0.25);
+}
+
+.action-btn.shelter:hover {
+    box-shadow: 0 8px 25px rgba(52, 152, 219, 0.25);
+}
+
+.action-btn.primary:hover {
+    box-shadow: 0 8px 25px rgba(218, 165, 32, 0.3);
+}
+
+.action-btn:active {
+    transform: translateY(-1px);
+}
+
+/* ================================================
+   11. COLLECTION GRID
+   ================================================ */
+.collection-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+}
+
+.pet-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: var(--space-md);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-out);
+    position: relative;
+    overflow: hidden;
+}
+
+.pet-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-glow);
+}
+
+.pet-card.active {
+    border-color: var(--gold);
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.1), transparent);
+}
+
+.pet-card.active::before {
+    content: '★';
+    position: absolute;
+    top: var(--space-sm);
+    right: var(--space-sm);
+    color: var(--gold);
+    font-size: 1.2rem;
+    animation: starPulse 1s ease-in-out infinite;
+}
+
+@keyframes starPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+}
+
+.pet-card-img {
+    width: 90px;
+    height: 90px;
+    object-fit: contain;
+    margin-bottom: var(--space-sm);
+    animation: cardFloat 4s ease-in-out infinite;
+}
+
+@keyframes cardFloat {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-6px);
+    }
+}
+
+/* Collection Header with Pet Count */
+.collection-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-lg);
+    padding: var(--space-md);
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-md);
+}
+
+.collection-header h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.2rem;
+    color: var(--gold);
+    margin: 0;
+}
+
+.pet-count-badge {
+    padding: 6px 16px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: #000;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.pet-card-name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.95rem;
+    color: #FFF;
+    margin: 0 0 4px 0;
+}
+
+.pet-card-level {
+    font-size: 0.75rem;
+    color: var(--gold);
+}
+
+.pet-card .rarity-badge {
+    position: absolute;
+    top: var(--space-sm);
+    left: var(--space-sm);
+    font-size: 0.6rem;
+    padding: 3px 8px;
+}
+
+.pet-card.dead {
+    opacity: 0.5;
+    filter: grayscale(60%);
+}
+
+.pet-card.dead::after {
+    content: '💀';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.5rem;
+}
+
+/* Pet Card Action Buttons (Sell, Evolve, Retrieve) */
+.pet-action-row {
+    display: flex;
+    gap: 6px;
+    margin-top: var(--space-sm);
+    justify-content: center;
+}
+
+.pet-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 32px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.25s var(--ease-out);
+}
+
+.pet-action-btn.btn-sell {
+    background: linear-gradient(135deg, rgba(243, 156, 18, 0.2) 0%, rgba(230, 126, 34, 0.1) 100%);
+    border: 1px solid rgba(243, 156, 18, 0.4);
+    color: #F39C12;
+}
+
+.pet-action-btn.btn-sell:hover {
+    background: linear-gradient(135deg, #F39C12, #E67E22);
+    color: #000;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(243, 156, 18, 0.4);
+}
+
+.pet-action-btn.btn-evolve {
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.2) 0%, rgba(184, 134, 11, 0.1) 100%);
+    border: 1px solid var(--border-gold);
+    color: var(--gold);
+}
+
+.pet-action-btn.btn-evolve:hover {
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: #000;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(218, 165, 32, 0.5);
+}
+
+.pet-action-btn.btn-retrieve {
+    width: 100%;
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.2) 0%, rgba(41, 128, 185, 0.1) 100%);
+    border: 1px solid rgba(52, 152, 219, 0.4);
+    color: #3498DB;
+    padding: 8px 12px;
+    gap: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.pet-action-btn.btn-retrieve:hover {
+    background: linear-gradient(135deg, #3498DB, #2980B9);
+    color: #FFF;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+}
+
+/* ================================================
+   12. GACHA SECTION
+   ================================================ */
+.gacha-stage {
+    height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--space-lg);
+    position: relative;
+}
+
+.gacha-egg-container {
+    position: relative;
+}
+
+.gacha-egg {
+    width: 130px;
+    height: 150px;
+    object-fit: contain;
+    animation: eggIdle 2.5s ease-in-out infinite;
+    filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.6));
+    cursor: pointer;
+    transition: transform 0.3s var(--ease-out);
+}
+
+.gacha-egg:hover {
+    transform: scale(1.08);
+}
+
+@keyframes eggIdle {
+
+    0%,
+    100% {
+        transform: rotate(-3deg);
+    }
+
+    50% {
+        transform: rotate(3deg);
+    }
+}
+
+.gacha-egg.hatching {
+    animation: eggHatch 0.6s var(--ease-bounce);
+}
+
+@keyframes eggHatch {
+
+    0%,
+    100% {
+        transform: rotate(0) scale(1);
+    }
+
+    25% {
+        transform: rotate(-12deg) scale(1.1);
+    }
+
+    50% {
+        transform: rotate(12deg) scale(1.2);
+    }
+
+    75% {
+        transform: rotate(-6deg) scale(1.1);
+    }
+}
+
+.gacha-glow {
+    position: absolute;
+    inset: -30px;
+    background: radial-gradient(circle, rgba(218, 165, 32, 0.25) 0%, transparent 70%);
+    animation: glowPulse 3s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.gacha-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+}
+
+.gacha-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: var(--space-md) var(--space-sm);
+    text-align: center;
+    transition: all 0.3s var(--ease-out);
+}
+
+.gacha-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-3px);
+}
+
+.gacha-icon {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    margin: 0 auto var(--space-sm);
+    font-size: 1.6rem;
+    color: #FFF;
+}
+
+.gacha-icon.bronze {
+    background: linear-gradient(135deg, #CD7F32, #8B4513);
+}
+
+.gacha-icon.silver {
+    background: linear-gradient(135deg, #C0C0C0, #808080);
+}
+
+.gacha-icon.gold {
+    background: linear-gradient(135deg, #FFD700, #DAA520);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+}
+
+.gacha-card h3 {
+    font-size: 0.85rem;
+    color: #FFF;
+    margin: 0 0 4px 0;
+}
+
+.gacha-card p {
+    font-size: 0.65rem;
+    color: #777;
+    margin: 0 0 var(--space-sm) 0;
+}
+
+.gacha-price {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: var(--space-sm);
+}
+
+.gacha-btn {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    border: none;
+    border-radius: var(--radius-sm);
+    color: #000;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-out);
+}
+
+.gacha-btn:hover {
+    transform: scale(1.03);
+    box-shadow: 0 5px 20px rgba(218, 165, 32, 0.4);
+}
+
+.gacha-btn:active {
+    transform: scale(0.98);
+}
+
+/* ================================================
+   12.5. GACHA RATES DISPLAY
+   ================================================ */
+.gacha-rates {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: var(--space-md);
+    margin-top: var(--space-lg);
+}
+
+.gacha-rates h4 {
+    font-family: 'Cinzel', serif;
+    font-size: 0.95rem;
+    color: var(--gold);
+    margin: 0 0 var(--space-md) 0;
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.rate-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+}
+
+.rate-row:not(:last-child) {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.rate-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: var(--radius-full);
+}
+
+.rate-label.common {
+    background: rgba(158, 158, 158, 0.15);
+    color: var(--common);
+}
+
+.rate-label.rare {
+    background: rgba(52, 152, 219, 0.15);
+    color: var(--rare);
+}
+
+.rate-label.epic {
+    background: rgba(155, 89, 182, 0.15);
+    color: var(--epic);
+}
+
+.rate-label.legendary {
+    background: rgba(255, 152, 0, 0.15);
+    color: var(--legendary);
+}
+
+.rate-value {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #AAA;
+}
+
+/* ================================================
+   13. SHOP SECTION
+   ================================================ */
+
+/* Shop Category Tabs */
+.shop-tabs {
+    display: flex;
+    gap: var(--space-xs);
+    padding: var(--space-sm);
+    margin-bottom: var(--space-md);
+    background: var(--bg-glass);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+}
+
+.shop-tab {
+    flex: 1;
+    padding: 10px 16px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    color: #666;
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-out);
+}
+
+.shop-tab:hover:not(.active) {
+    background: var(--bg-hover);
+    color: #AAA;
+}
+
+.shop-tab.active {
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.2), rgba(218, 165, 32, 0.1));
+    border-color: var(--border-gold);
+    color: var(--gold);
+}
+
+/* Shop Grid */
+.shop-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+    margin-bottom: var(--space-xl);
+}
+
+.shop-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: var(--space-md);
+    text-align: center;
+    transition: all 0.3s var(--ease-out);
+}
+
+.shop-item:hover {
+    border-color: var(--border-gold);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-glow);
+}
+
+.shop-item-img {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    margin: 0 auto var(--space-sm);
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.shop-item-img i {
+    font-size: 2rem;
+    color: var(--gold);
+}
+
+.shop-item-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #FFF;
+    margin-bottom: 4px;
+}
+
+.shop-item-desc {
+    font-size: 0.75rem;
+    color: #888;
+    margin-bottom: var(--space-sm);
+    line-height: 1.4;
+}
+
+.shop-item-price {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: var(--space-sm);
+}
+
+.shop-item-price i {
+    color: #FFD700;
+}
+
+.shop-buy-btn {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    border: none;
+    border-radius: var(--radius-sm);
+    color: #000;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-out);
+}
+
+.shop-buy-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 5px 15px rgba(218, 165, 32, 0.4);
+}
+
+.shop-buy-btn:active {
+    transform: scale(0.98);
+}
+
+/* Inventory Section */
+.inventory-section {
+    margin-top: var(--space-xl);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--border-subtle);
+}
+
+.section-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    color: var(--gold);
+    margin: 0 0 var(--space-md) 0;
+}
+
+.inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-sm);
+}
+
+.inventory-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-sm);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-out);
+    position: relative;
+}
+
+.inventory-item:hover {
+    border-color: var(--border-gold);
+    transform: translateY(-2px);
+}
+
+.inventory-item-img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    margin-bottom: 4px;
+}
+
+.inventory-item-count {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    background: var(--gold);
+    color: #000;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: var(--radius-full);
+}
+
+.empty-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #666;
+    font-size: 0.9rem;
+    padding: var(--space-lg);
+}
+
+/* Loading Spinner */
+.loading-spinner {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-md);
+    padding: var(--space-xl);
+    color: var(--gold);
+}
+
+.loading-spinner i {
+    font-size: 2rem;
+}
+
+.loading-spinner p {
+    color: #888;
+    margin: 0;
+}
+
+/* ================================================
+   14. ARENA SECTION
+   ================================================ */
+
+/* Arena Header */
+.arena-header {
+    text-align: center;
+    margin-bottom: var(--space-lg);
+    padding: var(--space-lg);
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.08), transparent);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border-gold);
+}
+
+.arena-header h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.8rem;
+    color: var(--gold);
+    margin: 0 0 var(--space-sm) 0;
+    text-shadow: 0 2px 20px rgba(218, 165, 32, 0.5);
+}
+
+.arena-header p {
+    color: #888;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+/* Arena Tabs */
+.arena-tabs {
+    display: flex;
+    gap: var(--space-xs);
+    padding: var(--space-sm);
+    margin-bottom: var(--space-lg);
+    background: var(--bg-glass);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+}
+
+.arena-tab {
+    flex: 1;
+    padding: 12px 16px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    color: #666;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-out);
+}
+
+.arena-tab:hover:not(.active) {
+    background: var(--bg-hover);
+    color: #AAA;
+}
+
+.arena-tab.active {
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.2), rgba(218, 165, 32, 0.1));
+    border-color: var(--border-gold);
+    color: var(--gold);
+}
+
+/* Arena Content */
+.arena-content {
+    min-height: 200px;
+}
+
+/* Opponent Cards */
+.opponent-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: var(--space-md);
+}
+
+.opponent-card {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: var(--space-md);
+    transition: all 0.3s var(--ease-out);
+}
+
+.opponent-card:hover {
+    border-color: var(--border-gold);
+    transform: translateX(4px);
+    box-shadow: var(--shadow-glow);
+}
+
+/* Alias for JS-rendered class */
+.opponent-img,
+.opponent-pet-img {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px;
+    flex-shrink: 0;
+    border: 1px solid var(--border-subtle);
+}
+
+.opponent-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.opponent-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin: 0 0 4px 0;
+}
+
+.opponent-owner {
+    font-size: 0.8rem;
+    color: #888;
+    margin: 0 0 8px 0;
+}
+
+.opponent-stats {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.opponent-pet-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    color: var(--gold);
+    margin-bottom: 4px;
+}
+
+.opponent-level {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+/* Battle button - alias for JS */
+.battle-btn,
+.opponent-battle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    border: none;
+    border-radius: var(--radius-sm);
+    color: #000;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-out);
+    flex-shrink: 0;
+}
+
+.battle-btn:hover,
+.opponent-battle-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 20px rgba(218, 165, 32, 0.4);
+}
+
+.battle-btn i {
+    font-size: 1rem;
+}
+
+/* Battle History */
+.battle-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.battle-history-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+}
+
+.battle-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.battle-date {
+    font-size: 0.75rem;
+    color: #666;
+}
+
+.battle-participants {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    font-weight: 600;
+    color: #DDD;
+}
+
+.battle-vs {
+    color: var(--gold);
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 4px 10px;
+    background: rgba(218, 165, 32, 0.1);
+    border-radius: var(--radius-sm);
+}
+
+.battle-history-item.win {
+    border-left: 3px solid var(--mood);
+}
+
+.battle-history-item.lose {
+    border-left: 3px solid var(--health);
+}
+
+.battle-result {
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: var(--radius-full);
+}
+
+.battle-result.win {
+    background: rgba(46, 204, 113, 0.15);
+    color: var(--mood);
+}
+
+.battle-result.lose {
+    background: rgba(231, 76, 60, 0.15);
+    color: var(--health);
+}
+
+/* No Opponents Message */
+.arena-empty {
+    text-align: center;
+    padding: var(--space-xl);
+    color: #666;
+}
+
+.arena-empty i {
+    font-size: 3rem;
+    color: var(--gold);
+    margin-bottom: var(--space-md);
+    opacity: 0.5;
+}
+
+.arena-empty p {
+    margin: 0;
+}
+
+/* ================================================
+   15. MODALS - Premium Overlay Design
+   ================================================ */
+.modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    z-index: 1000;
+}
+
+.modal.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+}
+
+.modal-content {
+    position: relative;
+    width: 90%;
+    max-width: 400px;
+    max-height: 85vh;
+    background: var(--bg-card);
+    border: 1px solid var(--border-gold);
+    border-radius: var(--radius-xl);
+    padding: var(--space-xl);
+    box-shadow: var(--shadow-lg), 0 0 60px rgba(218, 165, 32, 0.15);
+    overflow-y: auto;
+    animation: modalIn 0.3s var(--ease-out);
+}
+
+@keyframes modalIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: var(--space-md);
+    right: var(--space-md);
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    background: var(--bg-hover);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    color: #888;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s var(--ease-out);
+}
+
+.modal-close-btn:hover {
+    background: rgba(231, 76, 60, 0.15);
+    border-color: var(--health);
+    color: var(--health);
+}
+
+.modal-actions {
+    display: flex;
+    gap: var(--space-sm);
+    margin-top: var(--space-lg);
+}
+
+.modal-cancel-btn,
+.modal-confirm-btn {
+    flex: 1;
+    padding: 14px;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s var(--ease-out);
+}
+
+.modal-cancel-btn {
+    background: transparent;
+    border: 1px solid var(--border-subtle);
+    color: #888;
+}
+
+.modal-cancel-btn:hover {
+    border-color: var(--health);
+    color: var(--health);
+}
+
+.modal-confirm-btn {
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    border: none;
+    color: #000;
+}
+
+.modal-confirm-btn:hover {
+    box-shadow: 0 5px 20px rgba(218, 165, 32, 0.3);
+}
+
+.modal-confirm-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* ================================================
+   EVOLUTION SELECTOR MODAL - Premium Design
+   ================================================ */
+.evolution-selector {
+    max-width: 520px;
+    text-align: center;
+}
+
+.evolution-selector h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.5rem;
+    color: var(--gold);
+    margin: 0 0 var(--space-lg) 0;
+    text-shadow: 0 2px 20px rgba(218, 165, 32, 0.4);
+}
+
+.evolution-info {
+    background: rgba(218, 165, 32, 0.08);
+    border: 1px solid var(--border-gold);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    margin-bottom: var(--space-md);
+    text-align: left;
+}
+
+.evolution-info p {
+    color: var(--gold);
+    font-weight: 600;
+    margin: 0 0 var(--space-sm) 0;
+}
+
+.evolution-info ul {
+    margin: 0;
+    padding-left: var(--space-lg);
+    color: #AAA;
+}
+
+.evolution-info li {
+    margin: 6px 0;
+    font-size: 0.9rem;
+}
+
+.evolution-info .fa-coins {
+    color: #FFD700;
+}
+
+.evolution-warning {
+    background: rgba(231, 76, 60, 0.12);
+    border: 1px solid rgba(231, 76, 60, 0.4);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    margin-bottom: var(--space-lg);
+    color: var(--health);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.fodder-selection-title h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    color: #FFF;
+    margin: 0 0 var(--space-md) 0;
+}
+
+#evo-selected-count {
+    color: var(--gold);
+}
+
+.fodder-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: var(--space-sm);
+    max-height: 250px;
+    overflow-y: auto;
+    padding: var(--space-sm);
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-md);
+}
+
+.fodder-grid::-webkit-scrollbar {
+    width: 6px;
+}
+
+.fodder-grid::-webkit-scrollbar-thumb {
+    background: var(--border-gold);
+    border-radius: 3px;
+}
+
+.fodder-card {
+    position: relative;
+}
+
+.fodder-checkbox {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    z-index: 10;
+    accent-color: var(--gold);
+}
+
+.fodder-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-sm);
+    background: var(--bg-glass);
+    border: 2px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s var(--ease-out);
+}
+
+.fodder-card input:checked+.fodder-label {
+    border-color: var(--gold);
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.15), transparent);
+    box-shadow: 0 0 20px rgba(218, 165, 32, 0.2);
+}
+
+.fodder-label:hover {
+    border-color: rgba(218, 165, 32, 0.5);
+    transform: translateY(-2px);
+}
+
+.fodder-img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
+
+.fodder-info {
+    text-align: center;
+}
+
+.fodder-name {
+    font-size: 0.75rem;
+    color: #FFF;
+    font-weight: 600;
+    display: block;
+}
+
+.fodder-level {
+    font-size: 0.65rem;
+    color: var(--gold);
+}
+
+/* Evolution Confirm Dialog */
+.evo-confirm-dialog {
+    max-width: 380px;
+    text-align: center;
+}
+
+.evo-confirm-dialog h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.3rem;
+    color: var(--experience);
+    margin: 0 0 var(--space-lg) 0;
+}
+
+.evo-confirm-message {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    margin-bottom: var(--space-lg);
+}
+
+.evo-confirm-message p {
+    color: #CCC;
+    font-size: 0.95rem;
+    margin: 0 0 var(--space-sm) 0;
+    line-height: 1.5;
+}
+
+.evo-confirm-message .fa-coins {
+    color: #FFD700;
+}
+
+.evo-confirm-warning {
+    color: var(--health) !important;
+    font-weight: 600;
+    margin-top: var(--space-sm) !important;
+}
+
+.evo-proceed-btn {
+    background: linear-gradient(135deg, #9B59B6, #8E44AD) !important;
+}
+
+.evo-proceed-btn:hover {
+    box-shadow: 0 5px 20px rgba(155, 89, 182, 0.4) !important;
+}
+
+/* ================================================
+   GACHA RESULT MODAL - Premium Celebration Design
+   ================================================ */
+#gacha-modal .modal-backdrop {
+    background: rgba(0, 0, 0, 0.85);
+}
+
+.gacha-result {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 340px;
+    width: 90%;
+    text-align: center;
+    padding: 0;
+    overflow: visible;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+/* Animated Card Container */
+.gacha-result::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    padding: 2px;
+    background: linear-gradient(135deg, var(--gold) 0%, rgba(218, 165, 32, 0.3) 50%, var(--gold) 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: borderRotate 4s linear infinite;
+    z-index: 0;
+}
+
+@keyframes borderRotate {
+    0% {
+        filter: hue-rotate(0deg);
+    }
+
+    100% {
+        filter: hue-rotate(360deg);
+    }
+}
+
+/* Inner Card */
+.gacha-result>* {
+    position: relative;
+    z-index: 1;
+}
+
+.result-glow {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.8;
+    animation: glowPulse 2s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Rarity-based glow colors - More vibrant */
+.gacha-result.rarity-common .result-glow {
+    background: radial-gradient(circle, rgba(180, 180, 180, 0.6) 0%, transparent 70%);
+}
+
+.gacha-result.rarity-rare .result-glow {
+    background: radial-gradient(circle, rgba(52, 152, 219, 0.8) 0%, rgba(41, 128, 185, 0.4) 50%, transparent 70%);
+}
+
+.gacha-result.rarity-epic .result-glow {
+    background: radial-gradient(circle, rgba(155, 89, 182, 0.9) 0%, rgba(142, 68, 173, 0.5) 50%, transparent 70%);
+}
+
+.gacha-result.rarity-legendary .result-glow {
+    background: radial-gradient(circle, rgba(255, 215, 0, 1) 0%, rgba(255, 165, 0, 0.6) 40%, transparent 70%);
+    animation: legendaryGlow 1.5s ease-in-out infinite;
+}
+
+@keyframes legendaryGlow {
+
+    0%,
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.8;
+        filter: blur(60px);
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(1.3);
+        opacity: 1;
+        filter: blur(80px);
+    }
+}
+
+@keyframes glowPulse {
+
+    0%,
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.6;
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(1.1);
+        opacity: 0.9;
+    }
+}
+
+/* Pet Display Area */
+.result-pet {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    padding: 30px 20px 15px;
+    background: linear-gradient(180deg, rgba(15, 15, 20, 0.95) 0%, rgba(25, 25, 35, 0.98) 100%);
+    border-radius: 20px 20px 0 0;
+    margin-bottom: 0;
+}
+
+.result-pet::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+}
+
+.result-pet img {
+    width: 160px;
+    height: 160px;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.8));
+    animation: petReveal 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes petReveal {
+    0% {
+        transform: scale(0) rotate(-15deg);
+        opacity: 0;
+        filter: drop-shadow(0 0 0 transparent) brightness(2);
+    }
+
+    60% {
+        transform: scale(1.15) rotate(5deg);
+        filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.8)) brightness(1.3);
+    }
+
+    80% {
+        transform: scale(0.95) rotate(-2deg);
+    }
+
+    100% {
+        transform: scale(1) rotate(0);
+        opacity: 1;
+        filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.8)) brightness(1);
+    }
+}
+
+/* Info Section */
+.result-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 20px;
+    background: linear-gradient(180deg, rgba(25, 25, 35, 0.98) 0%, rgba(20, 20, 28, 0.99) 100%);
+    border-radius: 0 0 20px 20px;
+    animation: slideUp 0.5s ease-out 0.4s both;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.result-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    animation: titleReveal 0.6s ease-out 0.3s both;
+}
+
+@keyframes titleReveal {
+    0% {
+        opacity: 0;
+        transform: scale(0.5);
+        letter-spacing: 10px;
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+        letter-spacing: 2px;
+    }
+}
+
+.gacha-result.rarity-common .result-title {
+    color: #B8B8B8;
+}
+
+.gacha-result.rarity-rare .result-title {
+    color: #5DADE2;
+    text-shadow: 0 0 20px rgba(93, 173, 226, 0.5);
+}
+
+.gacha-result.rarity-epic .result-title {
+    color: #BB8FCE;
+    text-shadow: 0 0 25px rgba(187, 143, 206, 0.6);
+}
+
+.gacha-result.rarity-legendary .result-title {
+    background: linear-gradient(135deg, #FFD700, #FFA500, #FFD700);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
+    filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+    animation: titleReveal 0.6s ease-out 0.3s both, legendaryShine 2s linear infinite;
+}
+
+@keyframes legendaryShine {
+    0% {
+        filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5)) brightness(1);
+    }
+
+    50% {
+        filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8)) brightness(1.2);
+    }
+
+    100% {
+        filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5)) brightness(1);
+    }
+}
+
+.result-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1.5rem;
+    color: #FFF;
+    font-weight: 700;
+    margin-top: 5px;
+}
+
+.result-rarity {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 24px;
+    border-radius: 25px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 5px;
+}
+
+.gacha-result.rarity-common .result-rarity {
+    background: linear-gradient(135deg, rgba(150, 150, 150, 0.3), rgba(120, 120, 120, 0.2));
+    border: 2px solid rgba(180, 180, 180, 0.5);
+    color: #CCC;
+}
+
+.gacha-result.rarity-rare .result-rarity {
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.3), rgba(41, 128, 185, 0.2));
+    border: 2px solid rgba(93, 173, 226, 0.6);
+    color: #5DADE2;
+    box-shadow: 0 0 15px rgba(52, 152, 219, 0.3);
+}
+
+.gacha-result.rarity-epic .result-rarity {
+    background: linear-gradient(135deg, rgba(155, 89, 182, 0.3), rgba(142, 68, 173, 0.2));
+    border: 2px solid rgba(187, 143, 206, 0.6);
+    color: #BB8FCE;
+    box-shadow: 0 0 15px rgba(155, 89, 182, 0.3);
+}
+
+.gacha-result.rarity-legendary .result-rarity {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.4), rgba(255, 165, 0, 0.3));
+    border: 2px solid rgba(255, 215, 0, 0.8);
+    color: #FFD700;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+    animation: legendaryBadgePulse 1.5s ease-in-out infinite;
+}
+
+@keyframes legendaryBadgePulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+        transform: scale(1);
+    }
+
+    50% {
+        box-shadow: 0 0 30px rgba(255, 215, 0, 0.7);
+        transform: scale(1.03);
+    }
+}
+
+.result-shiny {
+    font-size: 1.2rem;
+    color: #FFD700;
+    margin: 8px 0 0 0;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+    animation: shinySparkle 0.8s ease-in-out infinite;
+}
+
+@keyframes shinySparkle {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.7;
+        transform: scale(1.05);
+    }
+}
+
+/* Awesome Button */
+.gacha-result .modal-close-btn {
+    position: static;
+    order: 10;
+    width: calc(100% - 40px);
+    padding: 16px 24px;
+    margin: 0 20px 20px 20px;
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FFD700 100%);
+    background-size: 200% 200%;
+    border: none;
+    border-radius: 12px;
+    color: #1a1a1a;
+    font-weight: 800;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    animation: buttonSlide 0.5s ease-out 0.6s both, shimmer 3s ease-in-out infinite;
+    box-shadow: 0 4px 15px rgba(255, 165, 0, 0.4);
+}
+
+@keyframes buttonSlide {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 200% center;
+    }
+
+    100% {
+        background-position: -200% center;
+    }
+}
+
+.gacha-result .modal-close-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(255, 165, 0, 0.5);
+}
+
+.gacha-result .modal-close-btn:active {
+    transform: translateY(0) scale(0.98);
+}
+
+/* ================================================
+   SHOP PURCHASE MODAL - Quantity Selector
+   ================================================ */
+.shop-purchase-dialog {
+    max-width: 380px;
+    text-align: center;
+}
+
+.shop-purchase-dialog h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    color: var(--gold);
+    margin: 0 0 var(--space-lg) 0;
+}
+
+.shop-modal-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    background: rgba(218, 165, 32, 0.08);
+    border: 1px solid rgba(218, 165, 32, 0.3);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-lg);
+}
+
+.shop-modal-img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    border-radius: var(--radius-sm);
+    background: rgba(0, 0, 0, 0.3);
+    padding: 8px;
+}
+
+.shop-modal-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    flex: 1;
+    text-align: left;
+}
+
+.shop-modal-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    color: #FFF;
+    font-weight: 600;
+}
+
+.shop-modal-desc {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.3;
+}
+
+.shop-qty-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: var(--space-lg);
+}
+
+.shop-qty-controls .qty-btn {
+    width: 44px;
+    height: 44px;
+    border: 1px solid rgba(218, 165, 32, 0.4);
+    background: rgba(218, 165, 32, 0.1);
+    color: var(--gold);
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.shop-qty-controls .qty-btn:hover {
+    background: rgba(218, 165, 32, 0.25);
+    border-color: var(--gold);
+}
+
+.shop-qty-controls .qty-btn:active {
+    transform: scale(0.95);
+}
+
+.shop-qty-controls .qty-input {
+    width: 70px;
+    height: 44px;
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #FFF;
+    background: rgba(0, 0, 0, 0.4);
+    border: 2px solid rgba(218, 165, 32, 0.5);
+    border-radius: var(--radius-sm);
+    outline: none;
+    -moz-appearance: textfield;
+}
+
+.shop-qty-controls .qty-input::-webkit-outer-spin-button,
+.shop-qty-controls .qty-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.shop-qty-controls .qty-input:focus {
+    border-color: var(--gold);
+}
+
+.shop-price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px var(--space-md);
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+}
+
+.shop-price-row.total {
+    background: rgba(218, 165, 32, 0.15);
+    border: 1px solid rgba(218, 165, 32, 0.4);
+}
+
+.shop-price-label {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.95rem;
+}
+
+.shop-price-row.total .shop-price-label {
+    color: #FFF;
+    font-weight: 600;
+}
+
+.shop-price-value {
+    color: var(--gold);
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.shop-price-value i {
+    font-size: 0.9rem;
+    margin-right: 4px;
+}
+
+.shop-price-row.total .shop-price-value {
+    font-size: 1.3rem;
+}
+
+.shop-confirm-btn {
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark)) !important;
+    color: #000 !important;
+}
+
+.shop-confirm-btn:hover {
+    box-shadow: 0 5px 20px rgba(218, 165, 32, 0.4) !important;
+}
+
+/* ================================================
+   REVIVE PET MODAL - Dead Pet Selection
+   ================================================ */
+.revive-dialog {
+    max-width: 400px;
+    text-align: center;
+}
+
+.revive-dialog h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.5rem;
+    color: #E74C3C;
+    margin: 0 0 var(--space-sm) 0;
+}
+
+.revive-subtitle {
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0 0 var(--space-xs) 0;
+}
+
+.revive-subtitle strong {
+    color: var(--gold);
+}
+
+.revive-hint {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+    margin: 0 0 var(--space-md) 0;
+}
+
+.revive-pet-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: var(--space-md);
+    max-height: 300px;
+    overflow-y: auto;
+    padding: var(--space-sm);
+    margin-bottom: var(--space-lg);
+}
+
+.revive-pet-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--space-md);
+    background: rgba(231, 76, 60, 0.1);
+    border: 2px solid rgba(231, 76, 60, 0.4);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.revive-pet-card:hover {
+    background: rgba(231, 76, 60, 0.2);
+    border-color: #E74C3C;
+    transform: translateY(-3px);
+}
+
+.revive-pet-card img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    filter: grayscale(80%) brightness(0.7);
+    margin-bottom: var(--space-xs);
+}
+
+.revive-pet-card:hover img {
+    filter: grayscale(50%) brightness(0.9);
+}
+
+.revive-pet-name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    color: #FFF;
+    font-weight: 600;
+}
+
+.revive-pet-level {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.revive-status {
+    font-size: 0.7rem;
+    color: #E74C3C;
+    margin-top: 4px;
+    font-weight: 600;
+}
+
+/* ================================================
+   SELL PET MODAL - Premium Design
+   ================================================ */
+.sell-dialog {
+    max-width: 360px;
+    text-align: center;
+}
+
+.sell-dialog h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    color: #F39C12;
+    margin: 0 0 var(--space-lg) 0;
+    text-shadow: 0 2px 15px rgba(243, 156, 18, 0.4);
+}
+
+.sell-pet-preview {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    background: rgba(243, 156, 18, 0.08);
+    border: 1px solid rgba(243, 156, 18, 0.3);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-lg);
+}
+
+.sell-pet-preview img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+}
+
+.sell-pet-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+}
+
+.sell-pet-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    color: #FFF;
+    font-weight: 700;
+}
+
+.sell-pet-level {
+    font-size: 0.8rem;
+    color: var(--gold);
+}
+
+.sell-price-box {
+    background: linear-gradient(135deg, rgba(243, 156, 18, 0.15), rgba(230, 126, 34, 0.08));
+    border: 1px solid rgba(243, 156, 18, 0.4);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    margin-bottom: var(--space-md);
+}
+
+.sell-label {
+    display: block;
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: var(--space-sm);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.sell-amount {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    font-family: 'Cinzel', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #F39C12;
+}
+
+.sell-amount i {
+    color: #FFD700;
+    font-size: 1.3rem;
+}
+
+.sell-warning {
+    background: rgba(231, 76, 60, 0.12);
+    border: 1px solid rgba(231, 76, 60, 0.3);
+    border-radius: var(--radius-sm);
+    padding: var(--space-sm) var(--space-md);
+    margin-bottom: var(--space-lg);
+    color: var(--health);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.sell-confirm {
+    background: linear-gradient(135deg, #F39C12, #E67E22) !important;
+}
+
+.sell-confirm:hover {
+    box-shadow: 0 5px 20px rgba(243, 156, 18, 0.4) !important;
+}
+
+/* ================================================
+   RENAME PET MODAL - Premium Design
+   ================================================ */
+.rename-dialog {
+    text-align: center;
+    max-width: 380px;
+}
+
+.rename-dialog h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    color: var(--gold);
+    margin: 0 0 var(--space-lg) 0;
+    text-shadow: 0 2px 15px rgba(218, 165, 32, 0.4);
+}
+
+.rename-input {
+    width: 100%;
+    padding: 16px 20px;
+    background: rgba(10, 10, 10, 0.9);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    color: #FFF;
+    font-family: inherit;
+    font-size: 1rem;
+    text-align: center;
+    transition: all 0.3s var(--ease-out);
+    box-sizing: border-box;
+}
+
+.rename-input::placeholder {
+    color: #555;
+    font-style: italic;
+}
+
+.rename-input:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 20px rgba(218, 165, 32, 0.2),
+        inset 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.rename-input:focus::placeholder {
+    color: transparent;
+}
+
+/* Character counter (optional enhancement) */
+.rename-char-count {
+    text-align: right;
+    font-size: 0.75rem;
+    color: #555;
+    margin-top: 6px;
+}
+
+.rename-char-count.warning {
+    color: var(--experience);
+}
+
+.rename-char-count.limit {
+    color: var(--health);
+}
+
+/* ================================================
+   16. TOAST NOTIFICATIONS
+   ================================================ */
+.toast {
+    position: fixed;
+    bottom: calc(var(--space-xl) + var(--safe-bottom));
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: 14px 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-gold);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    font-weight: 600;
+    color: #FFF;
+    opacity: 0;
+    transition: all 0.3s var(--ease-out);
+    z-index: 2000;
+}
+
+.toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+.toast-icon {
+    font-size: 1.2rem;
+}
+
+.toast.success .toast-icon {
+    color: var(--mood);
+}
+
+.toast.error .toast-icon {
+    color: var(--health);
+}
+
+.toast.warning .toast-icon {
+    color: var(--hunger);
+}
+
+/* ================================================
+   17. RESPONSIVE BREAKPOINTS
+   ================================================ */
+
+/* Tablet (768px+) */
+@media (min-width: 768px) {
+    .pet-container {
+        max-width: 600px;
+        padding: 0 var(--space-lg);
+    }
+
+    .header-title {
+        font-size: 1.4rem;
+    }
+
+    .pet-stage {
+        height: 320px;
+    }
+
+    .pet-image {
+        width: 200px;
+        height: 200px;
+    }
+
+    .collection-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .gacha-options {
+        gap: var(--space-md);
+    }
+}
+
+/* Small mobile (max 380px) */
+@media (max-width: 380px) {
+    .pet-container {
+        padding: 0 var(--space-sm);
+    }
+
+    .header-title {
+        font-size: 0.95rem;
+        letter-spacing: 1px;
+    }
+
+    .gold-display {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+
+    .tab-btn {
+        padding: 10px 12px;
+    }
+
+    .tab-btn span {
+        display: none;
+    }
+
+    .tab-btn i {
+        font-size: 1.4rem;
+    }
+
+    .pet-stage {
+        height: 240px;
+    }
+
+    .pet-image {
+        width: 130px;
+        height: 130px;
+    }
+
+    .pet-name {
+        font-size: 1.25rem;
+    }
+
+    .action-grid {
+        gap: 6px;
+    }
+
+    .action-btn {
+        min-height: 70px;
+        padding: var(--space-sm);
+    }
+
+    .action-btn i {
+        font-size: 1.3rem;
+    }
+
+    .action-btn span {
+        font-size: 0.65rem;
+    }
+}
+
+/* ================================================
+   18. UTILITY ANIMATIONS
+   ================================================ */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ================================================
+   LEADERBOARD STYLES
+   ================================================ */
+
+.leaderboard-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: var(--space-md);
+}
+
+.lb-tab {
+    flex: 1;
+    padding: 10px 8px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    color: #666;
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.lb-tab:hover {
+    background: var(--bg-hover);
+    color: #888;
+}
+
+.lb-tab.active {
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.15), rgba(218, 165, 32, 0.08));
+    border-color: var(--border-gold);
+    color: var(--gold);
+}
+
+.leaderboard-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.lb-entry {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    transition: all 0.2s;
+}
+
+.lb-entry:hover {
+    border-color: var(--border-gold);
+    transform: translateX(4px);
+}
+
+.lb-entry.rank-1 {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.08), transparent);
+    border-color: rgba(255, 215, 0, 0.3);
+}
+
+.lb-entry.rank-2 {
+    background: linear-gradient(135deg, rgba(192, 192, 192, 0.08), transparent);
+    border-color: rgba(192, 192, 192, 0.3);
+}
+
+.lb-entry.rank-3 {
+    background: linear-gradient(135deg, rgba(205, 127, 50, 0.08), transparent);
+    border-color: rgba(205, 127, 50, 0.3);
+}
+
+.lb-rank {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #666;
+    flex-shrink: 0;
+}
+
+.lb-rank.rank-1 {
+    font-size: 1.4rem;
+}
+
+.lb-rank.rank-2 {
+    font-size: 1.2rem;
+}
+
+.lb-rank.rank-3 {
+    font-size: 1.1rem;
+}
+
+.lb-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.lb-pet-name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #FFF;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.lb-pet-name .rarity-badge {
+    font-size: 0.55rem;
+    padding: 2px 6px;
+}
+
+.lb-owner {
+    font-size: 0.75rem;
+    color: #888;
+}
+
+.lb-owner .sanctuary {
+    color: var(--gold);
+    font-weight: 600;
+}
+
+.lb-stat {
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.lb-stat-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--gold);
+}
+
+.lb-stat-label {
+    font-size: 0.65rem;
+    color: #666;
+    text-transform: uppercase;
+}
+
+/* ================================================
+   ACHIEVEMENTS STYLES
+   ================================================ */
+
+.achievements-header {
+    text-align: center;
+    margin-bottom: var(--space-md);
+}
+
+.achievements-header h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.3rem;
+    color: var(--gold);
+    margin: 0;
+}
+
+.ach-progress {
+    color: #888;
+    font-size: 0.85rem;
+    margin-top: 4px;
+}
+
+.ach-progress span {
+    color: var(--gold);
+    font-weight: 700;
+}
+
+.ach-category-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: var(--space-md);
+    overflow-x: auto;
+    padding-bottom: 4px;
+}
+
+.ach-tab {
+    flex-shrink: 0;
+    padding: 8px 14px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    color: #666;
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.ach-tab:hover {
+    background: var(--bg-hover);
+    color: #888;
+}
+
+.ach-tab.active {
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.15), rgba(218, 165, 32, 0.08));
+    border-color: var(--border-gold);
+    color: var(--gold);
+}
+
+.achievements-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ach-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    transition: all 0.2s;
+}
+
+.ach-card.unlocked {
+    border-color: var(--border-gold);
+}
+
+.ach-card.locked {
+    opacity: 0.6;
+}
+
+.ach-icon {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--radius-md);
+    flex-shrink: 0;
+}
+
+.ach-card.locked .ach-icon {
+    filter: grayscale(1);
+}
+
+.ach-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.ach-name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #FFF;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ach-card.locked .ach-name {
+    color: #888;
+}
+
+.ach-desc {
+    font-size: 0.75rem;
+    color: #888;
+    margin-bottom: 6px;
+}
+
+.ach-progress-bar {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.ach-progress-fill {
+    height: 100%;
+    background: var(--gold);
+    border-radius: 2px;
+    transition: width 0.3s;
+}
+
+.ach-rarity {
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    flex-shrink: 0;
+}
+
+.ach-rarity.bronze {
+    background: rgba(205, 127, 50, 0.2);
+    color: #CD7F32;
+    border: 1px solid rgba(205, 127, 50, 0.3);
+}
+
+.ach-rarity.silver {
+    background: rgba(192, 192, 192, 0.2);
+    color: #C0C0C0;
+    border: 1px solid rgba(192, 192, 192, 0.3);
+}
+
+.ach-rarity.gold {
+    background: rgba(255, 215, 0, 0.2);
+    color: #FFD700;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.ach-rarity.platinum {
+    background: linear-gradient(135deg, rgba(229, 228, 226, 0.2), rgba(180, 180, 180, 0.1));
+    color: #E5E4E2;
+    border: 1px solid rgba(229, 228, 226, 0.4);
+}
+
+.ach-check {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.ach-card.unlocked .ach-check {
+    color: #2ecc71;
+}
+
+.ach-card.locked .ach-check {
+    color: #444;
+}
+
+/* ================================================
+   ITEM SELECTION MODAL - Enhanced Grid Design
+   ================================================ */
+#item-modal .modal-content {
+    max-width: 420px;
+}
+
+#item-modal .modal-content h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    color: var(--gold);
+    text-align: center;
+    margin: 0 0 var(--space-lg) 0;
+    text-shadow: 0 2px 15px rgba(218, 165, 32, 0.4);
+}
+
+.item-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: var(--space-md);
+    max-height: 300px;
+    overflow-y: auto;
+    padding: var(--space-sm);
+    margin: 0 calc(-1 * var(--space-sm));
+}
+
+/* Custom scrollbar for item list */
+.item-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.item-list::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+}
+
+.item-list::-webkit-scrollbar-thumb {
+    background: var(--border-gold);
+    border-radius: 3px;
+}
+
+.item-list::-webkit-scrollbar-thumb:hover {
+    background: var(--gold);
+}
+
+.item-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-md);
+    background: var(--bg-glass);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.3s var(--ease-out);
+    position: relative;
+}
+
+.item-option:hover {
+    border-color: var(--gold);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(218, 165, 32, 0.2);
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.1), transparent);
+}
+
+.item-option:active {
+    transform: translateY(-2px);
+}
+
+.item-option img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    transition: transform 0.3s var(--ease-out);
+}
+
+.item-option:hover img {
+    transform: scale(1.1);
+}
+
+.item-option-name {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #FFF;
+    text-align: center;
+    line-height: 1.2;
+}
+
+.item-option-qty {
+    position: absolute;
+    top: var(--space-xs);
+    right: var(--space-xs);
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: #000;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: var(--radius-full);
+    min-width: 20px;
+    text-align: center;
+}
+
+.item-list .empty-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: var(--space-xl);
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* ================================================
+   BULK USE MODAL - Quantity Selector Design
+   ================================================ */
+#bulk-use-modal .modal-content {
+    max-width: 380px;
+}
+
+.item-detail-card {
+    text-align: center;
+}
+
+.item-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-lg);
+    text-align: left;
+}
+
+.item-detail-img {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    flex-shrink: 0;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
+}
+
+.item-detail-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.item-detail-info h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    color: var(--gold);
+    margin: 0 0 4px 0;
+}
+
+.item-detail-info p {
+    font-size: 0.8rem;
+    color: #888;
+    margin: 0 0 8px 0;
+    line-height: 1.4;
+}
+
+.item-stock {
+    font-size: 0.75rem;
+    color: #666;
+}
+
+.item-stock b {
+    color: var(--gold);
+    font-weight: 700;
+}
+
+/* Quantity Selector */
+.quantity-selector {
+    margin-bottom: var(--space-lg);
+}
+
+.quantity-selector label {
+    display: block;
+    font-size: 0.85rem;
+    color: #888;
+    margin-bottom: var(--space-sm);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.qty-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+}
+
+.qty-btn {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-glass);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    color: #AAA;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s var(--ease-out);
+}
+
+.qty-btn:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(218, 165, 32, 0.1);
+}
+
+.qty-btn:active {
+    transform: scale(0.95);
+}
+
+.qty-btn.max {
+    width: auto;
+    padding: 0 16px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.15), rgba(218, 165, 32, 0.05));
+    border-color: var(--border-gold);
+    color: var(--gold);
+}
+
+.qty-btn.max:hover {
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: #000;
+}
+
+.qty-controls input[type="number"] {
+    width: 70px;
+    height: 44px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 2px solid var(--border-gold);
+    border-radius: var(--radius-sm);
+    color: var(--gold);
+    font-family: 'Cinzel', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    text-align: center;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+.qty-controls input[type="number"]::-webkit-outer-spin-button,
+.qty-controls input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.qty-controls input[type="number"]:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 15px rgba(218, 165, 32, 0.3);
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ================================================
+   ARENA 3v3 - TEAM SELECTION
+   ================================================ */
+
+/* Dragon icon fallback */
+.tab-btn[data-tab="arena3v3"] i::before {
+    content: "🐉";
+    font-family: inherit;
+}
+
+/* Team Selection Panel */
+.team-selection-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-gold);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-lg);
+}
+
+.team-selection-panel h3 {
+    font-family: 'Cinzel', serif;
+    color: var(--gold);
+    margin-bottom: var(--space-xs);
+}
+
+.selection-hint {
+    color: #888;
+    font-size: 0.85rem;
+    margin-bottom: var(--space-md);
+}
+
+/* Selected Team Display (3 slots) */
+.selected-team {
+    display: flex;
+    gap: var(--space-md);
+    justify-content: center;
+    margin-bottom: var(--space-lg);
+    padding: var(--space-md);
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-md);
+}
+
+.team-slot {
+    width: 80px;
+    height: 80px;
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px dashed rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    cursor: pointer;
+    position: relative;
+}
+
+.team-slot.empty i {
+    color: #555;
+    font-size: 1.5rem;
+}
+
+.team-slot.filled {
+    border-style: solid;
+    border-color: var(--gold);
+}
+
+.team-slot.filled img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 5px;
+}
+
+.team-slot:hover {
+    border-color: var(--gold);
+    background: rgba(218, 165, 32, 0.1);
+}
+
+.team-slot .remove-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #e74c3c;
+    border: none;
+    color: white;
+    font-size: 0.6rem;
+    cursor: pointer;
+    display: none;
+}
+
+.team-slot.filled:hover .remove-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Pet Pool (pet selection grid) */
+.pet-pool {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-sm);
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.pet-pool-item {
+    aspect-ratio: 1;
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    padding: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.pet-pool-item:hover:not(.selected):not(.disabled) {
+    border-color: var(--gold);
+    transform: scale(1.05);
+}
+
+.pet-pool-item.selected {
+    border-color: var(--gold);
+    background: rgba(218, 165, 32, 0.2);
+}
+
+.pet-pool-item.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.pet-pool-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.pet-pool-item .pet-level-badge {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    background: rgba(0, 0, 0, 0.8);
+    color: var(--gold);
+    font-size: 0.6rem;
+    padding: 2px 5px;
+    border-radius: 4px;
+}
+
+/* Opponent Selection */
+.opponent-selection {
+    background: var(--bg-card);
+    border: 1px solid var(--border-gold);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+}
+
+.opponent-selection h3 {
+    font-family: 'Cinzel', serif;
+    color: var(--gold);
+    margin-bottom: var(--space-md);
+    text-align: center;
+}
+
+.btn-refresh {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 auto var(--space-md);
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-sm);
+    color: #888;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-refresh:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+}
+
+.opponent-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.opponent-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-md);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    transition: all 0.2s;
+}
+
+.opponent-row:hover {
+    border-color: var(--border-gold);
+}
+
+.opponent-row .opponent-info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.opponent-row .opponent-name {
+    font-weight: 600;
+}
+
+.opponent-row .opponent-pets {
+    display: flex;
+    gap: 4px;
+}
+
+.opponent-row .opponent-pets img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.opponent-row .battle-3v3-btn {
+    padding: 8px 20px;
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    border: none;
+    border-radius: var(--radius-sm);
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.opponent-row .battle-3v3-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+}
+
+/* ================================================
+   ANIMATIONS - Consolidated from pet_animations.css
+   ================================================ */
+
+/* ================================================
+   MOE PET ANIMATIONS - Enhanced Visual Effects
+   1. CSS Sprite Animation System
+   2. Advanced Keyframe Effects
+   3. Lottie Integration Styles
+   
+   Compatible with existing pet.css
+   ================================================ */
+
+/* ================================================
+   1. CSS SPRITE ANIMATION SYSTEM
+   ================================================ */
+
+/* Base sprite setup */
+.pet-animated-sprite {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    will-change: transform;
+}
+
+/* --- IDLE ANIMATION (Default) --- */
+.pet-anim-idle {
+    animation: 
+        petFloatEnhanced 4s ease-in-out infinite,
+        petBreathing 3s ease-in-out infinite;
+}
+
+@keyframes petFloatEnhanced {
+    0%, 100% {
+        transform: translateY(0) rotate(-1deg);
+    }
+    25% {
+        transform: translateY(-12px) rotate(0.5deg);
+    }
+    50% {
+        transform: translateY(-18px) rotate(1deg);
+    }
+    75% {
+        transform: translateY(-10px) rotate(0deg);
+    }
+}
+
+@keyframes petBreathing {
+    0%, 100% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+    50% {
+        transform: scale(1.02);
+        filter: brightness(1.05);
+    }
+}
+
+/* --- WALK CYCLE ANIMATION --- */
+.pet-anim-walk {
+    animation: petWalkCycle 0.6s steps(4) infinite;
+}
+
+@keyframes petWalkCycle {
+    0% {
+        transform: translateX(0) scaleX(1);
+    }
+    25% {
+        transform: translateX(10px) scaleX(1) translateY(-3px);
+    }
+    50% {
+        transform: translateX(20px) scaleX(1);
+    }
+    75% {
+        transform: translateX(30px) scaleX(1) translateY(-3px);
+    }
+    100% {
+        transform: translateX(0) scaleX(1);
+    }
+}
+
+/* Walk with bounce effect */
+.pet-anim-walk-bounce {
+    animation: 
+        petWalkHorizontal 2s ease-in-out infinite alternate,
+        petWalkBounce 0.4s ease-in-out infinite;
+}
+
+@keyframes petWalkHorizontal {
+    0% {
+        transform: translateX(-20px);
+    }
+    100% {
+        transform: translateX(20px);
+    }
+}
+
+@keyframes petWalkBounce {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    25% {
+        transform: translateY(-8px) rotate(-2deg);
+    }
+    50% {
+        transform: translateY(0) rotate(0deg);
+    }
+    75% {
+        transform: translateY(-8px) rotate(2deg);
+    }
+}
+
+/* --- ATTACK ANIMATION --- */
+.pet-anim-attack {
+    animation: petAttackSequence 0.6s ease-out forwards;
+}
+
+@keyframes petAttackSequence {
+    0% {
+        transform: translateX(0) scale(1);
+        filter: brightness(1);
+    }
+    20% {
+        transform: translateX(-20px) scale(1.1);
+        filter: brightness(1.2);
+    }
+    40% {
+        transform: translateX(60px) scale(1.2);
+        filter: brightness(1.5) drop-shadow(0 0 20px rgba(255, 100, 50, 0.8));
+    }
+    60% {
+        transform: translateX(40px) scale(1.1);
+        filter: brightness(1.2);
+    }
+    100% {
+        transform: translateX(0) scale(1);
+        filter: brightness(1);
+    }
+}
+
+/* Attack slash effect overlay */
+.pet-attack-slash {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200px;
+    height: 200px;
+    pointer-events: none;
+    opacity: 0;
+    background: linear-gradient(
+        135deg,
+        transparent 0%,
+        rgba(255, 200, 50, 0.3) 45%,
+        rgba(255, 255, 255, 0.8) 50%,
+        rgba(255, 200, 50, 0.3) 55%,
+        transparent 100%
+    );
+    transform: translate(-50%, -50%) rotate(-45deg) scale(0);
+}
+
+.pet-attack-slash.active {
+    animation: slashEffect 0.3s ease-out forwards;
+}
+
+@keyframes slashEffect {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) rotate(-45deg) scale(0);
+    }
+    50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) rotate(-45deg) scale(1.5);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) rotate(-45deg) scale(2);
+    }
+}
+
+/* --- JUMP ANIMATION --- */
+.pet-anim-jump {
+    animation: petJump 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes petJump {
+    0% {
+        transform: translateY(0) scale(1, 1);
+    }
+    15% {
+        transform: translateY(5px) scale(1.1, 0.9);
+    }
+    30% {
+        transform: translateY(-80px) scale(0.95, 1.05);
+    }
+    50% {
+        transform: translateY(-100px) scale(0.9, 1.1);
+    }
+    70% {
+        transform: translateY(-40px) scale(0.95, 1.05);
+    }
+    85% {
+        transform: translateY(8px) scale(1.1, 0.9);
+    }
+    100% {
+        transform: translateY(0) scale(1, 1);
+    }
+}
+
+/* --- DANCE ANIMATION (For Rhythm Game) --- */
+.pet-anim-dance {
+    animation: petDanceGroove 0.5s ease-in-out infinite;
+}
+
+@keyframes petDanceGroove {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg) scale(1);
+    }
+    25% {
+        transform: translateY(-15px) rotate(-8deg) scale(1.05);
+    }
+    50% {
+        transform: translateY(0) rotate(0deg) scale(1);
+    }
+    75% {
+        transform: translateY(-15px) rotate(8deg) scale(1.05);
+    }
+}
+
+/* Dance with color flash */
+.pet-anim-dance-flash {
+    animation: 
+        petDanceGroove 0.5s ease-in-out infinite,
+        petDanceColorFlash 1s ease-in-out infinite;
+}
+
+@keyframes petDanceColorFlash {
+    0%, 100% {
+        filter: hue-rotate(0deg) brightness(1);
+    }
+    25% {
+        filter: hue-rotate(30deg) brightness(1.1);
+    }
+    50% {
+        filter: hue-rotate(0deg) brightness(1);
+    }
+    75% {
+        filter: hue-rotate(-30deg) brightness(1.1);
+    }
+}
+
+/* --- HURT/HIT ANIMATION --- */
+.pet-anim-hurt {
+    animation: petHurt 0.5s ease-out;
+}
+
+@keyframes petHurt {
+    0% {
+        transform: translateX(0);
+        filter: brightness(1);
+    }
+    10% {
+        transform: translateX(-20px);
+        filter: brightness(2) sepia(1) saturate(5);
+    }
+    20% {
+        transform: translateX(15px);
+        filter: brightness(1.5) sepia(0.5) saturate(3);
+    }
+    30% {
+        transform: translateX(-10px);
+        filter: brightness(1.2);
+    }
+    40% {
+        transform: translateX(5px);
+    }
+    100% {
+        transform: translateX(0);
+        filter: brightness(1);
+    }
+}
+
+/* --- VICTORY ANIMATION --- */
+.pet-anim-victory {
+    animation: petVictory 1.5s ease-in-out;
+}
+
+@keyframes petVictory {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg) scale(1);
+    }
+    15% {
+        transform: translateY(-30px) rotate(-5deg) scale(1.1);
+    }
+    30% {
+        transform: translateY(-20px) rotate(5deg) scale(1.15);
+    }
+    45% {
+        transform: translateY(-40px) rotate(-3deg) scale(1.2);
+    }
+    60% {
+        transform: translateY(-25px) rotate(3deg) scale(1.15);
+    }
+    75% {
+        transform: translateY(-35px) rotate(0deg) scale(1.1);
+    }
+}
+
+/* --- DEATH ANIMATION --- */
+.pet-anim-death {
+    animation: petDeath 1.2s ease-out forwards;
+}
+
+@keyframes petDeath {
+    0% {
+        transform: translateY(0) rotate(0deg) scale(1);
+        filter: grayscale(0) brightness(1);
+        opacity: 1;
+    }
+    20% {
+        transform: translateY(-20px) rotate(-10deg) scale(1.1);
+        filter: grayscale(0) brightness(1.5);
+    }
+    40% {
+        transform: translateY(10px) rotate(15deg) scale(0.95);
+        filter: grayscale(0.3) brightness(0.9);
+    }
+    60% {
+        transform: translateY(0) rotate(-5deg) scale(0.9);
+        filter: grayscale(0.6) brightness(0.7);
+    }
+    100% {
+        transform: translateY(10px) rotate(85deg) scale(0.8);
+        filter: grayscale(1) brightness(0.5);
+        opacity: 0.6;
+    }
+}
+
+/* --- REVIVE ANIMATION --- */
+.pet-anim-revive {
+    animation: petRevive 1.5s ease-out forwards;
+}
+
+@keyframes petRevive {
+    0% {
+        transform: translateY(10px) rotate(85deg) scale(0.8);
+        filter: grayscale(1) brightness(0.5);
+        opacity: 0.6;
+    }
+    30% {
+        transform: translateY(-30px) rotate(0deg) scale(1);
+        filter: grayscale(0.5) brightness(1.5);
+        opacity: 1;
+    }
+    50% {
+        transform: translateY(-50px) rotate(0deg) scale(1.2);
+        filter: grayscale(0) brightness(2) drop-shadow(0 0 30px rgba(255, 215, 0, 0.8));
+    }
+    70% {
+        transform: translateY(-20px) rotate(0deg) scale(1.1);
+        filter: grayscale(0) brightness(1.3);
+    }
+    100% {
+        transform: translateY(0) rotate(0deg) scale(1);
+        filter: grayscale(0) brightness(1);
+    }
+}
+
+/* ================================================
+   2. PARTICLE EFFECTS (CSS)
+   ================================================ */
+
+/* Sparkle particles container */
+.pet-sparkles {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200px;
+    height: 200px;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 5;
+}
+
+/* Individual sparkle */
+.sparkle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(255, 215, 0, 0.8) 50%, transparent 100%);
+    border-radius: 50%;
+    animation: sparkleFloat 2s ease-in-out infinite;
+}
+
+.sparkle:nth-child(1) { left: 20%; top: 30%; animation-delay: 0s; }
+.sparkle:nth-child(2) { left: 70%; top: 20%; animation-delay: 0.3s; }
+.sparkle:nth-child(3) { left: 40%; top: 60%; animation-delay: 0.6s; }
+.sparkle:nth-child(4) { left: 80%; top: 50%; animation-delay: 0.9s; }
+.sparkle:nth-child(5) { left: 10%; top: 70%; animation-delay: 1.2s; }
+.sparkle:nth-child(6) { left: 60%; top: 80%; animation-delay: 1.5s; }
+
+@keyframes sparkleFloat {
+    0%, 100% {
+        opacity: 0;
+        transform: scale(0) translateY(0);
+    }
+    20% {
+        opacity: 1;
+        transform: scale(1) translateY(-10px);
+    }
+    80% {
+        opacity: 1;
+        transform: scale(0.8) translateY(-30px);
+    }
+}
+
+/* Heart particles (for mood) */
+.heart-particle {
+    position: absolute;
+    font-size: 1.2rem;
+    animation: heartFloat 2s ease-out forwards;
+    pointer-events: none;
+}
+
+@keyframes heartFloat {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: translateY(-40px) scale(1.2);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-80px) scale(0.5);
+    }
+}
+
+/* Food particles (for hunger) */
+.food-particle {
+    position: absolute;
+    font-size: 1.5rem;
+    animation: foodBurst 0.8s ease-out forwards;
+    pointer-events: none;
+}
+
+@keyframes foodBurst {
+    0% {
+        opacity: 1;
+        transform: scale(0) rotate(0deg);
+    }
+    30% {
+        opacity: 1;
+        transform: scale(1.5) rotate(15deg);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.5) rotate(-15deg) translateY(-50px);
+    }
+}
+
+/* EXP gain particle */
+.exp-particle {
+    position: absolute;
+    background: linear-gradient(135deg, #3498db, #2ecc71);
+    color: white;
+    font-weight: bold;
+    font-size: 0.9rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    animation: expFloat 1.5s ease-out forwards;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+@keyframes expFloat {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-60px) scale(1.2);
+    }
+}
+
+/* Gold gain particle */
+.gold-particle {
+    position: absolute;
+    background: linear-gradient(135deg, #f1c40f, #e67e22);
+    color: #333;
+    font-weight: bold;
+    font-size: 0.9rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    animation: goldFloat 1.5s ease-out forwards;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+@keyframes goldFloat {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-30px) scale(1.3) rotate(10deg);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-60px) scale(1) rotate(-5deg);
+    }
+}
+
+/* ================================================
+   3. LOTTIE CONTAINER STYLES
+   ================================================ */
+
+/* Lottie player container */
+.lottie-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.lottie-player {
+    width: 100%;
+    height: 100%;
+}
+
+/* Specific lottie effect positions */
+.lottie-celebrant {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 300px;
+}
+
+.lottie-healing {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+}
+
+.lottie-level-up {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 250px;
+    height: 250px;
+}
+
+.lottie-gacha-burst {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100vw;
+    height: 100vh;
+    max-width: 600px;
+    z-index: 1000;
+}
+
+/* ================================================
+   4. ENHANCED GACHA EGG ANIMATION
+   ================================================ */
+
+.gacha-egg.hatching {
+    animation: eggHatchEnhanced 1.5s ease-in-out;
+}
+
+@keyframes eggHatchEnhanced {
+    0% {
+        transform: rotate(0deg) scale(1);
+        filter: brightness(1);
+    }
+    10% {
+        transform: rotate(-15deg) scale(1.05);
+    }
+    20% {
+        transform: rotate(15deg) scale(1.05);
+    }
+    30% {
+        transform: rotate(-20deg) scale(1.1);
+        filter: brightness(1.2);
+    }
+    40% {
+        transform: rotate(20deg) scale(1.1);
+    }
+    50% {
+        transform: rotate(-25deg) scale(1.15);
+        filter: brightness(1.5) drop-shadow(0 0 20px rgba(255, 215, 0, 0.6));
+    }
+    60% {
+        transform: rotate(25deg) scale(1.15);
+    }
+    70% {
+        transform: rotate(-30deg) scale(1.2);
+        filter: brightness(2) drop-shadow(0 0 40px rgba(255, 215, 0, 0.8));
+    }
+    80% {
+        transform: rotate(0deg) scale(1.5);
+        filter: brightness(3) drop-shadow(0 0 60px rgba(255, 255, 255, 1));
+    }
+    100% {
+        transform: rotate(0deg) scale(0);
+        filter: brightness(5);
+        opacity: 0;
+    }
+}
+
+/* Enhanced gacha result reveal */
+.gacha-result-reveal {
+    animation: resultReveal 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes resultReveal {
+    0% {
+        transform: scale(0) rotate(-180deg);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2) rotate(10deg);
+        opacity: 1;
+    }
+    70% {
+        transform: scale(0.95) rotate(-5deg);
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+/* ================================================
+   5. STATUS BAR ENHANCED ANIMATIONS
+   ================================================ */
+
+.bar-fill {
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bar-fill.increasing {
+    animation: barIncrease 0.5s ease-out;
+}
+
+@keyframes barIncrease {
+    0% {
+        filter: brightness(1);
+    }
+    50% {
+        filter: brightness(1.5);
+    }
+    100% {
+        filter: brightness(1);
+    }
+}
+
+.bar-fill.decreasing {
+    animation: barDecrease 0.5s ease-out;
+}
+
+@keyframes barDecrease {
+    0%, 100% {
+        opacity: 1;
+    }
+    25%, 75% {
+        opacity: 0.5;
+    }
+}
+
+/* Critical health pulse */
+.bar-fill.critical {
+    animation: criticalPulse 0.8s ease-in-out infinite;
+}
+
+@keyframes criticalPulse {
+    0%, 100% {
+        opacity: 1;
+        box-shadow: none;
+    }
+    50% {
+        opacity: 0.7;
+        box-shadow: 0 0 15px rgba(231, 76, 60, 0.8);
+    }
+}
+
+/* ================================================
+   6. INTERACTIVE TOUCH FEEDBACK
+   ================================================ */
+
+/* Pet tap feedback */
+.pet-image.tapped {
+    animation: petTap 0.3s ease-out;
+}
+
+@keyframes petTap {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(0.9);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Button press effect enhancement */
+.action-btn:active .pet-action-ripple {
+    animation: rippleEffect 0.6s ease-out;
+}
+
+@keyframes rippleEffect {
+    0% {
+        transform: scale(0);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+
+
+/* ================================================
+   HARDCORE UPDATE - Consolidated from pet_hardcore_update.css
+   ================================================ */
+
+/* ================================================
+   HARDCORE & RHYTHM GAME UPDATE - NEW STYLES
+   ================================================ */
+
+/* ================================================
+   RESPONSIVE COLLECTION GRID (MOBILE-FIRST)
+   ================================================ */
+.collection-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    /* Mobile: 2 columns */
+    gap: 15px;
+}
+
+@media (min-width: 768px) {
+    .collection-grid {
+        grid-template-columns: repeat(3, 1fr);
+        /* Tablet: 3 columns */
+    }
+}
+
+@media (min-width: 1024px) {
+    .collection-grid {
+        grid-template-columns: repeat(4, 1fr);
+        /* Desktop: 4 columns */
+    }
+}
+
+/* ================================================
+   PET CARD ACTION BUTTONS (SELL & EVOLVE)
+   ================================================ */
+.pet-action-row {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+    justify-content: center;
+}
+
+.pet-action-btn {
+    flex: 1;
+    padding: 8px 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.btn-sell {
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+    color: white;
+    border: 1px solid #f39c12;
+}
+
+.btn-sell:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(243, 156, 18, 0.4);
+}
+
+.btn-evolve {
+    background: linear-gradient(135deg, var(--pet-gold), var(--pet-gold-dark));
+    color: white;
+    border: 1px solid var(--pet-gold);
+}
+
+.btn-evolve:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--pet-gold-glow);
+}
+
+.btn-retrieve {
+    width: 100%;
+    margin-top: 10px;
+    padding: 8px;
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    border: 1px solid #3498db;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-retrieve:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+}
+
+/* ================================================
+   RENAME BUTTON ICON (PET DASHBOARD) - Premium Pill
+   ================================================ */
+.btn-rename-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-width: 32px;
+    height: 26px;
+    padding: 0 10px;
+    margin-left: 10px;
+
+    /* Elegant gold gradient pill */
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.15) 0%, rgba(184, 134, 11, 0.08) 100%);
+    border: 1px solid rgba(218, 165, 32, 0.35);
+    border-radius: 13px;
+
+    /* Text styling */
+    color: #DAA520;
+    font-size: 0.7rem;
+    font-weight: 600;
+
+    /* Interaction */
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+}
+
+.btn-rename-icon i {
+    font-size: 0.65rem;
+}
+
+.btn-rename-icon:hover {
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.3) 0%, rgba(255, 215, 0, 0.2) 100%);
+    border-color: #DAA520;
+    color: #FFD700;
+    transform: translateY(-1px);
+    box-shadow:
+        0 3px 12px rgba(218, 165, 32, 0.25),
+        0 0 20px rgba(218, 165, 32, 0.15);
+}
+
+.btn-rename-icon:focus {
+    outline: none;
+    border-color: #FFD700;
+}
+
+.btn-rename-icon:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 4px rgba(218, 165, 32, 0.2);
+}
+
+/* ================================================
+   RHYTHM GAME MODAL
+   ================================================ */
+.rhythm-game-container {
+    max-width: 500px;
+    width: 95%;
+    padding: 20px;
+}
+
+.rhythm-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.rhythm-header h2 {
+    color: var(--pet-gold);
+    font-family: 'Cinzel', serif;
+    font-size: 1.3rem;
+    margin: 0;
+}
+
+.rhythm-stats {
+    display: flex;
+    gap: 15px;
+    font-size: 0.9rem;
+}
+
+.rhythm-score {
+    color: #2ecc71;
+    font-weight: bold;
+}
+
+.rhythm-timer {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.rhythm-game-area {
+    position: relative;
+    height: 400px;
+    background: radial-gradient(ellipse at center, rgba(218, 165, 32, 0.1), transparent);
+    border: 2px solid rgba(218, 165, 32, 0.3);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+.rhythm-pet-container {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+}
+
+.rhythm-pet-dance {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    animation: pet-dance 0.5s ease-in-out infinite;
+}
+
+@keyframes pet-dance {
+
+    0%,
+    100% {
+        transform: rotate(-8deg) scale(1) translateY(0);
+    }
+
+    25% {
+        transform: rotate(0deg) scale(1.05) translateY(-8px);
+    }
+
+    50% {
+        transform: rotate(8deg) scale(1.1) translateY(-12px);
+    }
+
+    75% {
+        transform: rotate(0deg) scale(1.05) translateY(-8px);
+    }
+}
+
+.rhythm-notes-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.rhythm-note {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: all 0.1s ease;
+    z-index: 3;
+}
+
+.rhythm-note.falling {
+    animation: note-fall 2.5s linear forwards;
+}
+
+@keyframes note-fall {
+    from {
+        transform: translateY(-80px) scale(0.5);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    to {
+        transform: translateY(400px) scale(1);
+        opacity: 0.8;
+    }
+}
+
+.rhythm-note.hit {
+    animation: note-hit 0.3s ease-out forwards;
+}
+
+@keyframes note-hit {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.5);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: scale(0);
+        opacity: 0;
+    }
+}
+
+.rhythm-hit-zone {
+    position: absolute;
+    bottom: 120px;
+    left: 0;
+    right: 0;
+    height: 80px;
+    background: linear-gradient(to top, rgba(46, 204, 113, 0.2), transparent);
+    border-top: 3px dashed rgba(46, 204, 113, 0.5);
+    z-index: 2;
+    pointer-events: none;
+}
+
+.hit-indicator {
+    text-align: center;
+    color: #2ecc71;
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    text-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
+}
+
+.hit-ripple {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border: 3px solid #2ecc71;
+    border-radius: 50%;
+    animation: ripple-expand 0.5s ease-out forwards;
+    pointer-events: none;
+    z-index: 10;
+}
+
+@keyframes ripple-expand {
+    from {
+        transform: translate(-50%, -50%) scale(0.5);
+        opacity: 1;
+    }
+
+    to {
+        transform: translate(-50%, -50%) scale(2);
+        opacity: 0;
+    }
+}
+
+.rhythm-instructions {
+    text-align: center;
+    color: #888;
+    font-size: 0.85rem;
+    margin-bottom: 15px;
+}
+
+/* ================================================
+   EVOLUTION SELECTOR MODAL
+   ================================================ */
+.evolution-selector {
+    max-width: 600px;
+    width: 95%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.evolution-selector h2 {
+    color: var(--pet-gold);
+    font-family: 'Cinzel', serif;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.evolution-info {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(218, 165, 32, 0.2);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.evolution-info ul {
+    margin: 10px 0 0 0;
+    padding-left: 20px;
+}
+
+.evolution-info li {
+    color: #bbb;
+    margin: 5px 0;
+}
+
+.evolution-warning {
+    background: rgba(231, 76, 60, 0.1);
+    border: 1px solid rgba(231, 76, 60, 0.3);
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+    color: #e74c3c;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.fodder-selection-title h3 {
+    color: #fff;
+    font-size: 1rem;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+#evo-selected-count {
+    color: var(--pet-gold);
+    font-weight: bold;
+}
+
+.fodder-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
+
+.fodder-card {
+    position: relative;
+}
+
+.fodder-checkbox {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    z-index: 10;
+    accent-color: var(--pet-gold);
+}
+
+.fodder-label {
+    display: block;
+    background: rgba(10, 8, 5, 0.9);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.fodder-card input:checked+.fodder-label {
+    border-color: var(--pet-gold);
+    background: rgba(218, 165, 32, 0.15);
+    box-shadow: 0 0 15px rgba(218, 165, 32, 0.3);
+}
+
+.fodder-label:hover {
+    border-color: rgba(218, 165, 32, 0.5);
+    transform: translateY(-2px);
+}
+
+.fodder-img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    margin-bottom: 8px;
+}
+
+.fodder-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.fodder-name {
+    font-size: 0.8rem;
+    color: #fff;
+    font-weight: bold;
+}
+
+.fodder-level {
+    font-size: 0.7rem;
+    color: var(--pet-gold);
+}
+
+/* ================================================
+   RENAME MODAL
+   ================================================ */
+.rename-dialog {
+    max-width: 400px;
+    width: 90%;
+    padding: 25px;
+}
+
+.rename-dialog h2 {
+    color: var(--pet-gold);
+    font-family: 'Cinzel', serif;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.rename-input {
+    width: 100%;
+    padding: 12px 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(218, 165, 32, 0.3);
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    font-family: 'Lato', sans-serif;
+    margin-bottom: 20px;
+    transition: all 0.2s ease;
+}
+
+.rename-input:focus {
+    outline: none;
+    border-color: var(--pet-gold);
+    box-shadow: 0 0 15px rgba(218, 165, 32, 0.2);
+}
+
+.rename-input::placeholder {
+    color: #666;
+}
+
+/* ================================================
+   MODAL IMPROVEMENTS (RESPONSIVE & SCROLLABLE)
+   ================================================ */
+.modal-content {
+    max-height: 90vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Scrollbar styling for modals */
+.modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: rgba(218, 165, 32, 0.5);
+    border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(218, 165, 32, 0.7);
+}
+
+@media (max-width: 480px) {
+    .modal-content {
+        width: 95%;
+        max-width: 95vw;
+        padding: 15px;
+    }
+
+    .rhythm-game-area {
+        height: 350px;
+    }
+
+    .rhythm-pet-dance {
+        width: 80px;
+        height: 80px;
+    }
+
+    .fodder-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        max-height: 250px;
+    }
+}
+
+/* ================================================
+   MODAL ACTION BUTTONS (CONSISTENT STYLING)
+   ================================================ */
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.modal-cancel-btn,
+.modal-confirm-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    font-family: 'Lato', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.modal-cancel-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: #bbb;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.modal-cancel-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+}
+
+.modal-confirm-btn {
+    background: linear-gradient(135deg, var(--pet-gold), var(--pet-gold-dark));
+    color: white;
+    border: 1px solid var(--pet-gold);
+}
+
+.modal-confirm-btn:hover:not(:disabled) {
+    transform: scale(1.02);
+    box-shadow: 0 0 15px var(--pet-gold-glow);
+}
+
+.modal-confirm-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ================================================
+   BUTTON HOVER EFFECTS (ENHANCED UX)
+   ================================================ */
+.action-btn:hover,
+.shop-buy-btn:hover,
+.gacha-btn:hover,
+.battle-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.action-btn:active,
+.shop-buy-btn:active,
+.gacha-btn:active,
+.battle-btn:active {
+    transform: translateY(0);
+}
+
+/* ================================================
+   LOADING STATES
+   ================================================ */
+.loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    padding: 40px;
+    color: #888;
+}
+
+.loading-spinner i {
+    color: var(--pet-gold);
+}
+
+/* ================================================
+   EMPTY STATES
+   ================================================ */
+.empty-message {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.empty-message p {
+    margin: 10px 0;
+}
+
+
+/* ================================================
+   HELP GUIDE - Consolidated from pet_help_guide.css
+   ================================================ */
+
+/* ================================================
+   PET HELP GUIDE - Premium Modal Styling
+   Matches pet.css design system
+   ================================================ */
+
+/* ================================================
+   1. HELP MODAL CONTAINER
+   ================================================ */
+.help-guide {
+    max-width: 650px;
+    width: 95%;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 0;
+    background: rgba(12, 12, 12, 0.98);
+    border: 1px solid rgba(218, 165, 32, 0.25);
+    border-radius: 20px;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6), 0 0 60px rgba(218, 165, 32, 0.1);
+}
+
+/* Scrollbar Styling */
+.help-guide::-webkit-scrollbar {
+    width: 6px;
+}
+
+.help-guide::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.help-guide::-webkit-scrollbar-thumb {
+    background: rgba(218, 165, 32, 0.3);
+    border-radius: 3px;
+}
+
+.help-guide::-webkit-scrollbar-thumb:hover {
+    background: rgba(218, 165, 32, 0.5);
+}
+
+/* ================================================
+   2. HEADER
+   ================================================ */
+.help-guide-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    padding: 24px 28px 20px;
+    background: linear-gradient(180deg, rgba(12, 12, 12, 1) 0%, rgba(12, 12, 12, 0.95) 100%);
+    border-bottom: 1px solid rgba(218, 165, 32, 0.15);
+}
+
+.help-guide h2 {
+    font-family: 'Cinzel', serif;
+    color: #DAA520;
+    text-align: center;
+    margin: 0 0 16px 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-shadow: 0 2px 20px rgba(218, 165, 32, 0.4);
+    letter-spacing: 2px;
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #888;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1rem;
+    display: grid;
+    place-items: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 10;
+}
+
+.modal-close-btn:hover {
+    background: rgba(231, 76, 60, 0.15);
+    border-color: rgba(231, 76, 60, 0.4);
+    color: #e74c3c;
+    transform: rotate(90deg);
+}
+
+/* ================================================
+   3. HELP TABS - Horizontal Scrollable Pills
+   ================================================ */
+.help-tabs {
+    display: flex;
+    gap: 8px;
+    padding: 12px 14px;
+    margin-bottom: 20px;
+    background: rgba(10, 10, 10, 0.9);
+    border: 1px solid rgba(218, 165, 32, 0.15);
+    border-radius: 14px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(218, 165, 32, 0.3) transparent;
+    -webkit-overflow-scrolling: touch;
+}
+
+.help-tabs::-webkit-scrollbar {
+    height: 4px;
+}
+
+.help-tabs::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.help-tabs::-webkit-scrollbar-thumb {
+    background: rgba(218, 165, 32, 0.3);
+    border-radius: 2px;
+}
+
+.help-tab {
+    flex-shrink: 0;
+    padding: 10px 18px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    color: #777;
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+    text-align: center;
+}
+
+.help-tab:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #CCC;
+}
+
+.help-tab.active {
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.25), rgba(218, 165, 32, 0.12));
+    border-color: rgba(218, 165, 32, 0.5);
+    color: #DAA520;
+    box-shadow: 0 2px 12px rgba(218, 165, 32, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* ================================================
+   4. HELP CONTENT AREA
+   ================================================ */
+.help-content-wrapper {
+    padding: 24px 28px 32px;
+}
+
+.help-content {
+    animation: helpFadeIn 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes helpFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.help-content h3 {
+    font-family: 'Cinzel', serif;
+    color: #DAA520;
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 0 0 16px 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(218, 165, 32, 0.15);
+}
+
+.help-content h4 {
+    font-size: 1rem;
+    color: #FFF;
+    margin: 16px 0 8px 0;
+    font-weight: 600;
+}
+
+.help-content p {
+    color: #AAA;
+    line-height: 1.7;
+    margin: 10px 0;
+    font-size: 0.9rem;
+}
+
+/* ================================================
+   5. FEATURE LIST (Overview Tab)
+   ================================================ */
+.feature-list {
+    display: grid;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.feature-item:hover {
+    background: rgba(218, 165, 32, 0.05);
+    border-color: rgba(218, 165, 32, 0.2);
+    transform: translateX(5px);
+}
+
+.feature-icon {
+    font-size: 1.6rem;
+    color: #DAA520;
+    min-width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    background: rgba(218, 165, 32, 0.1);
+    border-radius: 10px;
+    flex-shrink: 0;
+}
+
+.feature-text {
+    flex: 1;
+}
+
+.feature-item strong {
+    color: #FFF;
+    display: block;
+    margin-bottom: 4px;
+    font-size: 0.95rem;
+}
+
+.feature-item p {
+    color: #888;
+    font-size: 0.85rem;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* ================================================
+   6. TUTORIAL STEPS
+   ================================================ */
+.tutorial-step {
+    display: flex;
+    gap: 16px;
+    margin: 18px 0;
+    align-items: flex-start;
+}
+
+.step-number {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, #DAA520, #B8860B);
+    color: #000;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    font-size: 1rem;
+    box-shadow: 0 4px 15px rgba(218, 165, 32, 0.3);
+}
+
+.step-content {
+    flex: 1;
+    padding-top: 4px;
+}
+
+.step-content h4 {
+    margin-top: 0;
+    margin-bottom: 6px;
+}
+
+.step-content p {
+    margin: 0;
+}
+
+/* ================================================
+   7. HELP TIPS / ALERTS
+   ================================================ */
+.help-tip {
+    padding: 14px 18px;
+    border-radius: 12px;
+    margin: 16px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 0.88rem;
+    line-height: 1.5;
+}
+
+.help-tip i {
+    font-size: 1.1rem;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.help-tip.warning {
+    background: rgba(243, 156, 18, 0.1);
+    border: 1px solid rgba(243, 156, 18, 0.25);
+    color: #F1C40F;
+}
+
+.help-tip.warning i {
+    color: #F1C40F;
+}
+
+.help-tip.danger {
+    background: rgba(231, 76, 60, 0.1);
+    border: 1px solid rgba(231, 76, 60, 0.25);
+    color: #E74C3C;
+}
+
+.help-tip.danger i {
+    color: #E74C3C;
+}
+
+.help-tip.info {
+    background: rgba(52, 152, 219, 0.1);
+    border: 1px solid rgba(52, 152, 219, 0.25);
+    color: #3498DB;
+}
+
+.help-tip.info i {
+    color: #3498DB;
+}
+
+.help-tip.success {
+    background: rgba(46, 204, 113, 0.1);
+    border: 1px solid rgba(46, 204, 113, 0.25);
+    color: #2ECC71;
+}
+
+.help-tip.success i {
+    color: #2ECC71;
+}
+
+/* ================================================
+   8. TUTORIAL SECTIONS
+   ================================================ */
+.tutorial-section {
+    margin: 24px 0;
+    padding: 18px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 14px;
+}
+
+.tutorial-section h4 {
+    color: #DAA520;
+    margin: 0 0 14px 0;
+    font-size: 1rem;
+}
+
+.example {
+    background: rgba(218, 165, 32, 0.08);
+    padding: 12px 16px;
+    border-left: 3px solid #DAA520;
+    border-radius: 0 8px 8px 0;
+    margin-top: 12px;
+    font-size: 0.88rem;
+    color: #DDD;
+}
+
+.example code {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'Consolas', monospace;
+    font-size: 0.85rem;
+    color: #F1C40F;
+}
+
+/* ================================================
+   9. HELP FOOTER
+   ================================================ */
+.help-footer {
+    margin-top: 28px;
+    padding: 20px 0 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    text-align: center;
+    color: #666;
+    font-size: 0.85rem;
+}
+
+.help-footer strong {
+    color: #DAA520;
+}
+
+.help-footer a {
+    color: #DAA520;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.help-footer a:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+}
+
+/* ================================================
+   10. STATS TABLE
+   ================================================ */
+.stats-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 0.88rem;
+}
+
+.stats-table th,
+.stats-table td {
+    padding: 12px 14px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.stats-table th {
+    color: #DAA520;
+    font-weight: 600;
+    background: rgba(218, 165, 32, 0.08);
+}
+
+.stats-table th:first-child {
+    border-radius: 8px 0 0 0;
+}
+
+.stats-table th:last-child {
+    border-radius: 0 8px 0 0;
+}
+
+.stats-table td {
+    color: #AAA;
+}
+
+.stats-table tr:hover td {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* ================================================
+   11. RESPONSIVE DESIGN
+   ================================================ */
+@media (max-width: 480px) {
+    .help-guide {
+        border-radius: 16px 16px 0 0;
+        max-height: 90vh;
+    }
+
+    .help-guide-header {
+        padding: 20px 18px 16px;
+    }
+
+    .help-guide h2 {
+        font-size: 1.25rem;
+    }
+
+    .help-content-wrapper {
+        padding: 18px;
+    }
+
+    .help-tabs {
+        gap: 4px;
+        padding: 8px;
+    }
+
+    .help-tab {
+        font-size: 0.75rem;
+        padding: 10px 12px;
+        min-width: 75px;
+    }
+
+    .help-content h3 {
+        font-size: 1rem;
+    }
+
+    .feature-item {
+        padding: 12px;
+        gap: 12px;
+    }
+
+    .feature-icon {
+        font-size: 1.3rem;
+        min-width: 35px;
+        height: 35px;
+    }
+
+    .step-number {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+    }
+
+    .tutorial-step {
+        gap: 12px;
+    }
+
+    .help-tip {
+        padding: 12px 14px;
+        font-size: 0.85rem;
+    }
+
+    .modal-close-btn {
+        top: 16px;
+        right: 16px;
+        width: 34px;
+        height: 34px;
+    }
+}
+
+/* Small text */
+@media (max-width: 360px) {
+    .help-tab {
+        min-width: 65px;
+        padding: 8px 10px;
+        font-size: 0.7rem;
+    }
+
+    .feature-item strong {
+        font-size: 0.88rem;
+    }
+
+    .feature-item p {
+        font-size: 0.8rem;
+    }
+}

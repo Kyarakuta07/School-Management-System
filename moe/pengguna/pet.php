@@ -48,16 +48,10 @@ mysqli_stmt_close($gold_stmt);
 
     <!-- Styles -->
     <link rel="stylesheet" href="../assets/css/global.css">
-    <!-- Base Pet CSS -->
-    <link rel="stylesheet" href="css/pet.css">
-    <link rel="stylesheet" href="css/pet_hardcore_update.css">
-    <?php if (isset($_GET['dragon']) && $_GET['dragon'] == '1'): ?>
-        <!-- Dragon Gold Enhancement Layer (TEST MODE) -->
-        <link rel="stylesheet" href="css/pet_dragon.css">
-    <?php endif; ?>
-    <link rel="stylesheet" href="css/pet_animations.css">
-    <link rel="stylesheet" href="css/pet_help_guide.css">
+    <!-- Unified Pet CSS - Consolidated from pet.css + animations + hardcore + help_guide -->
+    <link rel="stylesheet" href="css/pet_unified.css">
     <link rel="stylesheet" href="css/daily_login.css">
+
 
     <!-- PixiJS for particle effects -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.3.2/pixi.min.js"></script>
