@@ -993,6 +993,48 @@ async function loadShop() {
     }
 }
 
+// Helper: Get category from effect type
+function getItemCategory(effectType) {
+    if (effectType === 'food') return 'food';
+    if (effectType === 'potion' || effectType === 'revive') return 'potion';
+    return 'special';
+}
+
+// Helper: Get icon for item based on name and type
+function getItemIcon(itemName, effectType) {
+    const name = itemName.toLowerCase();
+
+    // Food items
+    if (name.includes('kibble')) return 'fa-drumstick-bite';
+    if (name.includes('feast')) return 'fa-turkey';
+    if (name.includes('banquet')) return 'fa-crown';
+    if (name.includes('fish')) return 'fa-fish';
+    if (name.includes('meat')) return 'fa-bacon';
+
+    // Potions
+    if (name.includes('elixir')) return 'fa-flask';
+    if (name.includes('vitality')) return 'fa-heart-pulse';
+    if (name.includes('phoenix')) return 'fa-fire-flame-curved';
+    if (name.includes('tears')) return 'fa-droplet';
+    if (name.includes('health')) return 'fa-flask-vial';
+
+    // Special items
+    if (name.includes('exp') || name.includes('boost')) return 'fa-arrow-up';
+    if (name.includes('gacha') || name.includes('ticket')) return 'fa-ticket';
+    if (name.includes('shield')) return 'fa-shield-halved';
+    if (name.includes('star')) return 'fa-star';
+    if (name.includes('scroll')) return 'fa-scroll';
+    if (name.includes('soul')) return 'fa-ghost';
+    if (name.includes('ankh')) return 'fa-ankh';
+    if (name.includes('wisdom')) return 'fa-book';
+
+    // Category fallbacks
+    const category = getItemCategory(effectType);
+    if (category === 'food') return 'fa-drumstick-bite';
+    if (category === 'potion') return 'fa-flask';
+    return 'fa-star';
+}
+
 function renderShopItems(category) {
     const grid = document.getElementById('shop-grid');
 
@@ -1006,23 +1048,29 @@ function renderShopItems(category) {
     }
 
     if (filtered.length === 0) {
-        grid.innerHTML = '<div class="empty-message">No items in this category</div>';
+        grid.innerHTML = '<div class="shop-empty"><i class="fas fa-box-open"></i><br>No items in this category</div>';
         return;
     }
 
-    grid.innerHTML = filtered.map(item => `
-        <div class="shop-item">
-            <img src="${ASSETS_BASE}${item.img_path}" alt="${item.name}" class="shop-item-img"
-                 onerror="this.src='../assets/placeholder.png'">
-            <h4 class="shop-item-name">${item.name}</h4>
-            <p class="shop-item-desc">${item.description}</p>
-            <div class="shop-item-price">
-                <i class="fas fa-coins"></i>
-                <span>${item.price}</span>
+    grid.innerHTML = filtered.map(item => {
+        const itemCategory = getItemCategory(item.effect_type);
+        const icon = getItemIcon(item.name, item.effect_type);
+
+        return `
+            <div class="shop-item-card" data-category="${itemCategory}" data-item-id="${item.id}">
+                <div class="shop-item-icon">
+                    <i class="fas ${icon}"></i>
+                </div>
+                <div class="shop-item-name">${item.name}</div>
+                <div class="shop-item-desc">${item.description || ''}</div>
+                <div class="shop-item-price">
+                    <i class="fas fa-coins"></i>
+                    ${item.price}
+                </div>
+                <button class="shop-buy-btn" onclick="buyItem(${item.id})">Buy</button>
             </div>
-            <button class="shop-buy-btn" onclick="buyItem(${item.id})">Buy</button>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 // ================================================
