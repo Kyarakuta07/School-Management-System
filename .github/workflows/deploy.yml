@@ -43,7 +43,7 @@ jobs:
         uses: burnett01/rsync-deployments@7.0.1
         with:
           switches: -avzr --delete --exclude='.git*' --exclude='node_modules'
-          path: moe/
+          path: ./moe/
           remote_path: /home/akevyrfm/public_html/moe/
           remote_host: ${{ secrets.SSH_HOST }}
           remote_port: 3759
