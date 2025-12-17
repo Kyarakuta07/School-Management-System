@@ -19,7 +19,7 @@ async function loadOpponents() {
     container.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Finding opponents...</p></div>';
 
     try {
-        const response = await fetch('api/router.php?action=get_opponents');
+        const response = await fetch('pet_api.php?action=get_opponents');
         const data = await response.json();
 
         if (data.success && data.opponents && data.opponents.length > 0) {
@@ -81,7 +81,7 @@ async function loadAchievements() {
     container.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Loading achievements...</p></div>';
 
     try {
-        const response = await fetch('api/router.php?action=get_achievements');
+        const response = await fetch('pet_api.php?action=get_achievements');
         const data = await response.json();
 
         if (data.success && data.achievements && data.achievements.length > 0) {
