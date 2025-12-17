@@ -942,14 +942,15 @@ function showGachaResult(data) {
             setTimeout(() => resultPet.classList.remove('gacha-result-reveal'), 1000);
         }
 
+        // NOTE: Lottie effects disabled to prevent modal resizing
         // Play confetti for rare+ pulls
-        const rarityLevel = { 'Common': 1, 'Rare': 2, 'Epic': 3, 'Legendary': 4 };
-        if (rarityLevel[data.rarity] >= 2) {
-            window.PetAnimations.lottie('confetti', 3000, modalContent);
-        }
-        if (rarityLevel[data.rarity] >= 4) {
-            window.PetAnimations.lottie('sparkles', 2500, modalContent);
-        }
+        // const rarityLevel = { 'Common': 1, 'Rare': 2, 'Epic': 3, 'Legendary': 4 };
+        // if (rarityLevel[data.rarity] >= 2) {
+        //     window.PetAnimations.lottie('confetti', 3000, modalContent);
+        // }
+        // if (rarityLevel[data.rarity] >= 4) {
+        //     window.PetAnimations.lottie('sparkles', 2500, modalContent);
+        // }
     }
 }
 
