@@ -619,13 +619,19 @@ playWithPet = function () {
 // ================================================
 
 function openHelpModal() {
-    document.getElementById('help-modal').classList.add('show');
-    // Reset to overview tab
-    switchHelpTab('overview');
+    const modal = document.getElementById('help-modal');
+    if (modal) {
+        modal.classList.add('show');
+        // Reset to overview tab
+        switchHelpTab('overview');
+    }
 }
 
 function closeHelpModal() {
-    document.getElementById('help-modal').classList.remove('show');
+    const modal = document.getElementById('help-modal');
+    if (modal) {
+        modal.classList.remove('show');
+    }
 }
 
 function switchHelpTab(tabName) {
@@ -639,11 +645,16 @@ function switchHelpTab(tabName) {
         tab.classList.remove('active');
     });
 
-    // Show selected content
-    document.getElementById('help-' + tabName).style.display = 'block';
+    // Show selected content (with null check)
+    const targetContent = document.getElementById('help-' + tabName);
+    if (targetContent) {
+        targetContent.style.display = 'block';
+    }
 
-    // Add active class to clicked tab
-    event.target.classList.add('active');
+    // Add active class to clicked tab (with safety check for event)
+    if (typeof event !== 'undefined' && event && event.target) {
+        event.target.classList.add('active');
+    }
 }
 
 // ================================================
