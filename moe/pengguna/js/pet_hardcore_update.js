@@ -645,3 +645,23 @@ function switchHelpTab(tabName) {
     // Add active class to clicked tab
     event.target.classList.add('active');
 }
+
+// ================================================
+// EXPOSE FUNCTIONS TO GLOBAL SCOPE
+// Required for inline onclick handlers in collection cards
+// ================================================
+window.sellPet = sellPet;
+window.closeSellModal = closeSellModal;
+window.confirmSellPet = confirmSellPet;
+window.openEvolutionModal = openEvolutionModal;
+window.closeEvolutionModal = closeEvolutionModal;
+window.confirmEvolution = confirmEvolution;
+window.closeEvoConfirmModal = closeEvoConfirmModal;
+window.proceedEvolution = proceedEvolution;
+window.toggleFodderSelection = toggleFodderSelection;
+window.openRenameModal = openRenameModal;
+window.closeRenameModal = closeRenameModal;
+window.confirmRename = confirmRename;
+window.openHelpModal = openHelpModal;
+window.closeHelpModal = closeHelpModal;
+window.switchHelpTab = switchHelpTab;
