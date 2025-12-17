@@ -194,7 +194,12 @@ function switchTab(tab) {
     // Load tab-specific data
     switch (tab) {
         case 'my-pet':
-            loadActivePet();
+            // Only render, don't fetch again (activePet already set by loadPets)
+            if (activePet) {
+                renderActivePet();
+            } else {
+                loadActivePet(); // Fallback if no active pet loaded yet
+            }
             break;
         case 'collection':
             loadPets();
