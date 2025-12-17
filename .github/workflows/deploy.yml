@@ -39,19 +39,17 @@ jobs:
       - name: 📥 Checkout Kode
         uses: actions/checkout@v4
       
-      - name: 🚀 Deploy ke cPanel via SCP
-        uses: appleboy/scp-action@v0.1.7 
+      - name: 🚀 Deploy ke cPanel via rsync
+        uses: burnett01/rsync-deployments@7.0.1
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }} 
-          port: 3759
-          source: "moe/*"
-          target: "/home/akevyrfm/public_html/moe"
-          strip_components: 1
-          # Exclude file development (tidak perlu di production)
-          # .git dan .github otomatis tidak ter-upload karena source hanya moe/*
+          switches: -avzr --delete --exclude='.git*' --exclude='node_modules'
+          path: moe/
+          remote_path: /home/akevyrfm/public_html/moe/
+          remote_host: ${{ secrets.SSH_HOST }}
+          remote_port: 3759
+          remote_user: ${{ secrets.SSH_USERNAME }}
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          remote_key_pass: ${{ secrets.SSH_KEY_PASSPHRASE }}
       
       - name: 🏥 Health Check
         run: |
