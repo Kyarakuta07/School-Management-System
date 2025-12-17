@@ -1,17 +1,17 @@
-name: 🚀 Deployment Otomatis ke cPanel
+name: 🚀 Deployment Otomatis ke cPanel (FTP Sync)
 
 on:
   push:
     branches:
       - main
 
-# Pastikan deploy hanya berjalan satu kali dalam satu waktu
+# Memastikan deploy tidak tabrakan
 concurrency:
   group: production-deploy
   cancel-in-progress: true
 
 jobs:
-  # Job 1: PHP Lint Check (opsional tapi recommended)
+  # Job 1: PHP Lint Check (Memastikan kode tidak error)
   lint:
     runs-on: ubuntu-latest
     steps:
@@ -24,57 +24,49 @@ jobs:
           php-version: '8.1'
           extensions: mbstring, pdo, pdo_mysql
 
-      - name: � Check PHP Syntax
+      - name: 🔍 Check PHP Syntax
         run: |
           echo "Checking PHP syntax in moe folder..."
           find moe -name "*.php" -print0 | xargs -0 -n1 php -l
           echo "✅ Syntax check passed!"
 
-  # Job 2: Deploy ke cPanel (hanya jika lint berhasil)
+  # Job 2: Deploy ke cPanel menggunakan FTP (Bisa hapus file otomatis)
   deploy:
     runs-on: ubuntu-latest
-    needs: lint  # Tunggu lint selesai dulu
+    needs: lint
     
     steps:
       - name: 📥 Checkout Kode
         uses: actions/checkout@v4
       
-      - name: 🚀 Upload Files via SCP
-        uses: appleboy/scp-action@v0.1.7 
+      - name: 🚀 Sync Files via FTP (Auto-Delete)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }} 
-          port: 3759
-          source: "moe/*"
-          target: "/home/akevyrfm/public_html/moe"
-          strip_components: 1
-      
-      - name: 🧹 Cleanup Deleted Files (Manual)
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}
-          port: 3759
-          script: |
-            # Note: Manual cleanup if needed
-            # To delete a specific file: rm /home/akevyrfm/public_html/moe/path/to/file.php
-            # To delete a folder: rm -rf /home/akevyrfm/public_html/moe/path/to/folder
-            echo "✅ Deployment complete. Manual cleanup available if needed."
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./moe/
+          server-dir: ./public_html/moe/
+          delete: true 
+          exclude: |
+            **/.git*
+            **/node_modules/**
+            .env
+            .htaccess
+            cgi-bin/
+            *.log
+            repository/
+            temp/
+            uploads/
       
       - name: 🏥 Health Check
         run: |
-          echo "⏳ Menunggu server siap (15 detik)..."
-          sleep 15
+          echo "⏳ Menunggu server sinkronisasi (10 detik)..."
+          sleep 10
           echo "🔍 Mengecek https://www.moegypt.com ..."
           
-          # Coba akses website, retry sampai 3x
           for i in 1 2 3; do
             if curl -f -s -o /dev/null -w "%{http_code}" https://www.moegypt.com; then
-              echo ""
               echo "✅ Website accessible! (HTTP 200)"
               exit 0
             else
@@ -83,16 +75,17 @@ jobs:
             fi
           done
           
-          echo "❌ Website tidak bisa diakses setelah 3x percobaan!"
+          echo "❌ Website tidak bisa diakses!"
           exit 1
 
       - name: 📋 Deploy Summary
         if: success()
         run: |
           echo "=========================================="
-          echo "🎉 DEPLOYMENT BERHASIL!"
+          echo "🎉 DEPLOYMENT BERHASIL & SYNCED!"
           echo "=========================================="
           echo "📅 Waktu: $(TZ='Asia/Jakarta' date '+%Y-%m-%d %H:%M:%S WIB')"
           echo "🌐 Website: https://www.moegypt.com"
-          echo "📂 Target: /home/akevyrfm/public_html"
+          echo "📂 Target: /home/akevyrfm/public_html/moe"
+          echo "🧹 Status: Auto-Delete Active"
           echo "=========================================="
