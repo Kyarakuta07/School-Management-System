@@ -1690,6 +1690,383 @@ body.pet-page {
 }
 
 /* ================================================
+   ARENA, 3V3, AND ACHIEVEMENTS SECTION
+   ================================================ */
+
+/* Opponents Grid */
+.opponents-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-top: var(--space-md);
+}
+
+/* Opponent Card */
+.opponent-card {
+    background: linear-gradient(135deg, rgba(25, 25, 30, 0.98), rgba(18, 18, 22, 0.95));
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-out);
+    position: relative;
+    overflow: hidden;
+}
+
+.opponent-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at top right, rgba(218, 165, 32, 0.05), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.opponent-card:hover::before {
+    opacity: 1;
+}
+
+.opponent-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--gold);
+    box-shadow: 0 8px 24px rgba(218, 165, 32, 0.2);
+}
+
+.opponent-img {
+    width: 80px;
+    height: 80px;
+    border-radius: var(--radius-md);
+    object-fit: cover;
+    border: 2px solid var(--border-subtle);
+    flex-shrink: 0;
+}
+
+.opponent-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.opponent-name {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 4px 0;
+}
+
+.opponent-owner {
+    font-size: 0.75rem;
+    color: #888;
+    margin: 0 0 8px 0;
+}
+
+.opponent-stats {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.battle-btn {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.25), rgba(184, 134, 11, 0.2));
+    border: 1px solid var(--gold);
+    border-radius: var(--radius-sm);
+    color: var(--gold);
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-out);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.battle-btn:hover {
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.35), rgba(184, 134, 11, 0.3));
+    box-shadow: 0 0 16px rgba(218, 165, 32, 0.4);
+    transform: scale(1.05);
+}
+
+.battle-btn:active {
+    transform: scale(0.98);
+}
+
+/* Team Selection Grid */
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+    margin: var(--space-md) 0;
+}
+
+.team-pet-card {
+    background: linear-gradient(135deg, rgba(25, 25, 30, 0.95), rgba(18, 18, 22, 0.9));
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+    transition: all 0.3s var(--ease-out);
+}
+
+.team-pet-card.team-member {
+    border-color: var(--gold);
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.1), rgba(25, 25, 30, 0.95));
+}
+
+.team-pet-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.team-pet-card img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+}
+
+.team-pet-info h4 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 4px 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.team-pet-stats {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.stat-label {
+    font-size: 0.7rem;
+    color: #aaa;
+}
+
+.team-pet-combat {
+    display: flex;
+    gap: 8px;
+    font-size: 0.7rem;
+    color: #999;
+    margin-top: 4px;
+}
+
+.team-pet-combat span {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.team-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: #000;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: var(--radius-full);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.team-info {
+    background: rgba(218, 165, 32, 0.05);
+    border: 1px solid rgba(218, 165, 32, 0.2);
+    border-radius: var(--radius-md);
+    padding: 12px;
+    margin-bottom: var(--space-md);
+}
+
+.team-instruction {
+    font-size: 0.85rem;
+    color: var(--gold);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.team-summary {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 12px;
+    text-align: center;
+    margin-top: var(--space-md);
+}
+
+.team-summary p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #ccc;
+}
+
+.team-summary strong {
+    color: var(--gold);
+}
+
+/* Achievements Grid */
+.achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-top: var(--space-md);
+}
+
+.achievement-card {
+    background: linear-gradient(135deg, rgba(25, 25, 30, 0.95), rgba(18, 18, 22, 0.9));
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    display: flex;
+    gap: 16px;
+    position: relative;
+    transition: all 0.3s var(--ease-out);
+}
+
+.achievement-card.completed {
+    border-color: var(--gold);
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.08), rgba(25, 25, 30, 0.95));
+}
+
+.achievement-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.achievement-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.achievement-icon i {
+    font-size: 2rem;
+    color: var(--gold);
+}
+
+.achievement-card.completed .achievement-icon {
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.2), rgba(184, 134, 11, 0.15));
+}
+
+.achievement-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.achievement-name {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 6px 0;
+}
+
+.achievement-desc {
+    font-size: 0.75rem;
+    color: #888;
+    margin: 0 0 10px 0;
+    line-height: 1.4;
+}
+
+.achievement-progress {
+    margin-bottom: 8px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    margin-bottom: 4px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-dark));
+    border-radius: var(--radius-full);
+    transition: width 0.5s var(--ease-out);
+}
+
+.progress-text {
+    font-size: 0.7rem;
+    color: #aaa;
+}
+
+.achievement-reward {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(218, 165, 32, 0.15);
+    border: 1px solid rgba(218, 165, 32, 0.3);
+    border-radius: var(--radius-sm);
+    padding: 4px 10px;
+    font-size: 0.75rem;
+    color: var(--gold);
+    font-weight: 700;
+}
+
+.achievement-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-full);
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 16px rgba(218, 165, 32, 0.5);
+}
+
+.achievement-badge i {
+    color: #000;
+    font-size: 0.9rem;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+    text-align: center;
+    padding: var(--space-xl);
+    color: var(--gold);
+}
+
+.loading-spinner i {
+    margin-bottom: var(--space-sm);
+}
+
+.loading-spinner p {
+    font-size: 0.9rem;
+    color: #888;
+    margin: var(--space-sm) 0 0;
+}
+
+/* ================================================
    12. GACHA SECTION - MYSTICAL THEME
    ================================================ */
 .gacha-section {
