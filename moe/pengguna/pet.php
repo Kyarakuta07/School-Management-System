@@ -253,7 +253,7 @@ mysqli_stmt_close($gold_stmt);
             <section id="gacha" class="tab-panel">
                 <div class="gacha-section">
                     <div class="gacha-display">
-                        <img src="../assets/pets/default/egg.png" alt="Gacha Egg" class="gacha-egg" id="gacha-egg">
+                        <img src="../assets/pets/gacha_egg.png" alt="Gacha Egg" class="gacha-egg" id="gacha-egg">
                     </div>
                     <div class="gacha-buttons">
                         <button class="gacha-btn normal" onclick="performGacha('normal')">
