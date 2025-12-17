@@ -54,9 +54,18 @@ mysqli_stmt_close($gold_stmt);
 
     <!-- PixiJS for particles -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.3.2/pixi.min.js"></script>
+
+    <!-- Spline 3D Viewer -->
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.0.54/build/spline-viewer.js"></script>
 </head>
 
 <body class="pet-page">
+    <!-- 3D Background Layer (Spline) -->
+    <div class="spline-bg-container" id="spline-bg">
+        <!-- Uncomment to add 3D scene when you have a Spline URL -->
+        <!-- <spline-viewer url="YOUR_SPLINE_SCENE_URL" loading-anim></spline-viewer> -->
+    </div>
+
     <!-- Background -->
     <div class="bg-fixed"></div>
     <div class="bg-overlay"></div>
