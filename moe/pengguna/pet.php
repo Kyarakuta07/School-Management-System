@@ -461,26 +461,26 @@ mysqli_stmt_close($gold_stmt);
 
     <!-- Sell Pet Modal -->
     <div class="modal-overlay" id="sell-modal">
-        <div class="modal-content">
+        <div class="modal-content" style="max-width: 320px;">
             <div class="modal-header">
                 <h3 class="modal-title">Sell Pet</h3>
                 <button class="modal-close" onclick="closeSellModal()">&times;</button>
             </div>
-            <div class="modal-body" style="text-align: center;">
+            <div class="modal-body" style="text-align: center; padding: 16px;">
                 <img src="" alt="" id="sell-pet-img"
-                    style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 12px;">
-                <h3 id="sell-pet-name" style="color: #fff; margin-bottom: 4px;"></h3>
-                <span id="sell-pet-level" style="color: var(--gold); font-size: 0.85rem;"></span>
+                    style="width: 70px; height: 70px; object-fit: contain; margin-bottom: 8px;">
+                <h3 id="sell-pet-name" style="color: #fff; margin-bottom: 2px; font-size: 1rem;"></h3>
+                <span id="sell-pet-level" style="color: var(--gold); font-size: 0.8rem;"></span>
                 <div
-                    style="margin-top: 16px; padding: 16px; background: rgba(255, 193, 7, 0.1); border: 1px solid rgba(255, 193, 7, 0.3); border-radius: 12px;">
-                    <p style="color: #888; font-size: 0.85rem; margin-bottom: 8px;">You will receive:</p>
-                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-                        <i class="fas fa-coins" style="color: #FFD700; font-size: 1.2rem;"></i>
-                        <span id="sell-price" style="color: #FFD700; font-size: 1.4rem; font-weight: 700;"></span>
-                        <span style="color: #888;">Gold</span>
+                    style="margin-top: 12px; padding: 12px; background: rgba(255, 193, 7, 0.1); border: 1px solid rgba(255, 193, 7, 0.3); border-radius: 10px;">
+                    <p style="color: #888; font-size: 0.75rem; margin-bottom: 6px;">You will receive:</p>
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 6px;">
+                        <i class="fas fa-coins" style="color: #FFD700; font-size: 1rem;"></i>
+                        <span id="sell-price" style="color: #FFD700; font-size: 1.2rem; font-weight: 700;"></span>
+                        <span style="color: #888; font-size: 0.85rem;">Gold</span>
                     </div>
                 </div>
-                <p style="color: #E74C3C; font-size: 0.8rem; margin-top: 12px;">
+                <p style="color: #E74C3C; font-size: 0.7rem; margin-top: 10px;">
                     <i class="fas fa-exclamation-triangle"></i> This action cannot be undone!
                 </p>
             </div>
