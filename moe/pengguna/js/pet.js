@@ -12,12 +12,16 @@ const ASSETS_BASE = '../assets/pets/';
 
 // State
 let currentTab = 'my-pet';
-let userPets = [];
-let activePet = null;
+window.userPets = []; // Exposed to window for arena module
+window.activePet = null; // Exposed to window for arena module
 let shopItems = [];
 let userInventory = [];
 let selectedItemType = null;
 let currentBulkItem = null; // State untuk modal bulk use
+
+// Create local aliases for convenience
+let userPets = window.userPets;
+let activePet = window.activePet;
 
 // ================================================
 // INITIALIZATION
