@@ -16,17 +16,17 @@ const ANIMATION_CONFIG = {
     // Lottie CDN (lightweight, using dotlottie-player)
     lottiePlayerCDN: 'https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs',
 
-    // Pre-made Lottie animations (free from LottieFiles)
+    // Pre-made Lottie animations (LottieFiles public CDN)
     lottieAnimations: {
-        confetti: 'https://lottie.host/ef460b2c-8e60-4e4c-b0f6-1c45cd9d0e38/w8qYxZPZvU.lottie',
-        sparkles: 'https://lottie.host/60fd30cf-a37e-4c77-96ea-cb8f95f65e0a/sR7lCnZpBD.lottie',
-        hearts: 'https://lottie.host/21a458c9-a0d7-4f2e-a8b8-81c2fa4a8eb5/fGLVPxEOO0.lottie',
-        levelUp: 'https://lottie.host/fb3e7c1f-4a5e-4efe-9776-6eaa8d4e7c0e/vcZ3NMKF2R.lottie',
-        healing: 'https://lottie.host/da40d58b-4a6a-4c51-9ced-86f2b1da6bf8/5gKKLY7hJz.lottie',
-        coins: 'https://lottie.host/c3a67b8b-01ef-4a3c-b39a-0d785ff03f59/KSPxplv1x5.lottie',
-        fire: 'https://lottie.host/f58d1a1c-d4ab-4be5-8e0c-a9e94584e3c3/mJRSoQDIw8.lottie',
-        water: 'https://lottie.host/9d3e1f6a-7b5c-4d8e-9a2f-1c6b3d7e8f0a/waterSplash.lottie',
-        star: 'https://lottie.host/2e6f3a8c-9b7d-4e1f-8c3a-5d9e2f7b4a6c/starBurst.lottie'
+        confetti: 'https://assets2.lottiefiles.com/packages/lf20_u4yrau.json',
+        sparkles: 'https://assets2.lottiefiles.com/packages/lf20_xlkxtmul.json',
+        hearts: 'https://assets10.lottiefiles.com/packages/lf20_eop5xqjw.json',
+        levelUp: 'https://assets2.lottiefiles.com/packages/lf20_touohxv0.json',
+        healing: 'https://assets2.lottiefiles.com/packages/lf20_ndj9fzcd.json',
+        coins: 'https://assets2.lottiefiles.com/packages/lf20_aniuhe5t.json',
+        fire: 'https://assets2.lottiefiles.com/packages/lf20_xlkxtmul.json',
+        water: 'https://assets2.lottiefiles.com/packages/lf20_ndj9fzcd.json',
+        star: 'https://assets2.lottiefiles.com/packages/lf20_touohxv0.json'
     },
 
     // Animation durations (ms)
