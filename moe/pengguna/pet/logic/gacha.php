@@ -136,15 +136,15 @@ function rollRarity($gacha_type)
     if ($gacha_type == 2) {
         // Rare or better guaranteed
         $weights['Common'] = 0;
-        $weights['Rare'] = 70;
-        $weights['Epic'] = 22;
-        $weights['Legendary'] = 8;
+        $weights['Rare'] = 80;
+        $weights['Epic'] = 17;
+        $weights['Legendary'] = 3;
     } else if ($gacha_type == 3) {
         // Epic or better guaranteed
         $weights['Common'] = 0;
         $weights['Rare'] = 0;
-        $weights['Epic'] = 85;
-        $weights['Legendary'] = 15;
+        $weights['Epic'] = 92;
+        $weights['Legendary'] = 8;
     }
 
     // Weighted random selection

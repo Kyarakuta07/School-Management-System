@@ -29,10 +29,10 @@ define('EXP_GROWTH_RATE', 1.2);
 // GACHA SYSTEM
 // ================================================
 define('GACHA_RARITY_WEIGHTS', [
-    'Common' => 60,
+    'Common' => 67,
     'Rare' => 25,
-    'Epic' => 12,
-    'Legendary' => 3
+    'Epic' => 7,
+    'Legendary' => 1
 ]);
 
 define('GACHA_COST_NORMAL', 100);

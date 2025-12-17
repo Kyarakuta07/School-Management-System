@@ -484,11 +484,12 @@ mysqli_stmt_close($gold_stmt);
                     <i class="fas fa-exclamation-triangle"></i> This action cannot be undone!
                 </p>
             </div>
-            <div class="modal-footer">
-                <button class="btn-secondary" onclick="closeSellModal()">Cancel</button>
+            <div class="modal-footer" style="padding: 12px; gap: 8px;">
+                <button class="btn-secondary" onclick="closeSellModal()"
+                    style="padding: 8px 16px; font-size: 0.8rem;">Cancel</button>
                 <button class="btn-primary" id="confirm-sell-btn" onclick="confirmSellPet()"
-                    style="background: linear-gradient(135deg, #E74C3C, #C0392B);">
-                    <i class="fas fa-check"></i> Confirm Sell
+                    style="background: linear-gradient(135deg, #E74C3C, #C0392B); padding: 8px 16px; font-size: 0.8rem;">
+                    <i class="fas fa-check"></i> Confirm
                 </button>
             </div>
         </div>
