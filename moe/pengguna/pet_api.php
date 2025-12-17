@@ -867,6 +867,10 @@ switch ($action) {
             mysqli_stmt_execute($gold_stmt);
             mysqli_stmt_close($gold_stmt);
 
+            // Log transaction
+            $pet_name = $pet['nickname'] ?? 'Pet';
+            logGoldTransaction($conn, 0, $user_id, $sell_price, 'pet_sale', "Sold {$pet_name} (Lv.{$pet['level']})");
+
             mysqli_commit($conn);
 
             // Get new gold balance
@@ -946,7 +950,7 @@ switch ($action) {
             mysqli_stmt_close($gold_stmt);
 
             // Log transaction
-            logGoldTransaction($conn, 0, $user_id, $gold_reward, 'sell_pet', "Sold {$pet['nickname']} (Lv.{$pet['level']} {$pet['species_name']})");
+            logGoldTransaction($conn, 0, $user_id, $gold_reward, 'battle_reward', "Arena battle victory reward");
         }
 
         if ($playerWon && $exp_reward > 0) {
