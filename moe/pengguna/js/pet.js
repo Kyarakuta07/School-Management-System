@@ -501,7 +501,7 @@ async function selectPet(petId) {
 
         if (data.success) {
             showToast('Pet is now active!', 'success');
-            loadPets();
+            await loadPets(); // Wait for pets to reload before switching tab
             switchTab('my-pet');
         } else {
             showToast(data.error || 'Failed to set active pet', 'error');
