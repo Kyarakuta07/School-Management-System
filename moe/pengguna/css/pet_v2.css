@@ -1276,30 +1276,47 @@ body.pet-page {
 /* Pet Action Row - Bottom buttons */
 .pet-action-row {
     display: flex;
-    gap: 6px;
+    gap: 8px;
     justify-content: center;
-    margin-top: 8px;
-    padding-top: 8px;
+    margin-top: 10px;
+    padding-top: 10px;
     border-top: 1px solid var(--border-subtle);
+    position: relative;
+    z-index: 10;
+}
+
+/* Prevent click through to parent card */
+.pet-action-row * {
+    pointer-events: auto;
 }
 
 .pet-action-btn {
-    width: 28px;
-    height: 28px;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-sm);
-    color: #666;
-    font-size: 0.7rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    color: #888;
+    font-size: 1rem;
     cursor: pointer;
-    transition: all 0.3s var(--ease-out);
+    transition: all 0.2s var(--ease-out);
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 }
 
-.pet-action-btn:hover {
-    transform: scale(1.1);
+.pet-action-btn:hover,
+.pet-action-btn:focus {
+    transform: scale(1.05);
+    outline: none;
+}
+
+.pet-action-btn:active {
+    transform: scale(0.95);
 }
 
 .pet-action-btn.btn-sell {
