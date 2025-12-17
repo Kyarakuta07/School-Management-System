@@ -39,17 +39,31 @@ jobs:
       - name: 📥 Checkout Kode
         uses: actions/checkout@v4
       
-      - name: 🚀 Deploy ke cPanel via rsync
-        uses: burnett01/rsync-deployments@7.0.1
+      - name: 🚀 Upload Files via SCP
+        uses: appleboy/scp-action@v0.1.7 
         with:
-          switches: -avzr --delete --exclude='.git*' --exclude='node_modules'
-          path: ./moe/
-          remote_path: /home/akevyrfm/public_html/moe/
-          remote_host: ${{ secrets.SSH_HOST }}
-          remote_port: 3759
-          remote_user: ${{ secrets.SSH_USERNAME }}
-          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
-          remote_key_pass: ${{ secrets.SSH_KEY_PASSPHRASE }}
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }} 
+          port: 3759
+          source: "moe/*"
+          target: "/home/akevyrfm/public_html/moe"
+          strip_components: 1
+      
+      - name: 🧹 Cleanup Deleted Files (Manual)
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}
+          port: 3759
+          script: |
+            # Note: Manual cleanup if needed
+            # To delete a specific file: rm /home/akevyrfm/public_html/moe/path/to/file.php
+            # To delete a folder: rm -rf /home/akevyrfm/public_html/moe/path/to/folder
+            echo "✅ Deployment complete. Manual cleanup available if needed."
       
       - name: 🏥 Health Check
         run: |
