@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initTabs();
     initActionButtons();
     initShopTabs();
-    // initArenaTabs(); // TODO: implement arena tabs
+    initArenaTabs();
     initGoldToggle(); // Initialize gold toggle
     loadPets();
     checkDailyReward(); // Check for daily login reward
@@ -973,6 +973,12 @@ function initShopTabs() {
             renderShopItems(tab.dataset.shop);
         });
     });
+}
+
+// Initialize arena tabs (stub for now)
+function initArenaTabs() {
+    // TODO: Implement arena tab switching when arena modes are added
+    console.log(' Arena tabs initialized (placeholder)');
 }
 
 async function loadShop() {
