@@ -898,6 +898,31 @@ mysqli_stmt_close($gold_stmt);
     <!-- Arena & Achievements Module -->
     <script src="js/pet_arena.js"></script>
 
+    <!-- Arena Integration Script -->
+    <script>
+        // Wait for DOM to be ready
+        document.addEventListener('DOMContentLoaded', () => {
+            // Listen for tab clicks
+            document.querySelectorAll('.main-tab').forEach(tab => {
+                tab.addEventListener('click', function () {
+                    const targetTab = this.dataset.tab;
+
+                    // Load arena opponents when arena tab is clicked
+                    if (targetTab === 'arena') {
+                        setTimeout(() => loadOpponents(), 100);
+                    }
+
+                    // Load achievements when achievements tab is clicked
+                    if (targetTab === 'achievements') {
+                        setTimeout(() => loadAchievements(), 100);
+                    }
+                });
+            });
+
+            console.log('✓ Arena tab integration ready');
+        });
+    </script>
+
 </body>
 
 </html>
