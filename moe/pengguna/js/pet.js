@@ -184,8 +184,8 @@ function switchTab(tab) {
         btn.classList.toggle('active', btn.dataset.tab === tab);
     });
 
-    // Update content
-    document.querySelectorAll('.tab-content').forEach(content => {
+    // Update content - support both .tab-content and .tab-panel
+    document.querySelectorAll('.tab-content, .tab-panel').forEach(content => {
         content.classList.toggle('active', content.id === tab);
     });
 
@@ -204,6 +204,9 @@ function switchTab(tab) {
         case 'collection':
             loadPets();
             break;
+        case 'gacha':
+            // Gacha tab - no data loading needed
+            break;
         case 'shop':
             loadShop();
             loadInventory();
@@ -211,6 +214,9 @@ function switchTab(tab) {
         case 'arena':
             loadActivePet(); // Refresh HP after battles
             loadOpponents();
+            break;
+        case 'arena3v3':
+            // 3v3 arena - load team selection if needed
             break;
         case 'achievements':
             loadAchievements();
