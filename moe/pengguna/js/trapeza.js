@@ -3,7 +3,7 @@
  * Handles balance, transfers, and transaction history
  */
 
-const API_BASE = 'trapeza_api.php';
+const API_BASE = 'api/router.php';
 
 let currentBalance = 0;
 let selectedRecipient = null;
