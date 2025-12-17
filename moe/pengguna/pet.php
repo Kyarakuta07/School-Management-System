@@ -252,25 +252,57 @@ mysqli_stmt_close($gold_stmt);
             <!-- GACHA TAB -->
             <section id="gacha" class="tab-panel">
                 <div class="gacha-section">
+                    <!-- Mystical Background Effects -->
+                    <div class="gacha-mystical-bg">
+                        <div class="mystical-particle"></div>
+                        <div class="mystical-particle"></div>
+                        <div class="mystical-particle"></div>
+                        <div class="mystical-particle"></div>
+                        <div class="mystical-particle"></div>
+                    </div>
+
+                    <!-- Egg Display with Glow Pedestal -->
                     <div class="gacha-display">
+                        <div class="gacha-glow-ring"></div>
+                        <div class="gacha-pedestal"></div>
                         <img src="../assets/pets/gacha_egg.png" alt="Gacha Egg" class="gacha-egg" id="gacha-egg">
                     </div>
+
+                    <!-- Rarity Info -->
+                    <div class="gacha-rarity-info">
+                        <span class="rarity-chip common">C 67%</span>
+                        <span class="rarity-chip rare">R 25%</span>
+                        <span class="rarity-chip epic">E 7%</span>
+                        <span class="rarity-chip legendary">L 1%</span>
+                    </div>
+
+                    <!-- Gacha Buttons -->
                     <div class="gacha-buttons">
                         <button class="gacha-btn normal" onclick="performGacha('normal')">
-                            <i class="fas fa-egg"></i>
-                            Normal Gacha
+                            <div class="gacha-btn-content">
+                                <i class="fas fa-egg"></i>
+                                <span class="gacha-btn-text">Normal Gacha</span>
+                            </div>
                             <span class="gacha-cost">
                                 <i class="fas fa-coins"></i> 100
                             </span>
                         </button>
                         <button class="gacha-btn premium" onclick="performGacha('premium')">
-                            <i class="fas fa-star"></i>
-                            Premium Gacha
+                            <div class="gacha-btn-content">
+                                <i class="fas fa-crown"></i>
+                                <span class="gacha-btn-text">Premium Gacha</span>
+                            </div>
                             <span class="gacha-cost">
                                 <i class="fas fa-coins"></i> 500
                             </span>
                         </button>
                     </div>
+
+                    <!-- Premium Info -->
+                    <p class="gacha-hint">
+                        <i class="fas fa-info-circle"></i>
+                        Premium: Rare+ guaranteed!
+                    </p>
                 </div>
             </section>
 
