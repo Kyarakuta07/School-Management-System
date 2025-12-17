@@ -1787,6 +1787,9 @@ body.pet-page {
     align-items: center;
     gap: 6px;
     flex-shrink: 0;
+    position: relative;
+    z-index: 10;
+    pointer-events: auto;
 }
 
 .battle-btn:hover {
