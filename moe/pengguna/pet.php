@@ -457,392 +457,393 @@ mysqli_stmt_close($gold_stmt);
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Sell Pet Modal -->
-        <div class="modal-overlay" id="sell-modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title">Sell Pet</h3>
-                    <button class="modal-close" onclick="closeSellModal()">&times;</button>
-                </div>
-                <div class="modal-body" style="text-align: center;">
-                    <img src="" alt="" id="sell-pet-img"
-                        style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 12px;">
-                    <h3 id="sell-pet-name" style="color: #fff; margin-bottom: 4px;"></h3>
-                    <span id="sell-pet-level" style="color: var(--gold); font-size: 0.85rem;"></span>
-                    <div
-                        style="margin-top: 16px; padding: 16px; background: rgba(255, 193, 7, 0.1); border: 1px solid rgba(255, 193, 7, 0.3); border-radius: 12px;">
-                        <p style="color: #888; font-size: 0.85rem; margin-bottom: 8px;">You will receive:</p>
-                        <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-                            <i class="fas fa-coins" style="color: #FFD700; font-size: 1.2rem;"></i>
-                            <span id="sell-price" style="color: #FFD700; font-size: 1.4rem; font-weight: 700;"></span>
-                            <span style="color: #888;">Gold</span>
-                        </div>
-                    </div>
-                    <p style="color: #E74C3C; font-size: 0.8rem; margin-top: 12px;">
-                        <i class="fas fa-exclamation-triangle"></i> This action cannot be undone!
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn-secondary" onclick="closeSellModal()">Cancel</button>
-                    <button class="btn-primary" id="confirm-sell-btn" onclick="confirmSellPet()"
-                        style="background: linear-gradient(135deg, #E74C3C, #C0392B);">
-                        <i class="fas fa-check"></i> Confirm Sell
-                    </button>
-                </div>
+    <!-- Sell Pet Modal -->
+    <div class="modal-overlay" id="sell-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Sell Pet</h3>
+                <button class="modal-close" onclick="closeSellModal()">&times;</button>
             </div>
-        </div>
-
-        <!-- Evolution Modal -->
-        <div class="modal-overlay" id="evolution-modal">
-            <div class="modal-content" style="max-width: 500px; max-height: 80vh;">
-                <div class="modal-header">
-                    <h3 class="modal-title" id="evo-title">Evolve Pet</h3>
-                    <button class="modal-close" onclick="closeEvolutionModal()">&times;</button>
-                </div>
-                <div class="modal-body" style="overflow-y: auto;">
-                    <div
-                        style="text-align: center; margin-bottom: 16px; padding: 16px; background: rgba(155, 89, 182, 0.1); border-radius: 12px;">
-                        <p style="color: #888; font-size: 0.85rem;">Current Stage: <span id="evo-current-stage"
-                                style="color: var(--gold);">Egg</span></p>
-                        <p style="color: #888; font-size: 0.85rem;">Next Stage: <span id="evo-next-stage"
-                                style="color: #9B59B6;">Baby</span></p>
-                        <p style="color: #888; font-size: 0.85rem;">Required Level: <span id="evo-required-level"
-                                style="color: var(--gold);">10</span></p>
-                        <p style="color: #888; font-size: 0.85rem;">Required Rarity: <span id="evo-required-rarity"
-                                style="color: var(--gold);">-</span></p>
-                    </div>
-                    <div style="margin-bottom: 12px;">
-                        <p style="color: #fff; font-weight: 600; margin-bottom: 8px;">Select 3 Fodder Pets (<span
-                                id="evo-selected-count">0</span>/3)</p>
-                        <p style="color: #666; font-size: 0.8rem;">These pets will be consumed in the evolution.</p>
-                    </div>
-                    <div class="fodder-grid" id="fodder-grid"
-                        style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-height: 200px; overflow-y: auto;">
-                        <!-- Fodder cards rendered by JS -->
+            <div class="modal-body" style="text-align: center;">
+                <img src="" alt="" id="sell-pet-img"
+                    style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 12px;">
+                <h3 id="sell-pet-name" style="color: #fff; margin-bottom: 4px;"></h3>
+                <span id="sell-pet-level" style="color: var(--gold); font-size: 0.85rem;"></span>
+                <div
+                    style="margin-top: 16px; padding: 16px; background: rgba(255, 193, 7, 0.1); border: 1px solid rgba(255, 193, 7, 0.3); border-radius: 12px;">
+                    <p style="color: #888; font-size: 0.85rem; margin-bottom: 8px;">You will receive:</p>
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <i class="fas fa-coins" style="color: #FFD700; font-size: 1.2rem;"></i>
+                        <span id="sell-price" style="color: #FFD700; font-size: 1.4rem; font-weight: 700;"></span>
+                        <span style="color: #888;">Gold</span>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button class="btn-secondary" onclick="closeEvolutionModal()">Cancel</button>
-                    <button class="btn-primary" id="confirm-evolution-btn" onclick="confirmEvolution()" disabled
-                        style="background: linear-gradient(135deg, #9B59B6, #8E44AD);">
-                        <i class="fas fa-star"></i> Evolve
-                    </button>
-                </div>
+                <p style="color: #E74C3C; font-size: 0.8rem; margin-top: 12px;">
+                    <i class="fas fa-exclamation-triangle"></i> This action cannot be undone!
+                </p>
             </div>
-        </div>
-
-        <!-- Evolution Confirm Modal -->
-        <div class="modal-overlay" id="evolution-confirm-modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title">Confirm Evolution</h3>
-                    <button class="modal-close" onclick="closeEvoConfirmModal()">&times;</button>
-                </div>
-                <div class="modal-body" style="text-align: center;">
-                    <i class="fas fa-exclamation-triangle"
-                        style="font-size: 3rem; color: #F39C12; margin-bottom: 16px;"></i>
-                    <p style="color: #fff; margin-bottom: 8px;">Are you sure you want to evolve?</p>
-                    <p style="color: #E74C3C; font-size: 0.85rem;">The 3 selected fodder pets will be permanently
-                        consumed!</p>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn-secondary" onclick="closeEvoConfirmModal()">Cancel</button>
-                    <button class="btn-primary" id="proceed-evolution-btn" onclick="proceedEvolution()"
-                        style="background: linear-gradient(135deg, #9B59B6, #8E44AD);">
-                        <i class="fas fa-star"></i> Proceed with Evolution
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Daily Login Modal -->
-        <div class="daily-login-modal" id="daily-login-modal">
-            <div class="daily-login-content">
-                <button class="daily-close-btn" onclick="closeDailyModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-                <div class="daily-login-header">
-                    <h2>🎁 Daily Login Reward!</h2>
-                    <p>Day <span id="daily-current-day">1</span> of 30</p>
-                </div>
-                <div class="daily-calendar" id="daily-calendar"></div>
-                <div class="daily-reward-display">
-                    <div class="reward-label">Today's Reward</div>
-                    <div class="reward-content" id="daily-reward-content">
-                        <i class="fas fa-coins reward-gold"></i>
-                        <span id="daily-reward-text">50 Gold</span>
-                    </div>
-                </div>
-                <div class="streak-counter">
-                    <i class="fas fa-fire"></i>
-                    <span>Total Logins: <strong id="daily-total-logins">0</strong></span>
-                </div>
-                <button class="claim-reward-btn" id="claim-reward-btn" onclick="claimDailyReward()">
-                    <i class="fas fa-gift"></i> Claim Reward!
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeSellModal()">Cancel</button>
+                <button class="btn-primary" id="confirm-sell-btn" onclick="confirmSellPet()"
+                    style="background: linear-gradient(135deg, #E74C3C, #C0392B);">
+                    <i class="fas fa-check"></i> Confirm Sell
                 </button>
             </div>
         </div>
+    </div>
 
-        <!-- JavaScript -->
-        <script src="js/pixi_bg.js"></script>
-        <script src="js/pet.js"></script>
-        <script src="js/pixi_pet.js"></script>
-        <script src="js/pet_animations.js"></script>
-        <script src="js/pet_hardcore_update.js"></script>
+    <!-- Evolution Modal -->
+    <div class="modal-overlay" id="evolution-modal">
+        <div class="modal-content" style="max-width: 500px; max-height: 80vh;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="evo-title">Evolve Pet</h3>
+                <button class="modal-close" onclick="closeEvolutionModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="overflow-y: auto;">
+                <div
+                    style="text-align: center; margin-bottom: 16px; padding: 16px; background: rgba(155, 89, 182, 0.1); border-radius: 12px;">
+                    <p style="color: #888; font-size: 0.85rem;">Current Stage: <span id="evo-current-stage"
+                            style="color: var(--gold);">Egg</span></p>
+                    <p style="color: #888; font-size: 0.85rem;">Next Stage: <span id="evo-next-stage"
+                            style="color: #9B59B6;">Baby</span></p>
+                    <p style="color: #888; font-size: 0.85rem;">Required Level: <span id="evo-required-level"
+                            style="color: var(--gold);">10</span></p>
+                    <p style="color: #888; font-size: 0.85rem;">Required Rarity: <span id="evo-required-rarity"
+                            style="color: var(--gold);">-</span></p>
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <p style="color: #fff; font-weight: 600; margin-bottom: 8px;">Select 3 Fodder Pets (<span
+                            id="evo-selected-count">0</span>/3)</p>
+                    <p style="color: #666; font-size: 0.8rem;">These pets will be consumed in the evolution.</p>
+                </div>
+                <div class="fodder-grid" id="fodder-grid"
+                    style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-height: 200px; overflow-y: auto;">
+                    <!-- Fodder cards rendered by JS -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeEvolutionModal()">Cancel</button>
+                <button class="btn-primary" id="confirm-evolution-btn" onclick="confirmEvolution()" disabled
+                    style="background: linear-gradient(135deg, #9B59B6, #8E44AD);">
+                    <i class="fas fa-star"></i> Evolve
+                </button>
+            </div>
+        </div>
+    </div>
 
-        <style>
-            /* Additional inline styles for modals and forms */
-            .form-input {
-                width: 100%;
-                padding: 14px 16px;
-                background: rgba(0, 0, 0, 0.4);
-                border: 1px solid var(--border-gold);
-                border-radius: var(--radius-md);
-                color: #fff;
-                font-family: inherit;
-                font-size: 1rem;
-                transition: all 0.3s ease;
-            }
+    <!-- Evolution Confirm Modal -->
+    <div class="modal-overlay" id="evolution-confirm-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Confirm Evolution</h3>
+                <button class="modal-close" onclick="closeEvoConfirmModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <i class="fas fa-exclamation-triangle"
+                    style="font-size: 3rem; color: #F39C12; margin-bottom: 16px;"></i>
+                <p style="color: #fff; margin-bottom: 8px;">Are you sure you want to evolve?</p>
+                <p style="color: #E74C3C; font-size: 0.85rem;">The 3 selected fodder pets will be permanently
+                    consumed!</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeEvoConfirmModal()">Cancel</button>
+                <button class="btn-primary" id="proceed-evolution-btn" onclick="proceedEvolution()"
+                    style="background: linear-gradient(135deg, #9B59B6, #8E44AD);">
+                    <i class="fas fa-star"></i> Proceed with Evolution
+                </button>
+            </div>
+        </div>
+    </div>
 
-            .form-input:focus {
-                outline: none;
-                border-color: var(--gold);
-                background: rgba(0, 0, 0, 0.6);
-                box-shadow: 0 0 20px rgba(218, 165, 32, 0.2);
-            }
+    <!-- Daily Login Modal -->
+    <div class="daily-login-modal" id="daily-login-modal">
+        <div class="daily-login-content">
+            <button class="daily-close-btn" onclick="closeDailyModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="daily-login-header">
+                <h2>🎁 Daily Login Reward!</h2>
+                <p>Day <span id="daily-current-day">1</span> of 30</p>
+            </div>
+            <div class="daily-calendar" id="daily-calendar"></div>
+            <div class="daily-reward-display">
+                <div class="reward-label">Today's Reward</div>
+                <div class="reward-content" id="daily-reward-content">
+                    <i class="fas fa-coins reward-gold"></i>
+                    <span id="daily-reward-text">50 Gold</span>
+                </div>
+            </div>
+            <div class="streak-counter">
+                <i class="fas fa-fire"></i>
+                <span>Total Logins: <strong id="daily-total-logins">0</strong></span>
+            </div>
+            <button class="claim-reward-btn" id="claim-reward-btn" onclick="claimDailyReward()">
+                <i class="fas fa-gift"></i> Claim Reward!
+            </button>
+        </div>
+    </div>
 
-            .shop-tabs {
-                display: flex;
-                gap: 8px;
-                margin-bottom: 16px;
-                overflow-x: auto;
-                padding-bottom: 8px;
-            }
+    <!-- JavaScript -->
+    <script src="js/pixi_bg.js"></script>
+    <script src="js/pet.js"></script>
+    <script src="js/pixi_pet.js"></script>
+    <script src="js/pet_animations.js"></script>
+    <script src="js/pet_hardcore_update.js"></script>
 
-            .shop-tab {
-                padding: 10px 20px;
-                background: transparent;
-                border: 1px solid var(--border-subtle);
-                border-radius: var(--radius-full);
-                color: #666;
-                font-family: inherit;
-                font-size: 0.85rem;
-                font-weight: 600;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                white-space: nowrap;
-            }
+    <style>
+        /* Additional inline styles for modals and forms */
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-gold);
+            border-radius: var(--radius-md);
+            color: #fff;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
 
-            .shop-tab.active {
-                background: rgba(218, 165, 32, 0.15);
-                border-color: var(--gold);
-                color: var(--gold);
-            }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--gold);
+            background: rgba(0, 0, 0, 0.6);
+            box-shadow: 0 0 20px rgba(218, 165, 32, 0.2);
+        }
+
+        .shop-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .shop-tab {
+            padding: 10px 20px;
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-full);
+            color: #666;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .shop-tab.active {
+            background: rgba(218, 165, 32, 0.15);
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .shop-grid,
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .shop-item,
+        .inventory-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .shop-item:hover,
+        .inventory-item:hover {
+            border-color: var(--border-gold);
+            transform: translateY(-2px);
+        }
+
+        .shop-item img,
+        .inventory-item img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            margin-bottom: 8px;
+        }
+
+        .shop-item-name,
+        .inventory-item-name {
+            font-size: 0.75rem;
+            color: #ccc;
+            margin-bottom: 4px;
+        }
+
+        .shop-item-price {
+            font-size: 0.7rem;
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        .inventory-item-qty {
+            font-size: 0.65rem;
+            color: #888;
+        }
+
+        .inventory-section {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .arena-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .arena-battles {
+            padding: 6px 14px;
+            background: rgba(218, 165, 32, 0.1);
+            border: 1px solid var(--border-gold);
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            color: var(--gold);
+        }
+
+        .opponents-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .opponent-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .opponent-card:hover {
+            border-color: var(--border-gold);
+            transform: translateX(4px);
+        }
+
+        .opponent-img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+
+        .opponent-info {
+            flex: 1;
+        }
+
+        .opponent-name {
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .opponent-level {
+            font-size: 0.8rem;
+            color: var(--gold);
+        }
+
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .achievement-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            text-align: center;
+        }
+
+        .achievement-card.unlocked {
+            border-color: var(--gold);
+        }
+
+        .achievement-card.locked {
+            opacity: 0.5;
+            filter: grayscale(50%);
+        }
+
+        .achievement-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .achievement-name {
+            font-size: 0.75rem;
+            color: #ccc;
+        }
+
+        .item-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .item-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .item-row:hover {
+            background: rgba(218, 165, 32, 0.1);
+        }
+
+        .item-row img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-name {
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .item-qty {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        @media (min-width: 480px) {
 
             .shop-grid,
             .inventory-grid {
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap: 12px;
-                margin-bottom: 24px;
-            }
-
-            .shop-item,
-            .inventory-item {
-                background: var(--bg-card);
-                border: 1px solid var(--border-subtle);
-                border-radius: var(--radius-md);
-                padding: 12px;
-                text-align: center;
-                cursor: pointer;
-                transition: all 0.3s ease;
-            }
-
-            .shop-item:hover,
-            .inventory-item:hover {
-                border-color: var(--border-gold);
-                transform: translateY(-2px);
-            }
-
-            .shop-item img,
-            .inventory-item img {
-                width: 50px;
-                height: 50px;
-                object-fit: contain;
-                margin-bottom: 8px;
-            }
-
-            .shop-item-name,
-            .inventory-item-name {
-                font-size: 0.75rem;
-                color: #ccc;
-                margin-bottom: 4px;
-            }
-
-            .shop-item-price {
-                font-size: 0.7rem;
-                color: var(--gold);
-                font-weight: 700;
-            }
-
-            .inventory-item-qty {
-                font-size: 0.65rem;
-                color: #888;
-            }
-
-            .inventory-section {
-                margin-top: 24px;
-                padding-top: 24px;
-                border-top: 1px solid var(--border-subtle);
-            }
-
-            .arena-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 16px;
-            }
-
-            .arena-battles {
-                padding: 6px 14px;
-                background: rgba(218, 165, 32, 0.1);
-                border: 1px solid var(--border-gold);
-                border-radius: var(--radius-full);
-                font-size: 0.75rem;
-                color: var(--gold);
-            }
-
-            .opponents-grid {
-                display: flex;
-                flex-direction: column;
-                gap: 12px;
-            }
-
-            .opponent-card {
-                display: flex;
-                align-items: center;
-                gap: 16px;
-                padding: 16px;
-                background: var(--bg-card);
-                border: 1px solid var(--border-subtle);
-                border-radius: var(--radius-md);
-                cursor: pointer;
-                transition: all 0.3s ease;
-            }
-
-            .opponent-card:hover {
-                border-color: var(--border-gold);
-                transform: translateX(4px);
-            }
-
-            .opponent-img {
-                width: 60px;
-                height: 60px;
-                object-fit: contain;
-            }
-
-            .opponent-info {
-                flex: 1;
-            }
-
-            .opponent-name {
-                font-weight: 700;
-                color: #fff;
-                margin-bottom: 4px;
-            }
-
-            .opponent-level {
-                font-size: 0.8rem;
-                color: var(--gold);
+                grid-template-columns: repeat(4, 1fr);
             }
 
             .achievements-grid {
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap: 12px;
+                grid-template-columns: repeat(4, 1fr);
             }
-
-            .achievement-card {
-                background: var(--bg-card);
-                border: 1px solid var(--border-subtle);
-                border-radius: var(--radius-md);
-                padding: 16px;
-                text-align: center;
-            }
-
-            .achievement-card.unlocked {
-                border-color: var(--gold);
-            }
-
-            .achievement-card.locked {
-                opacity: 0.5;
-                filter: grayscale(50%);
-            }
-
-            .achievement-icon {
-                font-size: 2rem;
-                margin-bottom: 8px;
-            }
-
-            .achievement-name {
-                font-size: 0.75rem;
-                color: #ccc;
-            }
-
-            .item-list {
-                display: flex;
-                flex-direction: column;
-                gap: 12px;
-            }
-
-            .item-row {
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                padding: 12px;
-                background: rgba(0, 0, 0, 0.3);
-                border-radius: var(--radius-md);
-                cursor: pointer;
-                transition: all 0.3s ease;
-            }
-
-            .item-row:hover {
-                background: rgba(218, 165, 32, 0.1);
-            }
-
-            .item-row img {
-                width: 40px;
-                height: 40px;
-                object-fit: contain;
-            }
-
-            .item-info {
-                flex: 1;
-            }
-
-            .item-name {
-                font-weight: 600;
-                color: #fff;
-            }
-
-            .item-qty {
-                font-size: 0.8rem;
-                color: #888;
-            }
-
-            @media (min-width: 480px) {
-
-                .shop-grid,
-                .inventory-grid {
-                    grid-template-columns: repeat(4, 1fr);
-                }
-
-                .achievements-grid {
-                    grid-template-columns: repeat(4, 1fr);
-                }
-            }
-        </style>
+        }
+    </style>
 
 </body>
 
