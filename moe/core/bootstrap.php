@@ -51,7 +51,7 @@ header("X-XSS-Protection: 1; mode=block");
 // ==================================================
 // 4. LOAD DATABASE CONNECTION
 // ==================================================
-require_once __DIR__ . '/../connection.php';
+require_once __DIR__ . '/../config/connection.php';
 
 // ==================================================
 // 5. LOAD CORE CLASSES
