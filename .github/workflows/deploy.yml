@@ -48,7 +48,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftps
           port: 21
-          local-dir: ./moe/
+          local-dir: moe/
           server-dir: /public_html/moe/
           dangerous-clean-slate: true
           exclude: |
