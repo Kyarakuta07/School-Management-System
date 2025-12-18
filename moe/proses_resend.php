@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'connection.php';
+require_once __DIR__ . '/config/connection.php';
 
 // --- 1. IMPORT PHPMAILER (WAJIB ADA) ---
 use PHPMailer\PHPMailer\PHPMailer;

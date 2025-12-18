@@ -1,6 +1,6 @@
 <?php
 // Wajib ada untuk cek sesi jika pengguna sudah login
-require_once 'includes/security_config.php';
+require_once __DIR__ . '/core/security_config.php';
 session_start();
 
 // Cek apakah ada pesan dari URL
@@ -64,7 +64,7 @@ if (isset($_SESSION['status_login']) && $_SESSION['status_login'] == 'berhasil')
                 <i class="fa-solid fa-lock input-icon"></i>
             </div>
 
-            <?php require_once 'includes/csrf.php'; echo csrf_token_field(); ?>
+            <?php require_once __DIR__ . '/core/csrf.php'; echo csrf_token_field(); ?>
 
             <button type="submit" class="btn-login">LOGIN</button>
 

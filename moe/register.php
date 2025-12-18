@@ -1,8 +1,8 @@
 <?php
 // Pastikan koneksi database tersedia untuk mengambil daftar sanctuary
-require_once 'includes/security_config.php';
+require_once __DIR__ . '/core/security_config.php';
 session_start(); // PENTING: Session harus aktif untuk CSRF token
-include 'connection.php';
+require_once __DIR__ . '/config/connection.php';
 
 // Logic untuk menampilkan pesan error jika ada redirect dari proses_register.php
 $error_message = '';

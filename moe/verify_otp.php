@@ -1,8 +1,8 @@
 <?php
-require_once 'includes/security_config.php';
+require_once __DIR__ . '/core/security_config.php';
 session_start();
 // Wajib ada untuk cek database
-include 'connection.php';
+require_once __DIR__ . '/config/connection.php';
 
 // File ini dipanggil dari proses_register.php dengan parameter user
 $username = isset($_GET['user']) ? $_GET['user'] : '';

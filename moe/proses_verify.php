@@ -1,11 +1,11 @@
 <?php
-require_once 'includes/security_config.php';
+require_once __DIR__ . '/core/security_config.php';
 session_start();
-require_once 'includes/csrf.php';
-require_once 'includes/sanitization.php';
-require_once 'includes/rate_limiter.php';
+require_once __DIR__ . '/core/csrf.php';
+require_once __DIR__ . '/core/sanitization.php';
+require_once __DIR__ . '/core/rate_limiter.php';
 // Pastikan file koneksi sudah menggunakan versi .env yang aman tadi
-include 'connection.php';
+require_once __DIR__ . '/config/connection.php';
 
 // 1. Set Timezone (Sangat Penting agar sinkron dengan Database)
 date_default_timezone_set('Asia/Jakarta');
