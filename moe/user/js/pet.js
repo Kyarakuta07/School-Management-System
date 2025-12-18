@@ -278,8 +278,12 @@ async function loadActivePet() {
 }
 
 function renderActivePet() {
-    const stage = document.getElementById('pet-stage');
-    const info = document.getElementById('pet-info');
+    // New elements
+    const noPetMsg = document.getElementById('no-pet-message');
+    const petZone = document.getElementById('pet-display-zone');
+    const infoHeader = document.getElementById('pet-info-header');
+    const statsContainer = document.getElementById('stats-container');
+    const expCard = document.getElementById('exp-card');
     const actions = document.getElementById('action-buttons');
 
     if (!activePet) {
@@ -287,73 +291,104 @@ function renderActivePet() {
         return;
     }
 
+    // Hide no-pet message, show pet zone
+    noPetMsg.style.display = 'none';
+    petZone.style.display = 'block';
+
     // Build pet display
     const imgPath = getPetImagePath(activePet);
-    const shinyClass = activePet.is_shiny ? 'shiny' : '';
     const shinyStyle = activePet.is_shiny ? `filter: hue-rotate(${activePet.shiny_hue}deg);` : '';
 
-    // Status badge with icon
-    const statusIcon = activePet.status === 'ALIVE' ? 'fa-heart' :
-        activePet.status === 'DEAD' ? 'fa-skull' : 'fa-home';
-    const statusClass = activePet.status.toLowerCase();
-
-    stage.innerHTML = `
-        <div class="ambient-particles"></div>
-        <div class="floor-glow"></div>
-        <div class="pet-status-badge ${statusClass}">
-            <i class="fas ${statusIcon}"></i>
-            ${activePet.status}
-        </div>
-        <div class="pet-glow"></div>
-        <div class="pet-display">
-            <img src="${imgPath}" alt="${activePet.species_name}" 
-                 class="pet-image pet-anim-idle ${shinyClass}" 
-                 style="${shinyStyle}"
-                 onerror="this.src='../assets/placeholder.png'">
-        </div>
-        ${activePet.is_shiny ? '<div class="pet-sparkles"></div>' : ''}
+    // Render pet image in container
+    const petContainer = document.getElementById('pet-img-container');
+    petContainer.innerHTML = `
+        <img src="${imgPath}" alt="${activePet.species_name}" 
+             class="pet-image pet-anim-idle" 
+             style="${shinyStyle}; width: 180px; height: 180px; object-fit: contain; filter: drop-shadow(0 8px 25px rgba(0,0,0,0.6));"
+             onerror="this.src='../assets/placeholder.png'">
     `;
 
-    // Pet name and level
+    // Show shiny sparkles if applicable
+    const shinySparkles = document.getElementById('shiny-sparkles');
+    shinySparkles.style.display = activePet.is_shiny ? 'block' : 'none';
+
+    // === INFO HEADER ===
+    infoHeader.style.display = 'block';
+
+    // Pet name
     const displayName = activePet.nickname || activePet.species_name;
     document.getElementById('pet-name').textContent = displayName;
+
+    // Level badge
     document.getElementById('pet-level').textContent = `Lv.${activePet.level}`;
 
-    // Element and rarity badges
-    const elementDiv = document.getElementById('pet-element');
-    elementDiv.innerHTML = `
-        <span class="element-badge ${activePet.element.toLowerCase()}">${activePet.element}</span>
-        <span class="rarity-badge ${activePet.rarity.toLowerCase()}">${activePet.rarity}</span>
-    `;
+    // Element badge
+    const elementBadge = document.getElementById('pet-element-badge');
+    elementBadge.textContent = activePet.element;
+    elementBadge.className = `element-badge ${activePet.element.toLowerCase()}`;
 
-    // Status bars
-    updateStatusBar('health', activePet.health);
-    updateStatusBar('hunger', activePet.hunger);
-    updateStatusBar('mood', activePet.mood);
+    // Rarity badge
+    const rarityBadge = document.getElementById('pet-rarity-badge');
+    rarityBadge.textContent = activePet.rarity;
+    rarityBadge.className = `rarity-badge ${activePet.rarity.toLowerCase()}`;
 
-    // EXP bar
+    // Shiny tag
+    const shinyTag = document.getElementById('shiny-tag');
+    shinyTag.style.display = activePet.is_shiny ? 'inline-flex' : 'none';
+
+    // === STAT CARDS with Circular Progress ===
+    statsContainer.style.display = 'grid';
+
+    // Update circular progress rings
+    updateCircularProgress('health', activePet.health);
+    updateCircularProgress('hunger', activePet.hunger);
+    updateCircularProgress('mood', activePet.mood);
+
+    // === EXP CARD ===
+    expCard.style.display = 'block';
     const expNeeded = Math.floor(100 * Math.pow(1.2, activePet.level - 1));
     const expPercent = (activePet.exp / expNeeded) * 100;
     document.getElementById('exp-bar').style.width = `${expPercent}%`;
     document.getElementById('exp-text').textContent = `${activePet.exp} / ${expNeeded}`;
 
-    // Show elements
-    info.style.display = 'block';
+    // === ACTION BUTTONS ===
     actions.style.display = 'grid';
 
-    // Update shelter button text (with null check)
+    // Update shelter button text
     const shelterBtn = document.getElementById('btn-shelter');
     if (shelterBtn) {
-        const spanEl = shelterBtn.querySelector('span');
+        const labelEl = shelterBtn.querySelector('.action-label');
         const iconEl = shelterBtn.querySelector('i');
         if (activePet.status === 'SHELTER') {
-            if (spanEl) spanEl.textContent = 'Retrieve';
+            if (labelEl) labelEl.textContent = 'Retrieve';
             if (iconEl) iconEl.className = 'fas fa-door-open';
         } else {
-            if (spanEl) spanEl.textContent = 'Shelter';
+            if (labelEl) labelEl.textContent = 'Shelter';
             if (iconEl) iconEl.className = 'fas fa-home';
         }
     }
+}
+
+/**
+ * Update circular progress ring
+ * @param {string} type - 'health', 'hunger', or 'mood'
+ * @param {number} value - 0-100
+ */
+function updateCircularProgress(type, value) {
+    const ring = document.getElementById(`${type}-ring`);
+    const valueEl = document.getElementById(`${type}-value`);
+
+    if (!ring || !valueEl) return;
+
+    // Update value display
+    valueEl.textContent = Math.round(value);
+
+    // Calculate stroke-dashoffset for circular progress
+    // Circumference = 2 * PI * radius = 2 * 3.14159 * 35 ≈ 220
+    const circumference = 220;
+    const offset = circumference - (value / 100) * circumference;
+
+    ring.style.strokeDashoffset = offset;
 }
 
 function updateStatusBar(type, value) {

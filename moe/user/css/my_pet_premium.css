@@ -1,0 +1,820 @@
+/**
+ * MOE Pet System - My Pet Tab Premium Styling
+ * Dark Egyptian Fantasy Theme with Gold Accents
+ */
+
+/* ================================================
+   PET SHOWCASE - ENHANCED
+   ================================================ */
+.my-pet-showcase {
+    position: relative;
+    min-height: 320px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 20px;
+    background: linear-gradient(180deg, rgba(20, 15, 35, 0.6), rgba(15, 10, 25, 0.8));
+    border: 1px solid rgba(218, 165, 32, 0.2);
+}
+
+/* Mystical Background Orbs */
+.showcase-mystical-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.mystical-orb {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(218, 165, 32, 0.15), transparent 70%);
+    animation: float-orb 8s ease-in-out infinite;
+}
+
+.mystical-orb:nth-child(1) {
+    top: 10%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.mystical-orb:nth-child(2) {
+    top: 60%;
+    right: 15%;
+    animation-delay: 2s;
+}
+
+.mystical-orb:nth-child(3) {
+    bottom: 15%;
+    left: 20%;
+    animation-delay: 4s;
+}
+
+.mystical-orb:nth-child(4) {
+    top: 30%;
+    right: 25%;
+    animation-delay: 6s;
+}
+
+@keyframes float-orb {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0.3;
+    }
+
+    50% {
+        transform: translate(20px, -20px) scale(1.2);
+        opacity: 0.6;
+    }
+}
+
+/* No Pet State */
+.no-pet-state {
+    text-align: center;
+    padding: 48px 24px;
+    z-index: 10;
+}
+
+.no-pet-icon {
+    font-size: 4rem;
+    color: rgba(218, 165, 32, 0.3);
+    margin-bottom: 20px;
+    animation: pulse-icon 2s ease-in-out infinite;
+}
+
+@keyframes pulse-icon {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.3;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 0.5;
+    }
+}
+
+.no-pet-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.6rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0 0 12px;
+}
+
+.no-pet-desc {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.9rem;
+    margin: 0 0 24px;
+}
+
+.btn-summon {
+    padding: 14px 32px;
+    background: linear-gradient(135deg, var(--gold), #FFA500);
+    border: none;
+    border-radius: 12px;
+    color: #1a1a2e;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 20px rgba(218, 165, 32, 0.4);
+}
+
+.btn-summon:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 28px rgba(218, 165, 32, 0.6);
+}
+
+/* Pet Display Zone */
+.pet-display-zone {
+    position: relative;
+    width: 280px;
+    height: 280px;
+    z-index: 10;
+}
+
+/* Glow Rings */
+.pet-glow-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 2px solid rgba(218, 165, 32, 0.3);
+}
+
+.pet-glow-ring.ring-outer {
+    width: 260px;
+    height: 260px;
+    animation: pulse-ring-slow 4s ease-in-out infinite;
+    box-shadow: 0 0 30px rgba(218, 165, 32, 0.2);
+}
+
+.pet-glow-ring.ring-middle {
+    width: 200px;
+    height: 200px;
+    border-color: rgba(218, 165, 32, 0.2);
+    animation: pulse-ring-slow 4s ease-in-out infinite;
+    animation-delay: 1.3s;
+}
+
+.pet-glow-ring.ring-inner {
+    width: 140px;
+    height: 140px;
+    border-color: rgba(218, 165, 32, 0.15);
+    animation: pulse-ring-slow 4s ease-in-out infinite;
+    animation-delay: 2.6s;
+}
+
+@keyframes pulse-ring-slow {
+
+    0%,
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.6;
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(1.05);
+        opacity: 1;
+    }
+}
+
+/* Pet Pedestal */
+.pet-pedestal {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 180px;
+    height: 50px;
+}
+
+.pedestal-glow {
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse, rgba(218, 165, 32, 0.3), transparent 70%);
+    border-radius: 50%;
+    filter: blur(12px);
+    animation: pedestal-pulse 3s ease-in-out infinite;
+}
+
+@keyframes pedestal-pulse {
+
+    0%,
+    100% {
+        opacity: 0.5;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.8;
+        transform: scale(1.1);
+    }
+}
+
+/* Pet Image Container */
+#pet-img-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+
+/* Shiny Sparkles */
+.shiny-sparkles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 20;
+}
+
+.shiny-sparkles .sparkle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: radial-gradient(circle, #FFD700, transparent);
+    border-radius: 50%;
+    animation: sparkle-float 3s ease-in-out infinite;
+}
+
+.shiny-sparkles .sparkle:nth-child(1) {
+    top: 20%;
+    left: 20%;
+    animation-delay: 0s;
+}
+
+.shiny-sparkles .sparkle:nth-child(2) {
+    top: 30%;
+    right: 25%;
+    animation-delay: 1s;
+}
+
+.shiny-sparkles .sparkle:nth-child(3) {
+    bottom: 30%;
+    left: 30%;
+    animation-delay: 2s;
+}
+
+@keyframes sparkle-float {
+
+    0%,
+    100% {
+        transform: translateY(0) scale(0.8);
+        opacity: 0;
+    }
+
+    50% {
+        transform: translateY(-30px) scale(1.2);
+        opacity: 1;
+    }
+}
+
+/* ================================================
+   PET INFO HEADER
+   ================================================ */
+.pet-info-header {
+    padding: 16px 16px 20px;
+    margin-bottom: 16px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 16px;
+    border: 1px solid rgba(100, 100, 120, 0.15);
+}
+
+.pet-name-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.pet-display-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.btn-edit-name {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid rgba(218, 165, 32, 0.3);
+    background: rgba(218, 165, 32, 0.1);
+    color: var(--gold);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-edit-name:hover {
+    background: rgba(218, 165, 32, 0.2);
+    transform: rotate(15deg);
+}
+
+.pet-meta-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.level-badge,
+.element-badge,
+.rarity-badge,
+.shiny-tag {
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.level-badge {
+    background: linear-gradient(135deg, var(--gold), #FFA500);
+    color: #1a1a2e;
+    box-shadow: 0 2px 10px rgba(218, 165, 32, 0.4);
+}
+
+.element-badge {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.element-badge.fire {
+    border-color: rgba(231, 76, 60, 0.5);
+    color: #E74C3C;
+}
+
+.element-badge.water {
+    border-color: rgba(52, 152, 219, 0.5);
+    color: #3498DB;
+}
+
+.element-badge.earth {
+    border-color: rgba(39, 174, 96, 0.5);
+    color: #27AE60;
+}
+
+.element-badge.air {
+    border-color: rgba(189, 195, 199, 0.5);
+    color: #BDC3C7;
+}
+
+.rarity-badge.common {
+    background: linear-gradient(135deg, #AAA, #888);
+    color: #fff;
+}
+
+.rarity-badge.rare {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: #fff;
+}
+
+.rarity-badge.epic {
+    background: linear-gradient(135deg, #9B59B6, #8E44AD);
+    color: #fff;
+}
+
+.rarity-badge.legendary {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #1a1a2e;
+    animation: badge-glow 2s ease-in-out infinite;
+}
+
+@keyframes badge-glow {
+
+    0%,
+    100% {
+        box-shadow: 0 2px 15px rgba(255, 215, 0, 0.5);
+    }
+
+    50% {
+        box-shadow: 0 2px 25px rgba(255, 215, 0, 0.8);
+    }
+}
+
+.shiny-tag {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #1a1a2e;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.shiny-tag i {
+    animation: rotate-star 3s linear infinite;
+}
+
+@keyframes rotate-star {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ================================================
+   STATS CARDS - CIRCULAR PROGRESS
+   ================================================ */
+.stats-cards-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(100, 100, 120, 0.2);
+    border-radius: 16px;
+    padding: 16px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(218, 165, 32, 0.4);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.stat-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.stat-card-header i {
+    font-size: 1.1rem;
+}
+
+.health-card .stat-card-header i {
+    color: #E74C3C;
+}
+
+.hunger-card .stat-card-header i {
+    color: #F39C12;
+}
+
+.mood-card .stat-card-header i {
+    color: #3498DB;
+}
+
+.stat-card-body {
+    display: flex;
+    justify-content: center;
+}
+
+/* Circular Progress Ring */
+.stat-progress-ring {
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+
+.progress-ring {
+    transform: rotate(-90deg);
+}
+
+.progress-ring-bg {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.05);
+    stroke-width: 6;
+}
+
+.progress-ring-fill {
+    fill: none;
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-dasharray: 220;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 0.6s ease;
+}
+
+.health-fill {
+    stroke: #E74C3C;
+    filter: drop-shadow(0 0 8px rgba(231, 76, 60, 0.6));
+}
+
+.hunger-fill {
+    stroke: #F39C12;
+    filter: drop-shadow(0 0 8px rgba(243, 156, 18, 0.6));
+}
+
+.mood-fill {
+    stroke: #3498DB;
+    filter: drop-shadow(0 0 8px rgba(52, 152, 219, 0.6));
+}
+
+.stat-value-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+/* ================================================
+   EXPERIENCE CARD
+   ================================================ */
+.exp-card {
+    background: linear-gradient(135deg, rgba(155, 89, 182, 0.1), rgba(142, 68, 173, 0.05));
+    border: 1px solid rgba(155, 89, 182, 0.3);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.exp-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.exp-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #9B59B6;
+}
+
+.exp-label i {
+    font-size: 1rem;
+}
+
+.exp-text {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.exp-bar-container {
+    position: relative;
+}
+
+.exp-bar {
+    height: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+.exp-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #9B59B6, #8E44AD);
+    border-radius: 10px;
+    transition: width 0.6s ease;
+    position: relative;
+    z-index: 2;
+}
+
+.exp-bar-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    border-radius: 10px;
+    animation: exp-glow-sweep 2s ease-in-out infinite;
+    z-index: 3;
+    pointer-events: none;
+}
+
+@keyframes exp-glow-sweep {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(200%);
+    }
+}
+
+/* ================================================
+   ACTION BUTTONS GRID
+   ================================================ */
+.action-buttons-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.action-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(100, 100, 120, 0.2);
+    border-radius: 16px;
+    padding: 20px 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    overflow: hidden;
+}
+
+.action-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(218, 165, 32, 0.5);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.action-card:active {
+    transform: translateY(-2px);
+}
+
+.action-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.feed-card .action-icon {
+    background: linear-gradient(135deg, rgba(243, 156, 18, 0.2), rgba(230, 126, 34, 0.1));
+    color: #F39C12;
+}
+
+.play-card .action-icon {
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.2), rgba(41, 128, 185, 0.1));
+    color: #3498DB;
+}
+
+.heal-card .action-icon {
+    background: linear-gradient(135deg, rgba(231, 76, 60, 0.2), rgba(192, 57, 43, 0.1));
+    color: #E74C3C;
+}
+
+.shelter-card .action-icon {
+    background: linear-gradient(135deg, rgba(155, 89, 182, 0.2), rgba(142, 68, 173, 0.1));
+    color: #9B59B6;
+}
+
+.action-card:hover .action-icon {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.action-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.action-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(218, 165, 32, 0.1), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.action-card:hover .action-glow {
+    opacity: 1;
+}
+
+/* Disabled State */
+.action-card:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.action-card:disabled:hover {
+    transform: none;
+    border-color: rgba(100, 100, 120, 0.2);
+    box-shadow: none;
+}
+
+/* ================================================
+   RESPONSIVE ADJUSTMENTS
+   ================================================ */
+@media (max-width: 480px) {
+    .my-pet-showcase {
+        min-height: 280px;
+    }
+
+    .pet-display-zone {
+        width: 240px;
+        height: 240px;
+    }
+
+    .pet-glow-ring.ring-outer {
+        width: 220px;
+        height: 220px;
+    }
+
+    .pet-glow-ring.ring-middle {
+        width: 170px;
+        height: 170px;
+    }
+
+    .pet-glow-ring.ring-inner {
+        width: 120px;
+        height: 120px;
+    }
+
+    .pet-display-name {
+        font-size: 1.5rem;
+    }
+
+    .stats-cards-container {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+
+    .stat-card {
+        padding: 12px 8px;
+    }
+
+    .stat-progress-ring {
+        width: 70px;
+        height: 70px;
+    }
+
+    .stat-value-center {
+        font-size: 1.2rem;
+    }
+
+    .action-buttons-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .action-card {
+        padding: 16px 12px;
+    }
+
+    .action-icon {
+        width: 42px;
+        height: 42px;
+        font-size: 1.3rem;
+    }
+
+    .action-label {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .stats-cards-container {
+        gap: 6px;
+    }
+
+    .stat-card {
+        padding: 10px 6px;
+    }
+
+    .stat-card-header {
+        font-size: 0.75rem;
+        margin-bottom: 8px;
+    }
+
+    .stat-progress-ring {
+        width: 60px;
+        height: 60px;
+    }
+
+    .stat-value-center {
+        font-size: 1rem;
+    }
+
+    .progress-ring-fill {
+        stroke-width: 5;
+    }
+}
