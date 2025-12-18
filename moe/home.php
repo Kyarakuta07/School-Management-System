@@ -19,8 +19,7 @@
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-    <!-- Spline 3D Viewer Runtime -->
-    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.48/build/spline-viewer.js"></script>
+    <!-- Sketchfab 3D Model (Horus Egyptian God) -->
 
     <!-- Global CSS -->
     <link rel="stylesheet" href="assets/css/navbar.css">
@@ -196,36 +195,15 @@
             </div>
 
             <div class="hero-right" id="hero-right">
-                <!-- Spline 3D Scene Container -->
-                <div class="spline-container" id="spline-container">
-                    <div class="spline-loading" id="spline-loading">
-                        <i class="fas fa-spinner"></i>
-                        <p>Loading 3D Scene...</p>
-                    </div>
-                    <!-- 
-                    =====================================================
-                    SPLINE 3D SCENE PLACEHOLDER
-                    =====================================================
-                    
-                    To add your own Spline scene:
-                    1. Go to https://spline.design/community
-                    2. Find a scene you like (search: "egypt", "ancient", "gold", "crystal")
-                    3. Click "Remix" or "Copy"
-                    4. In Spline editor, click "Export" > "Viewer Embed"
-                    5. Copy the scene URL (looks like: https://prod.spline.design/xxxxx/scene.splinecode)
-                    6. Replace the URL in the spline-viewer below
-                    
-                    Example free scenes that fit Egyptian theme:
-                    - Abstract gold shapes
-                    - Crystal formations
-                    - Floating geometric objects
-                    - Mystical orbs
-                    
-                    =====================================================
-                    -->
-                    <spline-viewer id="spline-viewer" url="https://prod.spline.design/3S1f5MDCY9SgD6uF/scene.splinecode"
-                        loading-anim events-target="global" style="width: 100%; height: 100%;">
-                    </spline-viewer>
+                <!-- Sketchfab 3D Egyptian Model (Horus by Rumpelstiltskin) -->
+                <div class="sketchfab-embed-wrapper"
+                    style="width: 100%; height: 100%; position: absolute; top: 0; right: 0;">
+                    <iframe title="Horus - Egyptian God" frameborder="0" allowfullscreen mozallowfullscreen="true"
+                        webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking"
+                        xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share
+                        src="https://sketchfab.com/models/3f6e75ecb0b44fb6bd7df0c3b2c7ce32/embed?autostart=1&transparent=1&ui_theme=dark"
+                        style="width: 100%; height: 100%;">
+                    </iframe>
                 </div>
 
                 <!-- Fallback: Original character image (shown if Spline fails or on slow connections) -->
