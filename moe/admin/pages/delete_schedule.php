@@ -31,7 +31,7 @@ if ($id_schedule_to_delete == 0) {
 }
 
 // --- 1. AMBIL DATA SEBELUM MENGHAPUS UNTUK LOGGING ---
-$sql_fetch = "SELECT class_name, class_day, class_time, class_image_url FROM class_schedule WHERE id_schedule = ?";
+$sql_fetch = "SELECT class_name, schedule_day, schedule_time, class_image_url FROM class_schedule WHERE id_schedule = ?";
 $stmt_fetch = mysqli_prepare($conn, $sql_fetch);
 
 if ($stmt_fetch) {
@@ -64,7 +64,7 @@ if ($stmt_fetch) {
                 $conn,
                 'schedule',
                 $id_schedule_to_delete,
-                'Deleted schedule: ' . ($schedule_data['class_name'] ?? 'Unknown') . ' (' . ($schedule_data['class_day'] ?? '') . ')',
+                'Deleted schedule: ' . ($schedule_data['class_name'] ?? 'Unknown') . ' (' . ($schedule_data['schedule_day'] ?? '') . ')',
                 $schedule_data
             );
 
