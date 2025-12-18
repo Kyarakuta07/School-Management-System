@@ -50,6 +50,7 @@ jobs:
           port: 21
           local-dir: moe/
           server-dir: public_html/moe/
+          state-name: .ftp-deploy-sync-state-v2.json
           dangerous-clean-slate: true
           exclude: |
             **/.git*
