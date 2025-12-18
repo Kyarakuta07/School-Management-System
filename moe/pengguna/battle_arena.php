@@ -19,8 +19,8 @@ if (!isset($_SESSION['id_nethera'])) {
 $user_id = $_SESSION['id_nethera'];
 
 // Include database connection and rate limiter
-include '../connection.php';
-require_once '../includes/rate_limiter.php';
+include '../config/connection.php';
+require_once '../core/rate_limiter.php';
 
 // Check battle rate limit (3 battles per day)
 $rate_limiter = new RateLimiter($conn);

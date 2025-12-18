@@ -11,10 +11,10 @@
 // SETUP - Using hybrid approach like beranda.php
 // ==================================================
 session_start();
-include '../connection.php';
-require_once '../includes/Database.php';
-require_once '../includes/helpers.php';
-require_once '../includes/csrf.php';
+include '../config/connection.php';
+require_once '../core/Database.php';
+require_once '../core/helpers.php';
+require_once '../core/csrf.php';
 
 // Initialize DB wrapper
 DB::init($conn);
@@ -176,7 +176,7 @@ $code_of_conduct = [
             <a href="pet.php" class="nav-btn"><i class="fa-solid fa-paw"></i><span>Pet</span></a>
             <a href="trapeza.php" class="nav-btn"><i class="fa-solid fa-credit-card"></i><span>Trapeza</span></a>
             <a href="punishment.php" class="nav-btn active"><i class="fa-solid fa-gavel"></i><span>Punishment</span></a>
-            <a href="../logout.php" class="logout-btn-header"><i
+            <a href="../auth/handlers/logout.php" class="logout-btn-header"><i
                     class="fa-solid fa-sign-out-alt"></i><span>Logout</span></a>
         </nav>
 

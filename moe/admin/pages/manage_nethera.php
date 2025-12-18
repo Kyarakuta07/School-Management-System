@@ -65,7 +65,7 @@ $result_all_nethera = mysqli_query($conn, $query_all_nethera);
             </a>
 
             <div class="menu-bottom">
-                <a href="../../logout.php">
+                <a href="../../auth/handlers/logout.php">
                     <i class="uil uil-signout"></i> <span>Logout</span>
                 </a>
             </div>

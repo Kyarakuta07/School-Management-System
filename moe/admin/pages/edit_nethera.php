@@ -73,7 +73,7 @@ $result_sanctuaries = mysqli_query($conn, $sql_sanctuaries);
             <a href="#">
                 <i class="uil uil-setting"></i> <span>Settings</span>
             </a>
-            <a href="../../logout.php" class="menu-bottom">
+            <a href="../../auth/handlers/logout.php" class="menu-bottom">
                 <i class="uil uil-signout"></i> <span>Logout</span>
             </a>
         </nav>

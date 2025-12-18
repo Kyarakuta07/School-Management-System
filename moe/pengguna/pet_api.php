@@ -14,7 +14,7 @@ ob_start();
 error_reporting(E_ERROR | E_PARSE);
 ini_set('display_errors', '0');
 
-require_once '../includes/security_config.php';
+require_once '../core/security_config.php';
 session_start();
 
 // Clean any buffered output that might have been generated
@@ -26,10 +26,10 @@ header('Content-Type: application/json');
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Pragma: no-cache");
 
-include '../connection.php';
+include '../config/connection.php';
 include 'pet/pet_loader.php';
-require_once '../includes/rate_limiter.php';
-require_once '../includes/api_response.php';
+require_once '../core/rate_limiter.php';
+require_once '../core/api_response.php';
 
 // ================================================
 // AUTHENTICATION CHECK

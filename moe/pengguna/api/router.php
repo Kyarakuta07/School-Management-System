@@ -16,11 +16,11 @@
 // SETUP & AUTH
 // ==================================================
 
-require_once '../../includes/bootstrap.php';
+require_once '../../core/bootstrap.php';
 require_once '../pet/pet_loader.php'; // Load pet logic functions
 
 // API-specific response helpers
-require_once '../../includes/api_response.php';
+require_once '../../core/api_response.php';
 
 // Require Nethera auth (returns JSON error if not authenticated)
 Auth::requireNetheraApi();

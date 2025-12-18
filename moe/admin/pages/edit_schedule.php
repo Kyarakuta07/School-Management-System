@@ -67,7 +67,7 @@ if (!$schedule_data) {
                 <i class="uil uil-setting"></i> <span>Settings</span>
             </a>
             <div class="menu-bottom">
-                <a href="../../logout.php">
+                <a href="../../auth/handlers/logout.php">
                     <i class="uil uil-signout"></i> <span>Logout</span>
                 </a>
             </div>

@@ -112,7 +112,7 @@ $total_all = $total_nethera + $total_pending + $total_hiatus + $total_out;
             </a>
 
             <div class="menu-bottom">
-                <a href="../logout.php">
+                <a href="../auth/handlers/logout.php">
                     <i class="uil uil-signout"></i> <span>Logout</span>
                 </a>
             </div>

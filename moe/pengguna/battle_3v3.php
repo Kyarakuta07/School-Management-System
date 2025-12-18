@@ -16,7 +16,7 @@ if (!isset($_SESSION['id_nethera'])) {
 $user_id = $_SESSION['id_nethera'];
 
 // Include database connection
-include '../connection.php';
+include '../config/connection.php';
 
 // Get battle parameters
 $battle_id = isset($_GET['battle_id']) ? $_GET['battle_id'] : '';

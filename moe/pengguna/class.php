@@ -6,7 +6,7 @@
  * View class schedule and personal grades
  */
 
-require_once '../includes/bootstrap.php';
+require_once '../core/bootstrap.php';
 
 Auth::requireNethera();
 
@@ -110,7 +110,7 @@ $csrf_token = generate_csrf_token();
             <a href="pet.php" class="nav-btn"><i class="fa-solid fa-paw"></i><span>Pet</span></a>
             <a href="trapeza.php" class="nav-btn"><i class="fa-solid fa-credit-card"></i><span>Trapeza</span></a>
             <a href="punishment.php" class="nav-btn"><i class="fa-solid fa-gavel"></i><span>Punishment</span></a>
-            <a href="../logout.php" class="logout-btn-header"><i
+            <a href="../auth/handlers/logout.php" class="logout-btn-header"><i
                     class="fa-solid fa-sign-out-alt"></i><span>Logout</span></a>
         </nav>
 

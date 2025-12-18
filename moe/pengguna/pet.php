@@ -8,7 +8,7 @@
  */
 
 session_start();
-include '../connection.php';
+include '../config/connection.php';
 
 // Authentication check
 if (!isset($_SESSION['status_login']) || $_SESSION['role'] != 'Nethera') {

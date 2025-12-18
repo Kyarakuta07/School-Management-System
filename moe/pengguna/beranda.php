@@ -140,7 +140,7 @@ if ($hour >= 5 && $hour < 12) {
                         <h1 class="user-name-hero"><?= e($user_name) ?></h1>
                     </div>
                 </div>
-                <a href="../logout.php" class="logout-btn-hero" title="Logout">
+                <a href="../auth/handlers/logout.php" class="logout-btn-hero" title="Logout">
                     <i class="fa-solid fa-sign-out-alt"></i>
                 </a>
             </div>
