@@ -52,19 +52,32 @@ jobs:
           # Pakai ./ karena akun matthew sudah dikunci ke folder moe
           server-dir: ./
           state-name: .ftp-deploy-sync-state-v2.json
-          dangerous-clean-slate: false
-          # Hapus file yang sudah di-delete di Git (orphaned files)
-          delete-orphaned-files: true
+          dangerous-clean-slate: true
           exclude: |
             **/.git*
             **/node_modules/**
+            **/.env*
+            **/*.env
             .env
             .htaccess
+            **/.htaccess
             cgi-bin/
             *.log
+            **/*.log
+            error_log
             repository/
             temp/
+            **/temp/
             uploads/
+            **/uploads/
+            sessions/
+            **/sessions/
+            cache/
+            **/cache/
+            *.sql
+            *.sql.gz
+            *.bak
+            *.backup
       
       - name: 🏥 Health Check
         run: |
