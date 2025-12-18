@@ -1,7 +1,3 @@
-<?php
-// Allow Sketchfab 3D embed - override CSP headers
-header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://static.sketchfab.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com https://unpkg.com; frame-src 'self' https://sketchfab.com; img-src 'self' data: blob: https: http:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; connect-src 'self' https://sketchfab.com https://static.sketchfab.com; worker-src 'self' blob:;");
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -23,7 +19,6 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-i
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-    <!-- Sketchfab 3D Model (Horus Egyptian God) -->
 
     <!-- Global CSS -->
     <link rel="stylesheet" href="assets/css/navbar.css">
@@ -199,19 +194,9 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-i
             </div>
 
             <div class="hero-right" id="hero-right">
-                <!-- Sketchfab 3D Egyptian Model (Horus by Rumpelstiltskin) -->
-                <div class="sketchfab-embed-wrapper"
-                    style="width: 100%; height: 100%; position: absolute; top: 0; right: 0;">
-                    <iframe title="Horus - Egyptian God" frameborder="0" allowfullscreen mozallowfullscreen="true"
-                        webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking"
-                        xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share
-                        src="https://sketchfab.com/models/3f6e75ecb0b44fb6bd7df0c3b2c7ce32/embed?autostart=1&transparent=1&ui_theme=dark"
-                        style="width: 100%; height: 100%;">
-                    </iframe>
-                </div>
 
-                <!-- Fallback: Original character image (shown if Spline fails or on slow connections) -->
-                <div class="character-container" id="fallback-character">
+                <!-- Original character image -->
+                <div class="character-container">
                     <img src="assets/landing/nyatuin.png" alt="Main Character" class="main-combined">
                 </div>
             </div>
