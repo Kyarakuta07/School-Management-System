@@ -53,6 +53,7 @@ mysqli_stmt_close($gold_stmt);
     <link rel="stylesheet" href="css/gacha_premium.css">
     <link rel="stylesheet" href="css/gacha_result_modal.css">
     <link rel="stylesheet" href="css/my_pet_premium.css">
+    <link rel="stylesheet" href="css/collection_premium.css">
     <link rel="stylesheet" href="css/daily_login.css">
 
     <!-- PixiJS for particles -->
@@ -318,11 +319,20 @@ mysqli_stmt_close($gold_stmt);
 
             <!-- COLLECTION TAB -->
             <section id="collection" class="tab-panel">
-                <div class="collection-header">
-                    <h3 class="collection-title">My Pets</h3>
-                    <span class="collection-count" id="pet-count-badge">0 / 25</span>
+                <!-- Enhanced Collection Header -->
+                <div class="collection-premium-header">
+                    <div class="collection-title-section">
+                        <h2 class="collection-main-title">
+                            <i class="fas fa-book-open"></i>
+                            <span>My Collection</span>
+                        </h2>
+                        <p class="collection-subtitle">Manage your legendary companions</p>
+                    </div>
+                    <div class="collection-count-badge" id="pet-count-badge">0 / 25</div>
                 </div>
-                <div class="collection-grid" id="collection-grid">
+
+                <!-- Collection Grid (populated by JS) -->
+                <div class="collection-premium-grid" id="collection-grid">
                     <!-- Pet cards rendered by JS -->
                 </div>
             </section>

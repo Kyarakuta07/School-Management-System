@@ -487,7 +487,7 @@ function updatePetCountBadge() {
 }
 
 // ================================================
-// COLLECTION TAB (With Retrieve Button)
+// COLLECTION TAB (Premium Enhanced)
 // ================================================
 function renderCollection() {
     const grid = document.getElementById('collection-grid');
@@ -511,11 +511,20 @@ function renderCollection() {
         const deadClass = pet.status === 'DEAD' ? 'dead' : '';
         const shinyStyle = pet.is_shiny ? `filter: hue-rotate(${pet.shiny_hue}deg);` : '';
 
-        // --- TOMBOL RETRIEVE ---
+        // Element icon mapping
+        const elementIcons = {
+            'Fire': '🔥',
+            'Water': '💧',
+            'Earth': '🌿',
+            'Air': '💨'
+        };
+        const elementIcon = elementIcons[pet.element] || '⭐';
+
+        // Retrieve button for sheltered pets
         let actionButtonHTML = '';
         if (pet.status === 'SHELTER') {
             actionButtonHTML = `
-                <button class="shop-buy-btn" style="margin-top: 8px; background: linear-gradient(135deg, #3498db, #2980b9); color: white; width: 100%; border: none;">
+                <button class="shop-buy-btn" onclick="event.stopPropagation(); selectPet(${pet.id})">
                     <i class="fas fa-box-open"></i> Retrieve
                 </button>
             `;
@@ -523,12 +532,27 @@ function renderCollection() {
 
         return `
             <div class="pet-card ${activeClass} ${deadClass}" onclick="selectPet(${pet.id})">
-                <span class="rarity-badge ${pet.rarity.toLowerCase()}">${pet.rarity.charAt(0)}</span>
+                <!-- Rarity Badge -->
+                <span class="rarity-badge ${pet.rarity.toLowerCase()}">${pet.rarity}</span>
+                
+                <!-- Element Badge -->
+                <div class="pet-card-element ${pet.element.toLowerCase()}" title="${pet.element}">
+                    ${elementIcon}
+                </div>
+                
+                <!-- Shiny Indicator -->
+                ${pet.is_shiny ? '<div class="pet-card-shiny">✨</div>' : ''}
+                
+                <!-- Pet Image -->
                 <img src="${imgPath}" alt="${pet.species_name}" class="pet-card-img" 
                      style="${shinyStyle}"
                      onerror="this.src='../assets/placeholder.png'">
+                
+                <!-- Pet Info -->
                 <h3 class="pet-card-name">${displayName}</h3>
-                <span class="pet-card-level">Lv.${pet.level} ${pet.is_shiny ? '✨' : ''}</span>
+                <span class="pet-card-level">Lv.${pet.level}</span>
+                
+                <!-- Retrieve Button (if applicable) -->
                 ${actionButtonHTML}
             </div>
         `;
