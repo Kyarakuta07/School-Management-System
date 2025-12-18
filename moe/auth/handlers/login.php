@@ -77,7 +77,7 @@ if ($stmt) {
             header("Location: ../../admin/index.php");
             exit();
         } else {
-            header("Location: ../../pengguna/beranda.php");
+            header("Location: ../../user/beranda.php");
             exit();
         }
 

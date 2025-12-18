@@ -12,7 +12,7 @@ if (isset($_SESSION['status_login']) && $_SESSION['status_login'] == 'berhasil')
         header("Location: admin/index.php");
         exit();
     } else if ($_SESSION['role'] == 'Nethera') {
-        header("Location: pengguna/beranda.php");
+        header("Location: user/beranda.php");
         exit();
     }
 }
