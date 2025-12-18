@@ -661,4 +661,223 @@
     .inventory-premium-grid {
         grid-template-columns: repeat(3, 1fr);
     }
+}/* ================================================
+   SHOP PURCHASE MODAL - PREMIUM STYLING
+   ================================================ */
+.modal#shop-purchase-modal .modal-content,
+#shop-purchase-modal .modal-content {
+    background: linear-gradient(135deg, rgba(26, 21, 20, 0.98), rgba(10, 10, 10, 0.98));
+    border: 2px solid rgba(212, 175, 55, 0.3);
+    border-radius: 20px;
+    max-width: 450px;
+    backdrop-filter: blur(20px);
 }
+
+#shop-purchase-modal .modal-header {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(197, 160, 40, 0.1));
+    border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+    padding: 1.5rem;
+    border-radius: 20px 20px 0 0;
+}
+
+#shop-purchase-modal .modal-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+#shop-modal-img {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    margin: 1.5rem auto;
+    display: block;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1rem;
+}
+
+#shop-modal-name {
+    font-family: 'Lato', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+#shop-modal-desc {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-align: center;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+
+.shop-qty-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+.qty-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(197, 160, 40, 0.1));
+    border: 2px solid rgba(212, 175, 55, 0.4);
+    color: var(--gold);
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.qty-btn:hover {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(197, 160, 40, 0.2));
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+}
+
+.qty-btn:active {
+    transform: scale(0.95);
+}
+
+#shop-qty-input {
+    width: 80px;
+    height: 45px;
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(212, 175, 55, 0.3);
+    border-radius: 12px;
+    color: #fff;
+    transition: all 0.3s ease;
+}
+
+#shop-qty-input:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+}
+
+.shop-price-summary {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    margin: 1.5rem 0;
+}
+
+.price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+}
+
+.price-row:last-child {
+    margin-bottom: 0;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(212, 175, 55, 0.2);
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.price-label {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.price-value {
+    color: var(--gold);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.price-value i {
+    animation: coinSpinSlow 4s linear infinite;
+}
+
+@keyframes coinSpinSlow {
+    0% { transform: rotateY(0deg); }
+    100% { transform: rotateY(360deg); }
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.modal-btn-confirm {
+    flex: 1;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    border: none;
+    border-radius: 12px;
+    padding: 0.875rem 1.5rem;
+    color: #0a0a0a;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.modal-btn-confirm:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+}
+
+.modal-btn-confirm:active {
+    transform: translateY(0);
+}
+
+.modal-btn-cancel {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 0.875rem 1.5rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.modal-btn-cancel:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+/* Bulk Use Modal - Premium Styling */
+#bulk-use-modal .modal-content,
+.modal#bulk-use-modal .modal-content {
+    background: linear-gradient(135deg, rgba(26, 21, 20, 0.98), rgba(10, 10, 10, 0.98));
+    border: 2px solid rgba(212, 175, 55, 0.3);
+    border-radius: 20px;
+    backdrop-filter: blur(20px);
+}
+
+#bulk-use-modal .modal-header {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(197, 160, 40, 0.1));
+    border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+}
+
