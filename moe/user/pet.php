@@ -1178,6 +1178,9 @@ mysqli_stmt_close($gold_stmt);
     <!-- Arena & Achievements Module -->
     <script src="js/pet_arena.js"></script>
 
+    <!-- Collection Phase 2 (Search, Filter, Sort) -->
+    <script src="js/collection_phase2.js"></script>
+
     <!-- Arena Integration Script -->
     <script>
         // Wait for DOM to be ready
