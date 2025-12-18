@@ -686,32 +686,50 @@ async function toggleShelter(targetPetId = null) {
 // INVENTORY & BULK USE SYSTEM (CORE UPDATE)
 // ================================================
 
-// 1. Render Inventory agar Bisa Diklik
+// Render Inventory with Premium Cards
 function renderInventory() {
     const grid = document.getElementById('inventory-grid');
+
+    // Update inventory count
+    updateInventoryCount();
 
     if (userInventory.length === 0) {
         grid.innerHTML = '<p class="empty-message">No items yet</p>';
         return;
     }
 
-    grid.innerHTML = userInventory.map(item => `
-        <div class="inventory-item" title="${item.name}" 
-             onclick="handleInventoryClick(
+    grid.innerHTML = userInventory.map(item => {
+        // Determine rarity based on price (if available) or effect type
+        let rarity = 'common';
+        if (item.price) {
+            if (item.price >= 1000) rarity = 'legendary';
+            else if (item.price >= 500) rarity = 'epic';
+            else if (item.price >= 200) rarity = 'rare';
+            else if (item.price >= 100) rarity = 'uncommon';
+        }
+
+        const isDepleted = item.quantity === 0;
+
+        return `
+        <div class="inventory-item-card ${rarity} ${isDepleted ? 'depleted' : ''}" 
+             onclick="${!isDepleted ? `handleInventoryClick(
                  ${item.item_id}, 
                  '${item.effect_type}', 
                  '${item.name.replace(/'/g, "\\'")}', 
                  '${item.description ? item.description.replace(/'/g, "\\'") : ''}', 
                  '${item.img_path}', 
                  ${item.quantity}
-             )"
-             style="cursor: pointer;">
-             
-            <img src="${ASSETS_BASE}${item.img_path}" alt="${item.name}" class="inventory-item-img"
-                 onerror="this.src='../assets/placeholder.png'">
-            <span class="inventory-item-qty">${item.quantity}</span>
+             )` : 'void(0)'}" 
+             title="${item.name}${item.description ? ' - ' + item.description : ''}">
+            <div class="inventory-item-img-wrapper">
+                <img src="${ASSETS_BASE}${item.img_path}" alt="${item.name}"
+                     onerror="this.src='../assets/placeholder.png'">
+            </div>
+            <span class="inventory-qty-badge">${item.quantity}</span>
+            <p class="inventory-item-name">${item.name}</p>
         </div>
-    `).join('');
+    `;
+    }).join('');
 }
 
 // 2. Handle Klik Item (Buka Modal / Gacha)
@@ -1068,12 +1086,12 @@ function closeGachaModal() {
 }
 
 // ================================================
-// SHOP SYSTEM
+// SHOP SYSTEM (Premium Enhanced)
 // ================================================
 function initShopTabs() {
-    document.querySelectorAll('.shop-tab').forEach(tab => {
+    document.querySelectorAll('.shop-tab-pill').forEach(tab => {
         tab.addEventListener('click', () => {
-            document.querySelectorAll('.shop-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.shop-tab-pill').forEach(t => t.classList.remove('active'));
             tab.classList.add('active');
             renderShopItems(tab.dataset.shop);
         });
@@ -1167,18 +1185,34 @@ function renderShopItems(category) {
         const itemCategory = getItemCategory(item.effect_type);
         const icon = getItemIcon(item.name, item.effect_type);
 
+        // Determine rarity based on price (simple heuristic)
+        let rarity = 'common';
+        if (item.price >= 1000) rarity = 'legendary';
+        else if (item.price >= 500) rarity = 'epic';
+        else if (item.price >= 200) rarity = 'rare';
+        else if (item.price >= 100) rarity = 'uncommon';
+
+        // Check if item is new (optional - add is_new field to DB if needed)
+        const isNew = item.is_new || false;
+
         return `
-            <div class="shop-item-card" data-category="${itemCategory}" data-item-id="${item.id}">
-                <div class="shop-item-icon">
+            <div class="shop-item-card ${rarity}" onclick="buyItem(${item.id})">
+                ${isNew ? '<span class="new-badge">NEW</span>' : ''}
+                <div class="shop-item-icon-wrapper ${rarity}">
                     <i class="fas ${icon}"></i>
                 </div>
-                <div class="shop-item-name">${item.name}</div>
-                <div class="shop-item-desc">${item.description || ''}</div>
-                <div class="shop-item-price">
-                    <i class="fas fa-coins"></i>
-                    ${item.price}
+                <h4 class="shop-item-name">${item.name}</h4>
+                <p class="shop-item-desc">${item.description || ''}</p>
+                <div class="shop-item-footer">
+                    <div class="shop-item-price">
+                        <i class="fas fa-coins"></i>
+                        <span>${item.price}</span>
+                    </div>
+                    <button class="shop-buy-btn" onclick="event.stopPropagation(); buyItem(${item.id})">
+                        <i class="fas fa-cart-plus"></i>
+                        Buy
+                    </button>
                 </div>
-                <button class="shop-buy-btn" onclick="buyItem(${item.id})">Buy</button>
             </div>
         `;
     }).join('');
@@ -1270,9 +1304,19 @@ async function loadInventory() {
         if (data.success) {
             userInventory = data.inventory;
             renderInventory();
+            updateInventoryCount(); // Update count display
         }
     } catch (error) {
         console.error('Error loading inventory:', error);
+    }
+}
+
+// Update inventory count display
+function updateInventoryCount() {
+    const countEl = document.getElementById('inventory-count');
+    if (countEl) {
+        const count = userInventory.length;
+        countEl.textContent = `${count} ${count === 1 ? 'item' : 'items'}`;
     }
 }
 

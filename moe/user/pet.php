@@ -54,6 +54,7 @@ mysqli_stmt_close($gold_stmt);
     <link rel="stylesheet" href="css/gacha_result_modal.css">
     <link rel="stylesheet" href="css/my_pet_premium.css">
     <link rel="stylesheet" href="css/collection_premium.css">
+    <link rel="stylesheet" href="css/shop_premium.css">
     <link rel="stylesheet" href="css/daily_login.css">
 
     <!-- PixiJS for particles -->
@@ -539,17 +540,43 @@ mysqli_stmt_close($gold_stmt);
 
             <!-- SHOP TAB -->
             <section id="shop" class="tab-panel">
-                <div class="shop-tabs" id="shop-tabs">
-                    <button class="shop-tab active" data-shop="food">Food</button>
-                    <button class="shop-tab" data-shop="potion">Potions</button>
-                    <button class="shop-tab" data-shop="special">Special</button>
+                <!-- Premium Shop Header -->
+                <div class="shop-premium-header">
+                    <h2 class="shop-title">
+                        <i class="fas fa-store"></i>
+                        <span>Mystical Bazaar</span>
+                    </h2>
+                    <p class="shop-subtitle">Acquire powerful items for your companions</p>
                 </div>
-                <div class="shop-grid" id="shop-grid">
+
+                <!-- Enhanced Category Tabs -->
+                <div class="shop-tabs-premium" id="shop-tabs">
+                    <button class="shop-tab-pill active" data-shop="food">
+                        <i class="fas fa-drumstick-bite"></i>
+                        <span>Food</span>
+                    </button>
+                    <button class="shop-tab-pill" data-shop="potion">
+                        <i class="fas fa-flask"></i>
+                        <span>Potions</span>
+                    </button>
+                    <button class="shop-tab-pill" data-shop="special">
+                        <i class="fas fa-gem"></i>
+                        <span>Special</span>
+                    </button>
+                </div>
+
+                <!-- Premium Grid Container -->
+                <div class="shop-premium-grid" id="shop-grid">
                     <!-- Shop items rendered by JS -->
                 </div>
-                <div class="inventory-section">
-                    <h3 class="collection-title">My Inventory</h3>
-                    <div class="inventory-grid" id="inventory-grid">
+
+                <!-- Enhanced Inventory Section -->
+                <div class="inventory-premium-section">
+                    <div class="inventory-header">
+                        <h3><i class="fas fa-box-open"></i> My Inventory</h3>
+                        <span class="inventory-count" id="inventory-count">0 items</span>
+                    </div>
+                    <div class="inventory-premium-grid" id="inventory-grid">
                         <!-- Inventory items rendered by JS -->
                     </div>
                 </div>
