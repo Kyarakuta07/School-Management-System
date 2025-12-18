@@ -911,7 +911,7 @@ async function performGacha(type) {
 
 function showGachaResult(data) {
     const modal = document.getElementById('gacha-modal');
-    const modalContent = modal.querySelector('.gacha-result');
+    const modalContent = modal.querySelector('.gacha-result-modal');
     const species = data.species;
 
     // Remove previous rarity classes
@@ -920,12 +920,22 @@ function showGachaResult(data) {
     // Add current rarity class for styling
     modalContent.classList.add(`rarity-${data.rarity.toLowerCase()}`);
 
+    // Update pet image
     document.getElementById('result-pet-img').src = ASSETS_BASE + (species.img_egg || 'default/egg.png');
+
+    // Update pet name
     document.getElementById('result-name').textContent = species.name;
 
+    // Update rarity badge
     const rarityBadge = document.getElementById('result-rarity');
     rarityBadge.textContent = data.rarity;
-    rarityBadge.className = `result-rarity rarity-badge ${data.rarity.toLowerCase()}`;
+    rarityBadge.className = `rarity-badge-large ${data.rarity.toLowerCase()}`;
+
+    // Update element display
+    const elementEl = document.getElementById('result-element');
+    if (elementEl && species.element) {
+        elementEl.textContent = species.element;
+    }
 
     // Update title based on rarity
     const titleEl = document.getElementById('result-title');
@@ -935,15 +945,17 @@ function showGachaResult(data) {
         'Epic': 'Amazing!',
         'Legendary': '🎉 LEGENDARY! 🎉'
     };
-    titleEl.textContent = titles[data.rarity] || 'Congratulations!';
+    const titleText = titles[data.rarity] || 'Congratulations!';
+    titleEl.innerHTML = `<i class="fas fa-sparkles"></i><span>${titleText}</span>`;
 
     // Apply shiny
+    const shinyBadge = document.getElementById('result-shiny');
     if (data.is_shiny) {
-        document.getElementById('result-pet-img').style.filter = `hue-rotate(${data.shiny_hue}deg) drop-shadow(0 8px 20px rgba(0, 0, 0, 0.5))`;
-        document.getElementById('result-shiny').style.display = 'block';
+        document.getElementById('result-pet-img').style.filter = `hue-rotate(${data.shiny_hue}deg) drop-shadow(0 10px 40px rgba(0, 0, 0, 0.6))`;
+        shinyBadge.style.display = 'flex';
     } else {
-        document.getElementById('result-pet-img').style.filter = 'drop-shadow(0 8px 20px rgba(0, 0, 0, 0.5))';
-        document.getElementById('result-shiny').style.display = 'none';
+        document.getElementById('result-pet-img').style.filter = 'drop-shadow(0 10px 40px rgba(0, 0, 0, 0.6))';
+        shinyBadge.style.display = 'none';
     }
 
     modal.classList.add('show');
@@ -951,10 +963,12 @@ function showGachaResult(data) {
     // Enhanced animation effects
     if (window.PetAnimations) {
         // Add reveal animation to pet image
-        const resultPet = document.getElementById('result-pet');
+        const resultPet = document.getElementById('result-pet-img');
         if (resultPet) {
-            resultPet.classList.add('gacha-result-reveal');
-            setTimeout(() => resultPet.classList.remove('gacha-result-reveal'), 1000);
+            resultPet.style.animation = 'none';
+            setTimeout(() => {
+                resultPet.style.animation = 'pet-reveal 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            }, 10);
         }
 
         // NOTE: Lottie effects disabled to prevent modal resizing

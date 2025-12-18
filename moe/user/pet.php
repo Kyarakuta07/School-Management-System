@@ -51,6 +51,7 @@ mysqli_stmt_close($gold_stmt);
     <!-- Styles -->
     <link rel="stylesheet" href="css/pet_v2.css">
     <link rel="stylesheet" href="css/gacha_premium.css">
+    <link rel="stylesheet" href="css/gacha_result_modal.css">
     <link rel="stylesheet" href="css/daily_login.css">
 
     <!-- PixiJS for particles -->
@@ -462,40 +463,89 @@ mysqli_stmt_close($gold_stmt);
 
     <!-- MODALS -->
 
-    <!-- Gacha Result Modal (Dragon City/Genshin Style) -->
+    <!-- Gacha Result Modal (Premium Enhanced) -->
     <div class="modal-overlay" id="gacha-modal">
-        <div class="modal-content gacha-result" style="max-width: 340px;">
-            <!-- Rarity Glow Background -->
-            <div class="gacha-result-glow"></div>
-
-            <div class="modal-header" style="border: none; text-align: center; padding-bottom: 0;">
-                <h3 class="modal-title" id="result-title" style="width: 100%; text-align: center;">New Pet!</h3>
-                <button class="modal-close" onclick="closeGachaModal()">&times;</button>
+        <div class="gacha-result-modal">
+            <!-- Animated Background Based on Rarity -->
+            <div class="gacha-result-bg">
+                <div class="gacha-result-rays"></div>
+                <div class="gacha-result-stars"></div>
             </div>
 
-            <div class="modal-body gacha-result-body">
-                <!-- Pet Display Area -->
-                <div class="gacha-pet-showcase">
-                    <div class="gacha-result-ring"></div>
-                    <div class="gacha-result-particles"></div>
-                    <img src="" alt="" id="result-pet-img" class="gacha-result-pet">
-                    <div id="result-shiny" class="shiny-badge" style="display: none;">
-                        <i class="fas fa-star"></i> SHINY
+            <!-- Close Button -->
+            <button class="gacha-modal-close" onclick="closeGachaModal()">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <!-- Title Section -->
+            <div class="gacha-result-header">
+                <h2 class="gacha-result-title" id="result-title">
+                    <i class="fas fa-sparkles"></i>
+                    <span>New Pet!</span>
+                </h2>
+            </div>
+
+            <!-- Pet Showcase -->
+            <div class="gacha-result-showcase">
+                <!-- Multi-layered Glow Rings -->
+                <div class="showcase-glow-ring ring-1"></div>
+                <div class="showcase-glow-ring ring-2"></div>
+                <div class="showcase-glow-ring ring-3"></div>
+
+                <!-- Animated Particles -->
+                <div class="showcase-particles">
+                    <div class="particle"></div>
+                    <div class="particle"></div>
+                    <div class="particle"></div>
+                    <div class="particle"></div>
+                    <div class="particle"></div>
+                    <div class="particle"></div>
+                </div>
+
+                <!-- Pet Image -->
+                <img src="" alt="" id="result-pet-img" class="gacha-result-pet">
+
+                <!-- Shiny Badge -->
+                <div id="result-shiny" class="gacha-shiny-badge">
+                    <i class="fas fa-star"></i>
+                    <span>SHINY</span>
+                </div>
+            </div>
+
+            <!-- Pet Info Card -->
+            <div class="gacha-result-info">
+                <h3 id="result-name" class="gacha-result-name">Pet Name</h3>
+                <div class="gacha-result-rarity">
+                    <span id="result-rarity" class="rarity-badge-large common">Common</span>
+                </div>
+
+                <!-- Quick Stats Preview -->
+                <div class="gacha-result-stats">
+                    <div class="quick-stat">
+                        <i class="fas fa-heart"></i>
+                        <span>HP 100</span>
+                    </div>
+                    <div class="quick-stat">
+                        <i class="fas fa-bolt"></i>
+                        <span>Lv. 1</span>
+                    </div>
+                    <div class="quick-stat">
+                        <i class="fas fa-shield"></i>
+                        <span id="result-element">Fire</span>
                     </div>
                 </div>
-
-                <!-- Pet Info -->
-                <div class="gacha-pet-info">
-                    <h2 id="result-name" class="gacha-pet-name">Pet Name</h2>
-                    <span id="result-rarity" class="result-rarity rarity-badge common">Common</span>
-                </div>
             </div>
 
-            <div class="modal-footer" style="border: none;">
-                <button class="btn-primary gacha-confirm-btn" onclick="closeGachaModal()">
-                    <i class="fas fa-check"></i> Awesome!
-                </button>
-            </div>
+            <!-- Action Button -->
+            <button class="gacha-result-btn" onclick="closeGachaModal()">
+                <div class="btn-shine"></div>
+                <i class="fas fa-check-circle"></i>
+                <span>Awesome!</span>
+            </button>
+
+            <!-- Decoration Elements -->
+            <div class="gacha-result-decor gacha-result-decor-left"></div>
+            <div class="gacha-result-decor gacha-result-decor-right"></div>
         </div>
     </div>
     </div>
