@@ -6,7 +6,7 @@
 const API_BASE = 'trapeza_api.php';
 
 let currentBalance = 0;
-let selectedRecipient = null; // Will store {id, username, fullName}
+let selectedRecipient = null;
 let transferData = {};
 let transactionOffset = 0;
 const TRANSACTIONS_PER_PAGE = 20;
@@ -236,7 +236,7 @@ async function searchRecipients(query) {
                 resultsContainer.innerHTML = '<div class="search-result-item">No users found</div>';
             } else {
                 resultsContainer.innerHTML = data.results.map(user => `
-                    <div class="search-result-item" onclick="selectRecipient(${user.id_nethera}, '${user.username}', '${user.nama_lengkap}')">
+                    <div class="search-result-item" onclick="selectRecipient('${user.username}', '${user.nama_lengkap}')">
                         <div class="result-username">@${user.username}</div>
                         <div class="result-name">${user.nama_lengkap}</div>
                     </div>
@@ -249,8 +249,8 @@ async function searchRecipients(query) {
     }
 }
 
-function selectRecipient(id, username, fullName) {
-    selectedRecipient = { id, username, fullName };
+function selectRecipient(username, fullName) {
+    selectedRecipient = username;
     document.getElementById('recipient').value = username;
     document.getElementById('searchResults').classList.remove('show');
 }
@@ -267,8 +267,8 @@ function handleTransferSubmit(e) {
     const description = document.getElementById('description').value.trim() || 'Gold transfer';
 
     // Validation
-    if (!recipient || !selectedRecipient || !selectedRecipient.id) {
-        showToast('Please select a recipient from the search results', 'error');
+    if (!recipient) {
+        showToast('Please select a recipient', 'error');
         return;
     }
 
@@ -305,7 +305,7 @@ async function executeTransfer() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                recipient_id: selectedRecipient.id,
+                recipient_username: transferData.recipient,
                 amount: transferData.amount,
                 description: transferData.description
             })
@@ -324,7 +324,7 @@ async function executeTransfer() {
 
             // Reset form
             document.getElementById('transferForm').reset();
-            selectedRecipient = null; // Reset selected recipient
+            selectedRecipient = null;
         } else {
             showToast(data.error || 'Transfer failed', 'error');
             closeConfirmModal();
