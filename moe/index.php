@@ -25,6 +25,10 @@ if (isset($_SESSION['status_login']) && $_SESSION['status_login'] == 'berhasil')
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Mediterranean Of Egypt</title>
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/landing/logo.png">
+    <link rel="shortcut icon" type="image/png" href="assets/landing/logo.png">
+
     <!-- Preconnect hints for faster resource loading -->
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
