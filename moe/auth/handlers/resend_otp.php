@@ -1,15 +1,15 @@
 <?php
 session_start();
-require_once __DIR__ . '/config/connection.php';
+require_once __DIR__ . '/../../config/connection.php';
 
 // --- 1. IMPORT PHPMAILER (WAJIB ADA) ---
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 // Pastikan path folder phpmailer kamu benar
-require 'phpmailer/src/Exception.php';
-require 'phpmailer/src/PHPMailer.php';
-require 'phpmailer/src/SMTP.php';
+require __DIR__ . '/../../phpmailer/src/Exception.php';
+require __DIR__ . '/../../phpmailer/src/PHPMailer.php';
+require __DIR__ . '/../../phpmailer/src/SMTP.php';
 
 date_default_timezone_set('Asia/Jakarta');
 
@@ -32,7 +32,7 @@ mysqli_stmt_close($stmt);
 
 // Jika user tidak ditemukan
 if (!$user) {
-    header("Location: verify_otp.php?user=" . urlencode($username) . "&status=invalid");
+    header("Location: ../views/verify_otp.php?user=" . urlencode($username) . "&status=invalid");
     exit();
 }
 
@@ -89,19 +89,19 @@ EMAIL_BODY;
         $mail->send();
         
         // Berhasil Kirim -> Redirect dengan pesan sukses
-        header("Location: verify_otp.php?user=" . urlencode($username) . "&status=resent_success");
+        header("Location: ../views/verify_otp.php?user=" . urlencode($username) . "&status=resent_success");
         exit();
 
     } catch (Exception $e) {
         // Gagal Kirim Email
         error_log("Mailer Error: " . $mail->ErrorInfo);
-        header("Location: verify_otp.php?user=" . urlencode($username) . "&status=email_fail");
+        header("Location: ../views/verify_otp.php?user=" . urlencode($username) . "&status=email_fail");
         exit();
     }
 
 } else {
     // Gagal Update Database
-    header("Location: verify_otp.php?user=" . urlencode($username) . "&status=db_error");
+    header("Location: ../views/verify_otp.php?user=" . urlencode($username) . "&status=db_error");
     exit();
 }
 ?>

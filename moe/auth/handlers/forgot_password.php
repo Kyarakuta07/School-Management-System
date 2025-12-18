@@ -1,28 +1,28 @@
 <?php
-require_once __DIR__ . '/core/security_config.php';
+require_once __DIR__ . '/../../core/security_config.php';
 session_start();
-require_once __DIR__ . '/core/csrf.php';
-require_once __DIR__ . '/core/rate_limiter.php';
-require_once __DIR__ . '/config/connection.php';
+require_once __DIR__ . '/../../core/csrf.php';
+require_once __DIR__ . '/../../core/rate_limiter.php';
+require_once __DIR__ . '/../../config/connection.php';
 
 // Include PHPMailer files
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 // PASTIKAN PATH INI BENAR DARI ROOT
-require 'phpmailer/src/Exception.php';
-require 'phpmailer/src/PHPMailer.php';
-require 'phpmailer/src/SMTP.php';
+require __DIR__ . '/../../phpmailer/src/Exception.php';
+require __DIR__ . '/../../phpmailer/src/PHPMailer.php';
+require __DIR__ . '/../../phpmailer/src/SMTP.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header("Location: forgot_password.php");
+    header("Location: ../views/forgot_password.php");
     exit();
 }
 
 // CSRF validation
 if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
     error_log("CSRF token validation failed for forgot password attempt");
-    header("Location: forgot_password.php?status=csrf_failed");
+    header("Location: ../views/forgot_password.php?status=csrf_failed");
     exit();
 }
 
@@ -31,7 +31,7 @@ $limiter = new RateLimiter($conn);
 $check = $limiter->checkLimit($_SERVER['REMOTE_ADDR'], 'forgot_password', 3, 15);
 
 if (!$check['allowed']) {
-    header("Location: forgot_password.php?status=rate_limited");
+    header("Location: ../views/forgot_password.php?status=rate_limited");
     exit();
 }
 
@@ -56,7 +56,7 @@ if ($stmt_check) {
 
     if (!$user_data) {
         // Email tidak ditemukan, redirect dengan pesan gagal
-        header("Location: forgot_password.php?status=fail");
+        header("Location: ../views/forgot_password.php?status=fail");
         exit();
     }
 
@@ -113,25 +113,25 @@ if ($stmt_check) {
                 $mail->send();
 
                 // 4. Sukses: Redirect ke halaman forgot password dengan status sukses
-                header("Location: forgot_password.php?status=success");
+                header("Location: ../views/forgot_password.php?status=success");
                 exit();
 
             } catch (Exception $e) {
                 // Gagal Kirim Email
                 error_log("PHPMailer Reset Error: " . $mail->ErrorInfo);
-                header("Location: forgot_password.php?status=email_fail");
+                header("Location: ../views/forgot_password.php?status=email_fail");
                 exit();
             }
 
         } else {
             error_log("Password reset token update failed: " . mysqli_error($conn));
-            header("Location: forgot_password.php?status=error");
+            header("Location: ../views/forgot_password.php?status=error");
             exit();
         }
 
     } else {
         error_log("Password reset statement prepare failed: " . mysqli_error($conn));
-        header("Location: forgot_password.php?status=error");
+        header("Location: ../views/forgot_password.php?status=error");
         exit();
     }
 }

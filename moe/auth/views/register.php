@@ -1,8 +1,8 @@
 <?php
 // Pastikan koneksi database tersedia untuk mengambil daftar sanctuary
-require_once __DIR__ . '/core/security_config.php';
+require_once __DIR__ . '/../../core/security_config.php';
 session_start(); // PENTING: Session harus aktif untuk CSRF token
-require_once __DIR__ . '/config/connection.php';
+require_once __DIR__ . '/../../config/connection.php';
 
 // Logic untuk menampilkan pesan error jika ada redirect dari proses_register.php
 $error_message = '';
@@ -90,7 +90,7 @@ if (isset($_GET['error'])) {
             </div>
         <?php endif; ?>
 
-        <form action="proses_register.php" method="POST">
+        <form action="../handlers/register.php" method="POST">
 
             <div class="input-group">
                 <label for="nama_lengkap">Nama Lengkap</label>
@@ -139,13 +139,13 @@ if (isset($_GET['error'])) {
                 <i class="fa-solid fa-calendar-alt input-icon"></i>
             </div>
 
-            <?php require_once __DIR__ . '/core/csrf.php';
+            <?php require_once __DIR__ . '/../../core/csrf.php';
             echo csrf_token_field(); ?>
 
             <button type="submit" class="btn-login" style="margin-top: 1.5rem;">Daftar & Verifikasi Email</button>
         </form>
 
-        <a href="index.php" class="back-link">
+        <a href="../../index.php" class="back-link">
             <i class="fa-solid fa-arrow-left"></i> Kembali ke Login
         </a>
     </div>

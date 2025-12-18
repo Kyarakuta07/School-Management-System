@@ -1,8 +1,8 @@
 <?php
-require_once __DIR__ . '/core/security_config.php';
+require_once __DIR__ . '/../../core/security_config.php';
 session_start();
 // Wajib ada untuk cek database
-require_once __DIR__ . '/config/connection.php';
+require_once __DIR__ . '/../../config/connection.php';
 
 // File ini dipanggil dari proses_register.php dengan parameter user
 $username = isset($_GET['user']) ? $_GET['user'] : '';
@@ -77,7 +77,7 @@ mysqli_stmt_close($stmt_check);
             </div>
         <?php endif; ?>
 
-        <form action="proses_verify.php" method="POST">
+        <form action="../handlers/verify_otp.php" method="POST">
 
             <input type="hidden" name="username" value="<?php echo htmlspecialchars($username); ?>">
 
@@ -88,7 +88,7 @@ mysqli_stmt_close($stmt_check);
                 <i class="fa-solid fa-key input-icon"></i>
             </div>
 
-            <?php require_once __DIR__ . '/core/csrf.php';
+            <?php require_once __DIR__ . '/../../core/csrf.php';
             echo csrf_token_field(); ?>
 
             <button type="submit" class="btn-login" style="margin-top: 1.5rem;">Konfirmasi & Selesaikan</button>

@@ -1,29 +1,29 @@
 <?php
-require_once __DIR__ . '/core/security_config.php';
+require_once __DIR__ . '/../../core/security_config.php';
 session_start();
-require_once __DIR__ . '/core/config.php';
-require_once __DIR__ . '/core/csrf.php';
-require_once __DIR__ . '/core/sanitization.php';
-require_once __DIR__ . '/core/rate_limiter.php';
-require_once __DIR__ . '/config/connection.php';
+require_once __DIR__ . '/../../core/config.php';
+require_once __DIR__ . '/../../core/csrf.php';
+require_once __DIR__ . '/../../core/sanitization.php';
+require_once __DIR__ . '/../../core/rate_limiter.php';
+require_once __DIR__ . '/../../config/connection.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 // PASTIKAN PATH PHPMailer BENAR
-require 'phpmailer/src/Exception.php';
-require 'phpmailer/src/PHPMailer.php';
-require 'phpmailer/src/SMTP.php';
+require __DIR__ . '/../../phpmailer/src/Exception.php';
+require __DIR__ . '/../../phpmailer/src/PHPMailer.php';
+require __DIR__ . '/../../phpmailer/src/SMTP.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header("Location: register.php");
+    header("Location: ../views/register.php");
     exit();
 }
 
 // CSRF validation
 if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
     error_log("CSRF token validation failed for registration attempt");
-    header("Location: register.php?error=csrf_failed");
+    header("Location: ../views/register.php?error=csrf_failed");
     exit();
 }
 
@@ -32,7 +32,7 @@ $limiter = new RateLimiter($conn);
 $check = $limiter->checkLimit($_SERVER['REMOTE_ADDR'], 'register', 3, 60);
 
 if (!$check['allowed']) {
-    header("Location: register.php?error=rate_limited");
+    header("Location: ../views/register.php?error=rate_limited");
     exit();
 }
 
@@ -49,7 +49,7 @@ $periode_masuk = (int) $_POST['periode_masuk'];
 // --- 1.5 VALIDATE EMAIL ---
 $validated_email = validate_email($email);
 if (!$validated_email) {
-    header("Location: register.php?error=invalid_email");
+    header("Location: ../views/register.php?error=invalid_email");
     exit();
 }
 $email = $validated_email;
@@ -57,7 +57,7 @@ $email = $validated_email;
 // --- 1.6 VALIDATE PHONE ---
 $validated_phone = validate_phone($noHP);
 if (!$validated_phone) {
-    header("Location: register.php?error=invalid_phone");
+    header("Location: ../views/register.php?error=invalid_phone");
     exit();
 }
 $noHP = $validated_phone;
@@ -72,7 +72,7 @@ if ($stmt_check_exist) {
     mysqli_stmt_store_result($stmt_check_exist);
 
     if (mysqli_stmt_num_rows($stmt_check_exist) > 0) {
-        header("Location: register.php?error=duplicate_entry");
+        header("Location: ../views/register.php?error=duplicate_entry");
         exit();
     }
     mysqli_stmt_close($stmt_check_exist);
@@ -82,7 +82,7 @@ if ($stmt_check_exist) {
 $password_validation = validate_password($password_input);
 if (!$password_validation['valid']) {
     $error = urlencode($password_validation['errors'][0]);
-    header("Location: register.php?error=password_weak&detail=$error");
+    header("Location: ../views/register.php?error=password_weak&detail=$error");
     exit();
 }
 
@@ -162,7 +162,7 @@ EMAIL_BODY;
             $mail->send();
 
             // Redirect ke halaman verifikasi OTP
-            header("Location: verify_otp.php?user=" . urlencode($username));
+            header("Location: ../views/verify_otp.php?user=" . urlencode($username));
             exit();
 
         } catch (Exception $e) {
@@ -181,20 +181,20 @@ EMAIL_BODY;
             mysqli_stmt_close($stmt_del);
             error_log("PHPMailer Error: " . $mail->ErrorInfo);
 
-            header("Location: register.php?error=email_fail");
+            header("Location: ../views/register.php?error=email_fail");
             exit();
         }
 
     } else {
         // Gagal Eksekusi INSERT SQL
         error_log("Registration INSERT failed for user: " . $username . " - Error: " . mysqli_error($conn));
-        header("Location: register.php?error=db_error");
+        header("Location: ../views/register.php?error=db_error");
         exit();
     }
 } else {
     // Error saat prepare query
     error_log("Registration query preparation failed - Error: " . mysqli_error($conn));
-    header("Location: register.php?error=db_error");
+    header("Location: ../views/register.php?error=db_error");
     exit();
 }
 ?>

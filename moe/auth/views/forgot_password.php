@@ -1,7 +1,7 @@
 <?php
-require_once __DIR__ . '/core/security_config.php';
+require_once __DIR__ . '/../../core/security_config.php';
 session_start();
-require_once __DIR__ . '/core/csrf.php';
+require_once __DIR__ . '/../../core/csrf.php';
 // File ini tidak memerlukan koneksi DB yang berat, hanya tampilan awal.
 ?>
 <!DOCTYPE html>
@@ -42,7 +42,7 @@ require_once __DIR__ . '/core/csrf.php';
             </div>
         <?php endif; ?>
 
-        <form action="proses_forgot.php" method="POST">
+        <form action="../handlers/forgot_password.php" method="POST">
 
             <div class="input-group">
                 <label for="email">Alamat Email</label>
@@ -55,7 +55,7 @@ require_once __DIR__ . '/core/csrf.php';
             <button type="submit" class="btn-login" style="margin-top: 1.5rem;">Kirim Tautan Reset</button>
         </form>
 
-        <a href="index.php" class="back-link">
+        <a href="../../index.php" class="back-link">
             <i class="fa-solid fa-arrow-left"></i> Kembali ke Login
         </a>
     </div>

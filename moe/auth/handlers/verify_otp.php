@@ -1,11 +1,11 @@
 <?php
-require_once __DIR__ . '/core/security_config.php';
+require_once __DIR__ . '/../../core/security_config.php';
 session_start();
-require_once __DIR__ . '/core/csrf.php';
-require_once __DIR__ . '/core/sanitization.php';
-require_once __DIR__ . '/core/rate_limiter.php';
+require_once __DIR__ . '/../../core/csrf.php';
+require_once __DIR__ . '/../../core/sanitization.php';
+require_once __DIR__ . '/../../core/rate_limiter.php';
 // Pastikan file koneksi sudah menggunakan versi .env yang aman tadi
-require_once __DIR__ . '/config/connection.php';
+require_once __DIR__ . '/../../config/connection.php';
 
 // 1. Set Timezone (Sangat Penting agar sinkron dengan Database)
 date_default_timezone_set('Asia/Jakarta');
@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // CSRF validation
 if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
     error_log("CSRF token validation failed for OTP verification");
-    header("Location: verify_otp.php?status=csrf_failed");
+    header("Location: ../views/verify_otp.php?status=csrf_failed");
     exit();
 }
 
@@ -28,7 +28,7 @@ $current_time = date("Y-m-d H:i:s");
 
 // Validate OTP format
 if (!validate_otp_format($otp_code)) {
-    header("Location: verify_otp.php?user=" . urlencode($username) . "&status=invalid_format");
+    header("Location: ../views/verify_otp.php?user=" . urlencode($username) . "&status=invalid_format");
     exit();
 }
 
@@ -37,7 +37,7 @@ $limiter = new RateLimiter($conn);
 $check = $limiter->checkLimit($username, 'otp_verify', 5, 60);
 
 if (!$check['allowed']) {
-    header("Location: verify_otp.php?user=" . urlencode($username) . "&status=rate_limited");
+    header("Location: ../views/verify_otp.php?user=" . urlencode($username) . "&status=rate_limited");
     exit();
 }
 
@@ -56,7 +56,7 @@ if ($stmt_fetch) {
     // 3. Cek 1: Apakah user ditemukan? Apakah kode OTP cocok?
     if (!$user_otp_data || $user_otp_data['otp_code'] !== $otp_code) {
         // Jika salah, kembalikan dengan error
-        header("Location: verify_otp.php?user=" . urlencode($username) . "&status=invalid");
+        header("Location: ../views/verify_otp.php?user=" . urlencode($username) . "&status=invalid");
         exit();
     }
 
@@ -66,7 +66,7 @@ if ($stmt_fetch) {
         // GAGAL KARENA EXPIRED
         // Jangan auto-resend jika tidak ada fungsi mailer di sini.
         // Lebih aman suruh user request ulang manual.
-        header("Location: verify_otp.php?user=" . urlencode($username) . "&status=expired");
+        header("Location: ../views/verify_otp.php?user=" . urlencode($username) . "&status=expired");
         exit();
     }
 
@@ -95,11 +95,11 @@ if ($stmt_fetch) {
         regenerate_csrf_token();
 
         // Redirect ke halaman sukses menunggu approval
-        header("Location: success_page.php?username=" . urlencode($username));
+        header("Location: ../views/success.php?username=" . urlencode($username));
         exit();
     } else {
         mysqli_stmt_close($stmt_update);
-        header("Location: verify_otp.php?user=" . urlencode($username) . "&status=db_error");
+        header("Location: ../views/verify_otp.php?user=" . urlencode($username) . "&status=db_error");
         exit();
     }
 
