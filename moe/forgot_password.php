@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/core/security_config.php';
 session_start();
-require_once 'includes/csrf.php';
+require_once __DIR__ . '/core/csrf.php';
 // File ini tidak memerlukan koneksi DB yang berat, hanya tampilan awal.
 ?>
 <!DOCTYPE html>
