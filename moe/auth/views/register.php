@@ -64,7 +64,7 @@ if (isset($_GET['error'])) {
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Lato:wght@400;700&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="assets/css/global.css" />
+    <link rel="stylesheet" href="../../assets/css/global.css" />
     <style>
         /* Sedikit pelebaran agar form banyak inputnya tetap nyaman di desktop */
         .login-container {
@@ -79,7 +79,7 @@ if (isset($_GET['error'])) {
     <div class="bg-overlay"></div>
 
     <div class="login-container">
-        <div class="login-logo"><img src="assets/landing/logo.png" alt="MOE Logo"></div>
+        <div class="login-logo"><img src="../../assets/landing/logo.png" alt="MOE Logo"></div>
         <h1>REGISTRASI ANGGOTA BARU</h1>
         <p class="subtitle">Join the Guardians of the Mediterranean</p>
 

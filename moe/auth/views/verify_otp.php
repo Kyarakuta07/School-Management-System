@@ -57,7 +57,7 @@ mysqli_stmt_close($stmt_check);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Lato:wght@400;700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/global.css" />
+    <link rel="stylesheet" href="../../assets/css/global.css" />
 </head>
 
 <body>
@@ -66,7 +66,7 @@ mysqli_stmt_close($stmt_check);
     <div class="bg-overlay"></div>
 
     <div class="login-container">
-        <div class="login-logo"><img src="assets/landing/logo.png" alt="MOE Logo"></div>
+        <div class="login-logo"><img src="../../assets/landing/logo.png" alt="MOE Logo"></div>
         <h1>VERIFIKASI AKUN</h1>
         <p class="subtitle">Kode 6 digit telah dikirim ke email Anda.</p>
 

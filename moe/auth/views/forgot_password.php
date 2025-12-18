@@ -16,7 +16,7 @@ require_once __DIR__ . '/../../core/csrf.php';
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Lato:wght@400;700&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="assets/css/global.css" />
+    <link rel="stylesheet" href="../../assets/css/global.css" />
     <style>
         .login-container {
             max-width: 450px !important;
@@ -30,7 +30,7 @@ require_once __DIR__ . '/../../core/csrf.php';
     <div class="bg-overlay"></div>
 
     <div class="login-container">
-        <div class="login-logo"><img src="assets/landing/logo.png" alt="MOE Logo"></div>
+        <div class="login-logo"><img src="../../assets/landing/logo.png" alt="MOE Logo"></div>
         <h1>RESET PASSWORD</h1>
         <p class="subtitle">Masukkan alamat email terdaftar Anda</p>
 
