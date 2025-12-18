@@ -139,7 +139,7 @@ if (isset($_GET['error'])) {
                 <i class="fa-solid fa-calendar-alt input-icon"></i>
             </div>
 
-            <?php require_once 'includes/csrf.php';
+            <?php require_once __DIR__ . '/core/csrf.php';
             echo csrf_token_field(); ?>
 
             <button type="submit" class="btn-login" style="margin-top: 1.5rem;">Daftar & Verifikasi Email</button>
