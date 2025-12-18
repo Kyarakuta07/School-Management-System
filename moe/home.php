@@ -1,3 +1,7 @@
+<?php
+// Allow Sketchfab 3D embed - override CSP headers
+header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://static.sketchfab.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com https://unpkg.com; frame-src 'self' https://sketchfab.com; img-src 'self' data: blob: https: http:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; connect-src 'self' https://sketchfab.com https://static.sketchfab.com; worker-src 'self' blob:;");
+?>
 <!DOCTYPE html>
 <html lang="en">
 
