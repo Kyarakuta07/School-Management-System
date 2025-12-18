@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '../../connection.php'; // Path ke file koneksi
+include '../../config/connection.php'; // Path ke file koneksi
 
 // Proteksi Halaman
 if (!isset($_SESSION['status_login']) || $_SESSION['role'] != 'Vasiki') {

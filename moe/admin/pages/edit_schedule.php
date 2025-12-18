@@ -1,7 +1,7 @@
 <?php
 // Wajib ada di paling atas
 session_start();
-include '../../connection.php'; 
+include '../../config/connection.php'; 
 
 // Proteksi Halaman
 if (!isset($_SESSION['status_login']) || $_SESSION['role'] != 'Vasiki') {

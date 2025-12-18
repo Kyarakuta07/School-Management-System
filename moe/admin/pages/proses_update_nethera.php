@@ -1,8 +1,8 @@
 <?php
-require_once '../../includes/security_config.php';
+require_once '../../core/security_config.php';
 session_start();
-require_once '../../includes/activity_logger.php';
-include '../../connection.php';
+require_once '../../core/activity_logger.php';
+include '../../config/connection.php';
 
 if (!isset($_SESSION['status_login']) || $_SESSION['role'] != 'Vasiki') {
     header("Location: ../../index.php?pesan=gagal");

@@ -1,5 +1,5 @@
 <?php
-require_once '../includes/security_config.php';
+require_once '../core/security_config.php';
 session_start();
 
 // Security headers
@@ -12,7 +12,7 @@ header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
 
-include '../connection.php';
+include '../config/connection.php';
 
 // Cek Login & Role Vasiki
 if (!isset($_SESSION['status_login']) || $_SESSION['role'] != 'Vasiki') {

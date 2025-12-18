@@ -1,8 +1,8 @@
 <?php
 // Security: Must be authenticated admin
-require_once '../../includes/security_config.php';
+require_once '../../core/security_config.php';
 session_start();
-require_once '../../includes/csrf.php';
+require_once '../../core/csrf.php';
 
 // Check admin authentication
 if (!isset($_SESSION['status_login']) || $_SESSION['role'] != 'Vasiki') {
@@ -12,7 +12,7 @@ if (!isset($_SESSION['status_login']) || $_SESSION['role'] != 'Vasiki') {
 }
 
 // Database connection
-include '../../connection.php';
+include '../../config/connection.php';
 
 // Get and prepare search data
 $search_term = '';
