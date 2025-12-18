@@ -48,8 +48,9 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftps
           port: 21
-          local-dir: moe/
-          server-dir: public_html/moe/
+          local-dir: ./moe/
+          # Pakai ./ karena akun matthew sudah dikunci ke folder moe
+          server-dir: ./
           state-name: .ftp-deploy-sync-state-v2.json
           dangerous-clean-slate: true
           exclude: |
