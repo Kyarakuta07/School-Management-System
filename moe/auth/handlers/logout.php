@@ -11,7 +11,7 @@ session_destroy();
 
 // --- PENAMBAHAN DI SINI ---
 // Redirect ke halaman login dengan parameter pesan logout
-header("Location: index.php?pesan=logout");
+header("Location: ../../index.php?pesan=logout");
 
 // PENTING: Menghentikan eksekusi script untuk memastikan redirect berjalan
 exit();
