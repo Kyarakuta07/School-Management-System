@@ -533,3 +533,273 @@
 }
 
 /* After 10, no more delays to avoid long wait */
+/* ================================================
+   PHASE 2: SEARCH, FILTER, SORT CONTROLS
+   ================================================ */
+.collection-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+/* Search Bar */
+.search-container {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.9rem;
+}
+
+.search-input {
+    width: 100%;
+    padding: 10px 14px 10px 40px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(100, 100, 120, 0.3);
+    border-radius: 12px;
+    color: #fff;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: rgba(218, 165, 32, 0.5);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 3px rgba(218, 165, 32, 0.1);
+}
+
+/* Filter Pills */
+.filter-pills {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.filter-pill {
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(100, 100, 120, 0.3);
+    border-radius: 20px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.filter-pill:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(218, 165, 32, 0.4);
+    color: #fff;
+}
+
+.filter-pill.active {
+    background: linear-gradient(135deg, var(--gold), #FFA500);
+    border-color: var(--gold);
+    color: #1a1a2e;
+    box-shadow: 0 2px 10px rgba(218, 165, 32, 0.4);
+}
+
+.filter-pill i {
+    margin-right: 4px;
+}
+
+/* Sort Dropdown */
+.sort-container {
+    position: relative;
+}
+
+.sort-select {
+    padding: 10px 36px 10px 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(100, 100, 120, 0.3);
+    border-radius: 12px;
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23DAA520' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+}
+
+.sort-select:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: rgba(218, 165, 32, 0.4);
+}
+
+.sort-select:focus {
+    outline: none;
+    border-color: rgba(218, 165, 32, 0.5);
+    box-shadow: 0 0 0 3px rgba(218, 165, 32, 0.1);
+}
+
+.sort-select option {
+    background: #1a1a2e;
+    color: #fff;
+}
+
+/* ================================================
+   STATS PANEL
+   ================================================ */
+.collection-stats-panel {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 16px;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, rgba(155, 89, 182, 0.1), rgba(142, 68, 173, 0.05));
+    border: 1px solid rgba(155, 89, 182, 0.3);
+    border-radius: 16px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.stat-item i {
+    font-size: 1.5rem;
+    color: #9B59B6;
+}
+
+.stat-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-divider {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(180deg, transparent, rgba(155, 89, 182, 0.3), transparent);
+}
+
+/* Rarity Dots */
+.rarity-icons {
+    display: flex;
+    gap: 4px;
+}
+
+.rarity-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+}
+
+.rarity-dot.common {
+    background: #AAA;
+    border-color: #888;
+}
+
+.rarity-dot.rare {
+    background: #3498db;
+    border-color: #2980b9;
+}
+
+.rarity-dot.epic {
+    background: #9B59B6;
+    border-color: #8E44AD;
+}
+
+.rarity-dot.legendary {
+    background: #FFD700;
+    border-color: #FFA500;
+    animation: dot-glow 2s ease-in-out infinite;
+}
+
+@keyframes dot-glow {
+    0%, 100% { box-shadow: 0 0 4px rgba(255, 215, 0, 0.5); }
+    50% { box-shadow: 0 0 8px rgba(255, 215, 0, 1); }
+}
+
+/* ================================================
+   RESPONSIVE - PHASE 2
+   ================================================ */
+@media (max-width: 900px) {
+    .collection-controls {
+        gap: 10px;
+    }
+
+    .search-container {
+        flex: 1 1 100%;
+    }
+
+    .filter-pills {
+        flex: 1 1 100%;
+    }
+
+    .collection-stats-panel {
+        flex-wrap: wrap;
+        gap: 16px;
+        justify-content: center;
+    }
+
+    .stat-divider {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .collection-controls {
+        margin-bottom: 16px;
+    }
+
+    .filter-pill {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+
+    .sort-select {
+        padding: 8px 32px 8px 12px;
+        font-size: 0.85rem;
+    }
+
+    .collection-stats-panel {
+        padding: 12px;
+        margin-bottom: 16px;
+    }
+
+    .stat-item i {
+        font-size: 1.2rem;
+    }
+
+    .stat-value {
+        font-size: 1rem;
+    }
+
+    .stat-label {
+        font-size: 0.7rem;
+    }
+}
