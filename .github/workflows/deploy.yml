@@ -51,8 +51,9 @@ jobs:
           local-dir: ./moe/
           # Pakai ./ karena akun matthew sudah dikunci ke folder moe
           server-dir: ./
-          # TIDAK pakai state-name karena konflik dengan clean slate
-          dangerous-clean-slate: true
+          # Incremental sync - hanya upload file yang berubah
+          # Exclude list akan bekerja sempurna untuk protect production files
+          dangerous-clean-slate: false
           exclude: |
             **/.git*
             **/node_modules/**
