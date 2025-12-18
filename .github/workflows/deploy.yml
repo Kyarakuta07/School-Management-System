@@ -51,7 +51,7 @@ jobs:
           local-dir: ./moe/
           # Pakai ./ karena akun matthew sudah dikunci ke folder moe
           server-dir: ./
-          state-name: .ftp-deploy-sync-state-v2.json
+          # TIDAK pakai state-name karena konflik dengan clean slate
           dangerous-clean-slate: true
           exclude: |
             **/.git*
