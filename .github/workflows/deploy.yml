@@ -49,7 +49,7 @@ jobs:
           protocol: ftps
           port: 21
           local-dir: moe/
-          server-dir: /public_html/moe/
+          server-dir: public_html/moe/
           dangerous-clean-slate: true
           exclude: |
             **/.git*
