@@ -11,10 +11,10 @@
 // TRADITIONAL SETUP (no bootstrap to avoid conflicts)
 // ==================================================
 session_start();
-include '../connection.php';
-require_once '../includes/Database.php';
-require_once '../includes/helpers.php';
-require_once '../includes/csrf.php';
+include '../config/connection.php';
+require_once '../core/Database.php';
+require_once '../core/helpers.php';
+require_once '../core/csrf.php';
 
 // Initialize DB wrapper
 DB::init($conn);
