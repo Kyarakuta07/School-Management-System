@@ -28,11 +28,12 @@ define('EXP_GROWTH_RATE', 1.2);
 // ================================================
 // GACHA SYSTEM
 // ================================================
+// Gacha rates adjusted for harder grinding experience
 define('GACHA_RARITY_WEIGHTS', [
-    'Common' => 67,
-    'Rare' => 25,
-    'Epic' => 7,
-    'Legendary' => 1
+    'Common' => 80,      // Increased from 67% -> 80%
+    'Rare' => 17,        // Decreased from 25% -> 17%
+    'Epic' => 2.5,       // Decreased from 7% -> 2.5%
+    'Legendary' => 0.5   // Decreased from 1% -> 0.5%
 ]);
 
 define('GACHA_COST_NORMAL', 100);

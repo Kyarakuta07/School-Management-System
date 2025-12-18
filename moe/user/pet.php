@@ -270,10 +270,10 @@ mysqli_stmt_close($gold_stmt);
 
                     <!-- Rarity Info -->
                     <div class="gacha-rarity-info">
-                        <span class="rarity-chip common">C 67%</span>
-                        <span class="rarity-chip rare">R 25%</span>
-                        <span class="rarity-chip epic">E 7%</span>
-                        <span class="rarity-chip legendary">L 1%</span>
+                        <span class="rarity-chip common">C 80%</span>
+                        <span class="rarity-chip rare">R 17%</span>
+                        <span class="rarity-chip epic">E 2.5%</span>
+                        <span class="rarity-chip legendary">L 0.5%</span>
                     </div>
 
                     <!-- Gacha Buttons -->
@@ -301,7 +301,7 @@ mysqli_stmt_close($gold_stmt);
                     <!-- Premium Info -->
                     <p class="gacha-hint">
                         <i class="fas fa-info-circle"></i>
-                        Premium: Rare+ guaranteed!
+                        Premium: Epic guaranteed + 25% Legendary!
                     </p>
                 </div>
             </section>
@@ -916,7 +916,7 @@ mysqli_stmt_close($gold_stmt);
                     if (targetTab === 'achievements') {
                         setTimeout(() => loadAchievements(), 100);
                     }
-                    
+
                     // Load team selection when 3v3 tab is clicked
                     if (targetTab === 'arena3v3') {
                         setTimeout(() => loadTeamSelection(), 100);
