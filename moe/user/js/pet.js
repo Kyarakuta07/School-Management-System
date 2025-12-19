@@ -1089,12 +1089,6 @@ function initShopTabs() {
     });
 }
 
-// Initialize arena tabs (stub for now)
-function initArenaTabs() {
-    // TODO: Implement arena tab switching when arena modes are added
-    console.log(' Arena tabs initialized (placeholder)');
-}
-
 async function loadShop() {
     try {
         const response = await fetch(`${API_BASE}?action=get_shop`);
