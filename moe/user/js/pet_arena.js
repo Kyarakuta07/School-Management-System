@@ -9,6 +9,31 @@
 // ================================================
 const ASSETS_BASE = '../assets/pets/';
 
+/**
+ * Get pet image path based on evolution stage
+ * @param {Object} pet - Pet object
+ * @returns {string} Image path
+ */
+function getArenaPetImage(pet) {
+    const stage = pet.evolution_stage || 'egg';
+    let imgKey;
+
+    switch (stage) {
+        case 'adult':
+            imgKey = pet.img_adult || pet.img_baby || pet.img_egg;
+            break;
+        case 'baby':
+            imgKey = pet.img_baby || pet.img_egg || pet.img_adult;
+            break;
+        case 'egg':
+        default:
+            imgKey = pet.img_egg || pet.img_baby || pet.img_adult;
+            break;
+    }
+
+    return ASSETS_BASE + (imgKey || 'default/egg.png');
+}
+
 // ================================================
 // ARENA SYSTEM
 // ================================================
@@ -42,7 +67,7 @@ async function loadOpponents() {
                 <div class="opponent-card-premium">
                     <div class="opponent-rank">#${index + 1}</div>
                     <div class="opponent-pet-display">
-                        <img src="${ASSETS_BASE}${opp.img_adult}" alt="${opp.display_name}"
+                        <img src="${getArenaPetImage(opp)}" alt="${opp.display_name}"
                              onerror="this.src='../assets/placeholder.png'">
                         <span class="rarity-badge ${(opp.rarity || 'common').toLowerCase()}">${opp.rarity || 'Common'}</span>
                     </div>
@@ -241,7 +266,7 @@ async function loadTeamSelection() {
             <div class="team-grid">
                 ${alivePets.slice(0, 6).map((pet, index) => `
                     <div class="team-pet-card ${index < 3 ? 'team-member' : ''}">
-                        <img src="${ASSETS_BASE}${pet.img_adult}" 
+                        <img src="${getArenaPetImage(pet)}" 
                              alt="${pet.nickname || pet.species_name}"
                              onerror="this.src='../assets/placeholder.png'">
                         <div class="team-pet-info">
