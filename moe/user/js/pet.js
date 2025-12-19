@@ -1987,7 +1987,6 @@ document.addEventListener('DOMContentLoaded', () => {
 // ================================================
 // REVIVE MODAL FUNCTIONS
 // ================================================
-let currentReviveItem = null;
 
 function openReviveModal(itemId, itemName, itemImg) {
     // Find revive item
