@@ -1984,3 +1984,57 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+// ================================================
+// REVIVE MODAL FUNCTIONS
+// ================================================
+let currentReviveItem = null;
+
+function openReviveModal(itemId, itemName, itemImg) {
+    // Find revive item
+    currentReviveItem = userInventory.find(i => i.item_id === itemId);
+    if (!currentReviveItem) {
+        showToast('Item not found', 'error');
+        return;
+    }
+
+    // Get dead pets
+    const deadPets = userPets.filter(pet => pet.status === 'DEAD');
+    
+    if (deadPets.length === 0) {
+        showToast('No dead pets to revive!', 'info');
+        return;
+    }
+
+    // Populate modal with dead pets
+    const deadPetsList = document.getElementById('dead-pets-list');
+    deadPetsList.innerHTML = deadPets.map(pet => {
+        const imgPath = getPetImagePath(pet);
+        const displayName = pet.nickname || pet.species_name;
+        
+        return `
+            <div class="dead-pet-card" onclick="revivePet(${pet.id})">
+                <img src="${imgPath}" alt="${displayName}" 
+                     onerror="this.src=''../assets/placeholder.png''">
+                <div class="dead-overlay"></div>
+                <p>${displayName}</p>
+                <span class="rarity-badge ${pet.rarity.toLowerCase()}">${pet.rarity}</span>
+            </div>
+        `;
+    }).join('');
+
+    // Show modal
+    document.getElementById('revive-modal').classList.add('show');
+}
+
+function closeReviveModal() {
+    document.getElementById('revive-modal').classList.remove('show');
+    currentReviveItem = null;
+}
+
+async function revivePet(petId) {
+    if (!currentReviveItem) return;
+
+    // Use the revive item on the selected dead pet
+    await useItem(currentReviveItem.item_id, petId, 1);
+    closeReviveModal();
+}
