@@ -129,7 +129,7 @@ $defender_max_hp = 100 + ($defender['level'] * 5);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Battle CSS -->
-    <link rel="stylesheet" href="css/battle_arena.css">
+    <link rel="stylesheet" href="css/battle_arena_premium.css">
 </head>
 
 <body>
