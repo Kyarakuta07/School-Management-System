@@ -268,86 +268,14 @@ async function loadTeamSelection() {
 
 // Initialize arena module
 console.log('✓ Arena module loaded');
+const total = (wins || 0) + (losses || 0);
+const winRate = total > 0 ? Math.round((wins / total) * 100) : 0;
+const winRateEl = document.getElementById('win-rate');
+if (winRateEl) winRateEl.textContent = `${winRate}%`;
 
-// ================================================
-// ARENA STATS UPDATE FUNCTION
-// ================================================
-async function loadArenaStats() {
-    // Show loading state
-    const battlesEl = document.getElementById('arena-battles');
-    const winsEl = document.getElementById('total-wins');
-    const winRateEl = document.getElementById('win-rate');
-    const streakEl = document.getElementById('current-streak');
-
-    // Set loading indicators
-    if (battlesEl) battlesEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-    if (winsEl) winsEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-    if (winRateEl) winRateEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-    if (streakEl) streakEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-
-    try {
-        console.log('🔍 Fetching arena stats...');
-        const response = await fetch('pet_api.php?action=battle_history');
-
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        console.log('📊 API Response:', data);
-
-        if (data.success) {
-            const stats = data.stats || {};
-            const wins = stats.wins || 0;
-            const losses = stats.losses || 0;
-            const streak = stats.current_streak || 0;
-            const battlesRemaining = stats.battles_remaining !== undefined ? stats.battles_remaining : 3;
-
-            console.log('✅ Stats parsed:', { wins, losses, streak, battlesRemaining });
-
-            // Update stats bar
-            updateArenaStats(wins, losses, streak);
-
-            // Update battles remaining display
-            if (battlesEl) {
-                battlesEl.textContent = `${battlesRemaining} / 3`;
-            }
-
-            console.log('✅ Arena stats updated successfully');
-        } else {
-            console.error('❌ API returned success: false', data);
-            throw new Error(data.error || 'Failed to load stats');
-        }
-    } catch (error) {
-        console.error('❌ Error loading arena stats:', error);
-
-        // Reset to default values on error
-        if (battlesEl) battlesEl.textContent = '3 / 3';
-        if (winsEl) winsEl.textContent = '0';
-        if (winRateEl) winRateEl.textContent = '0%';
-        if (streakEl) streakEl.textContent = '0';
-
-        // Show error toast if available
-        if (typeof showToast === 'function') {
-            showToast('Failed to load arena stats', 'error');
-        }
-    }
-}
-
-function updateArenaStats(wins, losses, streak) {
-    // Update wins
-    const winsEl = document.getElementById('total-wins');
-    if (winsEl) winsEl.textContent = wins || 0;
-
-    // Calculate and update win rate
-    const total = (wins || 0) + (losses || 0);
-    const winRate = total > 0 ? Math.round((wins / total) * 100) : 0;
-    const winRateEl = document.getElementById('win-rate');
-    if (winRateEl) winRateEl.textContent = `${winRate}%`;
-
-    // Update streak
-    const streakEl = document.getElementById('current-streak');
-    if (streakEl) streakEl.textContent = streak || 0;
+// Update streak
+const streakEl = document.getElementById('current-streak');
+if (streakEl) streakEl.textContent = streak || 0;
 }
 
 // Initialize arena stats when tab is opened
