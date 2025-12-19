@@ -237,7 +237,7 @@ async function loadPets() {
         const data = await response.json();
 
         if (data.success) {
-            userPets = data.pets;
+            window.userPets = data.pets;
 
             // Update pet count badge (always, regardless of tab)
             updatePetCountBadge();
@@ -245,8 +245,8 @@ async function loadPets() {
             renderCollection();
 
             // Find and display active pet
-            activePet = userPets.find(p => p.is_active);
-            if (activePet) {
+            window.activePet = window.userPets.find(p => p.is_active);
+            if (window.activePet) {
                 renderActivePet();
             }
         }
@@ -1998,7 +1998,7 @@ function openReviveModal(itemId, itemName, itemImg) {
 
     // Get dead pets
     const deadPets = userPets.filter(pet => pet.status === 'DEAD');
-    
+
     if (deadPets.length === 0) {
         showToast('No dead pets to revive!', 'info');
         return;
@@ -2009,7 +2009,7 @@ function openReviveModal(itemId, itemName, itemImg) {
     deadPetsList.innerHTML = deadPets.map(pet => {
         const imgPath = getPetImagePath(pet);
         const displayName = pet.nickname || pet.species_name;
-        
+
         return `
             <div class="dead-pet-card" onclick="revivePet(${pet.id})">
                 <img src="${imgPath}" alt="${displayName}" 
