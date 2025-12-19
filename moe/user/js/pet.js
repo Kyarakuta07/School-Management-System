@@ -472,7 +472,7 @@ function getEvolutionStage(pet) {
 function updatePetCountBadge() {
     const petCountBadge = document.getElementById('pet-count-badge');
     if (petCountBadge) {
-        const petCount = userPets.length;
+        const petCount = window.userPets.length;
         petCountBadge.textContent = `${petCount} / 25`;
 
         // Color code based on capacity
