@@ -755,20 +755,36 @@
 
     .stats-cards-container {
         grid-template-columns: repeat(3, 1fr);
-        gap: 8px;
+        gap: 6px;
     }
 
     .stat-card {
-        padding: 12px 8px;
+        padding: 10px 6px;
+    }
+
+    .stat-card-header {
+        font-size: 0.7rem;
+        margin-bottom: 8px;
+        gap: 4px;
+    }
+
+    .stat-card-header i {
+        font-size: 0.9rem;
     }
 
     .stat-progress-ring {
-        width: 70px;
-        height: 70px;
+        width: 60px;
+        height: 60px;
+    }
+
+    .progress-ring {
+        width: 60px;
+        height: 60px;
     }
 
     .stat-value-center {
-        font-size: 1.2rem;
+        font-size: 1rem;
+        font-weight: 600;
     }
 
     .action-buttons-grid {
