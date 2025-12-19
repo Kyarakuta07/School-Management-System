@@ -68,7 +68,7 @@ async function loadOpponents() {
                         <span class="wins">W: ${wins}</span>
                         <span class="losses">L: ${losses}</span>
                     </div>
-                    <button class="battle-btn-premium" onclick="startBattle(${opp.id})">
+                    <button class="battle-btn-premium" onclick="startBattle(${opp.pet_id})">
                         <i class="fas fa-bolt"></i>
                         Challenge
                     </button>
