@@ -472,7 +472,7 @@ function battleResultAnimation(didWin) {
         animatePetVictory();
     } else {
         // Check if pet died
-        if (activePet && activePet.health <= 0) {
+        if (window.activePet && window.activePet.health <= 0) {
             animatePetDeath();
         } else {
             animatePetHurt();
@@ -585,3 +585,4 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 console.log('🎬 Pet Animations module loaded');
+

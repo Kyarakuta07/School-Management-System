@@ -42,7 +42,7 @@ function sortCollection(sortType) {
 
 // Get filtered and sorted pets
 function getFilteredPets() {
-    let filtered = [...userPets];
+    let filtered = [...window.userPets];
 
     // Apply search
     if (searchQuery) {
@@ -88,7 +88,7 @@ function getFilteredPets() {
 // Update stats panel
 function updateCollectionStats() {
     const stats = {
-        total: userPets.length,
+        total: window.userPets.length,
         common: 0,
         rare: 0,
         epic: 0,
@@ -96,7 +96,7 @@ function updateCollectionStats() {
         shiny: 0
     };
 
-    userPets.forEach(pet => {
+    window.userPets.forEach(pet => {
         const rarity = pet.rarity.toLowerCase();
         stats[rarity]++;
         if (pet.is_shiny) stats.shiny++;
@@ -111,3 +111,4 @@ function updateCollectionStats() {
     if (raritiesEl) raritiesEl.textContent = `${stats.common}/${stats.rare}/${stats.epic}/${stats.legendary}`;
     if (shinyEl) shinyEl.textContent = stats.shiny;
 }
+

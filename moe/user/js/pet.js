@@ -12,16 +12,12 @@ const ASSETS_BASE = '../assets/pets/';
 
 // State
 let currentTab = 'my-pet';
-window.userPets = []; // Exposed to window for arena module
-window.activePet = null; // Exposed to window for arena module
+window.window.userPets = []; // Exposed to window for arena module
+window.window.activePet = null; // Exposed to window for arena module
 let shopItems = [];
 let userInventory = [];
 let selectedItemType = null;
 let currentBulkItem = null; // State untuk modal bulk use
-
-// Create local aliases for convenience
-let userPets = window.userPets;
-let activePet = window.activePet;
 
 // ================================================
 // INITIALIZATION
@@ -198,8 +194,8 @@ function switchTab(tab) {
     // Load tab-specific data
     switch (tab) {
         case 'my-pet':
-            // Only render, don't fetch again (activePet already set by loadPets)
-            if (activePet) {
+            // Only render, don't fetch again (window.activePet already set by loadPets)
+            if (window.activePet) {
                 renderActivePet();
             } else {
                 loadActivePet(); // Fallback if no active pet loaded yet
@@ -237,7 +233,7 @@ async function loadPets() {
         const data = await response.json();
 
         if (data.success) {
-            window.userPets = data.pets;
+            window.window.userPets = data.pets;
 
             // Update pet count badge (always, regardless of tab)
             updatePetCountBadge();
@@ -245,8 +241,8 @@ async function loadPets() {
             renderCollection();
 
             // Find and display active pet
-            window.activePet = window.userPets.find(p => p.is_active);
-            if (window.activePet) {
+            window.window.activePet = window.window.userPets.find(p => p.is_active);
+            if (window.window.activePet) {
                 renderActivePet();
             }
         }
@@ -262,12 +258,12 @@ async function loadActivePet() {
         const data = await response.json();
 
         if (data.success && data.pet) {
-            activePet = data.pet;
+            window.activePet = data.pet;
             renderActivePet();
 
             // Load pet into PixiJS for GPU-accelerated rendering
             if (window.PixiPet && window.PixiPet.isReady()) {
-                window.PixiPet.load(activePet);
+                window.PixiPet.load(window.activePet);
             }
         } else {
             showNoPetMessage();
@@ -286,7 +282,7 @@ function renderActivePet() {
     const expCard = document.getElementById('exp-card');
     const actions = document.getElementById('action-buttons');
 
-    if (!activePet) {
+    if (!window.activePet) {
         showNoPetMessage();
         return;
     }
@@ -296,13 +292,13 @@ function renderActivePet() {
     petZone.style.display = 'block';
 
     // Build pet display
-    const imgPath = getPetImagePath(activePet);
-    const shinyStyle = activePet.is_shiny ? `filter: hue-rotate(${activePet.shiny_hue}deg);` : '';
+    const imgPath = getPetImagePath(window.activePet);
+    const shinyStyle = window.activePet.is_shiny ? `filter: hue-rotate(${window.activePet.shiny_hue}deg);` : '';
 
     // Render pet image in container
     const petContainer = document.getElementById('pet-img-container');
     petContainer.innerHTML = `
-        <img src="${imgPath}" alt="${activePet.species_name}" 
+        <img src="${imgPath}" alt="${window.activePet.species_name}" 
              class="pet-image pet-anim-idle" 
              style="${shinyStyle}; width: 180px; height: 180px; object-fit: contain; filter: drop-shadow(0 8px 25px rgba(0,0,0,0.6));"
              onerror="this.src='../assets/placeholder.png'">
@@ -310,46 +306,46 @@ function renderActivePet() {
 
     // Show shiny sparkles if applicable
     const shinySparkles = document.getElementById('shiny-sparkles');
-    shinySparkles.style.display = activePet.is_shiny ? 'block' : 'none';
+    shinySparkles.style.display = window.activePet.is_shiny ? 'block' : 'none';
 
     // === INFO HEADER ===
     infoHeader.style.display = 'block';
 
     // Pet name
-    const displayName = activePet.nickname || activePet.species_name;
+    const displayName = window.activePet.nickname || window.activePet.species_name;
     document.getElementById('pet-name').textContent = displayName;
 
     // Level badge
-    document.getElementById('pet-level').textContent = `Lv.${activePet.level}`;
+    document.getElementById('pet-level').textContent = `Lv.${window.activePet.level}`;
 
     // Element badge
     const elementBadge = document.getElementById('pet-element-badge');
-    elementBadge.textContent = activePet.element;
-    elementBadge.className = `element-badge ${activePet.element.toLowerCase()}`;
+    elementBadge.textContent = window.activePet.element;
+    elementBadge.className = `element-badge ${window.activePet.element.toLowerCase()}`;
 
     // Rarity badge
     const rarityBadge = document.getElementById('pet-rarity-badge');
-    rarityBadge.textContent = activePet.rarity;
-    rarityBadge.className = `rarity-badge ${activePet.rarity.toLowerCase()}`;
+    rarityBadge.textContent = window.activePet.rarity;
+    rarityBadge.className = `rarity-badge ${window.activePet.rarity.toLowerCase()}`;
 
     // Shiny tag
     const shinyTag = document.getElementById('shiny-tag');
-    shinyTag.style.display = activePet.is_shiny ? 'inline-flex' : 'none';
+    shinyTag.style.display = window.activePet.is_shiny ? 'inline-flex' : 'none';
 
     // === STAT CARDS with Circular Progress ===
     statsContainer.style.display = 'grid';
 
     // Update circular progress rings
-    updateCircularProgress('health', activePet.health);
-    updateCircularProgress('hunger', activePet.hunger);
-    updateCircularProgress('mood', activePet.mood);
+    updateCircularProgress('health', window.activePet.health);
+    updateCircularProgress('hunger', window.activePet.hunger);
+    updateCircularProgress('mood', window.activePet.mood);
 
     // === EXP CARD ===
     expCard.style.display = 'block';
-    const expNeeded = Math.floor(100 * Math.pow(1.2, activePet.level - 1));
-    const expPercent = (activePet.exp / expNeeded) * 100;
+    const expNeeded = Math.floor(100 * Math.pow(1.2, window.activePet.level - 1));
+    const expPercent = (window.activePet.exp / expNeeded) * 100;
     document.getElementById('exp-bar').style.width = `${expPercent}%`;
-    document.getElementById('exp-text').textContent = `${activePet.exp} / ${expNeeded}`;
+    document.getElementById('exp-text').textContent = `${window.activePet.exp} / ${expNeeded}`;
 
     // === ACTION BUTTONS ===
     actions.style.display = 'grid';
@@ -359,7 +355,7 @@ function renderActivePet() {
     if (shelterBtn) {
         const labelEl = shelterBtn.querySelector('.action-label');
         const iconEl = shelterBtn.querySelector('i');
-        if (activePet.status === 'SHELTER') {
+        if (window.activePet.status === 'SHELTER') {
             if (labelEl) labelEl.textContent = 'Retrieve';
             if (iconEl) iconEl.className = 'fas fa-door-open';
         } else {
@@ -472,7 +468,7 @@ function getEvolutionStage(pet) {
 function updatePetCountBadge() {
     const petCountBadge = document.getElementById('pet-count-badge');
     if (petCountBadge) {
-        const petCount = window.userPets.length;
+        const petCount = window.window.userPets.length;
         petCountBadge.textContent = `${petCount} / 25`;
 
         // Color code based on capacity
@@ -500,7 +496,7 @@ function renderCollection() {
         updateCollectionStats();
     }
 
-    if (userPets.length === 0) {
+    if (window.window.userPets.length === 0) {
         grid.innerHTML = `
             <div class="empty-message">
                 <p>No pets yet! Visit the Gacha tab to get your first companion.</p>
@@ -510,7 +506,7 @@ function renderCollection() {
     }
 
     // Get filtered and sorted pets (Phase 2)
-    const displayPets = typeof getFilteredPets === 'function' ? getFilteredPets() : userPets;
+    const displayPets = typeof getFilteredPets === 'function' ? getFilteredPets() : window.window.userPets;
 
     if (displayPets.length === 0) {
         grid.innerHTML = `
@@ -580,7 +576,7 @@ function renderCollection() {
 // ACTION LOGIC (Action Buttons)
 // ================================================
 async function selectPet(petId) {
-    const pet = userPets.find(p => p.id === petId);
+    const pet = window.userPets.find(p => p.id === petId);
     if (!pet) return;
 
     if (pet.status === 'DEAD') {
@@ -628,10 +624,10 @@ function initActionButtons() {
 }
 
 async function playWithPet() {
-    if (!activePet) return;
+    if (!window.activePet) return;
 
     // Check if pet is alive
-    if (activePet.status === 'DEAD') {
+    if (window.activePet.status === 'DEAD') {
         showToast('This pet is dead! Use a revival item first.', 'warning');
         return;
     }
@@ -642,7 +638,7 @@ async function playWithPet() {
         window.PetAnimations.hearts(3);
     }
 
-    showToast('You played with ' + (activePet.nickname || activePet.species_name) + '! 🎵', 'success');
+    showToast('You played with ' + (window.activePet.nickname || window.activePet.species_name) + '! 🎵', 'success');
 
     // Open rhythm game modal after short delay
     setTimeout(() => {
@@ -658,7 +654,7 @@ async function playWithPet() {
 }
 
 async function toggleShelter(targetPetId = null) {
-    const petId = targetPetId || (activePet ? activePet.id : null);
+    const petId = targetPetId || (window.activePet ? window.activePet.id : null);
     if (!petId) return;
 
     try {
@@ -750,11 +746,11 @@ async function handleInventoryClick(itemId, type, itemName, itemDesc, itemImg, m
     }
 
     // Cek Pet Aktif (Untuk item konsumsi)
-    if (!activePet) {
+    if (!window.activePet) {
         showToast('Kamu butuh Active Pet untuk menggunakan item ini!', 'warning');
         return;
     }
-    if (activePet.status === 'DEAD') {
+    if (window.activePet.status === 'DEAD') {
         showToast('Pet mati. Hidupkan dulu dengan item Revive!', 'error');
         return;
     }
@@ -770,7 +766,7 @@ async function handleInventoryClick(itemId, type, itemName, itemDesc, itemImg, m
     const modal = document.getElementById('bulk-use-modal');
     if (!modal) {
         // Fallback jika lupa update HTML: Pakai cara lama (confirm 1 item)
-        if (confirm(`Gunakan ${itemName}?`)) useItem(itemId, activePet.id, 1);
+        if (confirm(`Gunakan ${itemName}?`)) useItem(itemId, window.activePet.id, 1);
         return;
     }
 
@@ -805,12 +801,12 @@ function closeBulkModal() {
 }
 
 function confirmBulkUse() {
-    if (!currentBulkItem || !activePet) return;
+    if (!currentBulkItem || !window.activePet) return;
 
     const qty = parseInt(document.getElementById('bulk-item-qty').value);
 
     // Eksekusi pakai item dengan Quantity
-    useItem(currentBulkItem.id, activePet.id, qty);
+    useItem(currentBulkItem.id, window.activePet.id, qty);
     closeBulkModal();
 }
 
@@ -880,7 +876,7 @@ let currentReviveItem = null;
 
 function openReviveModal(itemId, itemName, itemImg) {
     // Filter only dead pets
-    const deadPets = userPets.filter(pet => pet.status === 'DEAD');
+    const deadPets = window.userPets.filter(pet => pet.status === 'DEAD');
 
     if (deadPets.length === 0) {
         showToast('Tidak ada pet yang mati!', 'info');
@@ -929,7 +925,7 @@ async function revivePet(petId) {
 // QUICK USE MODAL (Dari Dashboard Button)
 // ================================================
 function openItemModal(type) {
-    if (!activePet) return;
+    if (!window.activePet) return;
 
     selectedItemType = type;
     const modal = document.getElementById('item-modal');
@@ -941,7 +937,7 @@ function openItemModal(type) {
         list.innerHTML = `<div class="empty-message">No items! Visit shop.</div>`;
     } else {
         list.innerHTML = items.map(item => `
-            <div class="item-option" onclick="useItem(${item.item_id}, ${activePet.id}, 1)">
+            <div class="item-option" onclick="useItem(${item.item_id}, ${window.activePet.id}, 1)">
                 <img src="${ASSETS_BASE}${item.img_path}" onerror="this.src='../assets/placeholder.png'">
                 <div class="item-option-name">${item.name}</div>
                 <div class="item-option-qty">x${item.quantity}</div>
@@ -1379,18 +1375,18 @@ async function loadOpponents() {
 
 // Start turn-based battle - redirects to battle arena page
 function startBattle(defenderPetId) {
-    if (!activePet) {
+    if (!window.activePet) {
         showToast('You need an active pet to battle!', 'warning');
         return;
     }
 
-    if (activePet.status === 'DEAD') {
+    if (window.activePet.status === 'DEAD') {
         showToast('Cannot battle with a dead pet!', 'error');
         return;
     }
 
     // Redirect to battle arena page
-    window.location.href = `battle_arena.php?attacker_id=${activePet.id}&defender_id=${defenderPetId}`;
+    window.location.href = `battle_arena.php?attacker_id=${window.activePet.id}&defender_id=${defenderPetId}`;
 }
 
 function showBattleResult(data) {
@@ -1830,8 +1826,8 @@ function togglePetSelection(petId, element) {
             return;
         }
 
-        // Find pet data from userPets array
-        const pet = userPets.find(p => p.id === petId);
+        // Find pet data from window.userPets array
+        const pet = window.userPets.find(p => p.id === petId);
         if (pet) {
             selectedTeam3v3.push(pet);
             element.classList.add('selected');
@@ -1997,7 +1993,7 @@ function openReviveModal(itemId, itemName, itemImg) {
     }
 
     // Get dead pets
-    const deadPets = userPets.filter(pet => pet.status === 'DEAD');
+    const deadPets = window.userPets.filter(pet => pet.status === 'DEAD');
 
     if (deadPets.length === 0) {
         showToast('No dead pets to revive!', 'info');
@@ -2037,3 +2033,4 @@ async function revivePet(petId) {
     await useItem(currentReviveItem.item_id, petId, 1);
     closeReviveModal();
 }
+
