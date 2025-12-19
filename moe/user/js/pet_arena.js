@@ -268,50 +268,17 @@ async function loadTeamSelection() {
 
 // Initialize arena module
 console.log('✓ Arena module loaded');
+if (winsEl) winsEl.textContent = wins || 0;
 
-// ================================================
-// ARENA STATS UPDATE FUNCTION
-// ================================================
-async function loadArenaStats() {
-    try {
-        const response = await fetch('pet_api.php?action=battle_history');
-        const data = await response.json();
+// Calculate and update win rate
+const total = (wins || 0) + (losses || 0);
+const winRate = total > 0 ? Math.round((wins / total) * 100) : 0;
+const winRateEl = document.getElementById('win-rate');
+if (winRateEl) winRateEl.textContent = `${winRate}%`;
 
-        if (data.success) {
-            const stats = data.stats || {};
-            const wins = stats.wins || 0;
-            const losses = stats.losses || 0;
-            const streak = stats.current_streak || 0;
-            const battlesRemaining = stats.battles_remaining !== undefined ? stats.battles_remaining : 3;
-
-            // Update stats bar
-            updateArenaStats(wins, losses, streak);
-
-            // Update battles remaining display
-            const battlesEl = document.getElementById('arena-battles');
-            if (battlesEl) {
-                battlesEl.textContent = `${battlesRemaining} / 3`;
-            }
-        }
-    } catch (error) {
-        console.error('Error loading arena stats:', error);
-    }
-}
-
-function updateArenaStats(wins, losses, streak) {
-    // Update wins
-    const winsEl = document.getElementById('total-wins');
-    if (winsEl) winsEl.textContent = wins || 0;
-
-    // Calculate and update win rate
-    const total = (wins || 0) + (losses || 0);
-    const winRate = total > 0 ? Math.round((wins / total) * 100) : 0;
-    const winRateEl = document.getElementById('win-rate');
-    if (winRateEl) winRateEl.textContent = `${winRate}%`;
-
-    // Update streak
-    const streakEl = document.getElementById('current-streak');
-    if (streakEl) streakEl.textContent = streak || 0;
+// Update streak
+const streakEl = document.getElementById('current-streak');
+if (streakEl) streakEl.textContent = streak || 0;
 }
 
 // Initialize arena stats when tab is opened
