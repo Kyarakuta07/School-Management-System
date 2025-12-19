@@ -547,12 +547,26 @@ async function confirmRename() {
 // UPDATE COLLECTION RENDERING (ADD SELL & EVOLVE BUTTONS)
 // ================================================
 
-// Override renderCollection to add new buttons
-const originalRenderCollection = renderCollection;
-renderCollection = function () {
-    const grid = document.getElementById('collection-grid');
+// Override renderCollection to add new buttons (only if exists)
+// Wait for the original function to be available
+function setupCollectionOverride() {
+    if (typeof window.renderCollection !== 'function') {
+        // Define our own renderCollection if one doesn't exist
+        window.renderCollection = renderCollectionWithButtons;
+    } else {
+        // Override existing
+        const originalRenderCollection = window.renderCollection;
+        window.renderCollection = function () {
+            renderCollectionWithButtons();
+        };
+    }
+}
 
-    if (window.userPets.length === 0) {
+function renderCollectionWithButtons() {
+    const grid = document.getElementById('collection-grid');
+    if (!grid) return;
+
+    if (!window.userPets || window.userPets.length === 0) {
         grid.innerHTML = `
             <div class="empty-message">
                 <p>No pets yet! Visit the Gacha tab to get your first companion.</p>
@@ -604,7 +618,10 @@ renderCollection = function () {
             </div>
         `;
     }).join('');
-};
+}
+
+// Setup override when DOM is ready
+document.addEventListener('DOMContentLoaded', setupCollectionOverride);
 
 // ================================================
 // UPDATE playWithPet TO USE RHYTHM GAME
