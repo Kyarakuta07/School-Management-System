@@ -47,7 +47,7 @@ async function loadOpponents() {
                         <div class="owner-info">
                             <i class="fas fa-user"></i>
                             <span>${opp.owner_name}</span>
-                            ${opp.sanctuary ? `<span class="sanctuary">${opp.sanctuary}</span>` : ''}
+                            ${opp.sanctuary ? '<span class="sanctuary">' + opp.sanctuary + '</span>' : ''}
                         </div>
                     </div>
                     <div class="opponent-stats-preview">
@@ -274,17 +274,17 @@ console.log('✓ Arena module loaded');
 // ================================================
 function updateArenaStats(wins, losses, streak) {
     // Update wins
-    const winsEl = document.getElementById(''total-wins'');
+    const winsEl = document.getElementById(''total - wins'');
     if (winsEl) winsEl.textContent = wins || 0;
-    
+
     // Calculate and update win rate
     const total = (wins || 0) + (losses || 0);
     const winRate = total > 0 ? Math.round((wins / total) * 100) : 0;
-    const winRateEl = document.getElementById(''win-rate'');
+    const winRateEl = document.getElementById(''win - rate'');
     if (winRateEl) winRateEl.textContent = `${winRate}%`;
-    
+
     // Update streak
-    const streakEl = document.getElementById(''current-streak'');
+    const streakEl = document.getElementById(''current - streak'');
     if (streakEl) streakEl.textContent = streak || 0;
 }
 
