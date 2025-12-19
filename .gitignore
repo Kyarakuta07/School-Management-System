@@ -36,7 +36,10 @@ tmp/
 *.backup
 *.sql
 *.sql.gz
+!moe/migrations/*.sql
 
 # Development files
 *.md
 !README.md
+!docs/*.md
+!moe/migrations/*.md
