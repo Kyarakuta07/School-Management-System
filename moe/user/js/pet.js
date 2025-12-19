@@ -7,7 +7,7 @@
 // ================================================
 // CONFIGURATION
 // ================================================
-const API_BASE = 'pet_api.php';
+const API_BASE = 'api/router.php'; // Modular API with controllers
 const ASSETS_BASE = '../assets/pets/';
 
 // State
