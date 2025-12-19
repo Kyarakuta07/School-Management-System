@@ -31,6 +31,10 @@ tmp/
 /vendor/
 /node_modules/
 
+# PHPUnit
+/coverage/
+.phpunit.result.cache
+
 # Backup files
 *.bak
 *.backup

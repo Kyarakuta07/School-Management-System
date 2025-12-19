@@ -1,0 +1,32 @@
+{
+    "name": "moe/school-management-system",
+    "description": "Mediterranean of Egypt - School Management System with Pet Companion",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "MOE\\": "moe/"
+        },
+        "files": [
+            "moe/core/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "MOE\\Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "php": ">=7.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.6"
+    },
+    "scripts": {
+        "test": "phpunit",
+        "test:coverage": "phpunit --coverage-html coverage"
+    },
+    "config": {
+        "optimize-autoloader": true
+    }
+}
