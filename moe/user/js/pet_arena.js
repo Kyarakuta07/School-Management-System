@@ -272,6 +272,32 @@ console.log('✓ Arena module loaded');
 // ================================================
 // ARENA STATS UPDATE FUNCTION
 // ================================================
+async function loadArenaStats() {
+    try {
+        const response = await fetch('pet_api.php?action=battle_history');
+        const data = await response.json();
+
+        if (data.success) {
+            const stats = data.stats || {};
+            const wins = stats.wins || 0;
+            const losses = stats.losses || 0;
+            const streak = stats.current_streak || 0;
+            const battlesRemaining = stats.battles_remaining !== undefined ? stats.battles_remaining : 3;
+
+            // Update stats bar
+            updateArenaStats(wins, losses, streak);
+
+            // Update battles remaining display
+            const battlesEl = document.getElementById('battles-count');
+            if (battlesEl) {
+                battlesEl.textContent = `${battlesRemaining}/3`;
+            }
+        }
+    } catch (error) {
+        console.error('Error loading arena stats:', error);
+    }
+}
+
 function updateArenaStats(wins, losses, streak) {
     // Update wins
     const winsEl = document.getElementById('total-wins');
@@ -288,5 +314,20 @@ function updateArenaStats(wins, losses, streak) {
     if (streakEl) streakEl.textContent = streak || 0;
 }
 
-// Call this when loading opponents or after battle
-// Example: updateArenaStats(45, 12, 5);
+// Initialize arena stats when tab is opened
+document.addEventListener('DOMContentLoaded', () => {
+    // Load stats when Arena tab is clicked
+    const arenaTab = document.querySelector('[data-tab="arena"]');
+    if (arenaTab) {
+        arenaTab.addEventListener('click', () => {
+            setTimeout(loadArenaStats, 100);
+        });
+    }
+
+    // Also load if already on arena tab
+    const arenaContent = document.getElementById('arena');
+    if (arenaContent && arenaContent.classList.contains('active')) {
+        loadArenaStats();
+    }
+});
+
