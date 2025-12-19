@@ -469,74 +469,61 @@ mysqli_stmt_close($gold_stmt);
                                         <span class="rate-label epic">Epic</span>
                                         <span class="rate-value">2.5%</span>
                                     </div>
-                                    <div class="rate-row">
-                                        <span class="rate-label legendary">Legendary</span>
-                                        <span class="rate-value">0.5%</span>
+                                    <div class="gacha-card-ribbon">
+                                        <span>BEST VALUE</span>
+                                    </div>
+                                    <div class="gacha-card-header premium">
+                                        <i class="fas fa-crown"></i>
+                                        <h3>Premium Summon</h3>
+                                    </div>
+                                    <div class="gacha-card-body">
+                                        <div class="gacha-cost-badge premium">
+                                            <i class="fas fa-coins"></i>
+                                            <span>500</span>
+                                        </div>
+                                        <div class="premium-guarantee">
+                                            <i class="fas fa-certificate"></i>
+                                            <span>Epic+ Guaranteed</span>
+                                        </div>
+                                        <div class="gacha-rates premium">
+                                            <div class="rate-row">
+                                                <span class="rate-label epic">Epic</span>
+                                                <span class="rate-value">75%</span>
+                                            </div>
+                                            <div class="rate-row highlight">
+                                                <span class="rate-label legendary">Legendary</span>
+                                                <span class="rate-value">25%</span>
+                                                <span class="rate-boost">3x!</span>
+                                            </div>
+                                        </div>
+                                        <button class="gacha-summon-btn premium-btn" onclick="performGacha('premium')">
+                                            <i class="fas fa-hat-wizard"></i>
+                                            <span>Premium Summon</span>
+                                        </button>
                                     </div>
                                 </div>
-                                <button class="gacha-summon-btn normal-btn" onclick="performGacha('normal')">
-                                    <i class="fas fa-hand-sparkles"></i>
-                                    <span>Summon</span>
-                                </button>
                             </div>
-                        </div>
 
-                        <!-- Premium Gacha Card -->
-                        <div class="gacha-card premium-card">
-                            <div class="gacha-card-ribbon">
-                                <span>BEST VALUE</span>
-                            </div>
-                            <div class="gacha-card-header premium">
-                                <i class="fas fa-crown"></i>
-                                <h3>Premium Summon</h3>
-                            </div>
-                            <div class="gacha-card-body">
-                                <div class="gacha-cost-badge premium">
-                                    <i class="fas fa-coins"></i>
-                                    <span>500</span>
+                            <!-- Info Section -->
+                            <div class="gacha-info-section">
+                                <div class="gacha-tip">
+                                    <i class="fas fa-lightbulb"></i>
+                                    <p><strong>Pro Tip:</strong> Premium Summon has <span class="highlight-text">3x
+                                            higher
+                                            Legendary rate</span> - perfect for legendary hunting!</p>
                                 </div>
-                                <div class="premium-guarantee">
-                                    <i class="fas fa-certificate"></i>
-                                    <span>Epic+ Guaranteed</span>
-                                </div>
-                                <div class="gacha-rates premium">
-                                    <div class="rate-row">
-                                        <span class="rate-label epic">Epic</span>
-                                        <span class="rate-value">75%</span>
+                                <div class="gacha-stats">
+                                    <div class="stat-item">
+                                        <i class="fas fa-dice"></i>
+                                        <span>Random species per rarity</span>
                                     </div>
-                                    <div class="rate-row highlight">
-                                        <span class="rate-label legendary">Legendary</span>
-                                        <span class="rate-value">25%</span>
-                                        <span class="rate-boost">3x!</span>
+                                    <div class="stat-item">
+                                        <i class="fas fa-star"></i>
+                                        <span>1% chance for Shiny variant</span>
                                     </div>
                                 </div>
-                                <button class="gacha-summon-btn premium-btn" onclick="performGacha('premium')">
-                                    <i class="fas fa-hat-wizard"></i>
-                                    <span>Premium Summon</span>
-                                </button>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Info Section -->
-                    <div class="gacha-info-section">
-                        <div class="gacha-tip">
-                            <i class="fas fa-lightbulb"></i>
-                            <p><strong>Pro Tip:</strong> Premium Summon has <span class="highlight-text">3x higher
-                                    Legendary rate</span> - perfect for legendary hunting!</p>
-                        </div>
-                        <div class="gacha-stats">
-                            <div class="stat-item">
-                                <i class="fas fa-dice"></i>
-                                <span>Random species per rarity</span>
-                            </div>
-                            <div class="stat-item">
-                                <i class="fas fa-star"></i>
-                                <span>1% chance for Shiny variant</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </section>
 
             <!-- SHOP TAB -->
