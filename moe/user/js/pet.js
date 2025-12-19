@@ -960,15 +960,10 @@ async function performGacha(type) {
     const egg = document.getElementById('gacha-egg');
     egg.classList.add('hatching');
 
-    // Convert string type to numeric gacha type
-    // 1 = Normal (all rarities), 2 = Rare+ guaranteed, 3 = Epic+ guaranteed (Premium)
-    let gachaType = 1; // default to normal
+    // Normalize type to 'standard' or 'premium'  
+    let gachaType = 'standard'; // default
     if (type === 'premium') {
-        gachaType = 3; // Premium = Epic+ guaranteed
-    } else if (type === 'rare') {
-        gachaType = 2; // Rare+ guaranteed (if you want to add a middle tier)
-    } else if (type === 'normal') {
-        gachaType = 1; // Normal gacha
+        gachaType = 'premium';
     }
 
     try {
