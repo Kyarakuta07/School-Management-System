@@ -40,6 +40,7 @@ mysqli_stmt_close($gold_stmt);
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0a0a0a">
     <title>Pet Companion - MOE</title>
+    <link rel="icon" type="image/png" href="../assets/images/logo.png">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
