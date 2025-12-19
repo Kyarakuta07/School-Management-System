@@ -130,16 +130,66 @@ define('MAX_PROFILE_PHOTO_SIZE', 2 * 1024 * 1024); // 2MB
 // ==================================================
 // 9. ENVIRONMENT DETECTION
 // ==================================================
-$is_production = (
-    isset($_SERVER['HTTP_HOST']) &&
-    strpos($_SERVER['HTTP_HOST'], 'localhost') === false &&
-    strpos($_SERVER['HTTP_HOST'], '127.0.0.1') === false
-);
 
+// Load environment configuration
+require_once __DIR__ . '/environment.php';
+
+// Note: environment.php now handles:
+// - APP_ENV detection (production/staging/development)
+// - DEBUG_MODE, CACHE_ENABLED, SITE_URL constants
+// - is_production(), is_staging(), is_development() helpers
+
+// Legacy compatibility
+$is_production = is_production();
 define('IS_PRODUCTION', $is_production);
 
 // In production, hide errors from users
 if (IS_PRODUCTION) {
     ini_set('display_errors', '0');
     error_reporting(E_ERROR | E_PARSE);
+}
+
+// ==================================================
+// 10. PERFORMANCE & CACHING (Optional)
+// ==================================================
+
+/**
+ * Load Performance utilities (caching, compression)
+ * @return void
+ */
+function load_performance()
+{
+    require_once __DIR__ . '/performance.php';
+}
+
+/**
+ * Load Image Optimizer utilities
+ * @return void
+ */
+function load_image_optimizer()
+{
+    require_once __DIR__ . '/image_optimizer.php';
+}
+
+// ==================================================
+// 11. MONITORING & LOGGING (Optional)
+// ==================================================
+
+/**
+ * Load Monitoring system (Logger, ErrorTracker, HealthCheck)
+ * @param bool $register_handlers Whether to register global error handlers
+ * @return void
+ */
+function load_monitoring($register_handlers = false)
+{
+    require_once __DIR__ . '/monitoring.php';
+
+    if ($register_handlers) {
+        register_error_handlers();
+    }
+}
+
+// Auto-load monitoring in production for error tracking
+if (IS_PRODUCTION && file_exists(__DIR__ . '/monitoring.php')) {
+    load_monitoring(true);
 }
