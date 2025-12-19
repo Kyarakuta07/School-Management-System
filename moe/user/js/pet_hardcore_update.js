@@ -180,21 +180,21 @@ class RhythmGame {
 
 // Open rhythm game - NOW REDIRECTS TO FULLSCREEN PAGE
 function openRhythmGame() {
-    if (!activePet) {
+    if (!window.activePet) {
         showToast('No active pet!', 'warning');
         return;
     }
 
-    if (activePet.status === 'DEAD') {
+    if (window.activePet.status === 'DEAD') {
         showToast('Cannot play with a dead pet!', 'error');
         return;
     }
 
     // Get pet image path
-    const petImg = getPetImagePath(activePet);
+    const petImg = getPetImagePath(window.activePet);
 
     // Redirect to fullscreen rhythm game page
-    window.location.href = `rhythm_game.php?pet_id=${activePet.id}&pet_img=${encodeURIComponent(petImg)}`;
+    window.location.href = `rhythm_game.php?pet_id=${window.activePet.id}&pet_img=${encodeURIComponent(petImg)}`;
 }
 
 function closeRhythmGame() {
@@ -238,7 +238,7 @@ let evolutionState = {
 
 async function openEvolutionModal(mainPetId) {
     // Find the main pet in collection
-    const mainPet = userPets.find(p => p.id === mainPetId);
+    const mainPet = window.userPets.find(p => p.id === mainPetId);
 
     if (!mainPet) {
         showToast('Pet not found', 'error');
@@ -435,7 +435,7 @@ function calculateSellPrice(pet) {
 
 // Open sell modal
 function sellPet(petId) {
-    const pet = userPets.find(p => p.id === petId);
+    const pet = window.userPets.find(p => p.id === petId);
     if (!pet) return;
 
     sellPetId = petId;
@@ -494,13 +494,13 @@ async function confirmSellPet() {
 let renamingPetId = null;
 
 function openRenameModal() {
-    if (!activePet) return;
+    if (!window.activePet) return;
 
-    renamingPetId = activePet.id;
-    const currentName = activePet.nickname || activePet.species_name;
+    renamingPetId = window.activePet.id;
+    const currentName = window.activePet.nickname || window.activePet.species_name;
 
-    document.getElementById('rename-input').value = activePet.nickname || '';
-    document.getElementById('rename-input').placeholder = activePet.species_name;
+    document.getElementById('rename-input').value = window.activePet.nickname || '';
+    document.getElementById('rename-input').placeholder = window.activePet.species_name;
     document.getElementById('rename-modal').classList.add('show');
 
     // Focus input
@@ -552,7 +552,7 @@ const originalRenderCollection = renderCollection;
 renderCollection = function () {
     const grid = document.getElementById('collection-grid');
 
-    if (userPets.length === 0) {
+    if (window.userPets.length === 0) {
         grid.innerHTML = `
             <div class="empty-message">
                 <p>No pets yet! Visit the Gacha tab to get your first companion.</p>
@@ -561,7 +561,7 @@ renderCollection = function () {
         return;
     }
 
-    grid.innerHTML = userPets.map(pet => {
+    grid.innerHTML = window.userPets.map(pet => {
         const imgPath = getPetImagePath(pet);
         const displayName = pet.nickname || pet.species_name;
         const activeClass = pet.is_active ? 'active' : '';
@@ -676,3 +676,4 @@ window.confirmRename = confirmRename;
 window.openHelpModal = openHelpModal;
 window.closeHelpModal = closeHelpModal;
 window.switchHelpTab = switchHelpTab;
+
