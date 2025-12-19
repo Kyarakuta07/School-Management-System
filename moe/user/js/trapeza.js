@@ -56,8 +56,8 @@ async function loadBalance() {
         const data = await response.json();
 
         if (data.success) {
-            currentBalance = data.gold;
-            document.getElementById('gold-balance').textContent = data.gold.toLocaleString();
+            currentBalance = data.balance;
+            document.getElementById('gold-balance').textContent = data.balance.toLocaleString();
         } else {
             showToast(data.error || 'Failed to load balance', 'error');
         }
