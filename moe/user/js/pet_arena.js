@@ -288,9 +288,9 @@ async function loadArenaStats() {
             updateArenaStats(wins, losses, streak);
 
             // Update battles remaining display
-            const battlesEl = document.getElementById('battles-count');
+            const battlesEl = document.getElementById('arena-battles');
             if (battlesEl) {
-                battlesEl.textContent = `${battlesRemaining}/3`;
+                battlesEl.textContent = `${battlesRemaining} / 3`;
             }
         }
     } catch (error) {
