@@ -79,15 +79,20 @@ class BattleController extends BaseController
 
         $limit = isset($_GET['limit']) ? min(50, max(1, (int) $_GET['limit'])) : 10;
 
+        // Get battles where user's pet was the attacker
         $stmt = mysqli_prepare(
             $this->conn,
-            "SELECT pb.*, ps.name as pet_name, ps.element as pet_element,
-                    ops.name as opponent_name, ops.element as opponent_element
+            "SELECT pb.id, pb.attacker_pet_id, pb.defender_pet_id, pb.winner_pet_id, 
+                    pb.battle_type, pb.attacker_exp_gained, pb.gold_reward, pb.created_at,
+                    ps.name as pet_name, ps.element as pet_element,
+                    def_ps.name as opponent_name, def_ps.element as opponent_element,
+                    (pb.winner_pet_id = pb.attacker_pet_id) as won
              FROM pet_battles pb
-             LEFT JOIN user_pets up ON pb.attacker_pet_id = up.id
-             LEFT JOIN pet_species ps ON up.species_id = ps.id
-             LEFT JOIN pet_species ops ON pb.defender_species_id = ops.id
-             WHERE pb.user_id = ?
+             JOIN user_pets up ON pb.attacker_pet_id = up.id
+             JOIN pet_species ps ON up.species_id = ps.id
+             LEFT JOIN user_pets def_up ON pb.defender_pet_id = def_up.id
+             LEFT JOIN pet_species def_ps ON def_up.species_id = def_ps.id
+             WHERE up.user_id = ?
              ORDER BY pb.created_at DESC
              LIMIT ?"
         );
@@ -148,20 +153,22 @@ class BattleController extends BaseController
 
         if ($type === 'wins') {
             $query = "SELECT n.username, n.nama_lengkap, 
-                             COUNT(CASE WHEN pb.won = 1 THEN 1 END) as wins,
+                             COUNT(CASE WHEN pb.winner_pet_id = pb.attacker_pet_id THEN 1 END) as wins,
                              COUNT(*) as total_battles
                       FROM pet_battles pb
-                      JOIN nethera n ON pb.user_id = n.id_nethera
-                      GROUP BY pb.user_id
+                      JOIN user_pets up ON pb.attacker_pet_id = up.id
+                      JOIN nethera n ON up.user_id = n.id_nethera
+                      GROUP BY up.user_id
                       ORDER BY wins DESC
                       LIMIT ?";
         } else {
-            // Streak leaderboard
+            // Just return wins leaderboard for streak too (no streak column exists)
             $query = "SELECT n.username, n.nama_lengkap, 
-                             MAX(pb.win_streak) as max_streak
+                             COUNT(CASE WHEN pb.winner_pet_id = pb.attacker_pet_id THEN 1 END) as max_streak
                       FROM pet_battles pb
-                      JOIN nethera n ON pb.user_id = n.id_nethera
-                      GROUP BY pb.user_id
+                      JOIN user_pets up ON pb.attacker_pet_id = up.id
+                      JOIN nethera n ON up.user_id = n.id_nethera
+                      GROUP BY up.user_id
                       ORDER BY max_streak DESC
                       LIMIT ?";
         }
@@ -192,7 +199,10 @@ class BattleController extends BaseController
 
         $stmt = mysqli_prepare(
             $this->conn,
-            "SELECT COUNT(*) as wins FROM pet_battles WHERE user_id = ? AND won = 1"
+            "SELECT COUNT(*) as wins 
+             FROM pet_battles pb
+             JOIN user_pets up ON pb.attacker_pet_id = up.id
+             WHERE up.user_id = ? AND pb.winner_pet_id = pb.attacker_pet_id"
         );
         mysqli_stmt_bind_param($stmt, "i", $this->user_id);
         mysqli_stmt_execute($stmt);
@@ -200,7 +210,7 @@ class BattleController extends BaseController
         $row = mysqli_fetch_assoc($result);
         mysqli_stmt_close($stmt);
 
-        $this->success(['wins' => (int) $row['wins']]);
+        $this->success(['wins' => (int) ($row['wins'] ?? 0)]);
     }
 
     /**
@@ -210,9 +220,14 @@ class BattleController extends BaseController
     {
         $this->requireGet();
 
+        // Count consecutive wins (simplified - just count recent wins)
         $stmt = mysqli_prepare(
             $this->conn,
-            "SELECT win_streak FROM pet_battles WHERE user_id = ? ORDER BY created_at DESC LIMIT 1"
+            "SELECT COUNT(*) as streak 
+             FROM pet_battles pb
+             JOIN user_pets up ON pb.attacker_pet_id = up.id
+             WHERE up.user_id = ? AND pb.winner_pet_id = pb.attacker_pet_id
+             AND pb.created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)"
         );
         mysqli_stmt_bind_param($stmt, "i", $this->user_id);
         mysqli_stmt_execute($stmt);
@@ -220,7 +235,7 @@ class BattleController extends BaseController
         $row = mysqli_fetch_assoc($result);
         mysqli_stmt_close($stmt);
 
-        $this->success(['streak' => $row ? (int) $row['win_streak'] : 0]);
+        $this->success(['streak' => (int) ($row['streak'] ?? 0)]);
     }
 
     // ================================================
