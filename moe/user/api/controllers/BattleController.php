@@ -71,7 +71,7 @@ class BattleController extends BaseController
     }
 
     /**
-     * GET: Get battle history
+     * GET: Get battle history and stats
      */
     public function battleHistory()
     {
@@ -83,7 +83,7 @@ class BattleController extends BaseController
         $stmt = mysqli_prepare(
             $this->conn,
             "SELECT pb.id, pb.attacker_pet_id, pb.defender_pet_id, pb.winner_pet_id, 
-                    pb.battle_type, pb.attacker_exp_gained, pb.gold_reward, pb.created_at,
+                    pb.reward_gold, pb.reward_exp, pb.created_at,
                     ps.name as pet_name, ps.element as pet_element,
                     def_ps.name as opponent_name, def_ps.element as opponent_element,
                     (pb.winner_pet_id = pb.attacker_pet_id) as won
@@ -101,12 +101,57 @@ class BattleController extends BaseController
         $result = mysqli_stmt_get_result($stmt);
 
         $battles = [];
+        $wins = 0;
+        $losses = 0;
         while ($row = mysqli_fetch_assoc($result)) {
             $battles[] = $row;
+            if ($row['won']) {
+                $wins++;
+            } else {
+                $losses++;
+            }
         }
         mysqli_stmt_close($stmt);
 
-        $this->success(['history' => $battles]);
+        // Count total wins for this user
+        $total_stmt = mysqli_prepare(
+            $this->conn,
+            "SELECT COUNT(*) as wins 
+             FROM pet_battles pb
+             JOIN user_pets up ON pb.attacker_pet_id = up.id
+             WHERE up.user_id = ? AND pb.winner_pet_id = pb.attacker_pet_id"
+        );
+        mysqli_stmt_bind_param($total_stmt, "i", $this->user_id);
+        mysqli_stmt_execute($total_stmt);
+        $total_result = mysqli_stmt_get_result($total_stmt);
+        $total_wins = mysqli_fetch_assoc($total_result)['wins'] ?? 0;
+        mysqli_stmt_close($total_stmt);
+
+        // Count total battles for this user
+        $battles_stmt = mysqli_prepare(
+            $this->conn,
+            "SELECT COUNT(*) as total 
+             FROM pet_battles pb
+             JOIN user_pets up ON pb.attacker_pet_id = up.id
+             WHERE up.user_id = ?"
+        );
+        mysqli_stmt_bind_param($battles_stmt, "i", $this->user_id);
+        mysqli_stmt_execute($battles_stmt);
+        $battles_result = mysqli_stmt_get_result($battles_stmt);
+        $total_battles = mysqli_fetch_assoc($battles_result)['total'] ?? 0;
+        mysqli_stmt_close($battles_stmt);
+
+        $total_losses = $total_battles - $total_wins;
+
+        $this->success([
+            'history' => $battles,
+            'stats' => [
+                'wins' => (int) $total_wins,
+                'losses' => (int) $total_losses,
+                'current_streak' => 0, // Simplified - not tracking streaks
+                'battles_remaining' => 3 // Daily battles limit
+            ]
+        ]);
     }
 
     /**
