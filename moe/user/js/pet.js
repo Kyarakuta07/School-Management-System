@@ -775,10 +775,10 @@ async function handleInventoryClick(itemId, type, itemName, itemDesc, itemImg, m
     }
 
     // Update UI Modal
-    document.getElementById('bulk-item-name').textContent = itemName;
+    document.getElementById('bulk-modal-title').textContent = itemName;
     document.getElementById('bulk-item-desc').textContent = itemDesc;
     document.getElementById('bulk-item-img').src = ASSETS_BASE + itemImg;
-    document.getElementById('bulk-item-stock').textContent = maxQty;
+    document.getElementById('bulk-item-qty').max = maxQty; // Set max attribute
     document.getElementById('bulk-item-qty').value = 1; // Reset ke 1
 
     modal.classList.add('show');
