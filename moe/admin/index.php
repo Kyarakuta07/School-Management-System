@@ -1,4 +1,11 @@
 <?php
+/**
+ * Vasiki Dashboard - MOE Admin Panel
+ * Main admin dashboard with stats and charts
+ * 
+ * REFACTORED: Uses modular layout components
+ */
+
 require_once '../core/security_config.php';
 session_start();
 
@@ -63,61 +70,23 @@ while ($row = mysqli_fetch_assoc($result_sanctuary)) {
 
 // 7. Total All Members
 $total_all = $total_nethera + $total_pending + $total_hiatus + $total_out;
-?>
 
+// Layout config
+$pageTitle = 'Vasiki Dashboard';
+$currentPage = 'dashboard';
+$cssPath = '';
+$basePath = '';
+?>
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vasiki Dashboard - MOE</title>
-
-    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Lato:wght@400;700&display=swap"
-        rel="stylesheet" />
-
-    <link rel="stylesheet" href="css/style.css" />
-    <link rel="stylesheet" href="css/cards.css" />
-</head>
+<?php include 'layouts/components/_head.php'; ?>
 
 <body>
-
     <div class="bg-fixed"></div>
     <div class="bg-overlay"></div>
 
-    <nav class="sidebar">
-        <div class="sidebar-header">
-            <img src="../assets/landing/logo.png" class="sidebar-logo" alt="Logo" />
-            <div class="brand-name">MOE<br>Admin</div>
-        </div>
-
-        <div class="sidebar-menu">
-            <a href="#" class="active">
-                <i class="uil uil-create-dashboard"></i> <span>Dashboard</span>
-            </a>
-            <a href="pages/manage_nethera.php">
-                <i class="uil uil-users-alt"></i> <span>Manage Nethera</span>
-            </a>
-            <a href="pages/manage_classes.php">
-                <i class="uil uil-book-open"></i> <span>Manage Classes</span>
-            </a>
-            <a href="#">
-                <i class="uil uil-setting"></i> <span>Settings</span>
-            </a>
-
-            <div class="menu-bottom">
-                <a href="../auth/handlers/logout.php">
-                    <i class="uil uil-signout"></i> <span>Logout</span>
-                </a>
-            </div>
-        </div>
-    </nav>
+    <?php include 'layouts/components/_sidebar.php'; ?>
 
     <main class="main-content">
 
@@ -266,7 +235,10 @@ $total_all = $total_nethera + $total_pending + $total_hiatus + $total_out;
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    <script src="js/sidebar-toggle.js"></script>
+    <?php
+    $jsPath = '';
+    include 'layouts/components/_scripts.php';
+    ?>
     <script>
         // Data dari PHP
         const labels = <?php echo json_encode($sanctuary_labels); ?>;
@@ -306,7 +278,7 @@ $total_all = $total_nethera + $total_pending + $total_hiatus + $total_out;
                 categories: labels,
                 labels: {
                     style: {
-                        colors: '#e0e0e0', /* Ubah jadi putih terang/abu terang */
+                        colors: '#e0e0e0',
                         fontSize: '12px',
                         fontFamily: 'Lato, sans-serif'
                     }

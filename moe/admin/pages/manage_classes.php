@@ -1,4 +1,11 @@
 <?php
+/**
+ * Manage Classes - MOE Admin Panel
+ * Class grades and schedule management
+ * 
+ * REFACTORED: Uses modular layout components
+ */
+
 require_once '../../core/security_config.php';
 session_start();
 require_once '../../core/csrf.php';
@@ -41,58 +48,23 @@ while ($row = mysqli_fetch_assoc($result_chart)) {
 $query_all_schedules = "SELECT * FROM class_schedule ORDER BY id_schedule ASC";
 $result_all_schedules = mysqli_query($conn, $query_all_schedules);
 
+// Layout config
+$pageTitle = 'Manage Classes';
+$currentPage = 'classes';
+$cssPath = '../';
+$basePath = '../';
+$jsPath = '../';
 ?>
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Classes - MOE Admin</title>
-
-    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css" />
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Lato:wght@400;700&display=swap"
-        rel="stylesheet" />
-
-    <link rel="stylesheet" type="text/css" href="../css/style.css" />
-    <link rel="stylesheet" type="text/css" href="../css/cards.css" />
-</head>
+<?php include '../layouts/components/_head.php'; ?>
 
 <body>
-
     <div class="bg-fixed"></div>
     <div class="bg-overlay"></div>
 
-    <nav class="sidebar">
-        <header class="sidebar-header">
-            <button type="button" class="sidebar-burger" onclick="toggleSidebar()"></button>
-            <img src="../../assets/landing/logo.png" class="sidebar-logo" alt="MOE Logo" />
-            <div class="brand-name">MOE<br>Admin</div>
-        </header>
-
-        <nav class="sidebar-menu">
-            <a href="../index.php">
-                <i class="uil uil-create-dashboard"></i> <span>Dashboard</span>
-            </a>
-            <a href="manage_nethera.php">
-                <i class="uil uil-users-alt"></i> <span>Manage Nethera</span>
-            </a>
-            <a href="manage_classes.php" class="active">
-                <i class="uil uil-book-open"></i> <span>Manage Classes</span>
-            </a>
-            <a href="#">
-                <i class="uil uil-setting"></i> <span>Settings</span>
-            </a>
-            <div class="menu-bottom">
-                <a href="../../auth/handlers/logout.php">
-                    <i class="uil uil-signout"></i> <span>Logout</span>
-                </a>
-            </div>
-        </nav>
-    </nav>
+    <?php include '../layouts/components/_sidebar.php'; ?>
 
     <main class="main-content">
 
@@ -220,7 +192,7 @@ $result_all_schedules = mysqli_query($conn, $query_all_schedules);
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    <script src="../js/sidebar-toggle.js"></script>
+    <?php include '../layouts/components/_scripts.php'; ?>
 
     <script>
         const toggleSidebar = () => document.body.classList.toggle("open");
@@ -234,7 +206,7 @@ $result_all_schedules = mysqli_query($conn, $query_all_schedules);
                 }],
                 chart: {
                     type: 'bar', height: 350, toolbar: { show: false },
-                    background: 'transparent', // Penting untuk tema gelap
+                    background: 'transparent',
                 },
                 plotOptions: { bar: { borderRadius: 4, horizontal: false, distributed: true } },
                 dataLabels: { enabled: false },
@@ -256,7 +228,6 @@ $result_all_schedules = mysqli_query($conn, $query_all_schedules);
 
             const fetchGrades = (searchTerm) => {
                 let xhr = new XMLHttpRequest();
-                // Pastikan path ke file ajax_search_grades.php benar (sama folder)
                 xhr.open('POST', 'ajax_search_grades.php', true);
                 xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
@@ -264,7 +235,6 @@ $result_all_schedules = mysqli_query($conn, $query_all_schedules);
                     if (this.status == 200) {
                         gradesTableBody.innerHTML = this.responseText;
                     } else {
-                        // Tampilkan error jika server gagal merespon
                         gradesTableBody.innerHTML = '<tr><td colspan="9" style="color:red; text-align:center;">SERVER ERROR (' + this.status + ')</td></tr>';
                     }
                 }

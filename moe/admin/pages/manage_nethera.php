@@ -1,9 +1,16 @@
 <?php
+/**
+ * Manage Nethera - MOE Admin Panel
+ * User management with search, filter, and CRUD operations
+ * 
+ * REFACTORED: Uses modular layout components
+ */
+
 require_once '../../core/security_config.php';
 session_start();
 require_once '../../core/csrf.php';
 
-// Koneksi Database (Naik 2 folder)
+// Koneksi Database
 include '../../config/connection.php';
 
 // Cek Login & Role
@@ -18,59 +25,35 @@ $query_all_nethera = "SELECT n.id_nethera, n.no_registrasi, n.nama_lengkap, n.us
                       LEFT JOIN sanctuary s ON n.id_sanctuary = s.id_sanctuary
                       ORDER BY n.id_nethera ASC";
 $result_all_nethera = mysqli_query($conn, $query_all_nethera);
-?>
 
+// Stats counts
+$total_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM nethera WHERE role = 'Nethera'");
+$aktif_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM nethera WHERE status_akun = 'Aktif' AND role = 'Nethera'");
+$hiatus_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM nethera WHERE status_akun = 'Hiatus' AND role = 'Nethera'");
+$out_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM nethera WHERE status_akun = 'Out' AND role = 'Nethera'");
+
+$total_count = mysqli_fetch_assoc($total_query)['total'];
+$aktif_count = mysqli_fetch_assoc($aktif_query)['total'];
+$hiatus_count = mysqli_fetch_assoc($hiatus_query)['total'];
+$out_count = mysqli_fetch_assoc($out_query)['total'];
+
+// Layout config
+$pageTitle = 'Manage Nethera';
+$currentPage = 'nethera';
+$cssPath = '../';
+$basePath = '../';
+$jsPath = '../';
+?>
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Nethera - MOE Admin</title>
-
-    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css" />
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Lato:wght@400;700&display=swap"
-        rel="stylesheet">
-
-    <link rel="stylesheet" href="../css/style.css" />
-    <link rel="stylesheet" href="../css/cards.css" />
-</head>
+<?php include '../layouts/components/_head.php'; ?>
 
 <body>
-
     <div class="bg-fixed"></div>
     <div class="bg-overlay"></div>
 
-    <nav class="sidebar">
-        <div class="sidebar-header">
-            <img src="../../assets/landing/logo.png" class="sidebar-logo" alt="Logo" />
-            <div class="brand-name">MOE<br>Admin</div>
-        </div>
-
-        <div class="sidebar-menu">
-            <a href="../index.php">
-                <i class="uil uil-create-dashboard"></i> <span>Dashboard</span>
-            </a>
-            <a href="manage_nethera.php" class="active">
-                <i class="uil uil-users-alt"></i> <span>Manage Nethera</span>
-            </a>
-            <a href="manage_classes.php">
-                <i class="uil uil-book-open"></i> <span>Manage Classes</span>
-            </a>
-            <a href="#">
-                <i class="uil uil-setting"></i> <span>Settings</span>
-            </a>
-
-            <div class="menu-bottom">
-                <a href="../../auth/handlers/logout.php">
-                    <i class="uil uil-signout"></i> <span>Logout</span>
-                </a>
-            </div>
-        </div>
-    </nav>
+    <?php include '../layouts/components/_sidebar.php'; ?>
 
     <main class="main-content">
 
@@ -80,18 +63,6 @@ $result_all_nethera = mysqli_query($conn, $query_all_nethera);
         </header>
 
         <!-- Stats Summary Cards -->
-        <?php
-        // Get counts for stats
-        $total_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM nethera WHERE role = 'Nethera'");
-        $aktif_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM nethera WHERE status_akun = 'Aktif' AND role = 'Nethera'");
-        $hiatus_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM nethera WHERE status_akun = 'Hiatus' AND role = 'Nethera'");
-        $out_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM nethera WHERE status_akun = 'Out' AND role = 'Nethera'");
-
-        $total_count = mysqli_fetch_assoc($total_query)['total'];
-        $aktif_count = mysqli_fetch_assoc($aktif_query)['total'];
-        $hiatus_count = mysqli_fetch_assoc($hiatus_query)['total'];
-        $out_count = mysqli_fetch_assoc($out_query)['total'];
-        ?>
         <div class="stats-row">
             <div class="mini-stat-card">
                 <div class="mini-stat-icon" style="background: rgba(218, 165, 32, 0.2); color: var(--gold);">
@@ -183,7 +154,8 @@ $result_all_nethera = mysqli_query($conn, $query_all_nethera);
                                     <td>
                                         <div class="user-cell">
                                             <div class="user-avatar">
-                                                <?php echo strtoupper(substr($nethera['nama_lengkap'], 0, 1)); ?></div>
+                                                <?php echo strtoupper(substr($nethera['nama_lengkap'], 0, 1)); ?>
+                                            </div>
                                             <strong><?php echo htmlspecialchars($nethera['nama_lengkap']); ?></strong>
                                         </div>
                                     </td>
@@ -239,7 +211,7 @@ $result_all_nethera = mysqli_query($conn, $query_all_nethera);
 
     </main>
 
-    <script src="../js/sidebar-toggle.js"></script>
+    <?php include '../layouts/components/_scripts.php'; ?>
     <script>
         // --- SECURE DELETE FUNCTION (POST with CSRF) ---
         function confirmDelete(id) {
@@ -248,6 +220,7 @@ $result_all_nethera = mysqli_query($conn, $query_all_nethera);
                 document.getElementById('deleteForm').submit();
             }
         }
+
         // Fungsi untuk memastikan sidebar toggle tetap berfungsi
         const toggleSidebar = () => document.body.classList.toggle("open");
 
@@ -258,42 +231,35 @@ $result_all_nethera = mysqli_query($conn, $query_all_nethera);
 
             if (searchInput && netheraTableBody) {
                 const performSearch = () => {
-                    // Ambil nilai input
                     const searchTerm = searchInput.value;
 
                     let xhr = new XMLHttpRequest();
-                    // PATH AJAX: Naik satu level ke admin/ajax_search_nethera.php
                     xhr.open('POST', 'ajax_search_nethera.php', true);
                     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
                     xhr.onload = function () {
                         if (this.status === 200) {
-                            // Update isi tabel
                             netheraTableBody.innerHTML = this.responseText;
-                            // Apply filter after search results load
                             applyFilter();
                         } else {
-                            // Tampilkan error jika server gagal merespon
                             netheraTableBody.innerHTML = '<tr><td colspan="8" style="color:red; text-align:center;">SERVER ERROR (' + this.status + ')</td></tr>';
                         }
                     };
 
-                    // Kirim data
                     xhr.send('search=' + searchTerm);
                 };
 
-                // PENTING: Gunakan event 'input' untuk deteksi ketikan secara real-time
                 searchInput.addEventListener('input', performSearch);
-                searchInput.addEventListener('search', performSearch); // Untuk deteksi saat tombol X diklik
+                searchInput.addEventListener('search', performSearch);
             }
 
             // --- Status Filter Logic ---
             const statusFilter = document.getElementById('statusFilter');
-            
+
             function applyFilter() {
                 const filterValue = statusFilter ? statusFilter.value : '';
                 const rows = document.querySelectorAll('#netheraTableBody tr[data-status]');
-                
+
                 rows.forEach(row => {
                     const rowStatus = row.getAttribute('data-status');
                     if (filterValue === '' || rowStatus === filterValue) {
