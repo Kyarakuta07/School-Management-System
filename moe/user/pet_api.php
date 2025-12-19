@@ -622,6 +622,70 @@ switch ($action) {
         break;
 
     // ============================================
+    // GET: Get battle history and stats
+    // ============================================
+    case 'battle_history':
+        if ($method !== 'GET') {
+            api_method_not_allowed('GET');
+        }
+
+        // Get battles remaining from rate limiter
+        $user_id_str = 'user_' . $user_id;
+        $current_attempts = $api_limiter->getAttempts($user_id_str, 'pet_battle');
+        $battles_remaining = max(0, 3 - $current_attempts);
+
+        // Initialize default stats
+        $wins = 0;
+        $losses = 0;
+        $current_streak = 0;
+
+        // Try to get real stats if pet_battles table exists
+        $check_table = mysqli_query($conn, "SHOW TABLES LIKE 'pet_battles'");
+        
+        if ($check_table && mysqli_num_rows($check_table) > 0) {
+            // Get user's pet IDs
+            $user_pets_query = "SELECT id FROM user_pets WHERE user_id = ?";
+            $stmt = mysqli_prepare($conn, $user_pets_query);
+            mysqli_stmt_bind_param($stmt, "i", $user_id);
+            mysqli_stmt_execute($stmt);
+            $pets_result = mysqli_stmt_get_result($stmt);
+            $pet_ids = [];
+            while ($row = mysqli_fetch_assoc($pets_result)) {
+                $pet_ids[] = $row['id'];
+            }
+            mysqli_stmt_close($stmt);
+
+            if (!empty($pet_ids)) {
+                $pet_ids_str = implode(',', $pet_ids);
+                
+                // Get win/loss stats
+                $stats_query = "SELECT 
+                                    SUM(CASE WHEN FIND_IN_SET(winner_id, '$pet_ids_str') > 0 THEN 1 ELSE 0 END) as wins,
+                                    COUNT(*) as total
+                                FROM pet_battles 
+                                WHERE FIND_IN_SET(attacker_id, '$pet_ids_str') > 0 
+                                   OR FIND_IN_SET(defender_id, '$pet_ids_str') > 0";
+                $result = mysqli_query($conn, $stats_query);
+                if ($row = mysqli_fetch_assoc($result)) {
+                    $wins = (int)($row['wins'] ?? 0);
+                    $total = (int)($row['total'] ?? 0);
+                    $losses = $total - $wins;
+                }
+            }
+        }
+
+        echo json_encode([
+            'success' => true,
+            'stats' => [
+                'wins' => $wins,
+                'losses' => $losses,
+                'current_streak' => $current_streak,
+                'battles_remaining' => $battles_remaining
+            ]
+        ]);
+        break;
+
+    // ============================================
     // GET: Get pet buff for activity
     // ============================================
     case 'get_buff':
