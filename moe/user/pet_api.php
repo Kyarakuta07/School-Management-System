@@ -641,7 +641,7 @@ switch ($action) {
 
         // Try to get real stats if pet_battles table exists
         $check_table = mysqli_query($conn, "SHOW TABLES LIKE 'pet_battles'");
-        
+
         if ($check_table && mysqli_num_rows($check_table) > 0) {
             // Get user's pet IDs
             $user_pets_query = "SELECT id FROM user_pets WHERE user_id = ?";
@@ -657,20 +657,38 @@ switch ($action) {
 
             if (!empty($pet_ids)) {
                 $pet_ids_str = implode(',', $pet_ids);
-                
-                // Get win/loss stats
+
+                // Get win/loss stats (fixed column names: winner_pet_id, attacker_pet_id, defender_pet_id)
                 $stats_query = "SELECT 
-                                    SUM(CASE WHEN FIND_IN_SET(winner_id, '$pet_ids_str') > 0 THEN 1 ELSE 0 END) as wins,
+                                    SUM(CASE WHEN FIND_IN_SET(winner_pet_id, '$pet_ids_str') > 0 THEN 1 ELSE 0 END) as wins,
                                     COUNT(*) as total
                                 FROM pet_battles 
-                                WHERE FIND_IN_SET(attacker_id, '$pet_ids_str') > 0 
-                                   OR FIND_IN_SET(defender_id, '$pet_ids_str') > 0";
+                                WHERE FIND_IN_SET(attacker_pet_id, '$pet_ids_str') > 0 
+                                   OR FIND_IN_SET(defender_pet_id, '$pet_ids_str') > 0";
                 $result = mysqli_query($conn, $stats_query);
                 if ($row = mysqli_fetch_assoc($result)) {
-                    $wins = (int)($row['wins'] ?? 0);
-                    $total = (int)($row['total'] ?? 0);
+                    $wins = (int) ($row['wins'] ?? 0);
+                    $total = (int) ($row['total'] ?? 0);
                     $losses = $total - $wins;
                 }
+
+                // Get current streak
+                $streak_query = "SELECT winner_pet_id 
+                                FROM pet_battles 
+                                WHERE FIND_IN_SET(attacker_pet_id, '$pet_ids_str') > 0 
+                                   OR FIND_IN_SET(defender_pet_id, '$pet_ids_str') > 0
+                                ORDER BY created_at DESC 
+                                LIMIT 10";
+                $streak_result = mysqli_query($conn, $streak_query);
+                $streak = 0;
+                while ($row = mysqli_fetch_assoc($streak_result)) {
+                    if (in_array($row['winner_pet_id'], $pet_ids)) {
+                        $streak++;
+                    } else {
+                        break; // Streak broken
+                    }
+                }
+                $current_streak = $streak;
             }
         }
 
