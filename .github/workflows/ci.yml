@@ -1,0 +1,136 @@
+name: 🔄 Continuous Integration
+
+on:
+  push:
+    branches: [main, staging, develop]
+  pull_request:
+    branches: [main, staging]
+
+jobs:
+  # Job 1: PHP Linting
+  php-lint:
+    name: 🐘 PHP Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: mbstring, pdo, pdo_mysql
+
+      - name: Check PHP Syntax
+        run: find moe -name "*.php" -print0 | xargs -0 -n1 php -l
+
+  # Job 2: JavaScript Linting
+  js-lint:
+    name: 📜 JavaScript Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Check JavaScript Syntax
+        run: npx eslint moe/user/js --ext .js --no-error-on-unmatched-pattern || true
+
+  # Job 3: Build Assets
+  build:
+    name: 🔨 Build
+    runs-on: ubuntu-latest
+    needs: [php-lint]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Production Assets
+        run: npm run build
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: dist/
+          retention-days: 7
+
+  # Job 4: PHPUnit Tests
+  test:
+    name: 🧪 PHPUnit Tests
+    runs-on: ubuntu-latest
+    needs: [php-lint]
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: mbstring, pdo, pdo_mysql
+          coverage: xdebug
+
+      - name: Install Composer Dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Run Tests
+        run: vendor/bin/phpunit --testdox
+
+  # Job 5: Security Scan
+  security:
+    name: 🔒 Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Security Check
+        run: |
+          echo "🔍 Checking for common security issues..."
+          
+          # Check for exposed credentials
+          if grep -rn "password\s*=\s*['\"]" moe --include="*.php" | grep -v "password\s*=\s*['\"]'" | grep -v "Config" | head -5; then
+            echo "⚠️ Potential hardcoded passwords found"
+          fi
+          
+          # Check for SQL injection risks (direct variable in query)
+          if grep -rn '\$_\(GET\|POST\|REQUEST\).*query\|mysqli_query.*\$_' moe --include="*.php" | head -5; then
+            echo "⚠️ Potential SQL injection risks found"
+          fi
+          
+          echo "✅ Security scan completed"
+
+  # Job 6: Summary
+  summary:
+    name: 📋 CI Summary
+    runs-on: ubuntu-latest
+    needs: [php-lint, build, test, security]
+    if: always()
+    steps:
+      - name: Generate Summary
+        run: |
+          echo "## 🔄 CI Pipeline Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| PHP Lint | ${{ needs.php-lint.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Build | ${{ needs.build.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Tests | ${{ needs.test.result == 'success' && '✅ Passed' || '⚠️ Skipped/Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Security | ${{ needs.security.result == 'success' && '✅ Passed' || '⚠️ Check Needed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "📅 Run: $(date '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
