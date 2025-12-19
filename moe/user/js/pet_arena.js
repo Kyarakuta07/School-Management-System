@@ -266,6 +266,7 @@ async function loadTeamSelection() {
     }
 }
 
+
 // Initialize arena module
 console.log('✓ Arena module loaded');
 
