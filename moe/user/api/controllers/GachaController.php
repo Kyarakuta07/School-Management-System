@@ -46,7 +46,9 @@ class GachaController extends BaseController
         }
 
         // Perform gacha FIRST (before deducting gold)
-        $result = performGacha($this->conn, $this->user_id, $gacha_type);
+        // Convert type string to integer: 1=Normal, 2=Rare+, 3=Epic+ (Premium)
+        $gacha_type_int = ($gacha_type === 'premium') ? 3 : 1;
+        $result = performGacha($this->conn, $this->user_id, $gacha_type_int);
 
         // If gacha failed (e.g. pet limit), return error without deducting gold
         if (!$result['success']) {
