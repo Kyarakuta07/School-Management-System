@@ -329,5 +329,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (arenaContent && arenaContent.classList.contains('active')) {
         loadArenaStats();
     }
+
+    // Reload stats whenever tab becomes visible (catches return from battle)
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+            const arenaContent = document.getElementById('arena');
+            if (arenaContent && arenaContent.classList.contains('active')) {
+                loadArenaStats();
+            }
+        }
+    });
 });
 
