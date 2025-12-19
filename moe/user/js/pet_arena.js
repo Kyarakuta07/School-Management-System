@@ -262,49 +262,8 @@ async function loadTeamSelection() {
 
     } catch (error) {
         console.error('Error loading team selection:', error);
-        container.innerHTML = '<div class="empty-message">Failed to load team selection</div>';
     }
 }
-
-// Initialize arena module
-console.log('✓ Arena module loaded');
-if (winsEl) winsEl.textContent = wins || 0;
-
-// Calculate and update win rate
-const total = (wins || 0) + (losses || 0);
-const winRate = total > 0 ? Math.round((wins / total) * 100) : 0;
-const winRateEl = document.getElementById('win-rate');
-if (winRateEl) winRateEl.textContent = `${winRate}%`;
-
-// Update streak
-const streakEl = document.getElementById('current-streak');
-if (streakEl) streakEl.textContent = streak || 0;
-}
-
-// Initialize arena stats when tab is opened
-document.addEventListener('DOMContentLoaded', () => {
-    // Load stats when Arena tab is clicked
-    const arenaTab = document.querySelector('[data-tab="arena"]');
-    if (arenaTab) {
-        arenaTab.addEventListener('click', () => {
-            setTimeout(loadArenaStats, 100);
-        });
-    }
-
-    // Also load if already on arena tab
-    const arenaContent = document.getElementById('arena');
-    if (arenaContent && arenaContent.classList.contains('active')) {
-        loadArenaStats();
-    }
-
-    // Reload stats whenever tab becomes visible (catches return from battle)
-    document.addEventListener('visibilitychange', () => {
-        if (!document.hidden) {
-            const arenaContent = document.getElementById('arena');
-            if (arenaContent && arenaContent.classList.contains('active')) {
-                loadArenaStats();
-            }
-        }
     });
 });
 
