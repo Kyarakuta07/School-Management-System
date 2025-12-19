@@ -755,36 +755,44 @@
 
     .stats-cards-container {
         grid-template-columns: repeat(3, 1fr);
-        gap: 6px;
-    }
-
-    .stat-card {
-        padding: 10px 6px;
-    }
-
-    .stat-card-header {
-        font-size: 0.7rem;
-        margin-bottom: 8px;
         gap: 4px;
     }
 
+    .stat-card {
+        padding: 8px 4px;
+    }
+
+    .stat-card-header {
+        font-size: 0.65rem;
+        margin-bottom: 6px;
+        gap: 3px;
+    }
+
     .stat-card-header i {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
+    }
+
+    .stat-card-header span {
+        display: none;
     }
 
     .stat-progress-ring {
-        width: 60px;
-        height: 60px;
+        width: 55px;
+        height: 55px;
     }
 
     .progress-ring {
-        width: 60px;
-        height: 60px;
+        width: 55px !important;
+        height: 55px !important;
+    }
+
+    .progress-ring circle {
+        r: 24;
     }
 
     .stat-value-center {
-        font-size: 1rem;
-        font-weight: 600;
+        font-size: 0.95rem;
+        font-weight: 700;
     }
 
     .action-buttons-grid {
