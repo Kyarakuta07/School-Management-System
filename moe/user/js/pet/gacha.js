@@ -1,8 +1,10 @@
 /**
  * Gacha System Module
- * MOE Pet System
+ * @module pet/gacha
+ * @description Handles gacha/summoning mechanics and result display
  * 
- * Handles gacha mechanics and result display
+ * @author MOE Development Team
+ * @version 2.0.0
  */
 
 import { API_BASE, ASSETS_BASE } from './config.js';
@@ -14,6 +16,15 @@ import { loadPets } from './pets.js';
 // GACHA ACTIONS
 // ================================================
 
+/**
+ * Perform a gacha summon
+ * @async
+ * @param {'standard'|'premium'} type - The type of gacha to perform
+ * @returns {Promise<void>}
+ * @example
+ * performGacha('standard');  // Costs 50 gold
+ * performGacha('premium');   // Uses Premium Ticket, guaranteed Rare+
+ */
 export async function performGacha(type) {
     const egg = document.getElementById('gacha-egg');
     egg?.classList.add('hatching');
@@ -51,6 +62,18 @@ export async function performGacha(type) {
     }
 }
 
+/**
+ * Display the gacha result in a modal
+ * @param {Object} data - Gacha result data from API
+ * @param {Object} data.species - The obtained pet species
+ * @param {string} data.species.name - Species name
+ * @param {string} data.species.img_egg - Egg stage image path
+ * @param {string} data.species.element - Element type
+ * @param {string} data.rarity - Rarity of obtained pet ('Common', 'Rare', 'Epic', 'Legendary')
+ * @param {boolean} data.is_shiny - Whether the pet is shiny
+ * @param {number} [data.shiny_hue] - Hue rotation for shiny pets (30-330)
+ * @returns {void}
+ */
 export function showGachaResult(data) {
     const modal = document.getElementById('gacha-modal');
     const modalContent = modal?.querySelector('.gacha-result-modal');
@@ -105,6 +128,10 @@ export function showGachaResult(data) {
     }
 }
 
+/**
+ * Close the gacha result modal
+ * @returns {void}
+ */
 export function closeGachaModal() {
     const modal = document.getElementById('gacha-modal');
     modal?.classList.remove('show');

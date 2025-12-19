@@ -1,8 +1,10 @@
 /**
  * Arena/Battle System Module
- * MOE Pet System
+ * @module pet/arena
+ * @description Handles arena opponents, battle history, and battle initiation
  * 
- * Handles arena opponents, battle history, and battle initiation
+ * @author MOE Development Team
+ * @version 2.0.0
  */
 
 import { API_BASE, ASSETS_BASE } from './config.js';
@@ -13,6 +15,10 @@ import { showToast } from './ui.js';
 // ARENA INITIALIZATION
 // ================================================
 
+/**
+ * Initialize arena tab navigation (opponents vs history)
+ * @returns {void}
+ */
 export function initArenaTabs() {
     document.querySelectorAll('.arena-tab').forEach(tab => {
         tab.addEventListener('click', () => {
@@ -36,6 +42,11 @@ export function initArenaTabs() {
 // OPPONENTS
 // ================================================
 
+/**
+ * Load available opponents for 1v1 battles
+ * @async
+ * @returns {Promise<void>}
+ */
 export async function loadOpponents() {
     const container = document.getElementById('arena-opponents');
     container.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Finding opponents...</p></div>';
@@ -75,6 +86,11 @@ export async function loadOpponents() {
 // BATTLE ACTIONS
 // ================================================
 
+/**
+ * Start a battle against an opponent
+ * @param {number} defenderPetId - The ID of the opponent's pet
+ * @returns {void}
+ */
 export function startBattle(defenderPetId) {
     if (!state.activePet) {
         showToast('You need an active pet to battle!', 'warning');
@@ -89,6 +105,22 @@ export function startBattle(defenderPetId) {
     window.location.href = `battle_arena.php?attacker_id=${state.activePet.id}&defender_id=${defenderPetId}`;
 }
 
+/**
+ * Display the battle result modal
+ * @param {Object} data - Battle result data
+ * @param {number} data.winner_pet_id - ID of the winning pet
+ * @param {Object} data.attacker - Attacker pet data
+ * @param {number} data.attacker.pet_id - Attacker pet ID
+ * @param {string} data.attacker.name - Attacker pet name
+ * @param {number} data.attacker.final_hp - Attacker's remaining HP
+ * @param {Object} data.defender - Defender pet data
+ * @param {number} data.defender.pet_id - Defender pet ID
+ * @param {string} data.defender.name - Defender pet name
+ * @param {number} data.defender.final_hp - Defender's remaining HP
+ * @param {Array<Object>} data.battle_log - Array of battle round logs
+ * @param {Object} [data.rewards] - Rewards for winner
+ * @returns {void}
+ */
 export function showBattleResult(data) {
     const modal = document.getElementById('battle-modal');
 
@@ -128,6 +160,10 @@ export function showBattleResult(data) {
     modal.classList.add('show');
 }
 
+/**
+ * Close the battle result modal
+ * @returns {void}
+ */
 export function closeBattleModal() {
     document.getElementById('battle-modal').classList.remove('show');
 }
@@ -136,6 +172,11 @@ export function closeBattleModal() {
 // BATTLE HISTORY
 // ================================================
 
+/**
+ * Load the user's battle history
+ * @async
+ * @returns {Promise<void>}
+ */
 export async function loadBattleHistory() {
     const container = document.getElementById('battle-history');
 

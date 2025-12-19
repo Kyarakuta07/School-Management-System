@@ -1,8 +1,10 @@
 /**
  * Pet Management Module
- * MOE Pet System
+ * @module pet/pets
+ * @description Handles pet loading, display, actions, and utility functions
  * 
- * Handles pet loading, display, and actions
+ * @author MOE Development Team
+ * @version 2.0.0
  */
 
 import { API_BASE, ASSETS_BASE } from './config.js';
@@ -13,6 +15,12 @@ import { showToast, switchTab } from './ui.js';
 // PET LOADING
 // ================================================
 
+/**
+ * Load all pets owned by the current user
+ * @async
+ * @fires petsLoaded - Custom event dispatched when pets are loaded
+ * @returns {Promise<void>}
+ */
 export async function loadPets() {
     try {
         const response = await fetch(`${API_BASE}?action=get_pets`);
@@ -41,6 +49,11 @@ export async function loadPets() {
     }
 }
 
+/**
+ * Load the user's currently active pet
+ * @async
+ * @returns {Promise<void>}
+ */
 export async function loadActivePet() {
     try {
         const response = await fetch(`${API_BASE}?action=get_active_pet`);
@@ -67,6 +80,11 @@ export async function loadActivePet() {
 // PET DISPLAY
 // ================================================
 
+/**
+ * Render the active pet in the My Pet tab
+ * Updates pet image, stats, exp bar, and action buttons
+ * @returns {void}
+ */
 export function renderActivePet() {
     const noPetMsg = document.getElementById('no-pet-message');
     const petZone = document.getElementById('pet-display-zone');
@@ -142,6 +160,12 @@ export function renderActivePet() {
     }
 }
 
+/**
+ * Update a circular progress ring element
+ * @param {'health'|'hunger'|'mood'} type - The stat type to update
+ * @param {number} value - The current value (0-100)
+ * @returns {void}
+ */
 export function updateCircularProgress(type, value) {
     const ring = document.getElementById(`${type}-ring`);
     const valueEl = document.getElementById(`${type}-value`);
@@ -154,6 +178,10 @@ export function updateCircularProgress(type, value) {
     ring.style.strokeDashoffset = offset;
 }
 
+/**
+ * Show message when user has no active pet
+ * @returns {void}
+ */
 export function showNoPetMessage() {
     const stage = document.getElementById('pet-stage');
     stage.innerHTML = `
@@ -174,6 +202,12 @@ export function showNoPetMessage() {
 // PET ACTIONS
 // ================================================
 
+/**
+ * Select a pet to make it active
+ * @async
+ * @param {number} petId - The ID of the pet to select
+ * @returns {Promise<void>}
+ */
 export async function selectPet(petId) {
     const pet = state.userPets.find(p => p.id === petId);
     if (!pet) return;
@@ -212,6 +246,10 @@ export async function selectPet(petId) {
     }
 }
 
+/**
+ * Initialize action button event listeners
+ * @returns {void}
+ */
 export function initActionButtons() {
     document.getElementById('btn-feed')?.addEventListener('click', () => {
         document.dispatchEvent(new CustomEvent('openItemModal', { detail: { type: 'food' } }));
@@ -223,6 +261,11 @@ export function initActionButtons() {
     document.getElementById('btn-shelter')?.addEventListener('click', () => toggleShelter());
 }
 
+/**
+ * Play with the active pet (triggers mini-game)
+ * @async
+ * @returns {Promise<void>}
+ */
 export async function playWithPet() {
     if (!state.activePet) return;
 
@@ -249,6 +292,12 @@ export async function playWithPet() {
     }, 500);
 }
 
+/**
+ * Toggle pet shelter status (protect from stat decay)
+ * @async
+ * @param {number|null} [targetPetId=null] - Pet ID to toggle, or null for active pet
+ * @returns {Promise<void>}
+ */
 export async function toggleShelter(targetPetId = null) {
     const petId = targetPetId || (state.activePet ? state.activePet.id : null);
     if (!petId) return;
@@ -278,6 +327,15 @@ export async function toggleShelter(targetPetId = null) {
 // UTILITY FUNCTIONS
 // ================================================
 
+/**
+ * Get the image path for a pet based on its evolution stage
+ * @param {Object} pet - The pet object
+ * @param {string} pet.evolution_stage - Current evolution stage ('egg', 'baby', 'adult')
+ * @param {string} [pet.img_egg] - Egg stage image path
+ * @param {string} [pet.img_baby] - Baby stage image path
+ * @param {string} [pet.img_adult] - Adult stage image path
+ * @returns {string} Full image URL path
+ */
 export function getPetImagePath(pet) {
     const stage = pet.evolution_stage || 'egg';
 
@@ -305,6 +363,11 @@ export function getPetImagePath(pet) {
     return ASSETS_BASE + (pet.current_image || 'default/egg.png');
 }
 
+/**
+ * Get the evolution stage of a pet
+ * @param {Object|*} pet - The pet object or value
+ * @returns {'egg'|'baby'|'adult'} The evolution stage
+ */
 export function getEvolutionStage(pet) {
     if (typeof pet === 'object' && pet !== null) {
         return pet.evolution_stage || 'egg';
@@ -312,6 +375,10 @@ export function getEvolutionStage(pet) {
     return 'egg';
 }
 
+/**
+ * Update the pet count badge display
+ * @returns {void}
+ */
 export function updatePetCountBadge() {
     const petCountBadge = document.getElementById('pet-count-badge');
     if (petCountBadge) {

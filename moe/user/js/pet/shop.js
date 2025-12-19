@@ -1,8 +1,10 @@
 /**
  * Shop System Module
- * MOE Pet System
+ * @module pet/shop
+ * @description Handles shop display, item purchasing, and shop category tabs
  * 
- * Handles shop display, item purchasing, and shop tabs
+ * @author MOE Development Team
+ * @version 2.0.0
  */
 
 import { API_BASE, ASSETS_BASE } from './config.js';
@@ -14,6 +16,10 @@ import { loadInventory } from './inventory.js';
 // SHOP INITIALIZATION
 // ================================================
 
+/**
+ * Initialize shop tab navigation
+ * @returns {void}
+ */
 export function initShopTabs() {
     document.querySelectorAll('.shop-tab-pill').forEach(tab => {
         tab.addEventListener('click', () => {
@@ -28,6 +34,11 @@ export function initShopTabs() {
 // SHOP LOADING
 // ================================================
 
+/**
+ * Load shop items from the API
+ * @async
+ * @returns {Promise<void>}
+ */
 export async function loadShop() {
     try {
         const response = await fetch(`${API_BASE}?action=get_shop`);
@@ -50,12 +61,23 @@ export async function loadShop() {
 // SHOP RENDERING
 // ================================================
 
+/**
+ * Get the category for an item based on its effect type
+ * @param {string} effectType - The item's effect type
+ * @returns {'food'|'potion'|'special'} The item category
+ */
 export function getItemCategory(effectType) {
     if (effectType === 'food') return 'food';
     if (effectType === 'potion' || effectType === 'revive') return 'potion';
     return 'special';
 }
 
+/**
+ * Get the Font Awesome icon class for an item
+ * @param {string} itemName - The item name
+ * @param {string} effectType - The item's effect type
+ * @returns {string} Font Awesome icon class (e.g., 'fa-drumstick-bite')
+ */
 export function getItemIcon(itemName, effectType) {
     const name = itemName.toLowerCase();
 
@@ -90,6 +112,11 @@ export function getItemIcon(itemName, effectType) {
     return 'fa-star';
 }
 
+/**
+ * Render shop items filtered by category
+ * @param {'food'|'potion'|'special'} category - The category to filter by
+ * @returns {void}
+ */
 export function renderShopItems(category) {
     const grid = document.getElementById('shop-grid');
 
@@ -145,6 +172,11 @@ export function renderShopItems(category) {
 // PURCHASE MODAL
 // ================================================
 
+/**
+ * Open the purchase modal for an item
+ * @param {number} itemId - The ID of the item to purchase
+ * @returns {void}
+ */
 export function buyItem(itemId) {
     const searchId = parseInt(itemId);
     const item = state.shopItems.find(i => parseInt(i.id) === searchId);
@@ -166,11 +198,20 @@ export function buyItem(itemId) {
     document.getElementById('shop-purchase-modal').classList.add('show');
 }
 
+/**
+ * Close the shop purchase modal
+ * @returns {void}
+ */
 export function closeShopPurchaseModal() {
     document.getElementById('shop-purchase-modal').classList.remove('show');
     state.currentShopItem = null;
 }
 
+/**
+ * Adjust the quantity in the shop purchase modal
+ * @param {number} amount - Amount to adjust (positive or negative)
+ * @returns {void}
+ */
 export function adjustShopQty(amount) {
     const input = document.getElementById('shop-qty-input');
     let value = parseInt(input.value) || 1;
@@ -179,6 +220,10 @@ export function adjustShopQty(amount) {
     updateShopTotal();
 }
 
+/**
+ * Update the total price display in the purchase modal
+ * @returns {void}
+ */
 export function updateShopTotal() {
     if (!state.currentShopItem) return;
 
@@ -187,6 +232,11 @@ export function updateShopTotal() {
     document.getElementById('shop-total-price').textContent = total.toLocaleString();
 }
 
+/**
+ * Confirm and process the shop purchase
+ * @async
+ * @returns {Promise<void>}
+ */
 export async function confirmShopPurchase() {
     if (!state.currentShopItem) return;
 

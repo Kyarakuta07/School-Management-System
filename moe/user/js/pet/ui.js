@@ -1,8 +1,10 @@
 /**
  * UI Utilities Module
- * MOE Pet System
+ * @module pet/ui
+ * @description Handles UI interactions, toasts, modals, tabs, gold display, and daily rewards
  * 
- * Handles UI interactions, toasts, modals, tabs, gold display, and daily rewards
+ * @author MOE Development Team
+ * @version 2.0.0
  */
 
 import { API_BASE } from './config.js';
@@ -12,6 +14,15 @@ import { state } from './state.js';
 // TOAST NOTIFICATIONS
 // ================================================
 
+/**
+ * Display a toast notification message
+ * @param {string} message - The message to display
+ * @param {'success'|'error'|'warning'|'info'} [type='success'] - Toast type/style
+ * @returns {void}
+ * @example
+ * showToast('Pet fed successfully!', 'success');
+ * showToast('Not enough gold', 'error');
+ */
 export function showToast(message, type = 'success') {
     let toast = document.getElementById('toast');
 
@@ -48,6 +59,10 @@ export function showToast(message, type = 'success') {
 // TAB NAVIGATION
 // ================================================
 
+/**
+ * Initialize tab navigation click handlers
+ * @returns {void}
+ */
 export function initTabs() {
     const tabBtns = document.querySelectorAll('.tab-btn');
     tabBtns.forEach(btn => {
@@ -58,6 +73,12 @@ export function initTabs() {
     });
 }
 
+/**
+ * Switch to a specific tab and update UI
+ * @param {string} tab - The tab ID to switch to (e.g., 'my-pet', 'collection', 'gacha')
+ * @fires tabChanged - Custom event dispatched when tab changes
+ * @returns {void}
+ */
 export function switchTab(tab) {
     // Update buttons
     document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -80,6 +101,15 @@ export function switchTab(tab) {
 // GOLD DISPLAY
 // ================================================
 
+/**
+ * Format gold amount for display
+ * @param {number} amount - The gold amount to format
+ * @param {boolean} [compact=true] - Whether to use compact notation (1K, 1M)
+ * @returns {string} Formatted gold string
+ * @example
+ * formatGold(1500, true);  // Returns "1.5K"
+ * formatGold(1500, false); // Returns "1,500"
+ */
 export function formatGold(amount, compact = true) {
     if (!compact) {
         return amount.toLocaleString();
@@ -93,6 +123,11 @@ export function formatGold(amount, compact = true) {
     return amount.toLocaleString();
 }
 
+/**
+ * Update the gold display in the UI
+ * @param {number} [gold] - Optional gold amount. If not provided, fetches from server
+ * @returns {void}
+ */
 export function updateGoldDisplay(gold) {
     const goldEl = document.getElementById('user-gold');
     if (!goldEl) return;
@@ -112,6 +147,10 @@ export function updateGoldDisplay(gold) {
     }
 }
 
+/**
+ * Initialize gold display toggle (compact/full format on click)
+ * @returns {void}
+ */
 export function initGoldToggle() {
     const goldEl = document.getElementById('user-gold');
     if (goldEl) {
@@ -137,6 +176,10 @@ export function initGoldToggle() {
 // URL ERROR CHECKING
 // ================================================
 
+/**
+ * Check URL parameters for error messages and display appropriate toasts
+ * @returns {void}
+ */
 export function checkUrlErrors() {
     const urlParams = new URLSearchParams(window.location.search);
     const error = urlParams.get('error');
@@ -154,6 +197,11 @@ export function checkUrlErrors() {
 // DAILY LOGIN REWARD SYSTEM
 // ================================================
 
+/**
+ * Check if daily reward is available and show modal if claimable
+ * @async
+ * @returns {Promise<void>}
+ */
 export async function checkDailyReward() {
     try {
         const response = await fetch(`${API_BASE}?action=get_daily_reward`);
@@ -168,6 +216,15 @@ export async function checkDailyReward() {
     }
 }
 
+/**
+ * Display the daily login reward modal
+ * @param {Object} data - Daily reward data from API
+ * @param {number} data.current_day - Current streak day (1-30)
+ * @param {number} data.total_logins - Total login count
+ * @param {number} data.reward_gold - Gold reward amount
+ * @param {string} [data.reward_item_name] - Optional item reward name
+ * @returns {void}
+ */
 export function showDailyRewardModal(data) {
     const modal = document.getElementById('daily-login-modal');
     const calendar = document.getElementById('daily-calendar');
@@ -223,6 +280,11 @@ export function showDailyRewardModal(data) {
     modal.classList.add('show');
 }
 
+/**
+ * Claim the daily login reward
+ * @async
+ * @returns {Promise<void>}
+ */
 export async function claimDailyReward() {
     const btn = document.getElementById('claim-reward-btn');
     btn.disabled = true;
@@ -261,6 +323,10 @@ export async function claimDailyReward() {
     }
 }
 
+/**
+ * Close the daily login reward modal
+ * @returns {void}
+ */
 export function closeDailyModal() {
     document.getElementById('daily-login-modal').classList.remove('show');
 }
