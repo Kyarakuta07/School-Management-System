@@ -1,0 +1,699 @@
+/* ================================================
+   ARENA TAB - PREMIUM DESIGN
+   Dark Egyptian Fantasy Theme with Gold Accents
+   ================================================ */
+
+/* ================================================
+   ARENA PREMIUM HEADER
+   ================================================ */
+.arena-premium-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 2rem 1.5rem;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+    border-radius: 16px;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.arena-premium-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.05), transparent);
+    animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        left: -100%;
+    }
+
+    100% {
+        left: 100%;
+    }
+}
+
+.arena-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    position: relative;
+    z-index: 1;
+}
+
+.arena-title i {
+    -webkit-text-fill-color: var(--gold);
+    font-size: 1.8rem;
+    animation: swordGlow 2s ease-in-out infinite;
+}
+
+@keyframes swordGlow {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.5));
+    }
+
+    50% {
+        filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.9));
+    }
+}
+
+.arena-subtitle {
+    font-family: 'Lato', sans-serif;
+    font-size: 0.95rem;
+    color: rgba(212, 175, 55, 0.7);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 1;
+}
+
+/* Battles Remaining Badge */
+.battles-remaining {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(212, 175, 55, 0.1);
+    border: 2px solid rgba(212, 175, 55, 0.4);
+    border-radius: 50px;
+    padding: 0.75rem 1.5rem;
+    margin-top: 1rem;
+    animation: pulseBorder 2s ease-in-out infinite;
+    position: relative;
+    z-index: 1;
+}
+
+@keyframes pulseBorder {
+
+    0%,
+    100% {
+        box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+    }
+}
+
+.battles-remaining i {
+    color: var(--gold);
+    font-size: 1.2rem;
+}
+
+.battles-remaining span {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--gold);
+}
+
+.battles-remaining small {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-left: 0.25rem;
+}
+
+/* ================================================
+   ARENA STATS BAR
+   ================================================ */
+.arena-stats-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    border-color: rgba(212, 175, 55, 0.5);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 0 20px rgba(212, 175, 55, 0.2);
+}
+
+.stat-card i {
+    font-size: 2rem;
+    color: var(--gold);
+}
+
+.stat-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #fff;
+    display: block;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* ================================================
+   PREMIUM OPPONENTS GRID
+   ================================================ */
+.opponents-premium-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.opponent-card-premium {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 1.5rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    animation: opponentFadeIn 0.5s ease backwards;
+}
+
+@keyframes opponentFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.opponent-card-premium:nth-child(1) {
+    animation-delay: 0.05s;
+}
+
+.opponent-card-premium:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.opponent-card-premium:nth-child(3) {
+    animation-delay: 0.15s;
+}
+
+.opponent-card-premium:nth-child(4) {
+    animation-delay: 0.2s;
+}
+
+.opponent-card-premium:nth-child(5) {
+    animation-delay: 0.25s;
+}
+
+.opponent-card-premium:nth-child(6) {
+    animation-delay: 0.3s;
+}
+
+.opponent-card-premium::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, rgba(212, 175, 55, 0.05), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.opponent-card-premium:hover {
+    transform: translateY(-8px);
+    border-color: rgba(212, 175, 55, 0.5);
+    box-shadow:
+        0 12px 30px rgba(0, 0, 0, 0.4),
+        0 0 30px rgba(212, 175, 55, 0.3);
+}
+
+.opponent-card-premium:hover::before {
+    opacity: 1;
+}
+
+/* Opponent Rank Badge */
+.opponent-rank {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(197, 160, 40, 0.2));
+    border: 1px solid var(--gold);
+    border-radius: 8px;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--gold);
+    z-index: 2;
+}
+
+/* Opponent Pet Display */
+.opponent-pet-display {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 1rem;
+}
+
+.opponent-pet-display img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.4s ease;
+}
+
+.opponent-card-premium:hover .opponent-pet-display img {
+    transform: scale(1.1);
+}
+
+.opponent-pet-display .rarity-badge {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+}
+
+/* Opponent Info */
+.opponent-info {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.pet-name {
+    font-family: 'Lato', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 0.25rem 0;
+}
+
+.pet-level {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0 0 0.75rem 0;
+}
+
+.owner-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+    flex-wrap: wrap;
+}
+
+.owner-info i {
+    color: var(--gold);
+}
+
+.sanctuary {
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    color: var(--gold);
+}
+
+/* Opponent Stats Preview */
+.opponent-stats-preview {
+    margin: 1rem 0;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
+
+.stat-mini {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-mini:last-child {
+    margin-bottom: 0;
+}
+
+.stat-mini span {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+    width: 35px;
+}
+
+.stat-bar {
+    flex: 1;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.stat-bar .fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-dark));
+    border-radius: 10px;
+    transition: width 0.5s ease;
+}
+
+/* Opponent Win/Loss Record */
+.opponent-record {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.opponent-record .wins {
+    color: #4CAF50;
+}
+
+.opponent-record .losses {
+    color: #E74C3C;
+}
+
+/* Battle Button */
+.battle-btn-premium {
+    width: 100%;
+    background: linear-gradient(135deg, #E74C3C, #C0392B);
+    border: none;
+    border-radius: 12px;
+    padding: 0.875rem 1.5rem;
+    color: #fff;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+.battle-btn-premium:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(231, 76, 60, 0.5);
+    background: linear-gradient(135deg, #C0392B, #E74C3C);
+}
+
+.battle-btn-premium:active {
+    transform: translateY(0);
+}
+
+.battle-btn-premium i {
+    animation: lightningPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes lightningPulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.6;
+    }
+}
+
+/* ================================================
+   3V3 TEAM SELECTION
+   ================================================ */
+.team-selection-premium {
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.section-title i {
+    font-size: 1.1rem;
+}
+
+/* Team Slots Display */
+.team-slots-display {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.team-slot {
+    aspect-ratio: 1;
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px dashed rgba(212, 175, 55, 0.3);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.team-slot.empty i {
+    font-size: 2rem;
+    color: rgba(212, 175, 55, 0.4);
+}
+
+.team-slot.empty span {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.team-slot.empty:hover {
+    border-color: rgba(212, 175, 55, 0.6);
+    background: rgba(212, 175, 55, 0.05);
+}
+
+.team-slot.filled {
+    border-style: solid;
+    border-color: var(--gold);
+    background: rgba(212, 175, 55, 0.1);
+}
+
+.team-slot.filled img {
+    width: 80%;
+    height: 80%;
+    object-fit: contain;
+}
+
+.team-slot .remove-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: rgba(231, 76, 60, 0.8);
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.team-slot.filled:hover .remove-btn {
+    opacity: 1;
+}
+
+/* Available Pets Grid */
+.available-pets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1rem;
+}
+
+.selectable-pet-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    position: relative;
+}
+
+.selectable-pet-card.selected {
+    border-color: var(--gold);
+    background: rgba(212, 175, 55, 0.1);
+}
+
+.selectable-pet-card.selected::after {
+    content: '✓';
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: var(--gold);
+    color: #0a0a0a;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+.selectable-pet-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(212, 175, 55, 0.5);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.selectable-pet-card img {
+    width: 100%;
+    height: 80px;
+    object-fit: contain;
+    margin-bottom: 0.5rem;
+}
+
+.selectable-pet-card .pet-name-mini {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 0.25rem;
+}
+
+.selectable-pet-card .pet-level-mini {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* Enter Arena Button (3v3) */
+.btn-enter-arena-3v3 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    width: 100%;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    border: none;
+    border-radius: 16px;
+    padding: 1.25rem 2rem;
+    color: #0a0a0a;
+    font-family: 'Lato', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+    margin-top: 2rem;
+}
+
+.btn-enter-arena-3v3:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.6);
+}
+
+.btn-enter-arena-3v3 i {
+    font-size: 1.5rem;
+}
+
+/* ================================================
+   RESPONSIVE DESIGN
+   ================================================ */
+
+/* Tablet (768px - 1199px) */
+@media (min-width: 768px) and (max-width: 1199px) {
+    .arena-stats-bar {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .opponents-premium-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .available-pets-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+}
+
+/* Mobile (< 768px) */
+@media (max-width: 767px) {
+    .arena-premium-header {
+        padding: 1.5rem 1rem;
+    }
+
+    .arena-title {
+        font-size: 1.5rem;
+    }
+
+    .arena-title i {
+        font-size: 1.3rem;
+    }
+
+    .arena-subtitle {
+        font-size: 0.85rem;
+    }
+
+    .arena-stats-bar {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .stat-card {
+        padding: 1rem;
+    }
+
+    .opponents-premium-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .team-slots-display {
+        gap: 0.75rem;
+    }
+
+    .available-pets-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .section-title {
+        font-size: 1.1rem;
+    }
+}

@@ -55,6 +55,7 @@ mysqli_stmt_close($gold_stmt);
     <link rel="stylesheet" href="css/my_pet_premium.css">
     <link rel="stylesheet" href="css/collection_premium.css">
     <link rel="stylesheet" href="css/shop_premium.css">
+    <link rel="stylesheet" href="css/arena_premium.css">
     <link rel="stylesheet" href="css/daily_login.css">
 
     <!-- PixiJS for particles -->
@@ -582,33 +583,104 @@ mysqli_stmt_close($gold_stmt);
                 </div>
             </section>
 
-            <!-- ARENA TAB -->
+            <!-- ARENA TAB (1v1 Premium) -->
             <section id="arena" class="tab-panel">
-                <div class="arena-content">
-                    <div class="arena-header">
-                        <h3 class="collection-title">Battle Arena</h3>
-                        <span class="arena-battles" id="arena-battles">3 / 3 Battles</span>
+                <!-- Premium Arena Header -->
+                <div class="arena-premium-header">
+                    <h2 class="arena-title">
+                        <i class="fas fa-swords"></i>
+                        <span>Battle Arena</span>
+                    </h2>
+                    <p class="arena-subtitle">Challenge opponents and prove your strength</p>
+
+                    <!-- Battles Remaining Badge -->
+                    <div class="battles-remaining">
+                        <i class="fas fa-bolt"></i>
+                        <span id="arena-battles">3 / 3</span>
+                        <small>Battles Today</small>
                     </div>
-                    <div class="opponents-grid" id="opponents-grid">
-                        <!-- Opponents rendered by JS -->
+                </div>
+
+                <!-- Arena Stats Bar -->
+                <div class="arena-stats-bar">
+                    <div class="stat-card">
+                        <i class="fas fa-trophy"></i>
+                        <div>
+                            <span class="stat-value" id="total-wins">0</span>
+                            <span class="stat-label">Wins</span>
+                        </div>
                     </div>
+                    <div class="stat-card">
+                        <i class="fas fa-chart-line"></i>
+                        <div>
+                            <span class="stat-value" id="win-rate">0%</span>
+                            <span class="stat-label">Win Rate</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-fire"></i>
+                        <div>
+                            <span class="stat-value" id="current-streak">0</span>
+                            <span class="stat-label">Streak</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Premium Opponents Grid -->
+                <div class="opponents-premium-grid" id="arena-opponents">
+                    <!-- Opponent cards rendered by JS -->
                 </div>
             </section>
 
-            <!-- 3V3 ARENA TAB -->
+            <!-- 3V3 ARENA TAB (Premium) -->
             <section id="arena3v3" class="tab-panel">
-                <div class="arena-content">
-                    <div class="arena-header">
-                        <h3 class="collection-title">3v3 Team Battle</h3>
-                    </div>
-                    <div class="team-selection" id="team-selection">
-                        <!-- Team selection rendered by JS -->
-                    </div>
-                    <a href="battle_3v3.php" class="btn-primary" style="width: 100%; text-align: center;">
-                        <i class="fas fa-dragon"></i>
-                        Enter 3v3 Arena
-                    </a>
+                <!-- Premium 3v3 Header -->
+                <div class="arena-premium-header">
+                    <h2 class="arena-title">
+                        <i class="fas fa-users-sword"></i>
+                        <span>3v3 Team Battle</span>
+                    </h2>
+                    <p class="arena-subtitle">Assemble your ultimate team</p>
                 </div>
+
+                <!-- Team Selection Area -->
+                <div class="team-selection-premium">
+                    <h3 class="section-title">
+                        <i class="fas fa-shield-alt"></i>
+                        Select Your Team (3 Pets)
+                    </h3>
+
+                    <!-- Team Slots Display -->
+                    <div class="team-slots-display">
+                        <div class="team-slot empty" data-slot="1">
+                            <i class="fas fa-plus"></i>
+                            <span>Slot 1</span>
+                        </div>
+                        <div class="team-slot empty" data-slot="2">
+                            <i class="fas fa-plus"></i>
+                            <span>Slot 2</span>
+                        </div>
+                        <div class="team-slot empty" data-slot="3">
+                            <i class="fas fa-plus"></i>
+                            <span>Slot 3</span>
+                        </div>
+                    </div>
+
+                    <!-- Available Pets Grid -->
+                    <h3 class="section-title">
+                        <i class="fas fa-paw"></i>
+                        Your Pets
+                    </h3>
+                    <div class="available-pets-grid" id="team-selection">
+                        <!-- Pets rendered by JS with selectable cards -->
+                    </div>
+                </div>
+
+                <!-- Enter Arena Button -->
+                <a href="battle_3v3.php" class="btn-enter-arena-3v3">
+                    <i class="fas fa-dragon"></i>
+                    <span>Enter 3v3 Arena</span>
+                </a>
             </section>
 
             <!-- ACHIEVEMENTS TAB -->
@@ -1241,7 +1313,7 @@ mysqli_stmt_close($gold_stmt);
     <!-- ============================================ -->
     <!-- SHOP MODALS -->
     <!-- ============================================ -->
-    
+
     <!-- Shop Purchase Modal -->
     <div class="modal" id="shop-purchase-modal">
         <div class="modal-backdrop" onclick="closeShopPurchaseModal()"></div>
@@ -1259,14 +1331,13 @@ mysqli_stmt_close($gold_stmt);
                 <img id="shop-modal-img" src="" alt="Item">
                 <h4 id="shop-modal-name">Item Name</h4>
                 <p id="shop-modal-desc">Item description</p>
-                
+
                 <div class="shop-qty-controls">
                     <button class="qty-btn" onclick="adjustShopQty(-1)">-</button>
-                    <input type="number" id="shop-qty-input" value="1" min="1" max="99" 
-                           onchange="updateShopTotal()">
+                    <input type="number" id="shop-qty-input" value="1" min="1" max="99" onchange="updateShopTotal()">
                     <button class="qty-btn" onclick="adjustShopQty(1)">+</button>
                 </div>
-                
+
                 <div class="shop-price-summary">
                     <div class="price-row">
                         <span class="price-label">Unit Price:</span>
@@ -1332,9 +1403,11 @@ mysqli_stmt_close($gold_stmt);
                 </button>
             </div>
             <div class="modal-body">
-                <img id="bulk-item-img" src="" alt="Item" style="width: 100px; height: 100px; object-fit: contain; margin: 1rem auto; display: block;">
-                <p id="bulk-item-desc" style="text-align: center; color: rgba(255,255,255,0.7); margin-bottom: 1.5rem;"></p>
-                
+                <img id="bulk-item-img" src="" alt="Item"
+                    style="width: 100px; height: 100px; object-fit: contain; margin: 1rem auto; display: block;">
+                <p id="bulk-item-desc" style="text-align: center; color: rgba(255,255,255,0.7); margin-bottom: 1.5rem;">
+                </p>
+
                 <div class="shop-qty-controls">
                     <button class="qty-btn" onclick="adjustQty(-1)">-</button>
                     <input type="number" id="bulk-item-qty" value="1" min="1" max="99">

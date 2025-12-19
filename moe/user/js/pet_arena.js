@@ -10,9 +10,9 @@
 
 // Load opponents for arena battles
 async function loadOpponents() {
-    const container = document.getElementById('opponents-grid');
+    const container = document.getElementById('arena-opponents');
     if (!container) {
-        console.error('opponents-grid element not found');
+        console.error('arena-opponents element not found');
         return;
     }
 
@@ -23,23 +23,58 @@ async function loadOpponents() {
         const data = await response.json();
 
         if (data.success && data.opponents && data.opponents.length > 0) {
-            container.innerHTML = data.opponents.map(opp => `
-                <div class="opponent-card">
-                    <img src="${ASSETS_BASE}${opp.img_adult}" alt="${opp.species_name}" class="opponent-img"
-                         onerror="this.src='../assets/placeholder.png'">
+            container.innerHTML = data.opponents.map((opp, index) => {
+                // Calculate stat percentages for mini bars
+                const hpPercent = Math.min((opp.hp / 100) * 100, 100);
+                const atkPercent = Math.min((opp.atk / 100) * 100, 100);
+                const defPercent = Math.min((opp.def / 100) * 100, 100);
+
+                // Mock win/loss data (replace with actual data from API)
+                const wins = opp.wins || Math.floor(Math.random() * 50);
+                const losses = opp.losses || Math.floor(Math.random() * 20);
+
+                return `
+                <div class="opponent-card-premium">
+                    <div class="opponent-rank">#${index + 1}</div>
+                    <div class="opponent-pet-display">
+                        <img src="${ASSETS_BASE}${opp.img_adult}" alt="${opp.display_name}"
+                             onerror="this.src='../assets/placeholder.png'">
+                        <span class="rarity-badge ${(opp.rarity || 'common').toLowerCase()}">${opp.rarity || 'Common'}</span>
+                    </div>
                     <div class="opponent-info">
-                        <h3 class="opponent-name">${opp.display_name}</h3>
-                        <p class="opponent-owner">Owner: ${opp.owner_name}</p>
-                        <div class="opponent-stats">
-                            <span class="element-badge ${opp.element.toLowerCase()}">${opp.element}</span>
-                            <span class="pet-level">Lv.${opp.level}</span>
+                        <h4 class="pet-name">${opp.display_name}</h4>
+                        <p class="pet-level">Lv. ${opp.level}</p>
+                        <div class="owner-info">
+                            <i class="fas fa-user"></i>
+                            <span>${opp.owner_name}</span>
+                            ${opp.sanctuary ? `<span class="sanctuary">${opp.sanctuary}</span>` : ''}
                         </div>
                     </div>
-                    <button class="battle-btn" onclick="startBattle(${opp.pet_id})">
-                        <i class="fas fa-bolt"></i> Fight
+                    <div class="opponent-stats-preview">
+                        <div class="stat-mini">
+                            <span>HP</span>
+                            <div class="stat-bar"><div class="fill" style="width: ${hpPercent}%"></div></div>
+                        </div>
+                        <div class="stat-mini">
+                            <span>ATK</span>
+                            <div class="stat-bar"><div class="fill" style="width: ${atkPercent}%"></div></div>
+                        </div>
+                        <div class="stat-mini">
+                            <span>DEF</span>
+                            <div class="stat-bar"><div class="fill" style="width: ${defPercent}%"></div></div>
+                        </div>
+                    </div>
+                    <div class="opponent-record">
+                        <span class="wins">W: ${wins}</span>
+                        <span class="losses">L: ${losses}</span>
+                    </div>
+                    <button class="battle-btn-premium" onclick="startBattle(${opp.pet_id})">
+                        <i class="fas fa-bolt"></i>
+                        Challenge
                     </button>
                 </div>
-            `).join('');
+            `;
+            }).join('');
         } else {
             container.innerHTML = '<div class="empty-message">No opponents available right now. Check back later!</div>';
         }
@@ -233,3 +268,25 @@ async function loadTeamSelection() {
 
 // Initialize arena module
 console.log('✓ Arena module loaded');
+
+// ================================================
+// ARENA STATS UPDATE FUNCTION
+// ================================================
+function updateArenaStats(wins, losses, streak) {
+    // Update wins
+    const winsEl = document.getElementById(''total-wins'');
+    if (winsEl) winsEl.textContent = wins || 0;
+    
+    // Calculate and update win rate
+    const total = (wins || 0) + (losses || 0);
+    const winRate = total > 0 ? Math.round((wins / total) * 100) : 0;
+    const winRateEl = document.getElementById(''win-rate'');
+    if (winRateEl) winRateEl.textContent = `${winRate}%`;
+    
+    // Update streak
+    const streakEl = document.getElementById(''current-streak'');
+    if (streakEl) streakEl.textContent = streak || 0;
+}
+
+// Call this when loading opponents or after battle
+// Example: updateArenaStats(45, 12, 5);
