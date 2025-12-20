@@ -436,16 +436,23 @@ function handlePetTap(petElement) {
 
     playPetAnimation(randomReaction, { duration: 800 });
 
-    // Small mood particle
+    // Show multiple heart particles
     const stage = document.getElementById('pet-stage');
     if (stage) {
-        const emoji = document.createElement('div');
-        emoji.className = 'heart-particle';
-        emoji.textContent = ['😊', '🎵', '✨', '💫'][Math.floor(Math.random() * 4)];
-        emoji.style.left = '50%';
-        emoji.style.top = '40%';
-        stage.appendChild(emoji);
-        setTimeout(() => emoji.remove(), 2000);
+        const hearts = ['❤️', '💕', '💗', '💖', '💝'];
+        const count = 5;
+
+        for (let i = 0; i < count; i++) {
+            const heart = document.createElement('div');
+            heart.className = 'heart-particle';
+            heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+            heart.style.left = `${30 + Math.random() * 40}%`;
+            heart.style.top = `${35 + Math.random() * 25}%`;
+            heart.style.animationDelay = `${i * 0.1}s`;
+            stage.appendChild(heart);
+
+            setTimeout(() => heart.remove(), 2000 + (i * 100));
+        }
     }
 }
 
