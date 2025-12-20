@@ -82,12 +82,18 @@ class RewardController extends BaseController
         $progress = [];
 
         // Battle wins
-        $stmt = mysqli_prepare($this->conn, "SELECT COUNT(*) as count FROM pet_battles WHERE user_id = ? AND won = 1");
+        $stmt = mysqli_prepare(
+            $this->conn,
+            "SELECT COUNT(*) as count 
+             FROM pet_battles pb
+             JOIN user_pets up ON pb.attacker_pet_id = up.id
+             WHERE up.user_id = ? AND pb.winner_pet_id = pb.attacker_pet_id"
+        );
         mysqli_stmt_bind_param($stmt, "i", $this->user_id);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
         $row = mysqli_fetch_assoc($result);
-        $progress['battle_wins'] = (int) $row['count'];
+        $progress['battle_wins'] = (int) ($row['count'] ?? 0);
         mysqli_stmt_close($stmt);
 
         // Pet collection
