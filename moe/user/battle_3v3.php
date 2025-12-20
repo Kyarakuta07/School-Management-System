@@ -67,6 +67,18 @@ if (empty($battle_id)) {
         </div>
     </div>
 
+    <!-- Mystical Background Particles -->
+    <div class="battle-mystical-bg">
+        <div class="mystical-particle"></div>
+        <div class="mystical-particle"></div>
+        <div class="mystical-particle"></div>
+        <div class="mystical-particle"></div>
+        <div class="mystical-particle"></div>
+        <div class="mystical-particle"></div>
+        <div class="mystical-particle"></div>
+        <div class="mystical-particle"></div>
+    </div>
+
     <!-- Battle Container (hidden in portrait) -->
     <div class="battle-container" id="battle-container">
         <!-- Header -->
