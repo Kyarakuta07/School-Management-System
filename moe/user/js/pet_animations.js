@@ -16,17 +16,18 @@ const ANIMATION_CONFIG = {
     // Lottie CDN (lightweight, using dotlottie-player)
     lottiePlayerCDN: 'https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs',
 
-    // Pre-made Lottie animations (LottieFiles public CDN)
+    // Pre-made Lottie animations - DISABLED due to 403 Forbidden from LottieFiles CDN
+    // Re-enable when local Lottie files are available
     lottieAnimations: {
-        confetti: 'https://assets2.lottiefiles.com/packages/lf20_u4yrau.json',
-        sparkles: 'https://assets2.lottiefiles.com/packages/lf20_xlkxtmul.json',
-        hearts: 'https://assets10.lottiefiles.com/packages/lf20_eop5xqjw.json',
-        levelUp: 'https://assets2.lottiefiles.com/packages/lf20_touohxv0.json',
-        healing: 'https://assets2.lottiefiles.com/packages/lf20_ndj9fzcd.json',
-        coins: 'https://assets2.lottiefiles.com/packages/lf20_aniuhe5t.json',
-        fire: 'https://assets2.lottiefiles.com/packages/lf20_xlkxtmul.json',
-        water: 'https://assets2.lottiefiles.com/packages/lf20_ndj9fzcd.json',
-        star: 'https://assets2.lottiefiles.com/packages/lf20_touohxv0.json'
+        // confetti: 'https://assets2.lottiefiles.com/packages/lf20_u4yrau.json',
+        // sparkles: 'https://assets2.lottiefiles.com/packages/lf20_xlkxtmul.json',
+        // hearts: 'https://assets10.lottiefiles.com/packages/lf20_eop5xqjw.json',
+        // levelUp: 'https://assets2.lottiefiles.com/packages/lf20_touohxv0.json',
+        // healing: 'https://assets2.lottiefiles.com/packages/lf20_ndj9fzcd.json',
+        // coins: 'https://assets2.lottiefiles.com/packages/lf20_aniuhe5t.json',
+        // fire: 'https://assets2.lottiefiles.com/packages/lf20_xlkxtmul.json',
+        // water: 'https://assets2.lottiefiles.com/packages/lf20_ndj9fzcd.json',
+        // star: 'https://assets2.lottiefiles.com/packages/lf20_touohxv0.json'
     },
 
     // Animation durations (ms)
