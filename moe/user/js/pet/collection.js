@@ -27,8 +27,10 @@ export function renderCollection() {
         return;
     }
 
-    // Get filtered pets if filter function exists
-    const displayPets = typeof getFilteredPets === 'function' ? getFilteredPets() : state.userPets;
+    // Get filtered pets if filter function exists (from collection_phase2.js global)
+    console.log('collection.js renderCollection: window.getFilteredPets available?', typeof window.getFilteredPets === 'function');
+    const displayPets = typeof window.getFilteredPets === 'function' ? window.getFilteredPets() : state.userPets;
+    console.log('collection.js displayPets:', displayPets.length);
 
     if (displayPets.length === 0) {
         grid.innerHTML = `

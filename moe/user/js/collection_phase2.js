@@ -128,3 +128,9 @@ function updateCollectionStats() {
     if (shinyEl) shinyEl.textContent = stats.shiny;
 }
 
+// Expose functions to window for ES6 module access
+window.getFilteredPets = getFilteredPets;
+window.filterCollection = filterCollection;
+window.sortCollection = sortCollection;
+window.initCollectionSearch = initCollectionSearch;
+window.updateCollectionStats = updateCollectionStats;
