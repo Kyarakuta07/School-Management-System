@@ -55,9 +55,21 @@ class TrapezaController extends BaseController
 
         $transactions = [];
         while ($row = mysqli_fetch_assoc($result)) {
-            // Mark as sent or received for this user
-            $row['direction'] = ($row['sender_id'] == $this->user_id) ? 'sent' : 'received';
-            $transactions[] = $row;
+            $isSent = ($row['sender_id'] == $this->user_id);
+
+            // Format transaction for frontend (trapeza.js expects these fields)
+            $transactions[] = [
+                'id' => $row['id'],
+                'type' => $row['transaction_type'],
+                'is_income' => !$isSent, // income if user is receiver
+                'amount' => (int) $row['amount'],
+                'description' => $row['description'],
+                'other_party' => $isSent
+                    ? ($row['receiver_username'] ?? 'System')
+                    : ($row['sender_username'] ?? 'System'),
+                'created_at' => $row['created_at'],
+                'direction' => $isSent ? 'sent' : 'received'
+            ];
         }
         mysqli_stmt_close($stmt);
 
