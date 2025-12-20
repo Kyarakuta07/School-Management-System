@@ -84,13 +84,29 @@ class TrapezaController extends BaseController
         $this->requirePost();
 
         $input = $this->getInput();
+        // Support both recipient_username (from frontend) and recipient_id (for API compatibility)
+        $recipient_username = isset($input['recipient_username']) ? trim($input['recipient_username']) : '';
         $recipient_id = isset($input['recipient_id']) ? (int) $input['recipient_id'] : 0;
         $amount = isset($input['amount']) ? (int) $input['amount'] : 0;
         $description = isset($input['description']) ? trim($input['description']) : 'Gold transfer';
 
+        // If username provided, look up the ID
+        if ($recipient_username && !$recipient_id) {
+            $lookup_stmt = mysqli_prepare($this->conn, "SELECT id_nethera FROM nethera WHERE username = ? AND status_akun = 'Aktif'");
+            mysqli_stmt_bind_param($lookup_stmt, "s", $recipient_username);
+            mysqli_stmt_execute($lookup_stmt);
+            $lookup_result = mysqli_stmt_get_result($lookup_stmt);
+            $lookup_row = mysqli_fetch_assoc($lookup_result);
+            mysqli_stmt_close($lookup_stmt);
+
+            if ($lookup_row) {
+                $recipient_id = (int) $lookup_row['id_nethera'];
+            }
+        }
+
         // Validation
         if (!$recipient_id) {
-            $this->error('Recipient ID required');
+            $this->error('Recipient not found');
             return;
         }
 
