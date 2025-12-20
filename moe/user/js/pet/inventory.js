@@ -222,28 +222,44 @@ export async function useItem(itemId, targetPetId = 0, quantity = 1) {
 // QUICK USE MODAL
 // ================================================
 
-export function openItemModal(type) {
+export async function openItemModal(type) {
     if (!state.activePet) return;
 
     state.selectedItemType = type;
     const modal = document.getElementById('item-modal');
     const list = document.getElementById('item-list');
 
+    // Show loading state first
+    list.innerHTML = `<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading items...</div>`;
+    modal.classList.add('show');
+
+    // Always refresh inventory when opening modal to ensure fresh data
+    try {
+        const response = await fetch(`${API_BASE}?action=get_inventory`);
+        const data = await response.json();
+        if (data.success && data.inventory) {
+            state.userInventory = data.inventory;
+        }
+    } catch (error) {
+        console.error('Error loading inventory:', error);
+    }
+
     const items = state.userInventory.filter(item => item.effect_type === type);
 
     if (items.length === 0) {
         list.innerHTML = `<div class="empty-message">No items! Visit shop.</div>`;
     } else {
-        list.innerHTML = items.map(item => `
+        list.innerHTML = items.map(item => {
+            // Use correct path for item images
+            const imgPath = item.img_path ? `../assets/items/${item.img_path}` : '../assets/placeholder.png';
+            return `
             <div class="item-option" onclick="useItem(${item.item_id}, ${state.activePet.id}, 1)">
-                <img src="${ASSETS_BASE}${item.img_path}" onerror="this.src='../assets/placeholder.png'">
+                <img src="${imgPath}" onerror="this.src='../assets/placeholder.png'">
                 <div class="item-option-name">${item.name}</div>
                 <div class="item-option-qty">x${item.quantity}</div>
             </div>
-        `).join('');
+        `}).join('');
     }
-
-    modal.classList.add('show');
 }
 
 export function closeItemModal() {
