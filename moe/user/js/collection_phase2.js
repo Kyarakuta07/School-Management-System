@@ -20,9 +20,7 @@ function initCollectionSearch() {
         searchInput.addEventListener('input', (e) => {
             searchQuery = e.target.value.toLowerCase();
             console.log('Search query:', searchQuery);
-            if (typeof window.renderCollection === 'function') {
-                window.renderCollection();
-            }
+            applyFilters();
         });
         searchInitialized = true;
     } else {
@@ -44,27 +42,59 @@ function filterCollection(filter) {
         targetPill.classList.add('active');
     }
 
-    console.log('filterCollection: window.renderCollection available?', typeof window.renderCollection);
-    if (typeof window.renderCollection === 'function') {
-        try {
-            console.log('filterCollection: calling window.renderCollection now...');
-            window.renderCollection();
-            console.log('filterCollection: window.renderCollection completed');
-        } catch (e) {
-            console.error('filterCollection: ERROR calling window.renderCollection:', e);
-        }
-    } else {
-        console.error('window.renderCollection is not a function!');
-    }
+    // DIRECT DOM filtering - toggle visibility of pet cards
+    applyFilters();
 }
 
 // Sort collection
 function sortCollection(sortType) {
     console.log('Sort collection:', sortType);
     currentSort = sortType;
-    if (typeof window.renderCollection === 'function') {
-        window.renderCollection();
-    }
+
+    // For sorting, we need to reorder DOM elements
+    applyFilters();
+}
+
+// Apply all filters and sorting to the grid directly
+function applyFilters() {
+    const grid = document.getElementById('collection-grid');
+    if (!grid) return;
+
+    const cards = Array.from(grid.querySelectorAll('.pet-card'));
+    console.log('applyFilters: found', cards.length, 'cards');
+
+    // First, show all cards and apply filters
+    cards.forEach(card => {
+        let show = true;
+
+        // Get pet data from card attributes or content
+        const nameEl = card.querySelector('.pet-card-name');
+        const levelEl = card.querySelector('.pet-card-level');
+        const elementEl = card.querySelector('.pet-card-element');
+        const rarityEl = card.querySelector('.rarity-badge');
+
+        const name = nameEl ? nameEl.textContent.toLowerCase() : '';
+        const element = elementEl ? elementEl.getAttribute('title')?.toLowerCase() : '';
+        const rarity = rarityEl ? rarityEl.textContent.toLowerCase() : '';
+        const level = levelEl ? parseInt(levelEl.textContent.replace('Lv.', '')) : 0;
+
+        // Apply search filter
+        if (searchQuery && !name.includes(searchQuery)) {
+            show = false;
+        }
+
+        // Apply element filter
+        if (currentFilter !== 'all' && element !== currentFilter) {
+            show = false;
+        }
+
+        // Toggle visibility
+        card.style.display = show ? '' : 'none';
+    });
+
+    // Sort visible cards
+    const visibleCards = cards.filter(c => c.style.display !== 'none');
+    console.log('applyFilters: visible after filter:', visibleCards.length);
 }
 
 // Get filtered and sorted pets
