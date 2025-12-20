@@ -2,6 +2,8 @@
 // HARDCORE & RHYTHM GAME UPDATE - NEW FUNCTIONS
 // ================================================
 
+// API Configuration
+const API_BASE = 'api/router.php';
 // ================================================
 // RHYTHM GAME ENGINE
 // ================================================
