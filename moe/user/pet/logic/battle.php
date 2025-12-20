@@ -237,3 +237,99 @@ function getElementMultiplier($attacker_element, $defender_element)
 
     return 1.0;
 }
+
+/**
+ * Get available opponents for 1v1 arena battle
+ * Returns a list of other users' pets that can be challenged
+ *
+ * @param mysqli $conn Database connection
+ * @param int $user_id Current user's ID
+ * @return array Array with success and opponents list
+ */
+function getOpponents($conn, $user_id)
+{
+    // Find other users who have alive pets
+    $query = "SELECT up.id as pet_id, up.level, up.nickname, 
+                     ps.name as species_name, ps.element, ps.img_adult, ps.rarity,
+                     n.nama_lengkap as owner_name
+              FROM user_pets up
+              JOIN pet_species ps ON up.species_id = ps.id
+              JOIN nethera n ON up.user_id = n.id_nethera
+              WHERE up.user_id != ? 
+                AND up.status = 'ALIVE'
+                AND up.is_active = 1
+              ORDER BY RAND()
+              LIMIT 5";
+
+    $stmt = mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt, "i", $user_id);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    $opponents = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+        $opponents[] = [
+            'pet_id' => (int) $row['pet_id'],
+            'name' => $row['nickname'] ?? $row['species_name'],
+            'species_name' => $row['species_name'],
+            'level' => (int) $row['level'],
+            'element' => $row['element'],
+            'rarity' => $row['rarity'],
+            'img' => $row['img_adult'],
+            'owner' => $row['owner_name'] ?? 'Unknown Trainer'
+        ];
+    }
+    mysqli_stmt_close($stmt);
+
+    // If no real opponents, generate AI opponents
+    if (count($opponents) === 0) {
+        $opponents = generateAIOpponents1v1($conn, $user_id);
+    }
+
+    return [
+        'success' => true,
+        'opponents' => $opponents
+    ];
+}
+
+/**
+ * Generate AI opponents for 1v1 when no real players available
+ */
+function generateAIOpponents1v1($conn, $user_id)
+{
+    // Get user's average pet level for scaling
+    $level_query = "SELECT AVG(level) as avg_level FROM user_pets WHERE user_id = ? AND status = 'ALIVE'";
+    $level_stmt = mysqli_prepare($conn, $level_query);
+    mysqli_stmt_bind_param($level_stmt, "i", $user_id);
+    mysqli_stmt_execute($level_stmt);
+    $level_result = mysqli_stmt_get_result($level_stmt);
+    $level_row = mysqli_fetch_assoc($level_result);
+    $avg_level = max(1, floor($level_row['avg_level'] ?? 1));
+    mysqli_stmt_close($level_stmt);
+
+    // Get random species for AI
+    $species_query = "SELECT id, name, element, img_adult, rarity FROM pet_species ORDER BY RAND() LIMIT 5";
+    $species_result = mysqli_query($conn, $species_query);
+
+    $ai_opponents = [];
+    $ai_names = ['Shadow', 'Phantom', 'Wild', 'Mystic', 'Ancient'];
+    $index = 0;
+
+    while ($species = mysqli_fetch_assoc($species_result)) {
+        $ai_level = max(1, $avg_level + rand(-2, 2));
+        $ai_opponents[] = [
+            'pet_id' => -($index + 1), // Negative ID for AI
+            'name' => $ai_names[$index % 5] . ' ' . $species['name'],
+            'species_name' => $species['name'],
+            'level' => $ai_level,
+            'element' => $species['element'],
+            'rarity' => $species['rarity'],
+            'img' => $species['img_adult'],
+            'owner' => 'Wild Trainer 🤖',
+            'is_ai' => true
+        ];
+        $index++;
+    }
+
+    return $ai_opponents;
+}
