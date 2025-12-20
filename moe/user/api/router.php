@@ -16,9 +16,12 @@
 // SETUP & AUTH
 // ==================================================
 
-// Enable error display for debugging (REMOVE IN PRODUCTION)
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+// Custom error handler to prevent HTML output from breaking JSON
+set_error_handler(function ($errno, $errstr, $errfile, $errline) {
+    // Log the error instead of printing HTML
+    error_log("PHP Error [$errno]: $errstr in $errfile:$errline");
+    return true; // Suppress the default error handler
+});
 
 require_once '../../core/bootstrap.php';
 require_once '../pet/pet_loader.php'; // Load pet logic functions
