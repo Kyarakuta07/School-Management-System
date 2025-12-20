@@ -15,8 +15,8 @@
 <script>
     // Wait for DOM to be ready
     document.addEventListener('DOMContentLoaded', () => {
-        // Listen for tab clicks
-        document.querySelectorAll('.main-tab').forEach(tab => {
+        // Listen for ALL tab clicks (not just main-tab)
+        document.querySelectorAll('.tab-btn').forEach(tab => {
             tab.addEventListener('click', function () {
                 const targetTab = this.dataset.tab;
 
