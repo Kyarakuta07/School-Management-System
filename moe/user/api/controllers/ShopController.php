@@ -147,8 +147,8 @@ class ShopController extends BaseController
             return;
         }
 
-        // Use the existing useItem function from items.php logic
-        $result = useItem($this->conn, $this->user_id, $pet_id, $item_id, $quantity);
+        // Use the existing useItemOnPet function from items.php logic
+        $result = useItemOnPet($this->conn, $this->user_id, $pet_id, $item_id, $quantity);
         echo json_encode($result);
     }
 }
