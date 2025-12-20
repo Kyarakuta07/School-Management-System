@@ -213,6 +213,30 @@ class BattleController extends BaseController
 
         $total_losses = $total_battles - $total_wins;
 
+        // Calculate current win streak (consecutive wins from most recent)
+        $streak_stmt = mysqli_prepare(
+            $this->conn,
+            "SELECT (pb.winner_pet_id = pb.attacker_pet_id) as won
+             FROM pet_battles pb
+             JOIN user_pets up ON pb.attacker_pet_id = up.id
+             WHERE up.user_id = ?
+             ORDER BY pb.created_at DESC
+             LIMIT 20"
+        );
+        mysqli_stmt_bind_param($streak_stmt, "i", $this->user_id);
+        mysqli_stmt_execute($streak_stmt);
+        $streak_result = mysqli_stmt_get_result($streak_stmt);
+
+        $current_streak = 0;
+        while ($streak_row = mysqli_fetch_assoc($streak_result)) {
+            if ($streak_row['won']) {
+                $current_streak++;
+            } else {
+                break; // Stop counting at first loss
+            }
+        }
+        mysqli_stmt_close($streak_stmt);
+
         // Calculate battles remaining today using rate limiter
         $user_id_str = 'user_' . $this->user_id;
         $battles_today = $this->rate_limiter->getAttempts($user_id_str, 'pet_battle');
@@ -223,7 +247,7 @@ class BattleController extends BaseController
             'stats' => [
                 'wins' => (int) $total_wins,
                 'losses' => (int) $total_losses,
-                'current_streak' => 0, // Simplified - not tracking streaks
+                'current_streak' => $current_streak,
                 'battles_remaining' => $battles_remaining
             ]
         ]);
