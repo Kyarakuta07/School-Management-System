@@ -274,22 +274,11 @@ export async function playWithPet() {
         return;
     }
 
-    if (window.PetAnimations) {
-        window.PetAnimations.jump();
-        window.PetAnimations.hearts(3);
-    }
+    // Get pet image path
+    const petImg = getPetImagePath(state.activePet);
 
-    showToast('You played with ' + (state.activePet.nickname || state.activePet.species_name) + '! 🎵', 'success');
-
-    setTimeout(() => {
-        const rhythmModal = document.getElementById('rhythm-modal');
-        if (rhythmModal) {
-            rhythmModal.classList.add('show');
-            if (typeof startRhythmGame === 'function') {
-                startRhythmGame();
-            }
-        }
-    }, 500);
+    // Redirect to rhythm game page
+    window.location.href = `rhythm_game.php?pet_id=${state.activePet.id}&pet_img=${encodeURIComponent(petImg)}`;
 }
 
 /**
