@@ -54,7 +54,9 @@ function sortCollection(sortType) {
 
 // Get filtered and sorted pets
 function getFilteredPets() {
+    console.log('getFilteredPets called - searchQuery:', searchQuery, 'currentFilter:', currentFilter);
     let filtered = [...window.userPets];
+    console.log('Initial pets count:', filtered.length);
 
     // Apply search
     if (searchQuery) {
@@ -62,11 +64,13 @@ function getFilteredPets() {
             const name = (pet.nickname || pet.species_name).toLowerCase();
             return name.includes(searchQuery);
         });
+        console.log('After search filter:', filtered.length);
     }
 
     // Apply element filter
     if (currentFilter !== 'all') {
         filtered = filtered.filter(pet => pet.element.toLowerCase() === currentFilter);
+        console.log('After element filter:', filtered.length);
     }
 
     // Apply sort

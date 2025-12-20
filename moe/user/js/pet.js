@@ -510,7 +510,9 @@ function renderCollection() {
     }
 
     // Get filtered and sorted pets (Phase 2)
+    console.log('renderCollection: getFilteredPets available?', typeof getFilteredPets === 'function');
     const displayPets = typeof getFilteredPets === 'function' ? getFilteredPets() : window.userPets;
+    console.log('renderCollection: displaying', displayPets.length, 'pets');
 
     if (displayPets.length === 0) {
         grid.innerHTML = `
