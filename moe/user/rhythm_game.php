@@ -161,7 +161,7 @@ if (!$pet_id) {
     <!-- Game Config -->
     <script>
         const PET_ID = <?php echo $pet_id; ?>;
-        const API_BASE = 'pet_api.php';
+        const API_BASE = 'api/router.php';
     </script>
 
     <!-- Game JS -->
