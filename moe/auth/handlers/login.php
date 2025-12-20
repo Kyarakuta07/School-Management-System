@@ -63,11 +63,9 @@ if ($stmt) {
         $_SESSION['status_login'] = "berhasil";
         $_SESSION['last_activity'] = time();
 
-        // Update last login time
-        $update_login = mysqli_prepare($conn, "UPDATE nethera SET last_login = NOW() WHERE id_nethera = ?");
-        mysqli_stmt_bind_param($update_login, "i", $data['id_nethera']);
-        mysqli_stmt_execute($update_login);
-        mysqli_stmt_close($update_login);
+        // Update last login time - use simple query (safer on shared hosting)
+        $user_id = (int) $data['id_nethera'];
+        mysqli_query($conn, "UPDATE nethera SET last_login = NOW() WHERE id_nethera = {$user_id}");
 
         // Regenerate CSRF token
         regenerate_csrf_token();
@@ -83,11 +81,10 @@ if ($stmt) {
 
     } else {
         // Login Gagal (Username tidak ditemukan atau password tidak cocok)
+        mysqli_stmt_close($stmt);
         header("Location: ../../index.php?pesan=gagal");
         exit();
     }
-
-    mysqli_stmt_close($stmt);
 } else {
     // Error saat prepare statement
     error_log("Login query error: " . mysqli_error($conn));
