@@ -59,6 +59,7 @@ mysqli_stmt_close($gold_stmt);
     <link rel="stylesheet" href="css/collection_premium.css">
     <link rel="stylesheet" href="css/shop_premium.css">
     <link rel="stylesheet" href="css/arena_premium.css">
+    <link rel="stylesheet" href="css/achievements_premium.css">
     <link rel="stylesheet" href="css/daily_login.css">
 
     <!-- PixiJS for particles -->

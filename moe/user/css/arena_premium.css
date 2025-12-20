@@ -673,12 +673,27 @@
     }
 
     .arena-stats-bar {
-        grid-template-columns: 1fr;
-        gap: 0.75rem;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
     }
 
     .stat-card {
-        padding: 1rem;
+        padding: 0.75rem;
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+    }
+
+    .stat-card i {
+        font-size: 1.5rem;
+    }
+
+    .stat-value {
+        font-size: 1.3rem;
+    }
+
+    .stat-label {
+        font-size: 0.7rem;
     }
 
     .opponents-premium-grid {
@@ -697,6 +712,270 @@
         font-size: 1.1rem;
     }
 }
+
+/* --- Mobile Medium (< 400px) --- */
+@media (max-width: 400px) {
+    .arena-premium-header {
+        padding: 1rem 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .arena-title {
+        font-size: 1.3rem;
+        gap: 0.6rem;
+    }
+
+    .arena-title i {
+        font-size: 1.1rem;
+    }
+
+    .arena-subtitle {
+        font-size: 0.75rem;
+    }
+
+    .battles-remaining {
+        padding: 0.5rem 1rem;
+    }
+
+    .battles-remaining i {
+        font-size: 1rem;
+    }
+
+    .battles-remaining span {
+        font-size: 0.95rem;
+    }
+
+    .battles-remaining small {
+        font-size: 0.7rem;
+    }
+
+    /* Stats bar as horizontal scroll */
+    .arena-stats-bar {
+        display: flex;
+        overflow-x: auto;
+        gap: 0.5rem;
+        padding-bottom: 8px;
+        margin-bottom: 1.5rem;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .arena-stats-bar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .stat-card {
+        flex: 0 0 auto;
+        min-width: 90px;
+        padding: 0.6rem;
+    }
+
+    .stat-card i {
+        font-size: 1.2rem;
+    }
+
+    .stat-value {
+        font-size: 1.1rem;
+    }
+
+    .stat-label {
+        font-size: 0.65rem;
+    }
+
+    /* Opponent cards */
+    .opponent-card-premium {
+        padding: 1rem;
+    }
+
+    .opponent-pet-display {
+        width: 100px;
+        height: 100px;
+    }
+
+    .pet-name {
+        font-size: 1rem;
+    }
+
+    .pet-level {
+        font-size: 0.8rem;
+    }
+
+    .opponent-stats-preview {
+        margin: 0.75rem 0;
+        padding: 0.75rem;
+    }
+
+    .stat-mini span {
+        font-size: 0.7rem;
+        width: 30px;
+    }
+
+    /* 3v3 Team selection */
+    .team-selection-premium {
+        margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .team-slot {
+        border-radius: 12px;
+    }
+
+    .team-slot.empty i {
+        font-size: 1.5rem;
+    }
+
+    .team-slot.empty span {
+        font-size: 0.8rem;
+    }
+
+    .available-pets-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.75rem;
+    }
+
+    .selectable-pet-card {
+        padding: 0.75rem;
+    }
+
+    .selectable-pet-card img {
+        height: 60px;
+    }
+
+    .selectable-pet-card .pet-name-mini {
+        font-size: 0.8rem;
+    }
+
+    .selectable-pet-card .pet-level-mini {
+        font-size: 0.65rem;
+    }
+
+    .btn-enter-arena-3v3 {
+        padding: 1rem 1.5rem;
+        font-size: 1rem;
+    }
+}
+
+/* --- Mobile Small (< 360px) --- */
+@media (max-width: 360px) {
+    .arena-premium-header {
+        padding: 0.8rem;
+    }
+
+    .arena-title {
+        font-size: 1.15rem;
+    }
+
+    .battles-remaining {
+        padding: 0.4rem 0.8rem;
+        margin-top: 0.75rem;
+    }
+
+    .stat-card {
+        min-width: 80px;
+        padding: 0.5rem;
+    }
+
+    .stat-value {
+        font-size: 1rem;
+    }
+
+    .opponent-pet-display {
+        width: 80px;
+        height: 80px;
+    }
+
+    .opponent-rank {
+        padding: 0.2rem 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    .team-slots-display {
+        gap: 0.5rem;
+    }
+
+    .team-slot .remove-btn {
+        width: 24px;
+        height: 24px;
+    }
+
+    .available-pets-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .btn-enter-arena-3v3 {
+        padding: 0.875rem 1rem;
+        font-size: 0.95rem;
+        margin-top: 1.5rem;
+    }
+}
+
+/* --- Very Small (< 320px) --- */
+@media (max-width: 320px) {
+    .arena-title {
+        font-size: 1rem;
+    }
+
+    .arena-subtitle {
+        font-size: 0.7rem;
+    }
+
+    .stat-card {
+        min-width: 70px;
+    }
+
+    .stat-card i {
+        font-size: 1rem;
+    }
+
+    .stat-value {
+        font-size: 0.9rem;
+    }
+
+    .opponent-pet-display {
+        width: 70px;
+        height: 70px;
+    }
+
+    .pet-name {
+        font-size: 0.9rem;
+    }
+
+    .team-slot.empty i {
+        font-size: 1.2rem;
+    }
+
+    .team-slot.empty span {
+        font-size: 0.7rem;
+    }
+}
+
+/* --- Touch-friendly improvements --- */
+@media (hover: none) and (pointer: coarse) {
+    .battle-btn-premium {
+        min-height: 52px;
+    }
+
+    .stat-card {
+        min-height: 70px;
+    }
+
+    .team-slot {
+        min-height: 80px;
+    }
+
+    .selectable-pet-card {
+        min-height: 100px;
+    }
+
+    .btn-enter-arena-3v3 {
+        min-height: 52px;
+    }
+}
+
 /* ================================================
    CHALLENGE BUTTON (Opponent Cards)
    ================================================ */
@@ -736,6 +1015,13 @@
 }
 
 @keyframes lightningPulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.6;
+    }
 }

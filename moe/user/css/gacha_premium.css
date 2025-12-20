@@ -709,7 +709,226 @@
     }
 }
 
+/* --- Mobile Small (< 360px) --- */
+@media (max-width: 360px) {
+    .gacha-section {
+        padding: 16px 10px;
+    }
+
+    .gacha-header {
+        margin-bottom: 20px;
+    }
+
+    .gacha-title {
+        font-size: 1.3rem;
+        gap: 8px;
+    }
+
+    .gacha-title i {
+        font-size: 1.1rem;
+        margin-right: 8px;
+    }
+
+    .gacha-subtitle {
+        font-size: 0.75rem;
+    }
+
+    .gacha-display-container {
+        margin-bottom: 20px;
+    }
+
+    .gacha-display {
+        width: 140px;
+        height: 140px;
+    }
+
+    .gacha-glow-ring {
+        width: 130px;
+        height: 130px;
+    }
+
+    .gacha-glow-ring.secondary {
+        width: 160px;
+        height: 160px;
+    }
+
+    .gacha-egg {
+        width: 85px;
+        height: 85px;
+    }
+
+    .gacha-comparison {
+        gap: 12px;
+    }
+
+    .gacha-card {
+        padding: 14px;
+        border-radius: 12px;
+    }
+
+    .gacha-card-header {
+        gap: 8px;
+        margin-bottom: 12px;
+        padding-bottom: 10px;
+    }
+
+    .gacha-card-header i {
+        font-size: 1.2rem;
+    }
+
+    .gacha-card-header h3 {
+        font-size: 0.95rem;
+    }
+
+    .gacha-cost-badge {
+        padding: 6px 12px;
+        margin-bottom: 12px;
+    }
+
+    .gacha-cost-badge i {
+        font-size: 0.9rem;
+    }
+
+    .gacha-cost-badge span {
+        font-size: 1rem;
+    }
+
+    .premium-guarantee {
+        padding: 6px 10px;
+        margin-bottom: 12px;
+    }
+
+    .premium-guarantee i {
+        font-size: 0.8rem;
+    }
+
+    .premium-guarantee span {
+        font-size: 0.7rem;
+    }
+
+    .rate-row {
+        padding: 6px 10px;
+        margin-bottom: 4px;
+    }
+
+    .rate-label {
+        font-size: 0.7rem;
+        padding: 2px 6px;
+    }
+
+    .rate-value {
+        font-size: 0.75rem;
+    }
+
+    .gacha-summon-btn {
+        padding: 12px;
+        font-size: 0.9rem;
+        border-radius: 10px;
+    }
+
+    .gacha-info-section {
+        margin-top: 16px;
+    }
+
+    .gacha-tip {
+        padding: 12px;
+        border-radius: 10px;
+        gap: 10px;
+    }
+
+    .gacha-tip i {
+        font-size: 1rem;
+    }
+
+    .gacha-tip p {
+        font-size: 0.8rem;
+    }
+
+    .stat-item {
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .stat-item i {
+        font-size: 0.9rem;
+    }
+
+    .stat-item span {
+        font-size: 0.75rem;
+    }
+}
+
+/* --- Very Small (< 320px) --- */
+@media (max-width: 320px) {
+    .gacha-section {
+        padding: 12px 8px;
+    }
+
+    .gacha-title {
+        font-size: 1.1rem;
+    }
+
+    .gacha-display {
+        width: 120px;
+        height: 120px;
+    }
+
+    .gacha-egg {
+        width: 70px;
+        height: 70px;
+    }
+
+    .gacha-glow-ring {
+        width: 110px;
+        height: 110px;
+    }
+
+    .gacha-glow-ring.secondary {
+        width: 140px;
+        height: 140px;
+    }
+
+    .gacha-card {
+        padding: 12px;
+    }
+
+    .gacha-card-header h3 {
+        font-size: 0.85rem;
+    }
+
+    .gacha-summon-btn {
+        padding: 10px;
+        font-size: 0.85rem;
+    }
+
+    .gacha-card-ribbon {
+        top: 12px;
+        right: -35px;
+        padding: 3px 28px;
+    }
+
+    .gacha-card-ribbon span {
+        font-size: 0.55rem;
+    }
+}
+
+/* --- Touch-friendly improvements --- */
+@media (hover: none) and (pointer: coarse) {
+    .gacha-summon-btn {
+        min-height: 52px;
+    }
+
+    .gacha-card {
+        min-height: auto;
+    }
+
+    .rate-row {
+        min-height: 36px;
+        display: flex;
+        align-items: center;
+    }
+}
+
 /* ================================================
    GACHA RESULT MODAL - PREMIUM DESIGN
    ================================================ */
-

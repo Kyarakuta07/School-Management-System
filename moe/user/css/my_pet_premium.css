@@ -842,3 +842,145 @@
         stroke-width: 5;
     }
 }
+
+/* --- Very Small Screens (< 320px) --- */
+@media (max-width: 320px) {
+    .my-pet-showcase {
+        min-height: 220px;
+    }
+
+    .pet-display-zone {
+        width: 200px;
+        height: 200px;
+    }
+
+    .pet-glow-ring.ring-outer {
+        width: 180px;
+        height: 180px;
+    }
+
+    .pet-glow-ring.ring-middle {
+        width: 140px;
+        height: 140px;
+    }
+
+    .pet-glow-ring.ring-inner {
+        width: 100px;
+        height: 100px;
+    }
+
+    .no-pet-title {
+        font-size: 1.3rem;
+    }
+
+    .no-pet-desc {
+        font-size: 0.8rem;
+    }
+
+    .btn-summon {
+        padding: 12px 24px;
+        font-size: 0.9rem;
+    }
+
+    .pet-display-name {
+        font-size: 1.3rem;
+    }
+
+    .pet-info-header {
+        padding: 12px;
+    }
+
+    .pet-meta-badges {
+        gap: 6px;
+    }
+
+    .level-badge,
+    .element-badge,
+    .rarity-badge,
+    .shiny-tag {
+        padding: 4px 8px;
+        font-size: 0.65rem;
+    }
+
+    .stats-cards-container {
+        gap: 4px;
+    }
+
+    .stat-card {
+        padding: 8px 4px;
+        border-radius: 12px;
+    }
+
+    .stat-progress-ring {
+        width: 50px;
+        height: 50px;
+    }
+
+    .progress-ring {
+        width: 50px !important;
+        height: 50px !important;
+    }
+
+    .progress-ring circle {
+        r: 21;
+    }
+
+    .stat-value-center {
+        font-size: 0.85rem;
+    }
+
+    .exp-card {
+        padding: 12px;
+    }
+
+    .exp-label {
+        font-size: 0.8rem;
+    }
+
+    .exp-text {
+        font-size: 0.75rem;
+    }
+
+    .exp-bar {
+        height: 10px;
+    }
+
+    .action-buttons-grid {
+        gap: 8px;
+    }
+
+    .action-card {
+        padding: 14px 10px;
+    }
+
+    .action-icon {
+        width: 38px;
+        height: 38px;
+        font-size: 1.2rem;
+    }
+
+    .action-label {
+        font-size: 0.8rem;
+    }
+}
+
+/* --- Touch-friendly improvements --- */
+@media (hover: none) and (pointer: coarse) {
+    .action-card {
+        min-height: 80px;
+    }
+
+    .btn-summon {
+        min-height: 48px;
+    }
+
+    .btn-edit-name {
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    /* Larger tap targets for stat cards */
+    .stat-card {
+        min-height: 100px;
+    }
+}
