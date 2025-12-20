@@ -499,8 +499,9 @@
 
 .progress-ring {
     position: absolute;
-    top: 0;
-    left: 0;
+    inset: 0;
+    width: 100% !important;
+    height: 100% !important;
     transform: rotate(-90deg);
 }
 
@@ -785,14 +786,7 @@
         height: 55px;
     }
 
-    .progress-ring {
-        width: 55px !important;
-        height: 55px !important;
-    }
-
-    .progress-ring circle {
-        r: 24;
-    }
+    /* SVG uses 100% from container */
 
     .stat-value-center {
         font-size: 0.95rem;
@@ -920,14 +914,7 @@
         height: 50px;
     }
 
-    .progress-ring {
-        width: 50px !important;
-        height: 50px !important;
-    }
-
-    .progress-ring circle {
-        r: 21;
-    }
+    /* SVG uses 100% from container */
 
     .stat-value-center {
         font-size: 0.85rem;

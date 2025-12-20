@@ -76,7 +76,7 @@
             </div>
             <div class="stat-card-body">
                 <div class="stat-progress-ring">
-                    <svg class="progress-ring" width="80" height="80">
+                    <svg class="progress-ring" viewBox="0 0 80 80">
                         <circle class="progress-ring-bg" cx="40" cy="40" r="35"></circle>
                         <circle class="progress-ring-fill health-fill" id="health-ring" cx="40" cy="40" r="35"></circle>
                     </svg>
@@ -93,7 +93,7 @@
             </div>
             <div class="stat-card-body">
                 <div class="stat-progress-ring">
-                    <svg class="progress-ring" width="80" height="80">
+                    <svg class="progress-ring" viewBox="0 0 80 80">
                         <circle class="progress-ring-bg" cx="40" cy="40" r="35"></circle>
                         <circle class="progress-ring-fill hunger-fill" id="hunger-ring" cx="40" cy="40" r="35"></circle>
                     </svg>
@@ -110,7 +110,7 @@
             </div>
             <div class="stat-card-body">
                 <div class="stat-progress-ring">
-                    <svg class="progress-ring" width="80" height="80">
+                    <svg class="progress-ring" viewBox="0 0 80 80">
                         <circle class="progress-ring-bg" cx="40" cy="40" r="35"></circle>
                         <circle class="progress-ring-fill mood-fill" id="mood-ring" cx="40" cy="40" r="35"></circle>
                     </svg>
