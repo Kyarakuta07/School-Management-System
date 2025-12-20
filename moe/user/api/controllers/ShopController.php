@@ -21,16 +21,29 @@ class ShopController extends BaseController
     {
         $this->requireGet();
 
-        $result = mysqli_query($this->conn, "SELECT * FROM shop_items WHERE is_available = 1 ORDER BY effect_type, price");
-        $items = [];
-        while ($row = mysqli_fetch_assoc($result)) {
-            $items[] = $row;
-        }
+        try {
+            // Try with is_available column
+            $result = mysqli_query($this->conn, "SELECT * FROM shop_items WHERE is_available = 1 ORDER BY effect_type, price");
 
-        $this->success([
-            'items' => $items,
-            'user_gold' => $this->getUserGold()
-        ]);
+            // If query fails, try without is_available
+            if (!$result) {
+                $result = mysqli_query($this->conn, "SELECT * FROM shop_items ORDER BY effect_type, price");
+            }
+
+            $items = [];
+            if ($result) {
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $items[] = $row;
+                }
+            }
+
+            $this->success([
+                'items' => $items,
+                'user_gold' => $this->getUserGold()
+            ]);
+        } catch (Exception $e) {
+            $this->error('Failed to load shop: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -77,7 +90,7 @@ class ShopController extends BaseController
         }
 
         // Get item details
-        $item_stmt = mysqli_prepare($this->conn, "SELECT * FROM shop_items WHERE id = ? AND is_available = 1");
+        $item_stmt = mysqli_prepare($this->conn, "SELECT * FROM shop_items WHERE id = ?");
         mysqli_stmt_bind_param($item_stmt, "i", $item_id);
         mysqli_stmt_execute($item_stmt);
         $item_result = mysqli_stmt_get_result($item_stmt);
