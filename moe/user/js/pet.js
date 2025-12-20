@@ -917,12 +917,27 @@ async function revivePet(petId) {
 // ================================================
 // QUICK USE MODAL (Dari Dashboard Button)
 // ================================================
-function openItemModal(type) {
+async function openItemModal(type) {
     if (!window.activePet) return;
 
     selectedItemType = type;
     const modal = document.getElementById('item-modal');
     const list = document.getElementById('item-list');
+
+    // Show loading state first
+    list.innerHTML = `<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading items...</div>`;
+    modal.classList.add('show');
+
+    // Always refresh inventory when opening modal to ensure fresh data
+    try {
+        const response = await fetch(`${API_BASE}?action=get_inventory`);
+        const data = await response.json();
+        if (data.success && data.inventory) {
+            userInventory = data.inventory;
+        }
+    } catch (error) {
+        console.error('Error loading inventory:', error);
+    }
 
     const items = userInventory.filter(item => item.effect_type === type);
 
@@ -940,8 +955,6 @@ function openItemModal(type) {
             </div>
         `}).join('');
     }
-
-    modal.classList.add('show');
 }
 
 function closeItemModal() {
