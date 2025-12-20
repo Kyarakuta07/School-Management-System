@@ -45,7 +45,8 @@ if (!$defender_pet_id || !$attacker_pet_id) {
 // Get attacker pet data (user's pet)
 $atk_query = mysqli_prepare(
     $conn,
-    "SELECT up.*, ps.name as species_name, ps.element, ps.rarity, ps.img_adult
+    "SELECT up.*, ps.name as species_name, ps.element, ps.rarity, 
+            ps.img_egg, ps.img_baby, ps.img_adult
      FROM user_pets up 
      JOIN pet_species ps ON up.species_id = ps.id 
      WHERE up.id = ? AND up.user_id = ?"
@@ -64,7 +65,8 @@ if (!$attacker) {
 // Get defender pet data
 $def_query = mysqli_prepare(
     $conn,
-    "SELECT up.*, ps.name as species_name, ps.element, ps.rarity, ps.img_adult,
+    "SELECT up.*, ps.name as species_name, ps.element, ps.rarity, 
+            ps.img_egg, ps.img_baby, ps.img_adult,
             n.nama_lengkap as owner_name
      FROM user_pets up 
      JOIN pet_species ps ON up.species_id = ps.id 
@@ -113,6 +115,23 @@ mysqli_stmt_close($def_skills_query);
 // Calculate effective HP based on level
 $attacker_max_hp = 100 + ($attacker['level'] * 5);
 $defender_max_hp = 100 + ($defender['level'] * 5);
+
+// Helper function to get correct pet image based on level
+function getPetImageByLevel($pet)
+{
+    $level = (int) $pet['level'];
+    if ($level >= 10) {
+        $img = $pet['img_adult'] ?? $pet['img_baby'] ?? $pet['img_egg'];
+    } elseif ($level >= 5) {
+        $img = $pet['img_baby'] ?? $pet['img_egg'] ?? $pet['img_adult'];
+    } else {
+        $img = $pet['img_egg'] ?? $pet['img_baby'] ?? $pet['img_adult'];
+    }
+    return $img ?: 'placeholder.png';
+}
+
+$attacker_img = getPetImageByLevel($attacker);
+$defender_img = getPetImageByLevel($defender);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -160,7 +179,7 @@ $defender_max_hp = 100 + ($defender['level'] * 5);
                         <?php echo $defender_max_hp; ?></span>
                 </div>
                 <div class="pet-sprite enemy-sprite">
-                    <img src="../assets/pets/<?php echo htmlspecialchars($defender['img_adult']); ?>"
+                    <img src="../assets/pets/<?php echo htmlspecialchars($defender_img); ?>"
                         alt="<?php echo htmlspecialchars($defender['species_name']); ?>" id="enemy-pet-img"
                         onerror="this.src='../assets/placeholder.png'">
                 </div>
@@ -174,7 +193,7 @@ $defender_max_hp = 100 + ($defender['level'] * 5);
             <!-- Attacker (Player) - Bottom -->
             <div class="combatant player-side">
                 <div class="pet-sprite player-sprite">
-                    <img src="../assets/pets/<?php echo htmlspecialchars($attacker['img_adult']); ?>"
+                    <img src="../assets/pets/<?php echo htmlspecialchars($attacker_img); ?>"
                         alt="<?php echo htmlspecialchars($attacker['species_name']); ?>" id="player-pet-img"
                         onerror="this.src='../assets/placeholder.png'">
                 </div>
