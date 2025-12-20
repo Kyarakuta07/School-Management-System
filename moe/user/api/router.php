@@ -16,6 +16,10 @@
 // SETUP & AUTH
 // ==================================================
 
+// Enable error display for debugging (REMOVE IN PRODUCTION)
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
 require_once '../../core/bootstrap.php';
 require_once '../pet/pet_loader.php'; // Load pet logic functions
 
