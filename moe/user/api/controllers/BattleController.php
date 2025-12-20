@@ -51,23 +51,89 @@ class BattleController extends BaseController
     }
 
     /**
-     * POST: Get battle result
+     * POST: Record battle result from 1v1 arena
      */
     public function battleResult()
     {
         $this->requirePost();
 
         $input = $this->getInput();
-        $battle_id = isset($input['battle_id']) ? (int) $input['battle_id'] : 0;
-        $won = isset($input['won']) ? (bool) $input['won'] : false;
+        $attacker_pet_id = isset($input['attacker_pet_id']) ? (int) $input['attacker_pet_id'] : 0;
+        $defender_pet_id = isset($input['defender_pet_id']) ? (int) $input['defender_pet_id'] : 0;
+        $winner = isset($input['winner']) ? $input['winner'] : '';
+        $gold_reward = isset($input['gold_reward']) ? (int) $input['gold_reward'] : 0;
+        $exp_reward = isset($input['exp_reward']) ? (int) $input['exp_reward'] : 0;
 
-        if (!$battle_id) {
-            $this->error('Battle ID required');
+        if (!$attacker_pet_id) {
+            $this->error('Attacker pet ID required');
             return;
         }
 
-        $result = processBattleResult($this->conn, $this->user_id, $battle_id, $won);
-        echo json_encode($result);
+        // Verify pet ownership
+        $pet = $this->verifyPetOwnership($attacker_pet_id);
+        if (!$pet) {
+            $this->error('Invalid pet or not owned by user');
+            return;
+        }
+
+        $player_won = ($winner === 'attacker');
+
+        // Record battle in pet_battles table
+        try {
+            $winner_pet_id = $player_won ? $attacker_pet_id : $defender_pet_id;
+
+            $stmt = mysqli_prepare(
+                $this->conn,
+                "INSERT INTO pet_battles (attacker_pet_id, defender_pet_id, winner_pet_id, reward_gold, reward_exp) 
+                 VALUES (?, ?, ?, ?, ?)"
+            );
+            mysqli_stmt_bind_param($stmt, "iiiii", $attacker_pet_id, $defender_pet_id, $winner_pet_id, $gold_reward, $exp_reward);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
+
+            // If player won, give rewards
+            if ($player_won && $gold_reward > 0) {
+                $this->addGold($gold_reward);
+            }
+
+            // Add EXP to winning pet
+            if ($player_won && $exp_reward > 0) {
+                addExpToPet($this->conn, $attacker_pet_id, $exp_reward);
+            }
+
+            // Update arena stats
+            $this->updateArenaStats($player_won);
+
+            $this->success([
+                'recorded' => true,
+                'won' => $player_won,
+                'gold' => $gold_reward,
+                'exp' => $exp_reward
+            ]);
+        } catch (Exception $e) {
+            $this->error('Failed to record battle result: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Update user's arena stats (wins/losses)
+     */
+    private function updateArenaStats($won)
+    {
+        if ($won) {
+            $stmt = mysqli_prepare(
+                $this->conn,
+                "UPDATE nethera SET arena_wins = COALESCE(arena_wins, 0) + 1 WHERE id_nethera = ?"
+            );
+        } else {
+            $stmt = mysqli_prepare(
+                $this->conn,
+                "UPDATE nethera SET arena_losses = COALESCE(arena_losses, 0) + 1 WHERE id_nethera = ?"
+            );
+        }
+        mysqli_stmt_bind_param($stmt, "i", $this->user_id);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
     }
 
     /**
