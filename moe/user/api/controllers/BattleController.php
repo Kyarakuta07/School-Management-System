@@ -614,7 +614,7 @@ class BattleController extends BaseController
         // Load battle state
         require_once __DIR__ . '/../../pet/logic/BattleStateManager.php';
         $state_manager = new BattleStateManager();
-        $state = $state_manager->getBattleState($battle_id);
+        $state = $state_manager->getState($battle_id);
 
         if (!$state || $state['user_id'] !== $this->user_id) {
             $this->error('Battle not found or not yours');
@@ -684,8 +684,11 @@ class BattleController extends BaseController
             $state['turn_count']++;
         }
 
-        // Save state
-        $state_manager->saveBattleState($battle_id, $state);
+        // Save state to session directly
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        $_SESSION['battles'][$battle_id] = $state;
 
         $this->success([
             'damage_dealt' => $damage,
