@@ -639,25 +639,11 @@ async function playWithPet() {
         return;
     }
 
-    // Play jump animation with hearts
-    if (window.PetAnimations) {
-        window.PetAnimations.jump();
-        window.PetAnimations.hearts(3);
-    }
+    // Get pet image path
+    const petImg = getPetImagePath(window.activePet);
 
-    showToast('You played with ' + (window.activePet.nickname || window.activePet.species_name) + '! ðŸŽµ', 'success');
-
-    // Open rhythm game modal after short delay
-    setTimeout(() => {
-        const rhythmModal = document.getElementById('rhythm-modal');
-        if (rhythmModal) {
-            rhythmModal.classList.add('show');
-            // Start rhythm game if function exists
-            if (typeof startRhythmGame === 'function') {
-                startRhythmGame();
-            }
-        }
-    }, 500);
+    // Redirect to rhythm game page
+    window.location.href = `rhythm_game.php?pet_id=${window.activePet.id}&pet_img=${encodeURIComponent(petImg)}`;
 }
 
 async function toggleShelter(targetPetId = null) {
