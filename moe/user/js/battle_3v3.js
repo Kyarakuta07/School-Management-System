@@ -22,6 +22,39 @@ const BattleState = {
     isAnimating: false
 };
 
+/**
+ * Get correct pet image based on evolution stage
+ * @param {Object} pet - Pet object with evolution_stage and img_* properties
+ * @returns {string} Image path
+ */
+function getBattlePetImage(pet) {
+    const stage = pet.evolution_stage || 'adult'; // Default to adult for battle display
+
+    // Try to get image for current stage, fallback to available ones
+    let imgKeys;
+    switch (stage) {
+        case 'egg':
+            imgKeys = ['img_egg', 'img_baby', 'img_adult'];
+            break;
+        case 'baby':
+            imgKeys = ['img_baby', 'img_adult', 'img_egg'];
+            break;
+        case 'adult':
+        default:
+            imgKeys = ['img_adult', 'img_baby', 'img_egg'];
+            break;
+    }
+
+    for (const key of imgKeys) {
+        if (pet[key] && pet[key] !== '' && pet[key] !== null) {
+            return `../assets/pets/${pet[key]}`;
+        }
+    }
+
+    // Fallback to placeholder
+    return '../assets/placeholder.png';
+}
+
 // ================================================
 // DOM ELEMENTS
 // ================================================
@@ -417,14 +450,14 @@ function renderTeamIndicators() {
     // Player indicators
     DOM.playerIndicators.innerHTML = BattleState.playerPets.map((pet, i) => `
         <div class="pet-indicator ${i === BattleState.activePlayerIndex ? 'active' : ''} ${pet.is_fainted ? 'fainted' : ''}">
-            <img src="../assets/pets/${pet.img_adult}" alt="${pet.species_name}">
+            <img src="${getBattlePetImage(pet)}" alt="${pet.species_name}" onerror="this.src='../assets/placeholder.png'">
         </div>
     `).join('');
 
     // Enemy indicators
     DOM.enemyIndicators.innerHTML = BattleState.enemyPets.map((pet, i) => `
         <div class="pet-indicator ${i === BattleState.activeEnemyIndex ? 'active' : ''} ${pet.is_fainted ? 'fainted' : ''}">
-            <img src="../assets/pets/${pet.img_adult}" alt="${pet.species_name}">
+            <img src="${getBattlePetImage(pet)}" alt="${pet.species_name}" onerror="this.src='../assets/placeholder.png'">
         </div>
     `).join('');
 }
@@ -437,14 +470,16 @@ function renderActivePets() {
     DOM.playerName.textContent = playerPet.nickname || playerPet.species_name;
     DOM.playerElement.textContent = playerPet.element;
     DOM.playerElement.className = `element-badge ${playerPet.element.toLowerCase()}`;
-    DOM.playerImg.src = `../assets/pets/${playerPet.img_adult}`;
+    DOM.playerImg.src = getBattlePetImage(playerPet);
+    DOM.playerImg.onerror = function () { this.src = '../assets/placeholder.png'; };
     updatePlayerHp(playerPet.hp, playerPet.is_fainted);
 
     // Enemy
     DOM.enemyName.textContent = enemyPet.nickname || enemyPet.species_name;
     DOM.enemyElement.textContent = enemyPet.element;
     DOM.enemyElement.className = `element-badge ${enemyPet.element.toLowerCase()}`;
-    DOM.enemyImg.src = `../assets/pets/${enemyPet.img_adult}`;
+    DOM.enemyImg.src = getBattlePetImage(enemyPet);
+    DOM.enemyImg.onerror = function () { this.src = '../assets/placeholder.png'; };
     updateEnemyHp(enemyPet.hp, enemyPet.is_fainted);
 }
 
@@ -599,7 +634,7 @@ function openSwapModal() {
     DOM.swapPets.innerHTML = BattleState.playerPets.map((pet, i) => `
         <div class="swap-pet-option ${i === BattleState.activePlayerIndex ? 'current' : ''} ${pet.is_fainted ? 'fainted' : ''}"
              onclick="switchToPet(${i})">
-            <img src="../assets/pets/${pet.img_adult}" alt="${pet.species_name}" class="swap-pet-img">
+            <img src="${getBattlePetImage(pet)}" alt="${pet.species_name}" class="swap-pet-img" onerror="this.src='../assets/placeholder.png'">
             <div class="swap-pet-info">
                 <div class="swap-pet-name">${pet.nickname || pet.species_name}</div>
                 <div class="swap-pet-hp">HP: ${pet.hp}/${pet.max_hp}</div>
