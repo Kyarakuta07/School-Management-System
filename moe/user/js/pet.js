@@ -929,13 +929,16 @@ function openItemModal(type) {
     if (items.length === 0) {
         list.innerHTML = `<div class="empty-message">No items! Visit shop.</div>`;
     } else {
-        list.innerHTML = items.map(item => `
+        list.innerHTML = items.map(item => {
+            // Use correct path for item images
+            const imgPath = item.img_path ? `../assets/items/${item.img_path}` : '../assets/placeholder.png';
+            return `
             <div class="item-option" onclick="useItem(${item.item_id}, ${window.activePet.id}, 1)">
-                <img src="${ASSETS_BASE}${item.img_path}" onerror="this.src='../assets/placeholder.png'">
+                <img src="${imgPath}" onerror="this.src='../assets/placeholder.png'">
                 <div class="item-option-name">${item.name}</div>
                 <div class="item-option-qty">x${item.quantity}</div>
             </div>
-        `).join('');
+        `}).join('');
     }
 
     modal.classList.add('show');
