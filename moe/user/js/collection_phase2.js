@@ -44,8 +44,11 @@ function filterCollection(filter) {
         targetPill.classList.add('active');
     }
 
+    console.log('filterCollection: window.renderCollection available?', typeof window.renderCollection);
     if (typeof window.renderCollection === 'function') {
         window.renderCollection();
+    } else {
+        console.error('window.renderCollection is not a function!');
     }
 }
 
