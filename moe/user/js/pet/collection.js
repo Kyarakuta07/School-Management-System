@@ -9,6 +9,7 @@ import { state } from './state.js';
 import { getPetImagePath, updatePetCountBadge } from './pets.js';
 
 export function renderCollection() {
+    console.log('=== MODULE collection.js renderCollection CALLED ===');
     const grid = document.getElementById('collection-grid');
 
     updatePetCountBadge();

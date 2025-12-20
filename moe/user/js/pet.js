@@ -490,6 +490,7 @@ function updatePetCountBadge() {
 // COLLECTION TAB (Premium Enhanced + Phase 2)
 // ================================================
 function renderCollection() {
+    console.log('=== OLD pet.js renderCollection CALLED ===');
     const grid = document.getElementById('collection-grid');
 
     // Update pet count badge
