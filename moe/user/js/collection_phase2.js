@@ -46,7 +46,13 @@ function filterCollection(filter) {
 
     console.log('filterCollection: window.renderCollection available?', typeof window.renderCollection);
     if (typeof window.renderCollection === 'function') {
-        window.renderCollection();
+        try {
+            console.log('filterCollection: calling window.renderCollection now...');
+            window.renderCollection();
+            console.log('filterCollection: window.renderCollection completed');
+        } catch (e) {
+            console.error('filterCollection: ERROR calling window.renderCollection:', e);
+        }
     } else {
         console.error('window.renderCollection is not a function!');
     }
