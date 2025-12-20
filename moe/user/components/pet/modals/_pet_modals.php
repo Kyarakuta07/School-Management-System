@@ -6,11 +6,11 @@
             <button class="modal-close" onclick="closeRenameModal()">&times;</button>
         </div>
         <div class="modal-body">
-            <input type="text" class="form-input" id="new-name-input" placeholder="Enter new name" maxlength="50">
+            <input type="text" class="form-input" id="rename-input" placeholder="Enter new name" maxlength="50">
         </div>
         <div class="modal-footer">
             <button class="btn-secondary" onclick="closeRenameModal()">Cancel</button>
-            <button class="btn-primary" onclick="savePetName()">Save</button>
+            <button class="btn-primary" onclick="confirmRename()">Save</button>
         </div>
     </div>
 </div>
