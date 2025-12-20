@@ -83,6 +83,9 @@ function useSkill(skillId, baseDamage, skillElement) {
     DOM.playerSprite.classList.add('attacking');
     SoundManager.attack();
 
+    // Show projectile flying to enemy
+    showProjectile(DOM.playerSprite, DOM.enemySprite, skillElement);
+
     setTimeout(() => {
         DOM.playerSprite.classList.remove('attacking');
         DOM.enemySprite.classList.add('hit');
@@ -179,6 +182,9 @@ function enemyTurn() {
         // Play attack animation
         DOM.enemySprite.classList.add('attacking');
         SoundManager.attack();
+
+        // Show projectile flying to player
+        showProjectile(DOM.enemySprite, DOM.playerSprite, bestSkill.skill_element || BATTLE_CONFIG.defenderElement);
 
         setTimeout(() => {
             DOM.enemySprite.classList.remove('attacking');
@@ -353,4 +359,50 @@ function forfeitBattle() {
 
 function returnToArena() {
     window.location.href = 'pet.php?tab=arena';
+}
+
+// ================================================
+// PROJECTILE ANIMATION
+// ================================================
+/**
+ * Show projectile animation from attacker to defender
+ * @param {Element} fromEl - Attacker sprite element
+ * @param {Element} toEl - Defender sprite element
+ * @param {string} element - Element type for projectile color
+ */
+function showProjectile(fromEl, toEl, element = 'fire') {
+    const projectile = document.createElement('div');
+    projectile.className = `projectile ${element.toLowerCase()}`;
+
+    const fromRect = fromEl.getBoundingClientRect();
+    const toRect = toEl.getBoundingClientRect();
+
+    // Start position (center of attacker)
+    const startX = fromRect.left + fromRect.width / 2 - 10;
+    const startY = fromRect.top + fromRect.height / 2 - 10;
+
+    // End position (center of defender)
+    const endX = toRect.left + toRect.width / 2 - 10;
+    const endY = toRect.top + toRect.height / 2 - 10;
+
+    projectile.style.left = startX + 'px';
+    projectile.style.top = startY + 'px';
+
+    document.body.appendChild(projectile);
+
+    // Animate to target
+    requestAnimationFrame(() => {
+        projectile.style.transition = 'all 0.35s ease-out';
+        projectile.style.left = endX + 'px';
+        projectile.style.top = endY + 'px';
+        projectile.style.transform = 'scale(1.3)';
+    });
+
+    // Remove after animation with explosion effect
+    setTimeout(() => {
+        projectile.style.opacity = '0';
+        projectile.style.transform = 'scale(2.5)';
+        projectile.style.boxShadow = '0 0 50px currentColor, 0 0 80px currentColor';
+        setTimeout(() => projectile.remove(), 200);
+    }, 350);
 }
