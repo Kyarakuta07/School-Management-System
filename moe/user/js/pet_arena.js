@@ -240,12 +240,27 @@ async function loadTeamSelection() {
     container.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Loading your pets...</p></div>';
 
     try {
-        // Get user's pets from main pet.js
-        const userPets = window.userPets;
+        // Get user's pets - try window.userPets first, fallback to API
+        let userPets = window.userPets;
+
+        // If userPets not loaded yet, fetch from API
+        if (!userPets || userPets.length === 0) {
+            console.log('🔍 Fetching pets for 3v3 from API...');
+            const response = await fetch('api/router.php?action=get_pets');
+            const data = await response.json();
+
+            if (data.success && data.pets) {
+                userPets = data.pets;
+                window.userPets = data.pets; // Cache for later use
+                console.log('✅ Fetched', userPets.length, 'pets for 3v3');
+            } else {
+                throw new Error(data.error || 'Failed to load pets');
+            }
+        }
 
         if (!userPets || userPets.length === 0) {
             container.innerHTML = `
-                <div class="empty-message">
+                <div class="no-pets-message">
                     <i class="fas fa-paw"></i>
                     <p>You need pets to form a team! Visit the Gacha tab to get pets.</p>
                 </div>
@@ -258,7 +273,7 @@ async function loadTeamSelection() {
 
         if (alivePets.length < 3) {
             container.innerHTML = `
-                <div class="empty-message">
+                <div class="no-pets-message">
                     <i class="fas fa-heart-broken"></i>
                     <p>You need at least 3 alive pets for team battles!</p>
                     <p class="text-small">You have ${alivePets.length} alive pet(s). Heal or get more pets.</p>
@@ -267,48 +282,126 @@ async function loadTeamSelection() {
             return;
         }
 
-        // Render team selection
-        container.innerHTML = `
-            <div class="team-info">
-                <p class="team-instruction">
-                    <i class="fas fa-info-circle"></i>
-                    Select 3 pets for your team. Battles use your top 3 strongest pets.
-                </p>
-            </div>
-            <div class="team-grid">
-                ${alivePets.slice(0, 6).map((pet, index) => `
-                    <div class="team-pet-card ${index < 3 ? 'team-member' : ''}">
-                        <img src="${getArenaPetImage(pet)}" 
-                             alt="${pet.nickname || pet.species_name}"
-                             onerror="this.src='../assets/placeholder.png'">
-                        <div class="team-pet-info">
-                            <h4>${pet.nickname || pet.species_name}</h4>
-                            <div class="team-pet-stats">
-                                <span class="stat-label">Lv.${pet.level}</span>
-                                <span class="element-badge ${pet.element.toLowerCase()}">${pet.element}</span>
-                            </div>
-                            <div class="team-pet-combat">
-                                <span title="Attack"><i class="fas fa-sword"></i> ${pet.atk}</span>
-                                <span title="Defense"><i class="fas fa-shield"></i> ${pet.def}</span>
-                                <span title="HP"><i class="fas fa-heart"></i> ${pet.hp}</span>
-                            </div>
-                        </div>
-                        ${index < 3 ? '<div class="team-badge">Team</div>' : ''}
-                    </div>
-                `).join('')}
-            </div>
-            <div class="team-summary">
-                <p><strong>Team Power:</strong> ${alivePets.slice(0, 3).reduce((sum, p) => sum + ((p.atk || 0) + (p.def || 0) + (p.hp || 0)), 0)}</p>
-            </div>
-        `;
+        // Render selectable pet cards
+        container.innerHTML = alivePets.map(pet => {
+            const imgPath = getArenaPetImage(pet);
+            const displayName = pet.nickname || pet.species_name;
+            const rarity = (pet.rarity || 'common').toLowerCase();
+
+            return `
+                <div class="selectable-pet-card" 
+                     data-pet-id="${pet.id}"
+                     onclick="toggle3v3Selection(this, ${pet.id})">
+                    <div class="rarity-indicator ${rarity}"></div>
+                    <img src="${imgPath}" alt="${displayName}"
+                         onerror="this.src='../assets/placeholder.png'">
+                    <div class="pet-name-mini">${displayName}</div>
+                    <div class="pet-level-mini">Lv. ${pet.level}</div>
+                    <span class="element-mini">${pet.element || 'Normal'}</span>
+                </div>
+            `;
+        }).join('');
+
+        console.log('✅ Rendered', alivePets.length, 'pets for 3v3 selection');
 
     } catch (error) {
         console.error('Error loading team selection:', error);
-        container.innerHTML = '<div class="empty-message">Failed to load team selection</div>';
+        container.innerHTML = `
+            <div class="no-pets-message">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>Failed to load pets. Please refresh the page.</p>
+            </div>
+        `;
     }
 }
 
-// Start 3v3 battle - auto select top 3 pets
+// Selected pets for 3v3 team (max 3)
+let selected3v3Pets = [];
+
+// Toggle pet selection for 3v3 team
+function toggle3v3Selection(cardElement, petId) {
+    const maxTeamSize = 3;
+    const index = selected3v3Pets.findIndex(p => p.id === petId);
+
+    if (index > -1) {
+        // Already selected - remove from team
+        selected3v3Pets.splice(index, 1);
+        cardElement.classList.remove('selected');
+    } else {
+        // Not selected - add to team if not full
+        if (selected3v3Pets.length >= maxTeamSize) {
+            if (typeof showToast === 'function') {
+                showToast('You can only select 3 pets!', 'warning');
+            }
+            return;
+        }
+
+        // Find pet from userPets
+        const pet = (window.userPets || []).find(p => p.id === petId);
+        if (pet) {
+            selected3v3Pets.push(pet);
+            cardElement.classList.add('selected');
+        }
+    }
+
+    // Update team slots display
+    updateTeamSlots3v3();
+}
+
+// Update team slots display
+function updateTeamSlots3v3() {
+    const slots = document.querySelectorAll('.team-slot');
+
+    slots.forEach((slot, index) => {
+        if (selected3v3Pets[index]) {
+            const pet = selected3v3Pets[index];
+            const imgPath = getArenaPetImage(pet);
+            const displayName = pet.nickname || pet.species_name;
+
+            slot.innerHTML = `
+                <img src="${imgPath}" alt="${displayName}"
+                     onerror="this.src='../assets/placeholder.png'">
+                <button class="remove-btn" onclick="event.stopPropagation(); removePetFromSlot(${index})">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            slot.classList.remove('empty');
+            slot.classList.add('filled');
+        } else {
+            slot.innerHTML = `
+                <i class="fas fa-plus"></i>
+                <span>Slot ${index + 1}</span>
+            `;
+            slot.classList.add('empty');
+            slot.classList.remove('filled');
+        }
+    });
+}
+
+// Remove pet from team slot
+function removePetFromSlot(slotIndex) {
+    if (selected3v3Pets[slotIndex]) {
+        const petId = selected3v3Pets[slotIndex].id;
+
+        // Remove from array
+        selected3v3Pets.splice(slotIndex, 1);
+
+        // Update card in grid
+        const card = document.querySelector(`.selectable-pet-card[data-pet-id="${petId}"]`);
+        if (card) {
+            card.classList.remove('selected');
+        }
+
+        // Update slots display
+        updateTeamSlots3v3();
+    }
+}
+
+// Make functions globally accessible
+window.toggle3v3Selection = toggle3v3Selection;
+window.removePetFromSlot = removePetFromSlot;
+
+// Start 3v3 battle with selected pets
 async function start3v3Battle() {
     const btn = document.getElementById('btn-start-3v3');
     if (btn) {
@@ -317,28 +410,33 @@ async function start3v3Battle() {
     }
 
     try {
-        // Get user's alive pets
-        const userPets = window.userPets || [];
-        const alivePets = userPets.filter(pet => pet.status !== 'DEAD');
+        // Check if 3 pets are selected
+        if (selected3v3Pets.length !== 3) {
+            // Fallback: use top 3 pets by power
+            const userPets = window.userPets || [];
+            const alivePets = userPets.filter(pet => pet.status !== 'DEAD');
 
-        if (alivePets.length < 3) {
-            if (typeof showToast === 'function') {
-                showToast('You need at least 3 alive pets for 3v3 battle!', 'warning');
-            } else {
-                alert('You need at least 3 alive pets for 3v3 battle!');
+            if (alivePets.length < 3) {
+                if (typeof showToast === 'function') {
+                    showToast('You need at least 3 alive pets for 3v3 battle!', 'warning');
+                } else {
+                    alert('You need at least 3 alive pets for 3v3 battle!');
+                }
+                resetButton();
+                return;
             }
-            resetButton();
-            return;
+
+            // Sort by power and pick top 3
+            const sortedPets = alivePets.sort((a, b) => {
+                const powerA = (a.atk || 0) + (a.def || 0) + (a.hp || 0);
+                const powerB = (b.atk || 0) + (b.def || 0) + (b.hp || 0);
+                return powerB - powerA;
+            });
+
+            selected3v3Pets = sortedPets.slice(0, 3);
         }
 
-        // Sort by power (atk + def + hp) and pick top 3
-        const sortedPets = alivePets.sort((a, b) => {
-            const powerA = (a.atk || 0) + (a.def || 0) + (a.hp || 0);
-            const powerB = (b.atk || 0) + (b.def || 0) + (b.hp || 0);
-            return powerB - powerA;
-        });
-
-        const teamPetIds = sortedPets.slice(0, 3).map(p => p.id);
+        const teamPetIds = selected3v3Pets.map(p => p.id);
 
         console.log('🎮 Starting 3v3 with pets:', teamPetIds);
 
@@ -479,10 +577,30 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Load team selection when 3v3 Arena tab is clicked
+    const arena3v3Tab = document.querySelector('[data-tab="arena3v3"]');
+    if (arena3v3Tab) {
+        arena3v3Tab.addEventListener('click', () => {
+            // Reset selected pets when opening tab
+            selected3v3Pets = [];
+            setTimeout(() => {
+                loadTeamSelection();
+                updateTeamSlots3v3();
+            }, 100);
+        });
+    }
+
     // Also load if already on arena tab
     const arenaContent = document.getElementById('arena');
     if (arenaContent && arenaContent.classList.contains('active')) {
         loadArenaStats();
+    }
+
+    // Also load 3v3 if already on that tab
+    const arena3v3Content = document.getElementById('arena3v3');
+    if (arena3v3Content && arena3v3Content.classList.contains('active')) {
+        selected3v3Pets = [];
+        loadTeamSelection();
     }
 
     //Reload stats whenever tab becomes visible (catches return from battle)
@@ -491,6 +609,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const arenaContent = document.getElementById('arena');
             if (arenaContent && arenaContent.classList.contains('active')) {
                 loadArenaStats();
+            }
+
+            const arena3v3Content = document.getElementById('arena3v3');
+            if (arena3v3Content && arena3v3Content.classList.contains('active')) {
+                loadTeamSelection();
             }
         }
     });
