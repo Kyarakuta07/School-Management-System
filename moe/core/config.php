@@ -9,9 +9,8 @@ define('OTP_EXPIRY_SECONDS', 900); // 15 minutes
 define('OTP_LENGTH', 6);
 
 // Gacha Settings  
-define('GACHA_COST_NORMAL', 50);
-define('GACHA_COST_PREMIUM', 150);
-define('GACHA_COST_LEGENDARY', 500);
+define('GACHA_COST_NORMAL', 100);
+define('GACHA_COST_PREMIUM', 500);
 
 // Rate Limiting
 define('LOGIN_MAX_ATTEMPTS', 5);

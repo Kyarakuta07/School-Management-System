@@ -37,7 +37,7 @@ define('GACHA_RARITY_WEIGHTS', [
 ]);
 
 define('GACHA_COST_NORMAL', 100);
-define('GACHA_COST_PREMIUM', 300);
+define('GACHA_COST_PREMIUM', 500);
 
 // ================================================
 // BATTLE SYSTEM

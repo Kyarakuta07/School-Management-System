@@ -13,7 +13,7 @@ class GachaController extends BaseController
 {
     // Gacha costs
     const STANDARD_GACHA_COST = 100;
-    const PREMIUM_GACHA_COST = 300;
+    const PREMIUM_GACHA_COST = 500;
 
     /**
      * POST: Perform gacha roll

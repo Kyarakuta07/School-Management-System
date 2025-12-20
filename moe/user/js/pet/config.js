@@ -38,8 +38,8 @@ export const MAX_PETS = 25;
  * @property {number} premium - Cost for premium gacha (uses ticket instead)
  */
 export const GACHA_COSTS = {
-    standard: 50,
-    premium: 0
+    standard: 100,
+    premium: 500
 };
 
 /**
