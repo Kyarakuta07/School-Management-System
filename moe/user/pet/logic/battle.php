@@ -249,8 +249,10 @@ function getElementMultiplier($attacker_element, $defender_element)
 function getOpponents($conn, $user_id)
 {
     // Find other users who have alive pets
-    $query = "SELECT up.id as pet_id, up.level, up.nickname, 
-                     ps.name as species_name, ps.element, ps.img_adult, ps.rarity,
+    $query = "SELECT up.id as pet_id, up.level, up.nickname, up.hp, up.evolution_stage,
+                     ps.name as species_name, ps.element, 
+                     ps.img_egg, ps.img_baby, ps.img_adult, ps.rarity,
+                     ps.base_attack, ps.base_defense,
                      n.nama_lengkap as owner_name
               FROM user_pets up
               JOIN pet_species ps ON up.species_id = ps.id
@@ -270,13 +272,19 @@ function getOpponents($conn, $user_id)
     while ($row = mysqli_fetch_assoc($result)) {
         $opponents[] = [
             'pet_id' => (int) $row['pet_id'],
-            'name' => $row['nickname'] ?? $row['species_name'],
+            'display_name' => $row['nickname'] ?: $row['species_name'],
             'species_name' => $row['species_name'],
             'level' => (int) $row['level'],
             'element' => $row['element'],
             'rarity' => $row['rarity'],
-            'img' => $row['img_adult'],
-            'owner' => $row['owner_name'] ?? 'Unknown Trainer'
+            'evolution_stage' => $row['evolution_stage'] ?? 'adult',
+            'img_egg' => $row['img_egg'],
+            'img_baby' => $row['img_baby'],
+            'img_adult' => $row['img_adult'],
+            'hp' => (int) ($row['hp'] ?? 100),
+            'atk' => (int) ($row['base_attack'] ?? 10),
+            'def' => (int) ($row['base_defense'] ?? 10),
+            'owner_name' => $row['owner_name'] ?: 'Unknown Trainer'
         ];
     }
     mysqli_stmt_close($stmt);
@@ -308,7 +316,7 @@ function generateAIOpponents1v1($conn, $user_id)
     mysqli_stmt_close($level_stmt);
 
     // Get random species for AI
-    $species_query = "SELECT id, name, element, img_adult, rarity FROM pet_species ORDER BY RAND() LIMIT 5";
+    $species_query = "SELECT id, name, element, img_egg, img_baby, img_adult, rarity, base_attack, base_defense FROM pet_species ORDER BY RAND() LIMIT 5";
     $species_result = mysqli_query($conn, $species_query);
 
     $ai_opponents = [];
@@ -319,13 +327,19 @@ function generateAIOpponents1v1($conn, $user_id)
         $ai_level = max(1, $avg_level + rand(-2, 2));
         $ai_opponents[] = [
             'pet_id' => -($index + 1), // Negative ID for AI
-            'name' => $ai_names[$index % 5] . ' ' . $species['name'],
+            'display_name' => $ai_names[$index % 5] . ' ' . $species['name'],
             'species_name' => $species['name'],
             'level' => $ai_level,
             'element' => $species['element'],
             'rarity' => $species['rarity'],
-            'img' => $species['img_adult'],
-            'owner' => 'Wild Trainer 🤖',
+            'evolution_stage' => 'adult',
+            'img_egg' => $species['img_egg'],
+            'img_baby' => $species['img_baby'],
+            'img_adult' => $species['img_adult'],
+            'hp' => 100,
+            'atk' => (int) ($species['base_attack'] ?? 10),
+            'def' => (int) ($species['base_defense'] ?? 10),
+            'owner_name' => 'Wild Trainer 🤖',
             'is_ai' => true
         ];
         $index++;
