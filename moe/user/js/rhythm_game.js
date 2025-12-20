@@ -89,12 +89,13 @@ function setupTouchInput() {
     const touchLanes = document.querySelectorAll('.touch-lane');
 
     touchLanes.forEach((touchLane, index) => {
+        // Use passive: false to allow preventDefault()
         touchLane.addEventListener('touchstart', (e) => {
             e.preventDefault();
             if (GameState.isPlaying) {
                 hitLane(index);
             }
-        });
+        }, { passive: false });
 
         touchLane.addEventListener('touchend', () => {
             DOM.lanes[index]?.classList.remove('active');
