@@ -34,6 +34,15 @@
                 if (targetTab === 'arena3v3') {
                     setTimeout(() => loadTeamSelection(), 100);
                 }
+
+                // Initialize collection search/filter when collection tab is clicked
+                if (targetTab === 'collection') {
+                    setTimeout(() => {
+                        if (typeof initCollectionSearch === 'function') {
+                            initCollectionSearch();
+                        }
+                    }, 100);
+                }
             });
         });
 

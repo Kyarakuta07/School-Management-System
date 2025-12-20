@@ -8,18 +8,29 @@ let currentSort = 'level-desc';
 let searchQuery = '';
 
 // Initialize search input listener
+let searchInitialized = false;
+
 function initCollectionSearch() {
+    // Prevent multiple initializations
+    if (searchInitialized) return;
+
     const searchInput = document.getElementById('pet-search');
     if (searchInput) {
+        console.log('✓ Collection search initialized');
         searchInput.addEventListener('input', (e) => {
             searchQuery = e.target.value.toLowerCase();
+            console.log('Search query:', searchQuery);
             renderCollection();
         });
+        searchInitialized = true;
+    } else {
+        console.warn('pet-search input not found');
     }
 }
 
 // Filter collection by element
 function filterCollection(filter) {
+    console.log('Filter collection:', filter);
     currentFilter = filter;
 
     // Update active pill
@@ -36,6 +47,7 @@ function filterCollection(filter) {
 
 // Sort collection
 function sortCollection(sortType) {
+    console.log('Sort collection:', sortType);
     currentSort = sortType;
     renderCollection();
 }
