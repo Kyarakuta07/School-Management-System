@@ -596,6 +596,114 @@ class BattleController extends BaseController
     }
 
     /**
+     * POST: Process enemy turn in 3v3 battle
+     * Input: { battle_id: "xxx" }
+     */
+    public function enemyTurn()
+    {
+        $this->requirePost();
+
+        $input = $this->getInput();
+        $battle_id = isset($input['battle_id']) ? $input['battle_id'] : '';
+
+        if (empty($battle_id)) {
+            $this->error('Battle ID required');
+            return;
+        }
+
+        // Load battle state
+        require_once __DIR__ . '/../../pet/logic/BattleStateManager.php';
+        $state_manager = new BattleStateManager();
+        $state = $state_manager->getBattleState($battle_id);
+
+        if (!$state || $state['user_id'] !== $this->user_id) {
+            $this->error('Battle not found or not yours');
+            return;
+        }
+
+        if ($state['status'] !== 'active') {
+            $this->error('Battle is not active');
+            return;
+        }
+
+        if ($state['current_turn'] !== 'enemy') {
+            $this->error('Not enemy turn');
+            return;
+        }
+
+        // Get enemy's active pet
+        $enemy_index = $state['active_enemy_index'];
+        $enemy_pet = $state['enemy_pets'][$enemy_index];
+
+        // Get player's active pet
+        $player_index = $state['active_player_index'];
+        $player_pet = $state['player_pets'][$player_index];
+
+        // Calculate damage (simpler AI attack)
+        $base_damage = 20 + rand(5, 15);
+        $attack_power = ($enemy_pet['atk'] ?? 10) + floor(($enemy_pet['level'] ?? 1) / 2);
+        $defense_power = ($player_pet['def'] ?? 8);
+        $damage = max(5, floor($base_damage + $attack_power - ($defense_power / 2)));
+
+        $logs = [];
+        $logs[] = "{$enemy_pet['species_name']} attacks {$player_pet['species_name']} for {$damage} damage!";
+
+        // Apply damage to player pet
+        $new_hp = max(0, $player_pet['hp'] - $damage);
+        $state['player_pets'][$player_index]['hp'] = $new_hp;
+
+        $player_fainted = false;
+        if ($new_hp <= 0) {
+            $state['player_pets'][$player_index]['is_fainted'] = true;
+            $player_fainted = true;
+            $logs[] = "{$player_pet['species_name']} fainted!";
+
+            // Check for next alive player pet
+            $next_alive = -1;
+            foreach ($state['player_pets'] as $i => $p) {
+                if (!$p['is_fainted'] && $p['hp'] > 0) {
+                    $next_alive = $i;
+                    break;
+                }
+            }
+
+            if ($next_alive === -1) {
+                // All player pets fainted - defeat
+                $state['status'] = 'defeat';
+                $logs[] = "All your pets have fainted! You lose!";
+            } else {
+                // Auto-switch to next alive pet
+                $state['active_player_index'] = $next_alive;
+                $logs[] = "Go, {$state['player_pets'][$next_alive]['species_name']}!";
+            }
+        }
+
+        // Switch turn back to player
+        if ($state['status'] === 'active') {
+            $state['current_turn'] = 'player';
+            $state['turn_count']++;
+        }
+
+        // Save state
+        $state_manager->saveBattleState($battle_id, $state);
+
+        $this->success([
+            'damage_dealt' => $damage,
+            'player_fainted' => $player_fainted,
+            'logs' => $logs,
+            'battle_state' => [
+                'current_turn' => $state['current_turn'],
+                'turn_count' => $state['turn_count'],
+                'status' => $state['status'],
+                'active_player_index' => $state['active_player_index'],
+                'active_enemy_index' => $state['active_enemy_index'],
+                'player_pets' => $state['player_pets'],
+                'enemy_pets' => $state['enemy_pets']
+            ]
+        ]);
+    }
+
+    /**
      * GET: Get current battle state
      */
     public function getBattleState()
