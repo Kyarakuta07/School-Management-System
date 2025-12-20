@@ -149,9 +149,15 @@ $defender_img = getPetImageByLevel($defender);
 
     <!-- Battle CSS -->
     <link rel="stylesheet" href="css/battle_arena_premium.css">
+
+    <!-- PixiJS for Premium Effects -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.3.2/pixi.min.js"></script>
 </head>
 
 <body>
+    <!-- PixiJS Container (Background Effects) -->
+    <div id="pixi-container"></div>
+
     <!-- Mystical Background Particles -->
     <div class="battle-mystical-bg">
         <div class="mystical-particle"></div>
@@ -311,6 +317,7 @@ $defender_img = getPetImageByLevel($defender);
     <!-- Battle JS -->
     <script src="js/sound_manager.js"></script>
     <script src="js/battle_arena.js"></script>
+    <script src="js/pixi_battle.js"></script>
 </body>
 
 </html>

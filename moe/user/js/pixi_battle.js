@@ -129,9 +129,10 @@ function createFloatingParticle() {
 // ================================================
 function showElementAura(element, isPlayer = true) {
     const color = COLORS[element.toLowerCase()] || COLORS.neutral;
+    // Support both ID (3v3) and class (1v1) selectors
     const targetEl = isPlayer ?
-        document.getElementById('player-sprite') :
-        document.getElementById('enemy-sprite');
+        (document.getElementById('player-sprite') || document.querySelector('.player-sprite')) :
+        (document.getElementById('enemy-sprite') || document.querySelector('.enemy-sprite'));
 
     if (!targetEl) return;
 
@@ -168,12 +169,13 @@ function showElementAura(element, isPlayer = true) {
 // ================================================
 // DAMAGE SPARKS
 // ================================================
-function showDamageSparks(isPlayer = false, isCritical = false) {
+function showDamageSparksPixi(isPlayer = false, isCritical = false) {
+    // Support both ID (3v3) and class (1v1) selectors
     const targetEl = isPlayer ?
-        document.getElementById('player-sprite') :
-        document.getElementById('enemy-sprite');
+        (document.getElementById('player-sprite') || document.querySelector('.player-sprite')) :
+        (document.getElementById('enemy-sprite') || document.querySelector('.enemy-sprite'));
 
-    if (!targetEl) return;
+    if (!targetEl || !pixiApp) return;
 
     const rect = targetEl.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
