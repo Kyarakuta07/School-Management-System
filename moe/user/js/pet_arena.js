@@ -173,16 +173,26 @@ async function loadAchievements() {
         const data = await response.json();
 
         if (data.success && data.achievements && data.achievements.length > 0) {
+            // Get progress data from API
+            const progressData = data.progress || {};
+
             container.innerHTML = data.achievements.map(ach => {
-                const progress = ach.current_progress || 0;
-                const total = ach.target_value || 100;
-                const percentage = Math.min((progress / total) * 100, 100);
-                const isComplete = ach.is_completed || progress >= total;
+                // Map progress based on requirement_type
+                const reqType = ach.requirement_type;
+                const currentProgress = progressData[reqType] || 0;
+                const targetValue = parseInt(ach.requirement_value) || 1;
+                const percentage = Math.min((currentProgress / targetValue) * 100, 100);
+                const isComplete = ach.unlocked || currentProgress >= targetValue;
+
+                // Get icon - use emoji or font awesome
+                const iconDisplay = ach.icon && ach.icon.length <= 4
+                    ? `<span class="emoji-icon">${ach.icon}</span>`
+                    : `<i class="fas ${ach.icon || 'fa-trophy'}"></i>`;
 
                 return `
-                    <div class="achievement-card ${isComplete ? 'completed' : ''}">
+                    <div class="achievement-card ${isComplete ? 'completed' : ''} ${ach.rarity || 'bronze'}">
                         <div class="achievement-icon">
-                            <i class="fas ${ach.icon || 'fa-trophy'}"></i>
+                            ${iconDisplay}
                         </div>
                         <div class="achievement-info">
                             <h4 class="achievement-name">${ach.name}</h4>
@@ -191,7 +201,7 @@ async function loadAchievements() {
                                 <div class="progress-bar">
                                     <div class="progress-fill" style="width: ${percentage}%"></div>
                                 </div>
-                                <span class="progress-text">${progress} / ${total}</span>
+                                <span class="progress-text">${currentProgress} / ${targetValue}</span>
                             </div>
                             ${ach.reward_gold ? `<div class="achievement-reward"><i class="fas fa-coins"></i> ${ach.reward_gold}</div>` : ''}
                         </div>
