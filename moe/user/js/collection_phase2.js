@@ -20,7 +20,9 @@ function initCollectionSearch() {
         searchInput.addEventListener('input', (e) => {
             searchQuery = e.target.value.toLowerCase();
             console.log('Search query:', searchQuery);
-            renderCollection();
+            if (typeof window.renderCollection === 'function') {
+                window.renderCollection();
+            }
         });
         searchInitialized = true;
     } else {
@@ -42,14 +44,18 @@ function filterCollection(filter) {
         targetPill.classList.add('active');
     }
 
-    renderCollection();
+    if (typeof window.renderCollection === 'function') {
+        window.renderCollection();
+    }
 }
 
 // Sort collection
 function sortCollection(sortType) {
     console.log('Sort collection:', sortType);
     currentSort = sortType;
-    renderCollection();
+    if (typeof window.renderCollection === 'function') {
+        window.renderCollection();
+    }
 }
 
 // Get filtered and sorted pets
