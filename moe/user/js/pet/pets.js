@@ -263,6 +263,7 @@ export function initActionButtons() {
 
 /**
  * Play with the active pet (triggers mini-game)
+ * Shows heart particles and animation before redirecting
  * @async
  * @returns {Promise<void>}
  */
@@ -274,11 +275,56 @@ export async function playWithPet() {
         return;
     }
 
+    // Show heart particles animation
+    showHeartParticles(5);
+
+    // Play jump animation if PetAnimations is available
+    if (window.PetAnimations && typeof window.PetAnimations.jump === 'function') {
+        window.PetAnimations.jump();
+    } else {
+        // Fallback: manual animation
+        const petImage = document.querySelector('.pet-image');
+        if (petImage) {
+            petImage.classList.add('tapped');
+            setTimeout(() => petImage.classList.remove('tapped'), 300);
+        }
+    }
+
     // Get pet image path
     const petImg = getPetImagePath(state.activePet);
 
-    // Redirect to rhythm game page
-    window.location.href = `rhythm_game.php?pet_id=${state.activePet.id}&pet_img=${encodeURIComponent(petImg)}`;
+    // Delay redirect to allow animation to play
+    setTimeout(() => {
+        window.location.href = `rhythm_game.php?pet_id=${state.activePet.id}&pet_img=${encodeURIComponent(petImg)}`;
+    }, 1000);
+}
+
+/**
+ * Show heart particles effect on pet stage
+ * @param {number} count - Number of hearts to show
+ */
+function showHeartParticles(count = 5) {
+    const stage = document.getElementById('pet-stage');
+    if (!stage) return;
+
+    const hearts = ['❤️', '💕', '💗', '💖', '💝'];
+
+    for (let i = 0; i < count; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'heart-particle';
+        heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+        heart.style.left = `${30 + Math.random() * 40}%`;
+        heart.style.top = `${40 + Math.random() * 20}%`;
+        heart.style.animationDelay = `${i * 0.15}s`;
+        heart.style.position = 'absolute';
+        heart.style.fontSize = '1.5rem';
+        heart.style.zIndex = '100';
+        heart.style.pointerEvents = 'none';
+        heart.style.animation = 'heartFloat 1.5s ease-out forwards';
+        stage.appendChild(heart);
+
+        setTimeout(() => heart.remove(), 2000 + (i * 150));
+    }
 }
 
 /**
