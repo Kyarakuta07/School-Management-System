@@ -371,7 +371,7 @@ class BattleController extends BaseController
             $opponent_name = 'Wild Trainer 🤖';
         } else {
             // Get opponent's name from nethera table
-            $name_query = "SELECT nama_nethera FROM nethera WHERE id_nethera = ?";
+            $name_query = "SELECT nama_lengkap FROM nethera WHERE id_nethera = ?";
             $name_stmt = mysqli_prepare($this->conn, $name_query);
             mysqli_stmt_bind_param($name_stmt, "i", $opponent_user_id);
             mysqli_stmt_execute($name_stmt);
@@ -380,7 +380,7 @@ class BattleController extends BaseController
             mysqli_stmt_close($name_stmt);
 
             if ($name_row) {
-                $opponent_name = $name_row['nama_nethera'];
+                $opponent_name = $name_row['nama_lengkap'];
             }
 
             // Get real opponent's pets (top 3 by level)
