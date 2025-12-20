@@ -104,6 +104,10 @@ class BattleController extends BaseController
             // Update arena stats
             $this->updateArenaStats($player_won);
 
+            // Increment rate limit for daily battles
+            $user_id_str = 'user_' . $this->user_id;
+            $this->rate_limiter->checkLimit($user_id_str, 'pet_battle', 3, 1440); // 1440 minutes = 24 hours
+
             $this->success([
                 'recorded' => true,
                 'won' => $player_won,
@@ -209,13 +213,18 @@ class BattleController extends BaseController
 
         $total_losses = $total_battles - $total_wins;
 
+        // Calculate battles remaining today using rate limiter
+        $user_id_str = 'user_' . $this->user_id;
+        $battles_today = $this->rate_limiter->getAttempts($user_id_str, 'pet_battle');
+        $battles_remaining = max(0, 3 - $battles_today);
+
         $this->success([
             'history' => $battles,
             'stats' => [
                 'wins' => (int) $total_wins,
                 'losses' => (int) $total_losses,
                 'current_streak' => 0, // Simplified - not tracking streaks
-                'battles_remaining' => 3 // Daily battles limit
+                'battles_remaining' => $battles_remaining
             ]
         ]);
     }
