@@ -64,6 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize DOM references
     DOM.turnIndicator = document.getElementById('turn-indicator');
     DOM.turnCount = document.getElementById('turn-count');
+    DOM.opponentName = document.getElementById('opponent-name');
     DOM.playerIndicators = document.getElementById('player-indicators');
     DOM.enemyIndicators = document.getElementById('enemy-indicators');
     DOM.playerName = document.getElementById('player-name');
@@ -112,6 +113,12 @@ async function loadBattleState() {
         BattleState.currentTurn = state.current_turn;
         BattleState.turnCount = state.turn_count;
         BattleState.status = state.status;
+        BattleState.opponentName = state.opponent_name || sessionStorage.getItem('opponent_name') || 'Unknown Trainer';
+
+        // Display opponent name
+        if (DOM.opponentName) {
+            DOM.opponentName.textContent = `VS ${BattleState.opponentName}`;
+        }
 
         // Load player skills
         await loadPlayerSkills();

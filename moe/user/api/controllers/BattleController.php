@@ -362,11 +362,27 @@ class BattleController extends BaseController
         }
 
         // Get opponent's pets
+        $opponent_name = 'Wild Trainer'; // Default for AI
+
         if ($use_ai_opponent) {
             // Generate AI opponent pets based on player's average level
             $avg_level = array_sum(array_column($player_pets, 'level')) / count($player_pets);
             $enemy_pets = $this->generateAIOpponent($avg_level);
+            $opponent_name = 'Wild Trainer 🤖';
         } else {
+            // Get opponent's name from nethera table
+            $name_query = "SELECT nama_nethera FROM nethera WHERE id_nethera = ?";
+            $name_stmt = mysqli_prepare($this->conn, $name_query);
+            mysqli_stmt_bind_param($name_stmt, "i", $opponent_user_id);
+            mysqli_stmt_execute($name_stmt);
+            $name_result = mysqli_stmt_get_result($name_stmt);
+            $name_row = mysqli_fetch_assoc($name_result);
+            mysqli_stmt_close($name_stmt);
+
+            if ($name_row) {
+                $opponent_name = $name_row['nama_nethera'];
+            }
+
             // Get real opponent's pets (top 3 by level)
             $query = "SELECT up.*, ps.name as species_name, ps.element, 
                              ps.base_attack, ps.base_defense, ps.base_speed, 
@@ -401,6 +417,7 @@ class BattleController extends BaseController
 
         $this->success([
             'battle_id' => $battle_state['battle_id'],
+            'opponent_name' => $opponent_name,
             'player_pets' => $battle_state['player_pets'],
             'enemy_pets' => $battle_state['enemy_pets'],
             'active_player_index' => 0,

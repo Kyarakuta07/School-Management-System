@@ -355,6 +355,9 @@ async function start3v3Battle() {
         const data = await response.json();
 
         if (data.success && data.battle_id) {
+            // Save opponent name for battle page
+            sessionStorage.setItem('opponent_name', data.opponent_name || 'Wild Trainer');
+
             // Redirect to battle page
             window.location.href = `battle_3v3.php?battle_id=${data.battle_id}`;
         } else {

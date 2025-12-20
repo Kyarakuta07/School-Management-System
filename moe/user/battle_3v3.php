@@ -75,6 +75,7 @@ if (empty($battle_id)) {
                 <i class="fas fa-arrow-left"></i>
             </button>
             <div class="turn-info">
+                <span class="opponent-name" id="opponent-name">VS Opponent</span>
                 <span class="turn-indicator" id="turn-indicator">YOUR TURN</span>
                 <span class="turn-count" id="turn-count">Turn 1</span>
             </div>
