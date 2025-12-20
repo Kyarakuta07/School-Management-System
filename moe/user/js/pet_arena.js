@@ -308,6 +308,79 @@ async function loadTeamSelection() {
     }
 }
 
+// Start 3v3 battle - auto select top 3 pets
+async function start3v3Battle() {
+    const btn = document.getElementById('btn-start-3v3');
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Starting Battle...</span>';
+    }
+
+    try {
+        // Get user's alive pets
+        const userPets = window.userPets || [];
+        const alivePets = userPets.filter(pet => pet.status !== 'DEAD');
+
+        if (alivePets.length < 3) {
+            if (typeof showToast === 'function') {
+                showToast('You need at least 3 alive pets for 3v3 battle!', 'warning');
+            } else {
+                alert('You need at least 3 alive pets for 3v3 battle!');
+            }
+            resetButton();
+            return;
+        }
+
+        // Sort by power (atk + def + hp) and pick top 3
+        const sortedPets = alivePets.sort((a, b) => {
+            const powerA = (a.atk || 0) + (a.def || 0) + (a.hp || 0);
+            const powerB = (b.atk || 0) + (b.def || 0) + (b.hp || 0);
+            return powerB - powerA;
+        });
+
+        const teamPetIds = sortedPets.slice(0, 3).map(p => p.id);
+
+        console.log('🎮 Starting 3v3 with pets:', teamPetIds);
+
+        // Call API to create battle (opponent_user_id 0 means AI/random opponent)
+        const response = await fetch('api/router.php?action=start_battle_3v3', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                pet_ids: teamPetIds,
+                opponent_user_id: 0  // AI opponent
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success && data.battle_id) {
+            // Redirect to battle page
+            window.location.href = `battle_3v3.php?battle_id=${data.battle_id}`;
+        } else {
+            throw new Error(data.error || 'Failed to create battle');
+        }
+
+    } catch (error) {
+        console.error('Error starting 3v3 battle:', error);
+        if (typeof showToast === 'function') {
+            showToast('Failed to start battle: ' + error.message, 'error');
+        } else {
+            alert('Failed to start battle: ' + error.message);
+        }
+        resetButton();
+    }
+
+    function resetButton() {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-dragon"></i> <span>Enter 3v3 Arena</span>';
+        }
+    }
+}
+
+// Make function globally accessible
+window.start3v3Battle = start3v3Battle;
 
 // Initialize arena module
 console.log('✓ Arena module loaded');

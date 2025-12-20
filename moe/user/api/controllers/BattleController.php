@@ -308,9 +308,27 @@ class BattleController extends BaseController
             return;
         }
 
+        // If no opponent specified, find a random opponent with 3+ pets
         if (!$opponent_user_id) {
-            $this->error('Opponent user ID required');
-            return;
+            $query = "SELECT up.user_id, COUNT(*) as pet_count 
+                      FROM user_pets up 
+                      WHERE up.user_id != ? AND up.status = 'ALIVE' 
+                      GROUP BY up.user_id 
+                      HAVING pet_count >= 3 
+                      ORDER BY RAND() 
+                      LIMIT 1";
+            $stmt = mysqli_prepare($this->conn, $query);
+            mysqli_stmt_bind_param($stmt, "i", $this->user_id);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
+            $row = mysqli_fetch_assoc($result);
+            mysqli_stmt_close($stmt);
+
+            if (!$row) {
+                $this->error('No available opponents found. Try again later!');
+                return;
+            }
+            $opponent_user_id = (int) $row['user_id'];
         }
 
         if ($opponent_user_id === $this->user_id) {

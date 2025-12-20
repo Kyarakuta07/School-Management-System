@@ -43,8 +43,8 @@
     </div>
 
     <!-- Enter Arena Button -->
-    <a href="battle_3v3.php" class="btn-enter-arena-3v3">
+    <button class="btn-enter-arena-3v3" id="btn-start-3v3" onclick="start3v3Battle()">
         <i class="fas fa-dragon"></i>
         <span>Enter 3v3 Arena</span>
-    </a>
+    </button>
 </section>
