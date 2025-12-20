@@ -166,6 +166,10 @@ async function loadAchievements() {
         return;
     }
 
+    // Hide empty state while loading
+    const emptyState = document.getElementById('achievements-empty');
+    if (emptyState) emptyState.style.display = 'none';
+
     container.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Loading achievements...</p></div>';
 
     try {
@@ -186,42 +190,44 @@ async function loadAchievements() {
                 const percentage = Math.min((rawProgress / targetValue) * 100, 100);
                 const isComplete = ach.unlocked || rawProgress >= targetValue;
 
+                // Determine status class
+                const statusClass = isComplete ? 'unlocked' : 'locked';
+
                 // Get icon - use emoji or font awesome
                 const iconDisplay = ach.icon && ach.icon.length <= 4
                     ? `<span class="emoji-icon">${ach.icon}</span>`
                     : `<i class="fas ${ach.icon || 'fa-trophy'}"></i>`;
 
                 return `
-                    <div class="achievement-card ${isComplete ? 'completed' : ''} ${ach.rarity || 'bronze'}">
+                    <div class="achievement-card ${statusClass}">
                         <div class="achievement-icon">
                             ${iconDisplay}
                         </div>
-                        <div class="achievement-info">
-                            <h4 class="achievement-name">${ach.name}</h4>
-                            <p class="achievement-desc">${ach.description}</p>
-                            <div class="achievement-progress">
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: ${percentage}%"></div>
-                                </div>
-                                <span class="progress-text">${currentProgress} / ${targetValue}</span>
-                            </div>
-                            ${ach.reward_gold ? `<div class="achievement-reward"><i class="fas fa-coins"></i> ${ach.reward_gold}</div>` : ''}
+                        <div class="achievement-name">${ach.name}</div>
+                        <div class="achievement-desc">${ach.description}</div>
+                        ${!isComplete ? `
+                        <div class="achievement-progress">
+                            <div class="achievement-progress-fill" style="width: ${percentage}%"></div>
                         </div>
-                        ${isComplete ? '<div class="achievement-badge"><i class="fas fa-check"></i></div>' : ''}
+                        <div class="achievement-progress-text">${currentProgress} / ${targetValue}</div>
+                        ` : ''}
+                        ${ach.reward_gold ? `<div class="achievement-reward"><i class="fas fa-coins"></i> ${ach.reward_gold}</div>` : ''}
                     </div>
                 `;
             }).join('');
         } else {
-            container.innerHTML = `
-                <div class="empty-message">
-                    <i class="fas fa-medal"></i>
-                    <p>No achievements yet. Complete challenges to earn badges!</p>
-                </div>
-            `;
+            // Show empty state
+            container.innerHTML = '';
+            if (emptyState) emptyState.style.display = 'block';
         }
     } catch (error) {
         console.error('Error loading achievements:', error);
-        container.innerHTML = '<div class="empty-message">Failed to load achievements</div>';
+        container.innerHTML = `
+            <div class="achievements-empty" style="grid-column: 1/-1;">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>Failed to load achievements. Please try again.</p>
+            </div>
+        `;
     }
 }
 
@@ -603,6 +609,20 @@ document.addEventListener('DOMContentLoaded', () => {
         loadTeamSelection();
     }
 
+    // Load achievements when tab is clicked
+    const achievementsTab = document.querySelector('[data-tab="achievements"]');
+    if (achievementsTab) {
+        achievementsTab.addEventListener('click', () => {
+            setTimeout(loadAchievements, 100);
+        });
+    }
+
+    // Also load achievements if already on that tab
+    const achievementsContent = document.getElementById('achievements');
+    if (achievementsContent && achievementsContent.classList.contains('active')) {
+        loadAchievements();
+    }
+
     //Reload stats whenever tab becomes visible (catches return from battle)
     document.addEventListener('visibilitychange', () => {
         if (!document.hidden) {
@@ -614,6 +634,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const arena3v3Content = document.getElementById('arena3v3');
             if (arena3v3Content && arena3v3Content.classList.contains('active')) {
                 loadTeamSelection();
+            }
+
+            const achievementsContent = document.getElementById('achievements');
+            if (achievementsContent && achievementsContent.classList.contains('active')) {
+                loadAchievements();
             }
         }
     });
