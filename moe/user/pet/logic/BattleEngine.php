@@ -167,6 +167,8 @@ class BattleEngine
                          ps.base_attack, 
                          ps.base_defense, 
                          ps.base_speed,
+                         ps.img_egg,
+                         ps.img_baby,
                          ps.img_adult,
                          ps.rarity
                   FROM user_pets up
