@@ -152,6 +152,18 @@ $defender_img = getPetImageByLevel($defender);
 </head>
 
 <body>
+    <!-- Mystical Background Particles -->
+    <div class="battle-mystical-bg">
+        <div class="mystical-particle"></div>
+        <div class="mystical-particle"></div>
+        <div class="mystical-particle"></div>
+        <div class="mystical-particle"></div>
+        <div class="mystical-particle"></div>
+        <div class="mystical-particle"></div>
+        <div class="mystical-particle"></div>
+        <div class="mystical-particle"></div>
+    </div>
+
     <div class="battle-container">
         <!-- Header -->
         <div class="battle-header">
