@@ -1331,6 +1331,20 @@ async function loadOpponents() {
     const container = document.getElementById('arena-opponents');
     container.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Finding opponents...</p></div>';
 
+    // Helper to get correct image based on level
+    function getPetImageByLevel(pet) {
+        const level = parseInt(pet.level) || 1;
+        let img;
+        if (level >= 10) {
+            img = pet.img_adult || pet.img_baby || pet.img_egg;
+        } else if (level >= 5) {
+            img = pet.img_baby || pet.img_egg || pet.img_adult;
+        } else {
+            img = pet.img_egg || pet.img_baby || pet.img_adult;
+        }
+        return img || 'placeholder.png';
+    }
+
     try {
         const response = await fetch(`${API_BASE}?action=get_opponents`);
         const data = await response.json();
@@ -1338,7 +1352,7 @@ async function loadOpponents() {
         if (data.success && data.opponents.length > 0) {
             container.innerHTML = data.opponents.map(opp => `
                 <div class="opponent-card">
-                    <img src="${ASSETS_BASE}${opp.img_adult}" alt="${opp.species_name}" class="opponent-img"
+                    <img src="${ASSETS_BASE}${getPetImageByLevel(opp)}" alt="${opp.species_name}" class="opponent-img"
                          onerror="this.src='../assets/placeholder.png'">
                     <div class="opponent-info">
                         <h3 class="opponent-name">${opp.display_name}</h3>
