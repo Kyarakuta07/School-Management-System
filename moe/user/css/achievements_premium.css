@@ -1,6 +1,7 @@
 /* ================================================
    ACHIEVEMENTS TAB - PREMIUM DESIGN
    Dark Egyptian Fantasy Theme with Gold Accents
+   Horizontal Layout for Mobile Friendly
    ================================================ */
 
 /* ================================================
@@ -8,8 +9,8 @@
    ================================================ */
 .achievements-header {
     text-align: center;
-    margin-bottom: 2rem;
-    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding: 1.25rem;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
     border-radius: 16px;
     border: 1px solid rgba(212, 175, 55, 0.2);
@@ -17,17 +18,17 @@
 
 .achievements-title {
     font-family: 'Cinzel', serif;
-    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
     font-weight: 900;
     background: linear-gradient(135deg, var(--gold), var(--gold-dark));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.75rem;
+    gap: 0.5rem;
 }
 
 .achievements-title i {
@@ -35,38 +36,40 @@
 }
 
 .achievements-subtitle {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     color: rgba(255, 255, 255, 0.6);
 }
 
 /* ================================================
-   ACHIEVEMENTS GRID
+   ACHIEVEMENTS GRID - Single Column on Mobile
    ================================================ */
 .achievements-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 1rem;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
 }
 
 /* ================================================
-   ACHIEVEMENT CARD
+   ACHIEVEMENT CARD - Horizontal Layout
    ================================================ */
 .achievement-card {
     background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
-    padding: 1.5rem 1rem;
-    text-align: center;
+    border-radius: 12px;
+    padding: 0.75rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
 }
 
 .achievement-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-2px);
     border-color: rgba(212, 175, 55, 0.5);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
 }
 
 .achievement-card.locked {
@@ -81,9 +84,9 @@
 
 /* Achievement Icon */
 .achievement-icon {
-    width: 60px;
-    height: 60px;
-    margin: 0 auto 1rem;
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -91,6 +94,7 @@
     background: rgba(255, 255, 255, 0.05);
     border: 2px solid rgba(255, 255, 255, 0.1);
     transition: all 0.3s ease;
+    flex-shrink: 0;
 }
 
 .achievement-card.unlocked .achievement-icon {
@@ -99,7 +103,7 @@
 }
 
 .achievement-icon i {
-    font-size: 1.8rem;
+    font-size: 1.2rem;
     color: rgba(255, 255, 255, 0.4);
 }
 
@@ -109,8 +113,15 @@
 
 /* Emoji Icon */
 .achievement-icon .emoji-icon {
-    font-size: 1.8rem;
+    font-size: 1.2rem;
     line-height: 1;
+}
+
+/* Achievement Info Wrapper */
+.achievement-info {
+    flex: 1;
+    min-width: 0;
+    text-align: left;
 }
 
 /* Achievement Info */
@@ -118,8 +129,7 @@
     font-size: 0.85rem;
     font-weight: 700;
     color: #fff;
-    margin-bottom: 0.4rem;
-    word-break: break-word;
+    margin-bottom: 0.2rem;
     line-height: 1.2;
 }
 
@@ -127,17 +137,16 @@
     font-size: 0.7rem;
     color: rgba(255, 255, 255, 0.6);
     line-height: 1.3;
-    margin-bottom: 0.5rem;
-    word-break: break-word;
+    margin-bottom: 0.3rem;
 }
 
 /* Progress Bar */
 .achievement-progress {
-    height: 6px;
+    height: 5px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     overflow: hidden;
-    margin-top: 0.5rem;
+    margin-top: 0.4rem;
 }
 
 .achievement-progress-fill {
@@ -148,27 +157,27 @@
 }
 
 .achievement-progress-text {
-    font-size: 0.7rem;
+    font-size: 0.6rem;
     color: rgba(255, 255, 255, 0.5);
-    margin-top: 0.25rem;
+    margin-top: 0.2rem;
 }
 
 /* Achievement Reward */
 .achievement-reward {
     display: inline-flex;
     align-items: center;
-    gap: 0.3rem;
-    margin-top: 0.5rem;
-    padding: 0.25rem 0.5rem;
+    gap: 0.25rem;
+    margin-top: 0.3rem;
+    padding: 0.2rem 0.4rem;
     background: rgba(212, 175, 55, 0.15);
-    border-radius: 8px;
-    font-size: 0.7rem;
+    border-radius: 6px;
+    font-size: 0.65rem;
     font-weight: 600;
     color: var(--gold);
 }
 
 .achievement-reward i {
-    font-size: 0.65rem;
+    font-size: 0.55rem;
 }
 
 /* Loading Spinner */
@@ -193,56 +202,80 @@
    ================================================ */
 .achievements-empty {
     text-align: center;
-    padding: 3rem 1.5rem;
+    padding: 2rem 1rem;
     color: rgba(255, 255, 255, 0.5);
     grid-column: 1 / -1;
 }
 
 .achievements-empty i {
-    font-size: 3rem;
+    font-size: 2.5rem;
     color: rgba(212, 175, 55, 0.3);
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
     display: block;
 }
 
 .achievements-empty p {
-    font-size: 1rem;
+    font-size: 0.9rem;
 }
 
 /* ================================================
    RESPONSIVE DESIGN
    ================================================ */
-@media (max-width: 600px) {
+@media (min-width: 600px) {
+    .achievements-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+}
+
+@media (min-width: 900px) {
+    .achievements-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+    }
+
+    .achievement-icon {
+        width: 50px;
+        height: 50px;
+        min-width: 50px;
+    }
+
+    .achievement-icon i {
+        font-size: 1.4rem;
+    }
+
+    .achievement-name {
+        font-size: 0.9rem;
+    }
+
+    .achievement-desc {
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 360px) {
     .achievements-header {
-        padding: 1rem;
+        padding: 0.75rem;
         margin-bottom: 1rem;
     }
 
     .achievements-title {
-        font-size: 1.2rem;
-    }
-
-    .achievements-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.6rem;
+        font-size: 1rem;
     }
 
     .achievement-card {
-        padding: 0.75rem 0.5rem;
+        padding: 0.6rem;
+        gap: 0.5rem;
     }
 
     .achievement-icon {
-        width: 40px;
-        height: 40px;
-        margin-bottom: 0.6rem;
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
     }
 
     .achievement-icon i {
-        font-size: 1.2rem;
-    }
-
-    .achievement-icon .emoji-icon {
-        font-size: 1.3rem;
+        font-size: 1rem;
     }
 
     .achievement-name {
@@ -251,109 +284,12 @@
 
     .achievement-desc {
         font-size: 0.6rem;
-        -webkit-line-clamp: 2;
-        line-clamp: 2;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-
-    .achievement-progress {
-        height: 4px;
-    }
-
-    .achievement-progress-text {
-        font-size: 0.55rem;
-    }
-
-    .achievement-reward {
-        font-size: 0.55rem;
-        padding: 0.15rem 0.35rem;
-    }
-}
-
-@media (max-width: 400px) {
-    .achievements-header {
-        padding: 0.8rem;
-        margin-bottom: 1rem;
-    }
-
-    .achievements-title {
-        font-size: 1.15rem;
-        gap: 0.5rem;
-    }
-
-    .achievements-title i {
-        font-size: 1rem;
-    }
-
-    .achievements-subtitle {
-        font-size: 0.8rem;
-    }
-
-    .achievements-grid {
-        gap: 0.6rem;
-    }
-
-    .achievement-card {
-        padding: 0.8rem 0.6rem;
-        border-radius: 12px;
-    }
-
-    .achievement-icon {
-        width: 45px;
-        height: 45px;
-        margin-bottom: 0.75rem;
-    }
-
-    .achievement-icon i {
-        font-size: 1.2rem;
-    }
-
-    .achievement-name {
-        font-size: 0.8rem;
-    }
-
-    .achievement-desc {
-        font-size: 0.65rem;
-        margin-bottom: 0.5rem;
-    }
-}
-
-@media (max-width: 360px) {
-    .achievements-title {
-        font-size: 1rem;
-    }
-
-    .achievement-card {
-        padding: 0.7rem 0.5rem;
-    }
-
-    .achievement-icon {
-        width: 40px;
-        height: 40px;
-    }
-
-    .achievement-icon i {
-        font-size: 1rem;
-    }
-
-    .achievement-name {
-        font-size: 0.75rem;
-    }
-
-    .achievement-desc {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
     }
 }
 
 /* --- Touch-friendly improvements --- */
 @media (hover: none) and (pointer: coarse) {
     .achievement-card {
-        min-height: 140px;
+        min-height: 60px;
     }
 }

@@ -203,15 +203,17 @@ async function loadAchievements() {
                         <div class="achievement-icon">
                             ${iconDisplay}
                         </div>
-                        <div class="achievement-name">${ach.name}</div>
-                        <div class="achievement-desc">${ach.description}</div>
-                        ${!isComplete ? `
-                        <div class="achievement-progress">
-                            <div class="achievement-progress-fill" style="width: ${percentage}%"></div>
+                        <div class="achievement-info">
+                            <div class="achievement-name">${ach.name}</div>
+                            <div class="achievement-desc">${ach.description}</div>
+                            ${!isComplete ? `
+                            <div class="achievement-progress">
+                                <div class="achievement-progress-fill" style="width: ${percentage}%"></div>
+                            </div>
+                            <div class="achievement-progress-text">${currentProgress} / ${targetValue}</div>
+                            ` : ''}
+                            ${ach.reward_gold ? `<div class="achievement-reward"><i class="fas fa-coins"></i> ${ach.reward_gold}</div>` : ''}
                         </div>
-                        <div class="achievement-progress-text">${currentProgress} / ${targetValue}</div>
-                        ` : ''}
-                        ${ach.reward_gold ? `<div class="achievement-reward"><i class="fas fa-coins"></i> ${ach.reward_gold}</div>` : ''}
                     </div>
                 `;
             }).join('');
