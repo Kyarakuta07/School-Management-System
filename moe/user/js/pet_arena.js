@@ -298,7 +298,7 @@ async function loadTeamSelection() {
                 `).join('')}
             </div>
             <div class="team-summary">
-                <p><strong>Team Power:</strong> ${alivePets.slice(0, 3).reduce((sum, p) => sum + (p.atk + p.def + p.hp), 0)}</p>
+                <p><strong>Team Power:</strong> ${alivePets.slice(0, 3).reduce((sum, p) => sum + ((p.atk || 0) + (p.def || 0) + (p.hp || 0)), 0)}</p>
             </div>
         `;
 

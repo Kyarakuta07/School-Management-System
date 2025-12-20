@@ -309,6 +309,7 @@ class BattleController extends BaseController
         }
 
         // If no opponent specified, find a random opponent with 3+ pets
+        $use_ai_opponent = false;
         if (!$opponent_user_id) {
             $query = "SELECT up.user_id, COUNT(*) as pet_count 
                       FROM user_pets up 
@@ -325,13 +326,14 @@ class BattleController extends BaseController
             mysqli_stmt_close($stmt);
 
             if (!$row) {
-                $this->error('No available opponents found. Try again later!');
-                return;
+                // No real opponents, use AI
+                $use_ai_opponent = true;
+            } else {
+                $opponent_user_id = (int) $row['user_id'];
             }
-            $opponent_user_id = (int) $row['user_id'];
         }
 
-        if ($opponent_user_id === $this->user_id) {
+        if (!$use_ai_opponent && $opponent_user_id === $this->user_id) {
             $this->error('Cannot battle yourself');
             return;
         }
@@ -359,28 +361,36 @@ class BattleController extends BaseController
             $player_pets[] = $pet;
         }
 
-        // Get opponent's pets (top 3 by level)
-        $query = "SELECT up.*, ps.name as species_name, ps.element, 
-                         ps.base_attack, ps.base_defense, ps.base_speed, ps.img_adult, ps.rarity
-                  FROM user_pets up
-                  JOIN pet_species ps ON up.species_id = ps.id
-                  WHERE up.user_id = ? AND up.status = 'ALIVE'
-                  ORDER BY up.level DESC
-                  LIMIT 3";
-        $stmt = mysqli_prepare($this->conn, $query);
-        mysqli_stmt_bind_param($stmt, "i", $opponent_user_id);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
+        // Get opponent's pets
+        if ($use_ai_opponent) {
+            // Generate AI opponent pets based on player's average level
+            $avg_level = array_sum(array_column($player_pets, 'level')) / count($player_pets);
+            $enemy_pets = $this->generateAIOpponent($avg_level);
+        } else {
+            // Get real opponent's pets (top 3 by level)
+            $query = "SELECT up.*, ps.name as species_name, ps.element, 
+                             ps.base_attack, ps.base_defense, ps.base_speed, 
+                             ps.img_egg, ps.img_baby, ps.img_adult, ps.rarity
+                      FROM user_pets up
+                      JOIN pet_species ps ON up.species_id = ps.id
+                      WHERE up.user_id = ? AND up.status = 'ALIVE'
+                      ORDER BY up.level DESC
+                      LIMIT 3";
+            $stmt = mysqli_prepare($this->conn, $query);
+            mysqli_stmt_bind_param($stmt, "i", $opponent_user_id);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
 
-        $enemy_pets = [];
-        while ($row = mysqli_fetch_assoc($result)) {
-            $enemy_pets[] = $row;
-        }
-        mysqli_stmt_close($stmt);
+            $enemy_pets = [];
+            while ($row = mysqli_fetch_assoc($result)) {
+                $enemy_pets[] = $row;
+            }
+            mysqli_stmt_close($stmt);
 
-        if (count($enemy_pets) < 3) {
-            $this->error('Opponent does not have enough pets');
-            return;
+            if (count($enemy_pets) < 3) {
+                $this->error('Opponent does not have enough pets');
+                return;
+            }
         }
 
         // Initialize battle
@@ -399,6 +409,78 @@ class BattleController extends BaseController
             'current_turn' => 'player',
             'logs' => $battle_state['logs']
         ]);
+    }
+
+    /**
+     * Generate AI opponent pets based on player's average level
+     * @param float $avg_level Player's average pet level
+     * @return array Array of 3 AI pet objects
+     */
+    private function generateAIOpponent($avg_level)
+    {
+        $avg_level = max(1, min(99, (int) $avg_level));
+
+        // Get 3 random species from database
+        $query = "SELECT * FROM pet_species ORDER BY RAND() LIMIT 3";
+        $result = mysqli_query($this->conn, $query);
+
+        $enemy_pets = [];
+        $elements = ['Fire', 'Water', 'Earth', 'Air', 'Light', 'Dark'];
+        $ai_names = ['Shadow', 'Phantom', 'Ghost', 'Specter', 'Wraith'];
+
+        $index = 0;
+        while ($species = mysqli_fetch_assoc($result)) {
+            // Calculate stats based on level (similar formula as player pets)
+            $base_hp = 50 + ($avg_level * 5) + rand(-10, 10);
+            $base_atk = ($species['base_attack'] ?? 10) + floor($avg_level / 2) + rand(-3, 3);
+            $base_def = ($species['base_defense'] ?? 8) + floor($avg_level / 3) + rand(-2, 2);
+
+            $enemy_pets[] = [
+                'id' => -1 * ($index + 1), // Negative IDs for AI pets
+                'user_id' => 0, // AI
+                'species_id' => $species['id'],
+                'nickname' => $ai_names[array_rand($ai_names)] . ' ' . $species['name'],
+                'species_name' => $species['name'],
+                'level' => $avg_level + rand(-2, 2),
+                'hp' => $base_hp,
+                'current_hp' => $base_hp,
+                'atk' => $base_atk,
+                'def' => $base_def,
+                'element' => $species['element'] ?? $elements[array_rand($elements)],
+                'rarity' => $species['rarity'] ?? 'Common',
+                'img_egg' => $species['img_egg'] ?? '',
+                'img_baby' => $species['img_baby'] ?? '',
+                'img_adult' => $species['img_adult'] ?? '',
+                'evolution_stage' => 'adult',
+                'is_ai' => true
+            ];
+            $index++;
+        }
+
+        // If we don't have enough species, fill with generic pets
+        while (count($enemy_pets) < 3) {
+            $enemy_pets[] = [
+                'id' => -1 * (count($enemy_pets) + 1),
+                'user_id' => 0,
+                'species_id' => 1,
+                'nickname' => 'Wild Pet',
+                'species_name' => 'Wild Pet',
+                'level' => $avg_level,
+                'hp' => 50 + ($avg_level * 5),
+                'current_hp' => 50 + ($avg_level * 5),
+                'atk' => 10 + floor($avg_level / 2),
+                'def' => 8 + floor($avg_level / 3),
+                'element' => $elements[array_rand($elements)],
+                'rarity' => 'Common',
+                'img_egg' => '',
+                'img_baby' => '',
+                'img_adult' => '',
+                'evolution_stage' => 'adult',
+                'is_ai' => true
+            ];
+        }
+
+        return $enemy_pets;
     }
 
     /**
