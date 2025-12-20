@@ -1,4 +1,4 @@
-/**
+﻿/**
  * MOE Pet System - Frontend JavaScript
  * Mediterranean of Egypt Virtual Pet Companion
  * Handles all UI interactions and API communication
@@ -12,8 +12,8 @@ const ASSETS_BASE = '../assets/pets/';
 
 // State
 let currentTab = 'my-pet';
-window.window.userPets = []; // Exposed to window for arena module
-window.window.activePet = null; // Exposed to window for arena module
+window.userPets = []; // Exposed to window for arena module
+window.activePet = null; // Exposed to window for arena module
 let shopItems = [];
 let userInventory = [];
 let selectedItemType = null;
@@ -93,20 +93,20 @@ function showDailyRewardModal(data) {
 
     for (let day = 1; day <= 30; day++) {
         let classes = 'calendar-day';
-        let icon = '💰';
+        let icon = 'ðŸ’°';
 
         if (day < data.current_day) {
             classes += ' claimed';
-            icon = '✓';
+            icon = 'âœ“';
         } else if (day === data.current_day) {
             classes += ' current';
-            icon = '🎁';
+            icon = 'ðŸŽ';
         }
 
         if (specialDays.includes(day)) {
             classes += ' special';
             if (day !== data.current_day && day > data.current_day) {
-                icon = '⭐';
+                icon = 'â­';
             }
         }
 
@@ -203,6 +203,10 @@ function switchTab(tab) {
             break;
         case 'collection':
             loadPets();
+            // Initialize search/filter for collection (Phase 2)
+            if (typeof initCollectionSearch === 'function') {
+                initCollectionSearch();
+            }
             break;
         case 'gacha':
             // Gacha tab - no data loading needed
@@ -233,7 +237,7 @@ async function loadPets() {
         const data = await response.json();
 
         if (data.success) {
-            window.window.userPets = data.pets;
+            window.userPets = data.pets;
 
             // Update pet count badge (always, regardless of tab)
             updatePetCountBadge();
@@ -241,8 +245,8 @@ async function loadPets() {
             renderCollection();
 
             // Find and display active pet
-            window.window.activePet = window.window.userPets.find(p => p.is_active);
-            if (window.window.activePet) {
+            window.activePet = window.userPets.find(p => p.is_active);
+            if (window.activePet) {
                 renderActivePet();
             }
         }
@@ -380,7 +384,7 @@ function updateCircularProgress(type, value) {
     valueEl.textContent = Math.round(value);
 
     // Calculate stroke-dashoffset for circular progress
-    // Circumference = 2 * PI * radius = 2 * 3.14159 * 35 ≈ 220
+    // Circumference = 2 * PI * radius = 2 * 3.14159 * 35 â‰ˆ 220
     const circumference = 220;
     const offset = circumference - (value / 100) * circumference;
 
@@ -468,7 +472,7 @@ function getEvolutionStage(pet) {
 function updatePetCountBadge() {
     const petCountBadge = document.getElementById('pet-count-badge');
     if (petCountBadge) {
-        const petCount = window.window.userPets.length;
+        const petCount = window.userPets.length;
         petCountBadge.textContent = `${petCount} / 25`;
 
         // Color code based on capacity
@@ -496,7 +500,7 @@ function renderCollection() {
         updateCollectionStats();
     }
 
-    if (window.window.userPets.length === 0) {
+    if (window.userPets.length === 0) {
         grid.innerHTML = `
             <div class="empty-message">
                 <p>No pets yet! Visit the Gacha tab to get your first companion.</p>
@@ -506,7 +510,7 @@ function renderCollection() {
     }
 
     // Get filtered and sorted pets (Phase 2)
-    const displayPets = typeof getFilteredPets === 'function' ? getFilteredPets() : window.window.userPets;
+    const displayPets = typeof getFilteredPets === 'function' ? getFilteredPets() : window.userPets;
 
     if (displayPets.length === 0) {
         grid.innerHTML = `
@@ -526,12 +530,12 @@ function renderCollection() {
 
         // Element icon mapping
         const elementIcons = {
-            'Fire': '🔥',
-            'Water': '💧',
-            'Earth': '🌿',
-            'Air': '💨'
+            'Fire': 'ðŸ”¥',
+            'Water': 'ðŸ’§',
+            'Earth': 'ðŸŒ¿',
+            'Air': 'ðŸ’¨'
         };
-        const elementIcon = elementIcons[pet.element] || '⭐';
+        const elementIcon = elementIcons[pet.element] || 'â­';
 
         // Retrieve button for sheltered pets
         let actionButtonHTML = '';
@@ -554,7 +558,7 @@ function renderCollection() {
                 </div>
                 
                 <!-- Shiny Indicator -->
-                ${pet.is_shiny ? '<div class="pet-card-shiny">✨</div>' : ''}
+                ${pet.is_shiny ? '<div class="pet-card-shiny">âœ¨</div>' : ''}
                 
                 <!-- Pet Image -->
                 <img src="${imgPath}" alt="${pet.species_name}" class="pet-card-img" 
@@ -638,7 +642,7 @@ async function playWithPet() {
         window.PetAnimations.hearts(3);
     }
 
-    showToast('You played with ' + (window.activePet.nickname || window.activePet.species_name) + '! 🎵', 'success');
+    showToast('You played with ' + (window.activePet.nickname || window.activePet.species_name) + '! ðŸŽµ', 'success');
 
     // Open rhythm game modal after short delay
     setTimeout(() => {
@@ -900,7 +904,7 @@ function openReviveModal(itemId, itemName, itemImg) {
                  onerror="this.src='../assets/placeholder.png'">
             <span class="revive-pet-name">${pet.nickname || pet.species_name}</span>
             <span class="revive-pet-level">Lv.${pet.level}</span>
-            <span class="revive-status">💀 DEAD</span>
+            <span class="revive-status">ðŸ’€ DEAD</span>
         </div>
     `).join('');
 
@@ -1028,7 +1032,7 @@ function showGachaResult(data) {
         'Common': 'New Pet!',
         'Rare': 'Nice Pull!',
         'Epic': 'Amazing!',
-        'Legendary': '🎉 LEGENDARY! 🎉'
+        'Legendary': 'ðŸŽ‰ LEGENDARY! ðŸŽ‰'
     };
     const titleText = titles[data.rarity] || 'Congratulations!';
     titleEl.innerHTML = `<i class="fas fa-sparkles"></i><span>${titleText}</span>`;
@@ -1398,13 +1402,13 @@ function showBattleResult(data) {
     // Set title based on winner
     const title = document.getElementById('battle-title');
     if (data.winner_pet_id === data.attacker.pet_id) {
-        title.textContent = '👑 Victory!';
+        title.textContent = 'ðŸ‘‘ Victory!';
         title.style.color = '#2ecc71';
     } else if (data.winner_pet_id === data.defender.pet_id) {
-        title.textContent = '💀 Defeat';
+        title.textContent = 'ðŸ’€ Defeat';
         title.style.color = '#e74c3c';
     } else {
-        title.textContent = '⚖️ Draw';
+        title.textContent = 'âš–ï¸ Draw';
         title.style.color = '#f39c12';
     }
 
@@ -1624,9 +1628,9 @@ function renderLeaderboard(entries, category) {
     const container = document.getElementById('leaderboard-list');
 
     const getRankIcon = (rank) => {
-        if (rank === 1) return '👑';
-        if (rank === 2) return '🥈';
-        if (rank === 3) return '🥉';
+        if (rank === 1) return 'ðŸ‘‘';
+        if (rank === 2) return 'ðŸ¥ˆ';
+        if (rank === 3) return 'ðŸ¥‰';
         return `#${rank}`;
     };
 
@@ -1655,7 +1659,7 @@ function renderLeaderboard(entries, category) {
                     <span class="rarity-badge ${entry.rarity}">${entry.rarity}</span>
                 </div>
                 <div class="lb-owner">
-                    ${entry.owner_name} • <span class="sanctuary">${entry.sanctuary}</span>
+                    ${entry.owner_name} â€¢ <span class="sanctuary">${entry.sanctuary}</span>
                 </div>
             </div>
             <div class="lb-stat">
@@ -1734,7 +1738,7 @@ function renderAchievements(achievements, category = 'all') {
     container.innerHTML = filtered.map(ach => {
         const progress = Math.min(100, (ach.current_progress / ach.requirement_value) * 100);
         const statusClass = ach.unlocked ? 'unlocked' : 'locked';
-        const checkIcon = ach.unlocked ? '✓' : '🔒';
+        const checkIcon = ach.unlocked ? 'âœ“' : 'ðŸ”’';
 
         return `
         <div class="ach-card ${statusClass}">
