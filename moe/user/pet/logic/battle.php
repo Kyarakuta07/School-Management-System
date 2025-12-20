@@ -270,14 +270,25 @@ function getOpponents($conn, $user_id)
 
     $opponents = [];
     while ($row = mysqli_fetch_assoc($result)) {
+        $level = (int) $row['level'];
+
+        // Calculate evolution stage based on level (same as evolution.php logic)
+        if ($level >= 10) {
+            $evolution_stage = 'adult';
+        } elseif ($level >= 5) {
+            $evolution_stage = 'baby';
+        } else {
+            $evolution_stage = 'egg';
+        }
+
         $opponents[] = [
             'pet_id' => (int) $row['pet_id'],
             'display_name' => $row['nickname'] ?: $row['species_name'],
             'species_name' => $row['species_name'],
-            'level' => (int) $row['level'],
+            'level' => $level,
             'element' => $row['element'],
             'rarity' => $row['rarity'],
-            'evolution_stage' => $row['evolution_stage'] ?? 'adult',
+            'evolution_stage' => $evolution_stage,
             'img_egg' => $row['img_egg'],
             'img_baby' => $row['img_baby'],
             'img_adult' => $row['img_adult'],
