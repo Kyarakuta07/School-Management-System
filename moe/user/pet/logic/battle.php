@@ -325,6 +325,16 @@ function generateAIOpponents1v1($conn, $user_id)
 
     while ($species = mysqli_fetch_assoc($species_result)) {
         $ai_level = max(1, $avg_level + rand(-2, 2));
+
+        // Calculate evolution stage based on level
+        if ($ai_level >= 10) {
+            $evolution_stage = 'adult';
+        } elseif ($ai_level >= 5) {
+            $evolution_stage = 'baby';
+        } else {
+            $evolution_stage = 'egg';
+        }
+
         $ai_opponents[] = [
             'pet_id' => -($index + 1), // Negative ID for AI
             'display_name' => $ai_names[$index % 5] . ' ' . $species['name'],
@@ -332,7 +342,7 @@ function generateAIOpponents1v1($conn, $user_id)
             'level' => $ai_level,
             'element' => $species['element'],
             'rarity' => $species['rarity'],
-            'evolution_stage' => 'adult',
+            'evolution_stage' => $evolution_stage,
             'img_egg' => $species['img_egg'],
             'img_baby' => $species['img_baby'],
             'img_adult' => $species['img_adult'],
