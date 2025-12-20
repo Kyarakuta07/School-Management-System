@@ -293,7 +293,7 @@ $defender_img = getPetImageByLevel($defender);
             defenderBaseDef: 10,
             defenderSkills: <?php echo json_encode($defender_skills); ?>
         };
-        const API_BASE = 'pet_api.php';
+        const API_BASE = 'api/router.php';
     </script>
 
     <!-- Battle JS -->
