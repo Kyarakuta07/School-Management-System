@@ -179,10 +179,12 @@ async function loadAchievements() {
             container.innerHTML = data.achievements.map(ach => {
                 // Map progress based on requirement_type
                 const reqType = ach.requirement_type;
-                const currentProgress = progressData[reqType] || 0;
+                const rawProgress = progressData[reqType] || 0;
                 const targetValue = parseInt(ach.requirement_value) || 1;
-                const percentage = Math.min((currentProgress / targetValue) * 100, 100);
-                const isComplete = ach.unlocked || currentProgress >= targetValue;
+                // Cap progress display to target value
+                const currentProgress = Math.min(rawProgress, targetValue);
+                const percentage = Math.min((rawProgress / targetValue) * 100, 100);
+                const isComplete = ach.unlocked || rawProgress >= targetValue;
 
                 // Get icon - use emoji or font awesome
                 const iconDisplay = ach.icon && ach.icon.length <= 4
