@@ -21,8 +21,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     $id_schedule_to_delete = isset($_POST['id']) ? (int) $_POST['id'] : 0;
 } else {
-    // Legacy GET support (will be deprecated)
-    $id_schedule_to_delete = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+    // SECURITY: Reject GET requests - require POST with CSRF
+    header("Location: manage_classes.php?status=invalid_method");
+    exit();
 }
 
 if ($id_schedule_to_delete == 0) {
@@ -71,13 +72,19 @@ if ($stmt_fetch) {
             header("Location: manage_classes.php?status=delete_sukses");
             exit();
         } else {
-            die("Error deleting record: " . mysqli_error($conn));
+            error_log("Error deleting schedule: " . mysqli_error($conn));
+            header("Location: manage_classes.php?status=delete_error");
+            exit();
         }
     } else {
-        die("Error preparing delete statement: " . mysqli_error($conn));
+        error_log("Error preparing delete schedule statement: " . mysqli_error($conn));
+        header("Location: manage_classes.php?status=db_error");
+        exit();
     }
 
 } else {
-    die("Error fetching data: " . mysqli_error($conn));
+    error_log("Error fetching schedule data: " . mysqli_error($conn));
+    header("Location: manage_classes.php?status=db_error");
+    exit();
 }
 ?>

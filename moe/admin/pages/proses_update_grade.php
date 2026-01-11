@@ -1,32 +1,33 @@
 <?php
-// Wajib ada di paling atas
+require_once '../../core/security_config.php';
 session_start();
-include '../../config/connection.php'; 
+require_once '../../core/csrf.php';
+include '../../config/connection.php';
 
-// Proteksi Halaman
 if (!isset($_SESSION['status_login']) || $_SESSION['role'] != 'Vasiki') {
     header("Location: ../../index.php?pesan=gagal");
     exit();
 }
 
-// 1. Pastikan data dikirim melalui method POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    // 2. Ambil dan bersihkan data
-    $id_grade = (int)$_POST['id_grade']; // Harus integer
+    // CSRF validation
+    if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
+        error_log("CSRF token validation failed for update grade");
+        header("Location: manage_classes.php?status=csrf_failed");
+        exit();
+    }
+
+    $id_grade = (int) $_POST['id_grade'];
     $class_name = trim($_POST['class_name']);
-    
-    // Ambil nilai mata pelajaran (Wajib dikonversi ke INT)
-    $english = (int)$_POST['english'];
-    $herbology = (int)$_POST['herbology'];
-    $oceanology = (int)$_POST['oceanology'];
-    $astronomy = (int)$_POST['astronomy'];
-    
-    // 3. KALKULASI KRITIS: Hitung ulang Total PP
+
+    $english = (int) $_POST['english'];
+    $herbology = (int) $_POST['herbology'];
+    $oceanology = (int) $_POST['oceanology'];
+    $astronomy = (int) $_POST['astronomy'];
+
     $new_total_pp = $english + $herbology + $oceanology + $astronomy;
 
-    // 4. Siapkan query SQL UPDATE yang aman
-    // Kolom yang di-update: class_name, 4 scores, dan total_pp
     $sql = "UPDATE class_grades SET 
                 class_name = ?, 
                 english = ?, 
@@ -40,33 +41,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt = mysqli_prepare($conn, $sql);
 
     if ($stmt) {
-        // 5. Ikat parameter ke query (s = string, 6x i = integer, 1x i = ID)
-        // Format String: s, i, i, i, i, i, i (Total 7 parameter)
-        // NOTE: Kita tidak menggunakan $total_pp dari $_POST, tapi menggunakan $new_total_pp
-        mysqli_stmt_bind_param($stmt, "siiiiii", 
+        mysqli_stmt_bind_param(
+            $stmt,
+            "siiiiii",
             $class_name,
             $english,
             $herbology,
             $oceanology,
             $astronomy,
-            $new_total_pp, // <-- Hasil Kalkulasi Baru
+            $new_total_pp,
             $id_grade
         );
 
-        // 6. Eksekusi query
         if (mysqli_stmt_execute($stmt)) {
             header("Location: manage_classes.php?status=update_sukses");
             exit();
         } else {
-            // Jika gagal
-            echo "Error updating record: " . mysqli_error($conn);
+            error_log("Error updating grade: " . mysqli_stmt_error($stmt));
+            header("Location: manage_classes.php?status=update_error");
+            exit();
         }
     } else {
-        die("Query error: " . mysqli_error($conn));
+        error_log("Query prepare error for update grade: " . mysqli_error($conn));
+        header("Location: manage_classes.php?status=db_error");
+        exit();
     }
 
 } else {
     header("Location: manage_classes.php");
     exit();
 }
-?>

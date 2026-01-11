@@ -1,6 +1,8 @@
 <?php
+require_once __DIR__ . '/../../core/security_config.php';
 session_start();
 require_once __DIR__ . '/../../config/connection.php';
+require_once __DIR__ . '/../../core/rate_limiter.php';
 
 // --- 1. IMPORT PHPMAILER (WAJIB ADA) ---
 use PHPMailer\PHPMailer\PHPMailer;
@@ -20,6 +22,15 @@ if (!isset($_GET['username']) || empty($_GET['username'])) {
 }
 
 $username = trim($_GET['username']);
+
+// --- RATE LIMITING: Max 3 resend attempts per 5 minutes ---
+$rate_limiter = new RateLimiter($conn);
+$rate_result = $rate_limiter->checkLimit('resend_otp_' . $username, 'resend_otp', 3, 5);
+if (!$rate_result['allowed']) {
+    header("Location: ../views/verify_otp.php?user=" . urlencode($username) . "&status=too_many_attempts");
+    exit();
+}
+
 $current_time = date("Y-m-d H:i:s");
 
 // --- 3. AMBIL DATA USER (EMAIL) DARI DATABASE ---
@@ -45,29 +56,29 @@ $stmt_update = mysqli_prepare($conn, "UPDATE nethera SET otp_code = ?, otp_expir
 mysqli_stmt_bind_param($stmt_update, "sss", $new_otp, $new_expires, $username);
 
 if (mysqli_stmt_execute($stmt_update)) {
-    
+
     // --- 6. KIRIM EMAIL ---
     $mail = new PHPMailer(true);
-    
+
     try {
         // Konfigurasi SMTP (Mengambil dari .env)
-        $mail->isSMTP(); 
-        $mail->Host = 'smtp.gmail.com'; 
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
         $mail->Username = getenv('SMTP_USER'); // AMAN
         $mail->Password = getenv('SMTP_PASS'); // AMAN
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; 
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
         $mail->Port = 465;
 
         // Penerima
         $mail->setFrom('mediterraneanofegypt@gmail.com', 'MOE Registration');
         // PERBAIKAN PENTING: Gunakan $user['email'], bukan $email
-        $mail->addAddress($user['email'], $username); 
+        $mail->addAddress($user['email'], $username);
 
         // Konten Email
         $mail->isHTML(true);
         $mail->Subject = 'KODE BARU: Verifikasi Akun Mediterranean of Egypt';
-        
+
         // PERBAIKAN PENTING: Di bawah ini saya ganti {$otp_code} menjadi {$new_otp}
         $mail->Body = <<<EMAIL_BODY
             <html>
@@ -87,7 +98,7 @@ if (mysqli_stmt_execute($stmt_update)) {
 EMAIL_BODY;
 
         $mail->send();
-        
+
         // Berhasil Kirim -> Redirect dengan pesan sukses
         header("Location: ../views/verify_otp.php?user=" . urlencode($username) . "&status=resent_success");
         exit();

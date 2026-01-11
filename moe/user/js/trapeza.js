@@ -218,6 +218,18 @@ function renderTransactionItem(transaction) {
 // RECIPIENT SEARCH
 // ================================================
 
+// SECURITY FIX: Escape HTML to prevent XSS
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Escape for use in JS string literals (onclick attributes)
+function escapeJs(text) {
+    return text.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"');
+}
+
 let searchTimeout;
 async function searchRecipients(query) {
     const resultsContainer = document.getElementById('searchResults');
@@ -235,10 +247,11 @@ async function searchRecipients(query) {
             if (data.results.length === 0) {
                 resultsContainer.innerHTML = '<div class="search-result-item">No users found</div>';
             } else {
+                // SECURITY FIX: Escape user data before inserting into HTML
                 resultsContainer.innerHTML = data.results.map(user => `
-                    <div class="search-result-item" onclick="selectRecipient('${user.username}', '${user.nama_lengkap}')">
-                        <div class="result-username">@${user.username}</div>
-                        <div class="result-name">${user.nama_lengkap}</div>
+                    <div class="search-result-item" onclick="selectRecipient('${escapeJs(user.username)}', '${escapeJs(user.nama_lengkap)}')">
+                        <div class="result-username">@${escapeHtml(user.username)}</div>
+                        <div class="result-name">${escapeHtml(user.nama_lengkap)}</div>
                     </div>
                 `).join('');
             }

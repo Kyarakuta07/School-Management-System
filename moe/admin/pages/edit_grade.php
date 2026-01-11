@@ -4,9 +4,12 @@
  * Edit student grade records
  * 
  * REFACTORED: Uses modular layout components
+ * SECURITY FIX: Added CSRF protection
  */
 
+require_once '../../core/security_config.php';
 session_start();
+require_once '../../core/csrf.php';
 include '../../config/connection.php';
 
 if (!isset($_SESSION['status_login']) || $_SESSION['role'] != 'Vasiki') {
@@ -32,7 +35,8 @@ $result_grade = mysqli_stmt_get_result($stmt_grade);
 $grade_data = mysqli_fetch_assoc($result_grade);
 
 if (!$grade_data) {
-    die("Data nilai tidak ditemukan.");
+    header("Location: manage_classes.php?status=not_found");
+    exit();
 }
 
 // Layout config
@@ -70,6 +74,7 @@ $extraCss = ['css/edit_schedule.css'];
                 <div style="max-width: 600px; margin: 0 auto;">
                     <form action="proses_update_grade.php" method="POST">
                         <input type="hidden" name="id_grade" value="<?php echo $grade_data['id_grade']; ?>">
+                        <?php echo csrf_token_field(); ?>
 
                         <div class="form-group">
                             <label for="nama_anggota">Anggota Nethera</label>

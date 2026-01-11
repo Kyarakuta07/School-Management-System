@@ -20,7 +20,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     $id_grade_to_delete = isset($_POST['id']) ? (int) $_POST['id'] : 0;
 } else {
-    $id_grade_to_delete = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+    // SECURITY: Reject GET requests - require POST with CSRF
+    header("Location: manage_classes.php?status=invalid_method");
+    exit();
 }
 
 if ($id_grade_to_delete == 0) {
@@ -55,9 +57,13 @@ if ($stmt_delete) {
         header("Location: manage_classes.php?status=delete_grade_success");
         exit();
     } else {
-        die("Error deleting record: " . mysqli_error($conn));
+        error_log("Error deleting grade: " . mysqli_error($conn));
+        header("Location: manage_classes.php?status=delete_error");
+        exit();
     }
 } else {
-    die("Error preparing delete statement: " . mysqli_error($conn));
+    error_log("Error preparing delete grade statement: " . mysqli_error($conn));
+    header("Location: manage_classes.php?status=db_error");
+    exit();
 }
 ?>

@@ -1,6 +1,7 @@
 <?php
 require_once '../../core/security_config.php';
 session_start();
+require_once '../../core/csrf.php';
 require_once '../../core/activity_logger.php';
 include '../../config/connection.php';
 
@@ -11,7 +12,14 @@ if (!isset($_SESSION['status_login']) || $_SESSION['role'] != 'Vasiki') {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $id_nethera = $_POST['id_nethera'];
+    // CSRF validation
+    if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
+        error_log("CSRF token validation failed for update nethera");
+        header("Location: manage_nethera.php?status=csrf_failed");
+        exit();
+    }
+
+    $id_nethera = (int) $_POST['id_nethera'];
     $nama_lengkap = $_POST['nama_lengkap'];
     $username = $_POST['username'];
     // $no_registrasi ambil dari POST, tapi nanti kita cek ulang
@@ -140,10 +148,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             header("Location: manage_nethera.php?status=update_sukses");
             exit();
         } else {
-            echo "Error updating record: " . mysqli_error($conn);
+            error_log("Error updating nethera record: " . mysqli_error($conn));
+            header("Location: manage_nethera.php?status=update_error");
+            exit();
         }
     } else {
-        die("Query error: " . mysqli_error($conn));
+        error_log("Query prepare error for nethera update: " . mysqli_error($conn));
+        header("Location: manage_nethera.php?status=db_error");
+        exit();
     }
 
 } else {

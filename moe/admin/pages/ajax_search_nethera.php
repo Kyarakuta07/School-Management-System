@@ -105,20 +105,25 @@ if ($stmt) {
         }
 
     } else {
-        // Error saat eksekusi
-        $output = '<tr><td colspan="7" style="text-align: center; padding: 20px; color: red;">
-                    SQL Execution Error: ' . mysqli_stmt_error($stmt) . '
+        // Error saat eksekusi - SECURITY FIX: Don't expose SQL errors
+        error_log("Search query execute error: " . mysqli_stmt_error($stmt));
+        $output = '<tr><td colspan="7" class="empty-state">
+                    <div class="empty-icon"><i class="uil uil-exclamation-triangle"></i></div>
+                    <h4>System Error</h4>
+                    <p>An error occurred. Please try again later.</p>
                    </td></tr>';
     }
 
     mysqli_stmt_close($stmt);
 
 } else {
-    // Error saat prepare query (misalnya salah nama kolom)
-    $output = '<tr><td colspan="7" style="text-align: center; padding: 20px; color: red;">
-                SQL Prepare Error: ' . mysqli_error($conn) . '
+    // Error saat prepare query - SECURITY FIX: Don't expose SQL errors
+    error_log("Search query prepare error: " . mysqli_error($conn));
+    $output = '<tr><td colspan="7" class="empty-state">
+                <div class="empty-icon"><i class="uil uil-exclamation-triangle"></i></div>
+                <h4>System Error</h4>
+                <p>An error occurred. Please try again later.</p>
                </td></tr>';
 }
 
 echo $output;
-?>

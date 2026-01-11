@@ -9,7 +9,9 @@
 
 // ==================================================
 // SETUP - Using hybrid approach like beranda.php
+// SECURITY FIX: Added security_config
 // ==================================================
+require_once '../core/security_config.php';
 session_start();
 include '../config/connection.php';
 require_once '../core/Database.php';

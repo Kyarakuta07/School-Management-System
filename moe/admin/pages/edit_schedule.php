@@ -4,9 +4,12 @@
  * Edit existing class schedule
  * 
  * REFACTORED: Uses modular layout components
+ * SECURITY FIX: Added CSRF protection
  */
 
+require_once '../../core/security_config.php';
 session_start();
+require_once '../../core/csrf.php';
 include '../../config/connection.php';
 
 if (!isset($_SESSION['status_login']) || $_SESSION['role'] != 'Vasiki') {
@@ -18,7 +21,7 @@ if (!isset($_GET['id'])) {
     header("Location: manage_classes.php");
     exit();
 }
-$id_schedule_to_edit = $_GET['id'];
+$id_schedule_to_edit = (int) $_GET['id'];
 
 // Query untuk mengambil data jadwal yang akan diedit
 $sql = "SELECT * FROM class_schedule WHERE id_schedule = ?";
@@ -29,7 +32,8 @@ $result = mysqli_stmt_get_result($stmt);
 $schedule_data = mysqli_fetch_assoc($result);
 
 if (!$schedule_data) {
-    die("Data jadwal tidak ditemukan.");
+    header("Location: manage_classes.php?status=not_found");
+    exit();
 }
 
 // Layout config
@@ -71,6 +75,7 @@ $extraCss = ['css/edit_schedule.css'];
                         <input type="hidden" name="id_schedule" value="<?php echo $schedule_data['id_schedule']; ?>">
                         <input type="hidden" name="old_image_path"
                             value="<?php echo htmlspecialchars($schedule_data['class_image_url']); ?>">
+                        <?php echo csrf_token_field(); ?>
 
                         <div class="form-group">
                             <label for="class_name">Nama Kelas</label>

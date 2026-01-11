@@ -7,8 +7,10 @@
  * Mobile-First with Desktop Support
  * 
  * REFACTORED: Now uses modular component includes
+ * SECURITY FIX: Added security_config
  */
 
+require_once '../core/security_config.php';
 session_start();
 include '../config/connection.php';
 

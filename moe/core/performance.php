@@ -72,7 +72,15 @@ class Cache
             return $default;
         }
 
-        $data = unserialize(file_get_contents($path));
+        // SECURITY FIX: Use json_decode instead of unserialize to prevent PHP Object Injection
+        $content = file_get_contents($path);
+        $data = json_decode($content, true);
+
+        if ($data === null) {
+            // Invalid cache file, delete it
+            unlink($path);
+            return $default;
+        }
 
         // Check expiration
         if ($data['expires'] !== null && time() > $data['expires']) {
@@ -103,7 +111,8 @@ class Cache
             'created' => time()
         ];
 
-        return file_put_contents($path, serialize($data)) !== false;
+        // SECURITY FIX: Use json_encode instead of serialize
+        return file_put_contents($path, json_encode($data)) !== false;
     }
 
     /**

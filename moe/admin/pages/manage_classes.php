@@ -109,12 +109,15 @@ $jsPath = '../';
                                                 class="btn-edit" title="Edit">
                                                 <i class="uil uil-edit"></i>
                                             </a>
-                                            <a href="delete_schedule.php?id=<?php echo $schedule['id_schedule']; ?>"
-                                                class="btn-delete"
-                                                onclick="return confirm('Apakah Anda yakin ingin menghapus jadwal ini?');"
-                                                title="Delete">
-                                                <i class="uil uil-trash-alt"></i>
-                                            </a>
+                                            <form action="delete_schedule.php" method="POST" style="display:inline;">
+                                                <input type="hidden" name="id" value="<?php echo $schedule['id_schedule']; ?>">
+                                                <?php echo csrf_token_field(); ?>
+                                                <button type="submit" class="btn-delete"
+                                                    onclick="return confirm('Apakah Anda yakin ingin menghapus jadwal ini?');"
+                                                    title="Delete">
+                                                    <i class="uil uil-trash-alt"></i>
+                                                </button>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>
@@ -171,11 +174,15 @@ $jsPath = '../';
                                                 title="Edit">
                                                 <i class="uil uil-edit"></i>
                                             </a>
-                                            <a href="delete_grade.php?id=<?php echo $grade['id_grade']; ?>" class="btn-delete"
-                                                onclick="return confirm('Apakah Anda yakin ingin menghapus nilai ini?');"
-                                                title="Delete">
-                                                <i class="uil uil-trash-alt"></i>
-                                            </a>
+                                            <form action="delete_grade.php" method="POST" style="display:inline;">
+                                                <input type="hidden" name="id" value="<?php echo $grade['id_grade']; ?>">
+                                                <?php echo csrf_token_field(); ?>
+                                                <button type="submit" class="btn-delete"
+                                                    onclick="return confirm('Apakah Anda yakin ingin menghapus nilai ini?');"
+                                                    title="Delete">
+                                                    <i class="uil uil-trash-alt"></i>
+                                                </button>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>

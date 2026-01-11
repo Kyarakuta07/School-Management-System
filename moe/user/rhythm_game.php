@@ -2,8 +2,10 @@
 /**
  * MOE Pet System - Rhythm Game
  * Fullscreen rhythm game experience
+ * SECURITY FIX: Added security_config
  */
 
+require_once '../core/security_config.php';
 session_start();
 
 // Check if user is logged in

@@ -4,8 +4,8 @@
  * Security: Session auth, CSRF protection, image validation
  */
 
-session_start();
 require_once '../core/security_config.php';
+session_start();
 require_once '../core/csrf.php';
 include '../config/connection.php';
 

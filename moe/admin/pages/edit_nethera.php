@@ -4,9 +4,12 @@
  * Edit user data form
  * 
  * REFACTORED: Uses modular layout components
+ * SECURITY FIX: Added CSRF protection
  */
 
+require_once '../../core/security_config.php';
 session_start();
+require_once '../../core/csrf.php';
 include '../../config/connection.php';
 
 if (!isset($_SESSION['status_login']) || $_SESSION['role'] != 'Vasiki') {
@@ -19,7 +22,7 @@ if (!isset($_GET['id'])) {
     exit();
 }
 
-$id_nethera_to_edit = $_GET['id'];
+$id_nethera_to_edit = (int) $_GET['id'];
 
 // --- QUERY NETHERA DATA ---
 $sql_nethera = "SELECT * FROM nethera WHERE id_nethera = ?";
@@ -62,7 +65,8 @@ $extraCss = ['css/edit_form.css'];
         <header class="top-header">
             <h1 class="main-h1">Edit Nethera</h1>
             <h2 class="main-h2">Mengubah data untuk: <?php echo htmlspecialchars($nethera_data['nama_lengkap']); ?> (ID:
-                <?php echo $nethera_data['no_registrasi']; ?>)</h2>
+                <?php echo $nethera_data['no_registrasi']; ?>)
+            </h2>
         </header>
 
         <div class="card full-width-card">
@@ -74,6 +78,7 @@ $extraCss = ['css/edit_form.css'];
                 <div style="max-width: 600px; margin: 0 auto;">
                     <form action="proses_update_nethera.php" method="POST">
                         <input type="hidden" name="id_nethera" value="<?php echo $nethera_data['id_nethera']; ?>">
+                        <?php echo csrf_token_field(); ?>
 
                         <div class="form-group">
                             <label for="nama_lengkap">Nama Lengkap</label>

@@ -1,4 +1,5 @@
 <?php
+require_once '../core/security_config.php';
 session_start();
 
 // Check if user is logged in

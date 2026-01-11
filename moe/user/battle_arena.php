@@ -2,12 +2,11 @@
 /**
  * MOE Pet System - Battle Arena
  * Dragon City-style turn-based combat
+ * 
+ * SECURITY FIX: Removed debug mode, added security_config
  */
 
-// Enable error reporting for debugging
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
+require_once '../core/security_config.php';
 session_start();
 
 // Check if user is logged in

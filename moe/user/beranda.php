@@ -9,7 +9,9 @@
 
 // ==================================================
 // TRADITIONAL SETUP (no bootstrap to avoid conflicts)
+// SECURITY FIX: Added security_config
 // ==================================================
+require_once '../core/security_config.php';
 session_start();
 include '../config/connection.php';
 require_once '../core/Database.php';
@@ -171,7 +173,8 @@ if ($hour >= 5 && $hour < 12) {
                     <!-- Avatar -->
                     <div class="avatar-container" onclick="document.getElementById('photoUploadInput').click()">
                         <?php if ($profile_photo): ?>
-                            <img src="../assets/uploads/profiles/<?= e($profile_photo) ?>" alt="" class="avatar-img" id="avatarPreview">
+                            <img src="../assets/uploads/profiles/<?= e($profile_photo) ?>" alt="" class="avatar-img"
+                                id="avatarPreview">
                         <?php else: ?>
                             <div class="avatar-placeholder" id="avatarPreview">
                                 <i class="fas fa-user"></i>
@@ -181,13 +184,14 @@ if ($hour >= 5 && $hour < 12) {
                             <i class="fas fa-camera"></i>
                         </div>
                     </div>
-                    <input type="file" id="photoUploadInput" accept="image/jpeg,image/png,image/gif,image/webp" style="display: none;">
-                    
+                    <input type="file" id="photoUploadInput" accept="image/jpeg,image/png,image/gif,image/webp"
+                        style="display: none;">
+
                     <h2 class="profile-name"><?= e($user_name) ?></h2>
                     <p class="profile-role"><i class="fas fa-user-shield"></i> Nethera</p>
-                    
+
                     <div class="profile-divider"></div>
-                    
+
                     <!-- Fun Fact Section -->
                     <div class="funfact-section">
                         <div class="funfact-header">
@@ -204,37 +208,39 @@ if ($hour >= 5 && $hour < 12) {
 
             <!-- RIGHT COLUMN: STUDY BUDDY + SANCTUARY -->
             <section class="right-column">
-                
+
                 <!-- STUDY BUDDY -->
                 <?php if ($active_pet): ?>
-                <a href="pet.php" class="dashboard-card study-buddy-card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-dragon"></i> Study Buddy</h3>
-                        <span class="card-link">View All →</span>
-                    </div>
-                    <div class="card-body buddy-body">
-                        <div class="buddy-pet">
-                            <img src="<?= $pet_image ?>" alt="<?= e($pet_display_name) ?>" class="buddy-img" onerror="this.src='../assets/placeholder.png'">
-                            <span class="element-badge <?= strtolower($active_pet['element']) ?>"><?= $active_pet['element'] ?></span>
+                    <a href="pet.php" class="dashboard-card study-buddy-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-dragon"></i> Study Buddy</h3>
+                            <span class="card-link">View All →</span>
                         </div>
-                        <div class="buddy-info">
-                            <h4 class="buddy-name"><?= e($pet_display_name) ?></h4>
-                            <span class="buddy-level">Level <?= $active_pet['level'] ?></span>
-                            <p class="buddy-buff"><i class="fas fa-sparkles"></i> <?= $pet_buff_text ?></p>
+                        <div class="card-body buddy-body">
+                            <div class="buddy-pet">
+                                <img src="<?= $pet_image ?>" alt="<?= e($pet_display_name) ?>" class="buddy-img"
+                                    onerror="this.src='../assets/placeholder.png'">
+                                <span
+                                    class="element-badge <?= strtolower($active_pet['element']) ?>"><?= $active_pet['element'] ?></span>
+                            </div>
+                            <div class="buddy-info">
+                                <h4 class="buddy-name"><?= e($pet_display_name) ?></h4>
+                                <span class="buddy-level">Level <?= $active_pet['level'] ?></span>
+                                <p class="buddy-buff"><i class="fas fa-sparkles"></i> <?= $pet_buff_text ?></p>
+                            </div>
                         </div>
-                    </div>
-                </a>
+                    </a>
                 <?php else: ?>
-                <a href="pet.php" class="dashboard-card study-buddy-card empty">
-                    <div class="card-header">
-                        <h3><i class="fas fa-dragon"></i> Study Buddy</h3>
-                    </div>
-                    <div class="card-body buddy-empty">
-                        <i class="fas fa-egg"></i>
-                        <p>No active companion</p>
-                        <span class="get-pet-btn">Get Your Pet →</span>
-                    </div>
-                </a>
+                    <a href="pet.php" class="dashboard-card study-buddy-card empty">
+                        <div class="card-header">
+                            <h3><i class="fas fa-dragon"></i> Study Buddy</h3>
+                        </div>
+                        <div class="card-body buddy-empty">
+                            <i class="fas fa-egg"></i>
+                            <p>No active companion</p>
+                            <span class="get-pet-btn">Get Your Pet →</span>
+                        </div>
+                    </a>
                 <?php endif; ?>
 
                 <!-- ABOUT MY SANCTUARY -->
@@ -251,8 +257,12 @@ if ($hour >= 5 && $hour < 12) {
                             <?php if (!empty($sanctuary_desc)): ?>
                                 <p><?= e($sanctuary_desc) ?></p>
                             <?php else: ?>
-                                <p>Sanctuary Ammit, the fourth sanctuary "Sanctu #4" was forged for Nethara, bearer of Ammit's divine blood. It shelters children chosen for their sense of justice, clarity of judgment, iron strong hearts, and wandering spirits destined for greater paths.</p>
-                                <p>In the myths of ancient Kemet, Ammit is the Devourer of Death: a fearsome being with the crocodile's jaws, the lion's strength, and the hippopotamus's unyielding might. No wicked soul escapes her shadow.</p>
+                                <p>Sanctuary Ammit, the fourth sanctuary "Sanctu #4" was forged for Nethara, bearer of
+                                    Ammit's divine blood. It shelters children chosen for their sense of justice, clarity of
+                                    judgment, iron strong hearts, and wandering spirits destined for greater paths.</p>
+                                <p>In the myths of ancient Kemet, Ammit is the Devourer of Death: a fearsome being with the
+                                    crocodile's jaws, the lion's strength, and the hippopotamus's unyielding might. No
+                                    wicked soul escapes her shadow.</p>
                             <?php endif; ?>
                         </div>
                     </div>

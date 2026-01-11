@@ -219,7 +219,9 @@ function get_activity_stats($conn, $days = 30)
 {
     ensure_log_table_exists($conn);
 
-    $date_limit = date('Y-m-d', strtotime("-$days days"));
+    // Sanitize days parameter
+    $days = max(1, (int) $days);
+    $date_limit = date('Y-m-d', strtotime("-{$days} days"));
 
     $stats = [
         'total' => 0,
@@ -228,29 +230,45 @@ function get_activity_stats($conn, $days = 30)
         'by_admin' => []
     ];
 
-    // Total count
-    $result = mysqli_query($conn, "SELECT COUNT(*) as total FROM admin_activity_log WHERE created_at >= '$date_limit'");
+    // Total count - FIXED: Use prepared statement
+    $stmt = mysqli_prepare($conn, "SELECT COUNT(*) as total FROM admin_activity_log WHERE created_at >= ?");
+    mysqli_stmt_bind_param($stmt, "s", $date_limit);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
     if ($row = mysqli_fetch_assoc($result)) {
         $stats['total'] = (int) $row['total'];
     }
+    mysqli_stmt_close($stmt);
 
-    // By action
-    $result = mysqli_query($conn, "SELECT action, COUNT(*) as count FROM admin_activity_log WHERE created_at >= '$date_limit' GROUP BY action ORDER BY count DESC");
+    // By action - FIXED: Use prepared statement
+    $stmt = mysqli_prepare($conn, "SELECT action, COUNT(*) as count FROM admin_activity_log WHERE created_at >= ? GROUP BY action ORDER BY count DESC");
+    mysqli_stmt_bind_param($stmt, "s", $date_limit);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
     while ($row = mysqli_fetch_assoc($result)) {
         $stats['by_action'][$row['action']] = (int) $row['count'];
     }
+    mysqli_stmt_close($stmt);
 
-    // By entity
-    $result = mysqli_query($conn, "SELECT entity, COUNT(*) as count FROM admin_activity_log WHERE created_at >= '$date_limit' GROUP BY entity ORDER BY count DESC");
+    // By entity - FIXED: Use prepared statement
+    $stmt = mysqli_prepare($conn, "SELECT entity, COUNT(*) as count FROM admin_activity_log WHERE created_at >= ? GROUP BY entity ORDER BY count DESC");
+    mysqli_stmt_bind_param($stmt, "s", $date_limit);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
     while ($row = mysqli_fetch_assoc($result)) {
         $stats['by_entity'][$row['entity']] = (int) $row['count'];
     }
+    mysqli_stmt_close($stmt);
 
-    // By admin
-    $result = mysqli_query($conn, "SELECT admin_username, COUNT(*) as count FROM admin_activity_log WHERE created_at >= '$date_limit' GROUP BY admin_username ORDER BY count DESC LIMIT 10");
+    // By admin - FIXED: Use prepared statement
+    $stmt = mysqli_prepare($conn, "SELECT admin_username, COUNT(*) as count FROM admin_activity_log WHERE created_at >= ? GROUP BY admin_username ORDER BY count DESC LIMIT 10");
+    mysqli_stmt_bind_param($stmt, "s", $date_limit);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
     while ($row = mysqli_fetch_assoc($result)) {
         $stats['by_admin'][$row['admin_username']] = (int) $row['count'];
     }
+    mysqli_stmt_close($stmt);
 
     return $stats;
 }

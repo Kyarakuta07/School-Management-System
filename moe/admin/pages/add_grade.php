@@ -4,9 +4,12 @@
  * Add new grade record for students
  * 
  * REFACTORED: Uses modular layout components
+ * SECURITY FIX: Added CSRF protection
  */
 
+require_once '../../core/security_config.php';
 session_start();
+require_once '../../core/csrf.php';
 include '../../config/connection.php';
 
 if (!isset($_SESSION['status_login']) || $_SESSION['role'] != 'Vasiki') {
@@ -52,6 +55,7 @@ $extraCss = ['css/edit_schedule.css'];
             <div class="form-container">
                 <div style="max-width: 650px; margin: 0 auto;">
                     <form action="proses_add_grade.php" method="POST">
+                        <?php echo csrf_token_field(); ?>
 
                         <div class="form-group">
                             <label for="id_nethera">Anggota Nethera</label>

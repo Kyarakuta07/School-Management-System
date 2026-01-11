@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../core/security_config.php';
 
 // Wajib ada di awal
 session_start();
