@@ -8,8 +8,8 @@
  * 
  * Usage: api/router.php?action=get_pets
  * 
- * This is the NEW modular version. The old pet_api.php is kept for 
- * backward compatibility but this is the recommended entry point.
+ * This is the primary API endpoint for Pet and Trapeza systems.
+ * Legacy pet_api.php and trapeza_api.php have been deprecated and removed.
  */
 
 // ==================================================

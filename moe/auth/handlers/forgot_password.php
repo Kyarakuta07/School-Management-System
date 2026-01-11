@@ -5,6 +5,17 @@ require_once __DIR__ . '/../../core/csrf.php';
 require_once __DIR__ . '/../../core/rate_limiter.php';
 require_once __DIR__ . '/../../config/connection.php';
 
+// TEMPORARY DEBUG - HAPUS SETELAH FIX!
+if (isset($_GET['debug'])) {
+    echo "<pre>";
+    echo "SMTP_USER: " . (getenv('SMTP_USER') ?: 'NOT SET') . "\n";
+    echo "SMTP_PASS: " . (getenv('SMTP_PASS') ? 'SET (' . strlen(getenv('SMTP_PASS')) . ' chars)' : 'NOT SET') . "\n";
+    echo ".env path: " . realpath(__DIR__ . '/../../.env') . "\n";
+    echo ".env exists: " . (file_exists(__DIR__ . '/../../.env') ? 'YES' : 'NO') . "\n";
+    echo "</pre>";
+    exit();
+}
+
 // Include PHPMailer files
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -76,17 +87,30 @@ if ($stmt_check) {
             // --- 3. KIRIM EMAIL RESET ---
             $mail = new PHPMailer(true);
             try {
-                // Server settings (Gunakan kredensial Gmail yang sudah Anda setup)
+                // DEBUG: Log SMTP credentials (HAPUS SETELAH DEBUG!)
+                $smtp_user = getenv('SMTP_USER');
+                $smtp_pass = getenv('SMTP_PASS');
+                error_log("DEBUG FORGOT PW - SMTP_USER: " . ($smtp_user ? substr($smtp_user, 0, 5) . '***' : 'NULL'));
+                error_log("DEBUG FORGOT PW - SMTP_PASS: " . ($smtp_pass ? 'SET (length: ' . strlen($smtp_pass) . ')' : 'NULL'));
+
+                if (empty($smtp_user) || empty($smtp_pass)) {
+                    error_log("SMTP credentials are missing or empty!");
+                    header("Location: ../views/forgot_password.php?status=email_fail&reason=config");
+                    exit();
+                }
+
+                // Server settings
                 $mail->isSMTP();
+                $mail->SMTPDebug = 0; // Set to 2 for verbose debug output
                 $mail->Host = 'smtp.gmail.com';
                 $mail->SMTPAuth = true;
-                $mail->Username = getenv('SMTP_USER');
-                $mail->Password = getenv('SMTP_PASS');
+                $mail->Username = $smtp_user;
+                $mail->Password = $smtp_pass;
                 $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
                 $mail->Port = 465;
 
                 // Recipients
-                $mail->setFrom(getenv('SMTP_USER'), 'MOE Password Reset');
+                $mail->setFrom($smtp_user, 'MOE Password Reset');
                 $mail->addAddress($user_email, $username);
 
                 // Content
@@ -111,14 +135,16 @@ if ($stmt_check) {
                 ";
 
                 $mail->send();
+                error_log("DEBUG FORGOT PW - Email sent successfully to: " . $user_email);
 
                 // 4. Sukses: Redirect ke halaman forgot password dengan status sukses
                 header("Location: ../views/forgot_password.php?status=success");
                 exit();
 
             } catch (Exception $e) {
-                // Gagal Kirim Email
+                // Gagal Kirim Email - Log detail error
                 error_log("PHPMailer Reset Error: " . $mail->ErrorInfo);
+                error_log("PHPMailer Exception: " . $e->getMessage());
                 header("Location: ../views/forgot_password.php?status=email_fail");
                 exit();
             }
