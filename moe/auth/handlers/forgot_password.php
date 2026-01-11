@@ -48,7 +48,7 @@ if (!$check['allowed']) {
 
 $user_email = trim($_POST['email']);
 $token = bin2hex(random_bytes(32)); // Generate token 64 karakter (aman)
-$expiry_time = date("Y-m-d H:i:s", time() + 1800); // Token berlaku 30 menit
+// Note: expiry_time will be set using MySQL's NOW() to avoid timezone mismatch
 
 // Auto-detect protocol and build reset link
 $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
@@ -76,11 +76,12 @@ if ($stmt_check) {
 
 
     // --- 2. UPDATE DATABASE DENGAN TOKEN RESET BARU ---
-    $sql_update = "UPDATE nethera SET reset_token = ?, token_expires = ? WHERE id_nethera = ?";
+    // Use MySQL's NOW() + INTERVAL to avoid PHP/MySQL timezone mismatch
+    $sql_update = "UPDATE nethera SET reset_token = ?, token_expires = DATE_ADD(NOW(), INTERVAL 30 MINUTE) WHERE id_nethera = ?";
     $stmt_update = mysqli_prepare($conn, $sql_update);
 
     if ($stmt_update) {
-        mysqli_stmt_bind_param($stmt_update, "ssi", $token, $expiry_time, $user_id);
+        mysqli_stmt_bind_param($stmt_update, "si", $token, $user_id);
 
         if (mysqli_stmt_execute($stmt_update)) {
 
