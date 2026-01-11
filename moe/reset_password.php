@@ -22,23 +22,38 @@ $user_id = null;
 if (!empty($token)) {
     // DEBUG MODE - add &debug=1 to URL
     if (isset($_GET['debug'])) {
-        echo "<pre style='background:#333;color:#fff;padding:20px;position:fixed;top:0;left:0;z-index:9999;'>";
-        echo "Token received: " . htmlspecialchars(substr($token, 0, 30)) . "...\n";
+        echo "<pre style='background:#333;color:#fff;padding:20px;position:fixed;top:0;left:0;z-index:9999;max-height:80vh;overflow:auto;'>";
+        echo "Token received: " . htmlspecialchars($token) . "\n";
         echo "Token length: " . strlen($token) . "\n";
+        echo "Token hex: " . bin2hex($token) . "\n\n";
 
         // Check if column exists
         $check_col = mysqli_query($conn, "SHOW COLUMNS FROM nethera LIKE 'reset_token'");
         echo "reset_token column exists: " . (mysqli_num_rows($check_col) > 0 ? 'YES' : 'NO') . "\n";
 
+        // Check token in DB - exact match first
+        $exact_stmt = mysqli_prepare($conn, "SELECT id_nethera FROM nethera WHERE reset_token = ?");
+        mysqli_stmt_bind_param($exact_stmt, "s", $token);
+        mysqli_stmt_execute($exact_stmt);
+        $exact_result = mysqli_stmt_get_result($exact_stmt);
+        echo "Exact token match: " . (mysqli_num_rows($exact_result) > 0 ? 'YES - ID: ' . mysqli_fetch_assoc($exact_result)['id_nethera'] : 'NO') . "\n";
+
         // Check token in DB (any match)
-        $debug_stmt = mysqli_prepare($conn, "SELECT id_nethera, reset_token, token_expires FROM nethera WHERE reset_token IS NOT NULL LIMIT 5");
+        $debug_stmt = mysqli_prepare($conn, "SELECT id_nethera, reset_token, token_expires FROM nethera WHERE reset_token IS NOT NULL ORDER BY token_expires DESC LIMIT 5");
         mysqli_stmt_execute($debug_stmt);
         $debug_result = mysqli_stmt_get_result($debug_stmt);
         echo "---\nTokens in DB:\n";
         while ($row = mysqli_fetch_assoc($debug_result)) {
-            echo "ID: " . $row['id_nethera'] . " | Token: " . substr($row['reset_token'], 0, 20) . "... | Expires: " . $row['token_expires'] . "\n";
+            $match = ($row['reset_token'] === $token) ? ' ✓ MATCH!' : '';
+            $expired = (strtotime($row['token_expires']) < time()) ? ' [EXPIRED]' : ' [VALID]';
+            echo "ID: " . $row['id_nethera'] . $match . $expired . "\n";
+            echo "  DB Token: " . $row['reset_token'] . "\n";
+            echo "  Expires: " . $row['token_expires'] . "\n";
         }
         echo "Current time: " . date('Y-m-d H:i:s') . "\n";
+        echo "MySQL NOW(): ";
+        $now_result = mysqli_query($conn, "SELECT NOW() as now");
+        echo mysqli_fetch_assoc($now_result)['now'] . "\n";
         echo "</pre>";
     }
 
