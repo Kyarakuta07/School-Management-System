@@ -21,8 +21,8 @@ require_once '../core/csrf.php';
 // Initialize DB wrapper
 DB::init($conn);
 
-// Authentication check - Allow both Nethera and Vasiki (admin)
-if (!isset($_SESSION['status_login']) || ($_SESSION['role'] != 'Nethera' && $_SESSION['role'] != 'Vasiki')) {
+// Authentication check - Allow Nethera, Vasiki (admin), and Anubis
+if (!isset($_SESSION['status_login']) || !in_array($_SESSION['role'], ['Nethera', 'Vasiki', 'Anubis'])) {
     header("Location: ../index.php?pesan=gagal_akses");
     exit();
 }
