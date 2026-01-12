@@ -122,6 +122,25 @@ if (Auth::role() === 'Hakaes') {
 // Vasiki (admin) can edit all subjects
 $is_vasiki = Auth::role() === 'Vasiki';
 
+// For Hakaes/Vasiki: Get all grades for table view
+$all_grades = [];
+if ($can_manage_grades) {
+    $all_grades = DB::query(
+        "SELECT n.id_nethera, n.nama_lengkap, n.username, s.nama_sanctuary,
+                COALESCE(cg.history, 0) as history,
+                COALESCE(cg.herbology, 0) as herbology,
+                COALESCE(cg.oceanology, 0) as oceanology,
+                COALESCE(cg.astronomy, 0) as astronomy,
+                COALESCE(cg.total_pp, 0) as total_pp,
+                cg.class_name
+         FROM nethera n
+         LEFT JOIN sanctuary s ON n.id_sanctuary = s.id_sanctuary
+         LEFT JOIN class_grades cg ON n.id_nethera = cg.id_nethera
+         WHERE n.role = 'Nethera'
+         ORDER BY cg.total_pp DESC, n.nama_lengkap ASC"
+    );
+}
+
 $csrf_token = generate_csrf_token();
 ?>
 <!DOCTYPE html>
@@ -286,6 +305,63 @@ $csrf_token = generate_csrf_token();
 
                             <div id="grade-result" class="grade-result hidden"></div>
                         </div>
+                    </div>
+                <?php endif; ?>
+
+                <?php if ($can_manage_grades && !empty($all_grades)): ?>
+                    <!-- ALL CLASS GRADES TABLE -->
+                    <div class="class-card grades-table-card">
+                        <h3 class="card-title">
+                            <i class="fa-solid fa-table"></i> 
+                            <?= $hakaes_subject_name ? strtoupper($hakaes_subject_name) . ' GRADES' : 'ALL CLASS GRADES' ?>
+                        </h3>
+
+                        <div class="grades-table-wrapper">
+                            <table class="grades-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nama</th>
+                                        <th>Sanctuary</th>
+                                        <?php if ($is_vasiki || $hakaes_subject === 'history'): ?>
+                                            <th>History</th>
+                                        <?php endif; ?>
+                                        <?php if ($is_vasiki || $hakaes_subject === 'herbology'): ?>
+                                            <th>Herbology</th>
+                                        <?php endif; ?>
+                                        <?php if ($is_vasiki || $hakaes_subject === 'oceanology'): ?>
+                                            <th>Oceanology</th>
+                                        <?php endif; ?>
+                                        <?php if ($is_vasiki || $hakaes_subject === 'astronomy'): ?>
+                                            <th>Astronomy</th>
+                                        <?php endif; ?>
+                                        <th>Total PP</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($all_grades as $grade): ?>
+                                        <tr>
+                                            <td><?= e($grade['nama_lengkap']) ?></td>
+                                            <td><?= e($grade['nama_sanctuary'] ?? '-') ?></td>
+                                            <?php if ($is_vasiki || $hakaes_subject === 'history'): ?>
+                                                <td><?= $grade['history'] ?></td>
+                                            <?php endif; ?>
+                                            <?php if ($is_vasiki || $hakaes_subject === 'herbology'): ?>
+                                                <td><?= $grade['herbology'] ?></td>
+                                            <?php endif; ?>
+                                            <?php if ($is_vasiki || $hakaes_subject === 'oceanology'): ?>
+                                                <td><?= $grade['oceanology'] ?></td>
+                                            <?php endif; ?>
+                                            <?php if ($is_vasiki || $hakaes_subject === 'astronomy'): ?>
+                                                <td><?= $grade['astronomy'] ?></td>
+                                            <?php endif; ?>
+                                            <td><strong><?= $grade['total_pp'] ?></strong></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <p class="grades-count"><?= count($all_grades) ?> siswa</p>
                     </div>
                 <?php endif; ?>
 

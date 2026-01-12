@@ -489,6 +489,67 @@
     }
 }
 
+/* ================================================
+   GRADES TABLE (Hakaes View)
+   ================================================ */
+.grades-table-card {
+    margin-top: 16px;
+}
+
+.grades-table-wrapper {
+    overflow-x: auto;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.grades-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.grades-table th,
+.grades-table td {
+    padding: 12px 16px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.grades-table th {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.1));
+    color: #d4af37;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+}
+
+.grades-table tbody tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: background 0.2s ease;
+}
+
+.grades-table tbody tr:hover {
+    background: rgba(212, 175, 55, 0.1);
+}
+
+.grades-table td {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.grades-table td strong {
+    color: #d4af37;
+}
+
+.grades-count {
+    text-align: center;
+    margin-top: 12px;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
 /* Extra small screens (380px) */
 @media (max-width: 480px) {
     .class-main-content {
