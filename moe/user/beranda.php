@@ -436,17 +436,10 @@ if ($hour >= 5 && $hour < 12) {
             <i class="fa-solid fa-credit-card"></i>
             <span>Bank</span>
         </a>
-        <?php if ($can_access_admin): ?>
-            <a href="../admin/index.php" class="bottom-nav-item admin-nav">
-                <i class="fa-solid fa-crown"></i>
-                <span>Admin</span>
-            </a>
-        <?php else: ?>
-            <a href="punishment.php" class="bottom-nav-item">
-                <i class="fa-solid fa-gavel"></i>
-                <span>Rules</span>
-            </a>
-        <?php endif; ?>
+        <a href="punishment.php" class="bottom-nav-item">
+            <i class="fa-solid fa-gavel"></i>
+            <span>Rules</span>
+        </a>
     </nav>
 
 </body>
