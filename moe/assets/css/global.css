@@ -6,6 +6,20 @@
     --gold-dark: #B8860B;
     --gold-glow: rgba(218, 165, 32, 0.5);
     --dark-bg: #050505;
+
+    /* Fluid font sizing for all screens */
+    --font-xs: clamp(0.7rem, 2vw, 0.8rem);
+    --font-sm: clamp(0.8rem, 2.5vw, 0.9rem);
+    --font-base: clamp(0.9rem, 3vw, 1rem);
+    --font-lg: clamp(1rem, 3.5vw, 1.2rem);
+    --font-xl: clamp(1.2rem, 4vw, 1.5rem);
+    --font-2xl: clamp(1.4rem, 5vw, 2rem);
+
+    /* Safe area insets for notched phones (iPhone X+) */
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
 }
 
 * {
@@ -14,9 +28,18 @@
     box-sizing: border-box;
 }
 
+/* Prevent iOS text size adjust */
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scroll-behavior: smooth;
+}
+
 body {
     font-family: 'Lato', sans-serif;
     min-height: 100vh;
+    min-height: 100dvh;
+    /* Dynamic viewport height for mobile */
     width: 100%;
     display: flex;
     justify-content: center;
@@ -26,7 +49,11 @@ body {
     position: relative;
     color: #fff;
     padding: 20px;
+    padding-top: calc(20px + var(--safe-top));
+    padding-bottom: calc(20px + var(--safe-bottom));
     /* Jarak aman di layar kecil */
+    overflow-x: hidden;
+    /* Prevent horizontal scroll */
 }
 
 /* ============================
@@ -435,4 +462,105 @@ h1 {
     background: url('../landing/2.png') no-repeat center center/cover;
     z-index: -2;
     opacity: 0.4;
+}
+
+/* ============================
+   RESPONSIVE BREAKPOINTS
+   Covers all phone sizes:
+   - Small phones: < 375px (iPhone SE)
+   - Standard phones: 375-414px
+   - Large phones: 414-430px (iPhone Plus/Max)
+   - iPhone 15 Pro Max: 430px
+   - Small tablets: 430-768px
+   ============================ */
+
+/* Extra small phones (iPhone SE, older models) */
+@media screen and (max-width: 374px) {
+    body {
+        padding: 12px;
+    }
+
+    h1 {
+        font-size: 1.1rem;
+    }
+
+    .login-container {
+        padding: 1.5rem 1.25rem;
+    }
+
+    .btn-login {
+        padding: 8px;
+        font-size: 0.8rem;
+    }
+}
+
+/* Standard phones (iPhone 12/13/14, most Android) */
+@media screen and (max-width: 414px) {
+    h1 {
+        font-size: 1.2rem;
+    }
+
+    .form-control {
+        height: 44px;
+        /* iOS minimum touch target */
+    }
+}
+
+/* Large phones (iPhone Plus, Pro Max, large Android) */
+@media screen and (min-width: 415px) and (max-width: 480px) {
+    .login-container {
+        max-width: 420px;
+    }
+
+    h1 {
+        font-size: 1.4rem;
+    }
+}
+
+/* Small tablets and landscape phones */
+@media screen and (min-width: 481px) and (max-width: 768px) {
+    body {
+        padding: 30px;
+    }
+
+    .login-container {
+        max-width: 450px;
+        padding: 2.5rem;
+    }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+
+    /* Larger touch targets for mobile */
+    .btn-login,
+    .form-control,
+    button,
+    a {
+        min-height: 44px;
+    }
+
+    /* Remove hover effects that don't work on touch */
+    .btn-login:hover {
+        transform: none;
+    }
+}
+
+/* Landscape orientation on phones */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+    body {
+        padding: 10px;
+        align-items: flex-start;
+        padding-top: calc(10px + var(--safe-top));
+    }
+
+    .login-container {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    .login-logo {
+        width: 50px;
+        height: 50px;
+    }
 }

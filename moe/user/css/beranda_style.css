@@ -1901,6 +1901,45 @@ body {
     }
 }
 
+/* iPhone 15 Pro Max and large phones (430px) */
+@media (max-width: 430px) {
+    .main-dashboard-wrapper {
+        padding: 10px 12px 85px 12px;
+    }
+
+    .hero-header,
+    .top-user-header {
+        padding: 16px 14px;
+        border-radius: 14px;
+    }
+
+    .greeting-text .user-name-hero {
+        font-size: 1.2rem;
+    }
+
+    .main-h1 {
+        font-size: 1.5rem;
+    }
+
+    .card-header h3 {
+        font-size: 0.95rem;
+    }
+
+    .gold-balance {
+        font-size: clamp(1.3rem, 5vw, 1.6rem);
+    }
+
+    /* Bottom nav optimization for larger phones */
+    .bottom-nav {
+        padding: 12px 8px;
+        padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    }
+
+    .bottom-nav-item span {
+        font-size: 0.7rem;
+    }
+}
+
 /* Extra small screens (380px - iPhone SE) */
 @media (max-width: 380px) {
     .main-dashboard-wrapper {
