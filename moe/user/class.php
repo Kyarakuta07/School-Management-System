@@ -200,7 +200,7 @@ $csrf_token = generate_csrf_token();
             <a href="class.php" class="nav-btn active"><i class="fa-solid fa-book-open"></i><span>Class</span></a>
             <a href="pet.php" class="nav-btn"><i class="fa-solid fa-paw"></i><span>Pet</span></a>
             <a href="trapeza.php" class="nav-btn"><i class="fa-solid fa-credit-card"></i><span>Trapeza</span></a>
-            <a href="punishment.php" class="nav-btn"><i class="fa-solid fa-gavel"></i><span>Punishment</span></a>
+            <a href="punishment.php" class="nav-btn"><i class="fa-solid fa-gavel"></i><span>Rules</span></a>
             <a href="../auth/handlers/logout.php" class="logout-btn-header"><i
                     class="fa-solid fa-sign-out-alt"></i><span>Logout</span></a>
         </nav>
