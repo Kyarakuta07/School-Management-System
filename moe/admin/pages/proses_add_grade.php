@@ -23,17 +23,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $class_name = trim($_POST['class_name']);
 
     // Ambil nilai mata pelajaran (Pastikan input type="number" di HTML)
-    $english = (int) $_POST['english'];
+    $history = (int) $_POST['history'];
     $herbology = (int) $_POST['herbology'];
     $oceanology = (int) $_POST['oceanology'];
     $astronomy = (int) $_POST['astronomy'];
 
     // 2. KALKULASI: Hitung Total Poin Prestasi (PP)
-    $total_pp = $english + $herbology + $oceanology + $astronomy;
+    $total_pp = $history + $herbology + $oceanology + $astronomy;
 
     // 3. SQL INSERT dengan Prepared Statements
     $sql = "INSERT INTO class_grades 
-            (id_nethera, class_name, english, herbology, oceanology, astronomy, total_pp) 
+            (id_nethera, class_name, history, herbology, oceanology, astronomy, total_pp) 
             VALUES (?, ?, ?, ?, ?, ?, ?)";
 
     $stmt = mysqli_prepare($conn, $sql);
@@ -44,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             "isiisii",
             $id_nethera,
             $class_name,
-            $english,
+            $history,
             $herbology,
             $oceanology,
             $astronomy,

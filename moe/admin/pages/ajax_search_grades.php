@@ -47,7 +47,7 @@ if ($stmt) {
                 $output .= '<td>' . htmlspecialchars($grade['nama_lengkap']) . '</td>';
                 $output .= '<td>' . htmlspecialchars($grade['nama_sanctuary']) . '</td>';
                 $output .= '<td>' . htmlspecialchars($grade['class_name']) . '</td>';
-                $output .= '<td>' . htmlspecialchars($grade['english']) . '</td>';
+                $output .= '<td>' . htmlspecialchars($grade['history']) . '</td>';
                 $output .= '<td>' . htmlspecialchars($grade['herbology']) . '</td>';
                 $output .= '<td>' . htmlspecialchars($grade['oceanology']) . '</td>';
                 $output .= '<td>' . htmlspecialchars($grade['astronomy']) . '</td>';

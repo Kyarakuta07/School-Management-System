@@ -149,7 +149,7 @@ $jsPath = '../';
                             <th>Nama Lengkap</th>
                             <th>Sanctuary</th>
                             <th>Nama Kelas</th>
-                            <th>English</th>
+                            <th>History</th>
                             <th>Herbology</th>
                             <th>Oceanology</th>
                             <th>Astronomy</th>
@@ -164,7 +164,7 @@ $jsPath = '../';
                                     <td><?php echo htmlspecialchars($grade['nama_lengkap']); ?></td>
                                     <td><?php echo htmlspecialchars($grade['nama_sanctuary']); ?></td>
                                     <td><?php echo htmlspecialchars($grade['class_name']); ?></td>
-                                    <td><?php echo htmlspecialchars($grade['english']); ?></td>
+                                    <td><?php echo htmlspecialchars($grade['history']); ?></td>
                                     <td><?php echo htmlspecialchars($grade['herbology']); ?></td>
                                     <td><?php echo htmlspecialchars($grade['oceanology']); ?></td>
                                     <td><?php echo htmlspecialchars($grade['astronomy']); ?></td>

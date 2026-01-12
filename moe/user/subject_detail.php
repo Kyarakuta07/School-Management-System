@@ -3,7 +3,7 @@
  * Subject Detail Page
  * Mediterranean of Egypt - School Management System
  * 
- * View materials for a specific subject (English, Herbology, Oceanology, Astronomy)
+ * View materials for a specific subject (History, Herbology, Oceanology, Astronomy)
  */
 
 require_once '../core/bootstrap.php';
@@ -20,7 +20,7 @@ $can_manage = Auth::canManageGrades(); // Hakaes or Vasiki
 
 // Get subject from URL
 $subject = $_GET['subject'] ?? '';
-$valid_subjects = ['english', 'herbology', 'oceanology', 'astronomy'];
+$valid_subjects = ['history', 'herbology', 'oceanology', 'astronomy'];
 
 if (!in_array($subject, $valid_subjects)) {
     redirect('class.php');
@@ -28,7 +28,7 @@ if (!in_array($subject, $valid_subjects)) {
 
 // Subject metadata
 $subjects = [
-    'english' => ['icon' => 'fa-language', 'color' => '#4a90d9', 'name' => 'English Studies', 'desc' => 'Master the language of scholars, diplomats, and ancient texts.'],
+    'history' => ['icon' => 'fa-landmark', 'color' => '#4a90d9', 'name' => 'History', 'desc' => 'Explore the chronicles of ancient Egypt, pharaohs, and the rise of civilizations.'],
     'herbology' => ['icon' => 'fa-leaf', 'color' => '#27ae60', 'name' => 'Herbology', 'desc' => 'Master the ancient art of healing, poisons, and magical flora of Egypt.'],
     'oceanology' => ['icon' => 'fa-water', 'color' => '#00bcd4', 'name' => 'Oceanology', 'desc' => 'Study the secrets of the Nile and the mystic depths of the Mediterranean Sea.'],
     'astronomy' => ['icon' => 'fa-star', 'color' => '#9b59b6', 'name' => 'Astronomy', 'desc' => 'Read the stars, navigate the desert sands, and predict the empire\'s fate.'],

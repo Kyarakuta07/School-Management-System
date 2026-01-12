@@ -16,7 +16,7 @@ class MaterialController
     public function getMaterials()
     {
         $subject = $_GET['subject'] ?? '';
-        $validSubjects = ['english', 'herbology', 'oceanology', 'astronomy'];
+        $validSubjects = ['history', 'herbology', 'oceanology', 'astronomy'];
 
         if (!in_array($subject, $validSubjects)) {
             return $this->json(['success' => false, 'error' => 'Invalid subject'], 400);
@@ -61,7 +61,7 @@ class MaterialController
         $content = trim($input['content'] ?? '');
 
         // Validation
-        $validSubjects = ['english', 'herbology', 'oceanology', 'astronomy'];
+        $validSubjects = ['history', 'herbology', 'oceanology', 'astronomy'];
         $validTypes = ['text', 'youtube', 'pdf'];
 
         if (!in_array($subject, $validSubjects)) {
@@ -162,7 +162,7 @@ class MaterialController
         $title = trim($_POST['title'] ?? '');
 
         // Validation
-        $validSubjects = ['english', 'herbology', 'oceanology', 'astronomy'];
+        $validSubjects = ['history', 'herbology', 'oceanology', 'astronomy'];
 
         if (!in_array($subject, $validSubjects)) {
             return $this->json(['success' => false, 'error' => 'Invalid subject'], 400);

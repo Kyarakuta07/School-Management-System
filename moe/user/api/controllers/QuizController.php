@@ -16,7 +16,7 @@ class QuizController
     public function getQuizzes()
     {
         $subject = $_GET['subject'] ?? '';
-        $validSubjects = ['english', 'herbology', 'oceanology', 'astronomy'];
+        $validSubjects = ['history', 'herbology', 'oceanology', 'astronomy'];
 
         if (!in_array($subject, $validSubjects)) {
             return $this->json(['success' => false, 'error' => 'Invalid subject'], 400);
@@ -79,7 +79,7 @@ class QuizController
         $timeLimit = intval($input['time_limit'] ?? 30);
         $passingScore = intval($input['passing_score'] ?? 70);
 
-        $validSubjects = ['english', 'herbology', 'oceanology', 'astronomy'];
+        $validSubjects = ['history', 'herbology', 'oceanology', 'astronomy'];
 
         if (!in_array($subject, $validSubjects) || empty($title)) {
             return $this->json(['success' => false, 'error' => 'Subject and title are required'], 400);

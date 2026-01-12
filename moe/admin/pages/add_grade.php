@@ -81,8 +81,8 @@ $extraCss = ['css/edit_schedule.css'];
                                 Input Nilai (0-100)</h3>
 
                             <div class="form-group">
-                                <label for="english">English</label>
-                                <input type="number" id="english" name="english" min="0" max="100" required>
+                                <label for="history">History</label>
+                                <input type="number" id="history" name="history" min="0" max="100" required>
                             </div>
 
                             <div class="form-group">

@@ -27,7 +27,7 @@ class ClassController
         }
 
         $grades = DB::queryOne(
-            "SELECT english, herbology, oceanology, astronomy, total_pp 
+            "SELECT history, herbology, oceanology, astronomy, total_pp 
              FROM class_grades 
              WHERE id_nethera = ?
              ORDER BY id_grade DESC
@@ -38,7 +38,7 @@ class ClassController
         return $this->json([
             'success' => true,
             'grades' => $grades ?: [
-                'english' => 0,
+                'history' => 0,
                 'herbology' => 0,
                 'oceanology' => 0,
                 'astronomy' => 0,
@@ -73,11 +73,11 @@ class ClassController
         }
 
         // Validate grades (must be integers 0-100)
-        $english = max(0, min(100, intval($grades['english'] ?? 0)));
+        $history = max(0, min(100, intval($grades['history'] ?? 0)));
         $herbology = max(0, min(100, intval($grades['herbology'] ?? 0)));
         $oceanology = max(0, min(100, intval($grades['oceanology'] ?? 0)));
         $astronomy = max(0, min(100, intval($grades['astronomy'] ?? 0)));
-        $totalPP = $english + $herbology + $oceanology + $astronomy;
+        $totalPP = $history + $herbology + $oceanology + $astronomy;
 
         // Check if student exists
         $student = DB::queryOne(
@@ -99,17 +99,17 @@ class ClassController
             // Update existing record
             $result = DB::execute(
                 "UPDATE class_grades SET 
-                    english = ?, herbology = ?, oceanology = ?, astronomy = ?, 
+                    history = ?, herbology = ?, oceanology = ?, astronomy = ?, 
                     total_pp = ?, updated_at = NOW()
                  WHERE id_nethera = ?",
-                [$english, $herbology, $oceanology, $astronomy, $totalPP, $studentId]
+                [$history, $herbology, $oceanology, $astronomy, $totalPP, $studentId]
             );
         } else {
             // Insert new record
             $result = DB::execute(
-                "INSERT INTO class_grades (id_nethera, class_name, english, herbology, oceanology, astronomy, total_pp)
+                "INSERT INTO class_grades (id_nethera, class_name, history, herbology, oceanology, astronomy, total_pp)
                  VALUES (?, 'Default Class', ?, ?, ?, ?, ?)",
-                [$studentId, $english, $herbology, $oceanology, $astronomy, $totalPP]
+                [$studentId, $history, $herbology, $oceanology, $astronomy, $totalPP]
             );
         }
 

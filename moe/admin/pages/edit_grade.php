@@ -92,9 +92,9 @@ $extraCss = ['css/edit_schedule.css'];
                         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
 
                             <div class="form-group">
-                                <label for="english">Nilai English</label>
-                                <input type="number" id="english" name="english"
-                                    value="<?php echo htmlspecialchars($grade_data['english']); ?>" min="0" max="100"
+                                <label for="history">Nilai History</label>
+                                <input type="number" id="history" name="history"
+                                    value="<?php echo htmlspecialchars($grade_data['history']); ?>" min="0" max="100"
                                     required>
                             </div>
 

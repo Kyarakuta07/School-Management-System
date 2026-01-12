@@ -371,16 +371,16 @@
 }
 
 /* Subject-specific colors */
-.subject-card.english {
+.subject-card.history {
     background: linear-gradient(145deg, rgba(74, 144, 217, 0.2), rgba(74, 144, 217, 0.05));
     border: 1px solid rgba(74, 144, 217, 0.3);
 }
 
-.subject-card.english:hover {
+.subject-card.history:hover {
     border-color: rgba(74, 144, 217, 0.5);
 }
 
-.subject-card.english .subject-icon {
+.subject-card.history .subject-icon {
     color: #4a90d9;
 }
 

@@ -34,7 +34,7 @@ $questions = DB::query(
 
 // Subject metadata
 $subjects = [
-    'english' => ['icon' => 'fa-language', 'color' => '#4a90d9', 'name' => 'English'],
+    'history' => ['icon' => 'fa-landmark', 'color' => '#4a90d9', 'name' => 'History'],
     'herbology' => ['icon' => 'fa-leaf', 'color' => '#27ae60', 'name' => 'Herbology'],
     'oceanology' => ['icon' => 'fa-water', 'color' => '#00bcd4', 'name' => 'Oceanology'],
     'astronomy' => ['icon' => 'fa-star', 'color' => '#9b59b6', 'name' => 'Astronomy'],
@@ -235,7 +235,9 @@ $csrf_token = generate_csrf_token();
 
         .question-number {
             display: inline-block;
-            background: <?= $subj['color'] ?>;
+            background:
+                <?= $subj['color'] ?>
+            ;
             color: #fff;
             padding: 4px 12px;
             border-radius: 20px;

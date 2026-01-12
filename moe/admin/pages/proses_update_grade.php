@@ -21,16 +21,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id_grade = (int) $_POST['id_grade'];
     $class_name = trim($_POST['class_name']);
 
-    $english = (int) $_POST['english'];
+    $history = (int) $_POST['history'];
     $herbology = (int) $_POST['herbology'];
     $oceanology = (int) $_POST['oceanology'];
     $astronomy = (int) $_POST['astronomy'];
 
-    $new_total_pp = $english + $herbology + $oceanology + $astronomy;
+    $new_total_pp = $history + $herbology + $oceanology + $astronomy;
 
     $sql = "UPDATE class_grades SET 
                 class_name = ?, 
-                english = ?, 
+                history = ?, 
                 herbology = ?, 
                 oceanology = ?, 
                 astronomy = ?, 
@@ -45,7 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt,
             "siiiiii",
             $class_name,
-            $english,
+            $history,
             $herbology,
             $oceanology,
             $astronomy,

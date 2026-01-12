@@ -81,7 +81,7 @@ if ($user_grades) {
 
 // Subject icons and colors
 $subjects = [
-    'english' => ['icon' => 'fa-language', 'color' => '#4a90d9', 'name' => 'English'],
+    'history' => ['icon' => 'fa-landmark', 'color' => '#4a90d9', 'name' => 'History'],
     'herbology' => ['icon' => 'fa-leaf', 'color' => '#27ae60', 'name' => 'Herbology'],
     'oceanology' => ['icon' => 'fa-water', 'color' => '#00bcd4', 'name' => 'Oceanology'],
     'astronomy' => ['icon' => 'fa-star', 'color' => '#9b59b6', 'name' => 'Astronomy'],
@@ -307,11 +307,11 @@ $csrf_token = generate_csrf_token();
 
                     <div class="subjects-grid">
 
-                        <!-- English -->
-                        <a href="subject_detail.php?subject=english" class="subject-card english">
-                            <div class="subject-icon"><i class="fa-solid fa-language"></i></div>
-                            <h4>English Studies</h4>
-                            <p>Master the language of scholars, diplomats, and ancient texts.</p>
+                        <!-- History -->
+                        <a href="subject_detail.php?subject=history" class="subject-card history">
+                            <div class="subject-icon"><i class="fa-solid fa-landmark"></i></div>
+                            <h4>History</h4>
+                            <p>Explore the chronicles of ancient Egypt, pharaohs, and the rise of civilizations.</p>
                         </a>
 
                         <!-- Herbology -->
@@ -575,7 +575,7 @@ $csrf_token = generate_csrf_token();
                     const data = await response.json();
 
                     if (data.success && data.grades) {
-                        document.getElementById('grade-english').value = data.grades.english || 0;
+                        document.getElementById('grade-history').value = data.grades.history || 0;
                         document.getElementById('grade-herbology').value = data.grades.herbology || 0;
                         document.getElementById('grade-oceanology').value = data.grades.oceanology || 0;
                         document.getElementById('grade-astronomy').value = data.grades.astronomy || 0;
@@ -601,7 +601,7 @@ $csrf_token = generate_csrf_token();
                 saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
 
                 const grades = {
-                    english: parseInt(document.getElementById('grade-english').value) || 0,
+                    history: parseInt(document.getElementById('grade-history').value) || 0,
                     herbology: parseInt(document.getElementById('grade-herbology').value) || 0,
                     oceanology: parseInt(document.getElementById('grade-oceanology').value) || 0,
                     astronomy: parseInt(document.getElementById('grade-astronomy').value) || 0

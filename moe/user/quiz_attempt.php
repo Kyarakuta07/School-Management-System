@@ -64,7 +64,7 @@ $csrf_token = generate_csrf_token();
 
 // Subject metadata for header
 $subjects = [
-    'english' => ['icon' => 'fa-language', 'color' => '#4a90d9', 'name' => 'English'],
+    'history' => ['icon' => 'fa-landmark', 'color' => '#4a90d9', 'name' => 'History'],
     'herbology' => ['icon' => 'fa-leaf', 'color' => '#27ae60', 'name' => 'Herbology'],
     'oceanology' => ['icon' => 'fa-water', 'color' => '#00bcd4', 'name' => 'Oceanology'],
     'astronomy' => ['icon' => 'fa-star', 'color' => '#9b59b6', 'name' => 'Astronomy'],
@@ -125,7 +125,9 @@ $current_subject = $subjects[$quiz['subject']] ?? ['icon' => 'fa-book', 'color' 
             align-items: center;
             justify-content: center;
             font-size: 1.5rem;
-            background: <?= $current_subject['color'] ?>;
+            background:
+                <?= $current_subject['color'] ?>
+            ;
         }
 
         .quiz-info {
@@ -205,7 +207,9 @@ $current_subject = $subjects[$quiz['subject']] ?? ['icon' => 'fa-book', 'color' 
 
         .question-number {
             display: inline-block;
-            background: <?= $current_subject['color'] ?>;
+            background:
+                <?= $current_subject['color'] ?>
+            ;
             color: #fff;
             padding: 4px 12px;
             border-radius: 20px;
@@ -383,7 +387,9 @@ $current_subject = $subjects[$quiz['subject']] ?? ['icon' => 'fa-book', 'color' 
 
         .result-btn {
             padding: 12px 32px;
-            background: <?= $current_subject['color'] ?>;
+            background:
+                <?= $current_subject['color'] ?>
+            ;
             border: none;
             color: #fff;
             border-radius: 8px;
