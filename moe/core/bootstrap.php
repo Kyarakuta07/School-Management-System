@@ -49,14 +49,26 @@ header("X-Content-Type-Options: nosniff");
 header("X-XSS-Protection: 1; mode=block");
 
 // ==================================================
-// 3.1 CACHE CONTROL (Development Mode)
+// 3.1 CACHE CONTROL (Environment-based)
 // ==================================================
-// Disable browser caching during development so mobile users
-// always get fresh content without clearing cache
-// NOTE: Remove or modify this section for production
-header("Cache-Control: no-cache, no-store, must-revalidate");
-header("Pragma: no-cache");
-header("Expires: 0");
+// Development: no-cache for fresh content during testing
+// Production: cache for 1 hour for better performance
+// Note: IS_PRODUCTION is defined later, so we check directly
+$is_prod_env = (
+    isset($_SERVER['HTTP_HOST']) &&
+    strpos($_SERVER['HTTP_HOST'], 'localhost') === false &&
+    strpos($_SERVER['HTTP_HOST'], '127.0.0.1') === false
+);
+
+if ($is_prod_env) {
+    // Production: Enable caching for performance
+    header("Cache-Control: public, max-age=3600"); // 1 hour
+} else {
+    // Development: No cache for fresh content
+    header("Cache-Control: no-cache, no-store, must-revalidate");
+    header("Pragma: no-cache");
+    header("Expires: 0");
+}
 
 // ==================================================
 // 4. LOAD DATABASE CONNECTION
