@@ -97,20 +97,21 @@ if ($active_pet) {
 $csrf_token = generate_csrf_token();
 
 // ==================================================
-// TIME-BASED GREETING
+// TIME-BASED GREETING (using WIB - Indonesia Western Time)
 // ==================================================
+date_default_timezone_set('Asia/Jakarta'); // WIB - Waktu Indonesia Bagian Barat
 $hour = (int) date('G');
 if ($hour >= 5 && $hour < 12) {
-    $greeting = 'Good Morning';
+    $greeting = 'Selamat Pagi';
     $greeting_emoji = '🌅';
 } elseif ($hour >= 12 && $hour < 17) {
-    $greeting = 'Good Afternoon';
+    $greeting = 'Selamat Siang';
     $greeting_emoji = '☀️';
 } elseif ($hour >= 17 && $hour < 21) {
-    $greeting = 'Good Evening';
+    $greeting = 'Selamat Sore';
     $greeting_emoji = '🌆';
 } else {
-    $greeting = 'Good Night';
+    $greeting = 'Selamat Malam';
     $greeting_emoji = '🌙';
 }
 ?>
