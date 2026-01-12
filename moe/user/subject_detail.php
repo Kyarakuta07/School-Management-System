@@ -215,6 +215,59 @@ $csrf_token = generate_csrf_token();
             margin-bottom: 12px;
         }
 
+        /* Collapsible text content */
+        .text-content-wrapper {
+            position: relative;
+        }
+
+        .text-content {
+            max-height: 150px;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .text-content.expanded {
+            max-height: none;
+        }
+
+        .text-content-wrapper.has-overflow::after {
+            content: '';
+            position: absolute;
+            bottom: 40px;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background: linear-gradient(transparent, rgba(40, 40, 45, 1));
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .text-content-wrapper.expanded::after {
+            opacity: 0;
+        }
+
+        .read-more-btn {
+            display: none;
+            width: 100%;
+            padding: 10px;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            color: #d4af37;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin-top: 8px;
+            transition: all 0.3s;
+        }
+
+        .read-more-btn:hover {
+            background: rgba(212, 175, 55, 0.2);
+        }
+
+        .text-content-wrapper.has-overflow .read-more-btn {
+            display: block;
+        }
+
         /* YouTube Embed */
         .youtube-container {
             position: relative;
@@ -498,7 +551,14 @@ $csrf_token = generate_csrf_token();
                             </div>
                             <div class="material-content">
                                 <?php if ($material['material_type'] === 'text'): ?>
-                                    <?= $material['content'] ?>
+                                    <div class="text-content-wrapper" data-material-id="<?= $material['id_material'] ?>">
+                                        <div class="text-content">
+                                            <?= $material['content'] ?>
+                                        </div>
+                                        <button class="read-more-btn" onclick="toggleContent(this)">
+                                            <i class="fas fa-chevron-down"></i> Read More
+                                        </button>
+                                    </div>
                                 <?php elseif ($material['material_type'] === 'youtube'): ?>
                                     <?php
                                     // Extract YouTube video ID
@@ -676,6 +736,28 @@ $csrf_token = generate_csrf_token();
         <script>
             const csrfToken = '<?= $csrf_token ?>';
             const currentSubject = '<?= $subject ?>';
+
+            // Toggle Read More/Show Less for text content
+            function toggleContent(btn) {
+                const wrapper = btn.closest('.text-content-wrapper');
+                const content = wrapper.querySelector('.text-content');
+                const isExpanded = wrapper.classList.toggle('expanded');
+                content.classList.toggle('expanded');
+
+                btn.innerHTML = isExpanded
+                    ? '<i class="fas fa-chevron-up"></i> Show Less'
+                    : '<i class="fas fa-chevron-down"></i> Read More';
+            }
+
+            // Detect overflow and show Read More button only if needed
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('.text-content-wrapper').forEach(wrapper => {
+                    const content = wrapper.querySelector('.text-content');
+                    if (content.scrollHeight > content.clientHeight + 10) {
+                        wrapper.classList.add('has-overflow');
+                    }
+                });
+            });
 
             function openAddModal() {
                 document.getElementById('addModal').classList.add('active');
