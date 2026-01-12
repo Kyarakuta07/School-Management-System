@@ -15,8 +15,8 @@ session_start();
 include '../config/connection.php';
 require_once '../core/helpers.php';
 
-// Authentication check - Allow Nethera, Vasiki, and Anubis
-if (!isset($_SESSION['status_login']) || !in_array($_SESSION['role'], ['Nethera', 'Vasiki', 'Anubis'])) {
+// Authentication check - Allow Nethera, Vasiki, Anubis, and Hakaes
+if (!isset($_SESSION['status_login']) || !in_array($_SESSION['role'], ['Nethera', 'Vasiki', 'Anubis', 'Hakaes'])) {
     header("Location: ../index.php?pesan=gagal_akses");
     exit();
 }

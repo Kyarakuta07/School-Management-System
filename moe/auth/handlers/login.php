@@ -75,7 +75,7 @@ if ($stmt) {
             header("Location: ../../admin/index.php");
             exit();
         } else {
-            // Nethera and Anubis both go to user dashboard
+            // Nethera, Anubis, and Hakaes go to user dashboard
             header("Location: ../../user/beranda.php");
             exit();
         }

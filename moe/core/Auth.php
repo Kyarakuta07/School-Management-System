@@ -118,7 +118,7 @@ class Auth
     }
 
     /**
-     * For API endpoints - Nethera, Vasiki, OR Anubis role (allows all main roles)
+     * For API endpoints - Nethera, Vasiki, Anubis, OR Hakaes role (allows all main roles)
      */
     public static function requireNetheraOrVasikiApi()
     {
@@ -134,7 +134,7 @@ class Auth
         }
 
         $role = self::getSessionValue('role');
-        if (!in_array($role, ['Nethera', 'Vasiki', 'Anubis'])) {
+        if (!in_array($role, ['Nethera', 'Vasiki', 'Anubis', 'Hakaes'])) {
             header('Content-Type: application/json');
             http_response_code(403);
             echo json_encode([
@@ -205,6 +205,50 @@ class Auth
     {
         $role = self::getSessionValue('role');
         return $role === 'Anubis' || $role === 'Vasiki';
+    }
+
+    /**
+     * Require Hakaes role (teacher)
+     * 
+     * @param string $redirectUrl Optional custom redirect URL
+     */
+    public static function requireHakaes($redirectUrl = '../index.php?pesan=gagal_akses')
+    {
+        if (!self::isLoggedIn() || !self::hasRole('Hakaes')) {
+            header("Location: $redirectUrl");
+            exit();
+        }
+    }
+
+    /**
+     * Require Hakaes OR Vasiki role (for grade management)
+     * Both can manage grades
+     * 
+     * @param string $redirectUrl Optional custom redirect URL
+     */
+    public static function requireHakaesOrVasiki($redirectUrl = '../index.php?pesan=gagal_akses')
+    {
+        if (!self::isLoggedIn()) {
+            header("Location: $redirectUrl");
+            exit();
+        }
+
+        $role = self::getSessionValue('role');
+        if ($role !== 'Hakaes' && $role !== 'Vasiki') {
+            header("Location: $redirectUrl");
+            exit();
+        }
+    }
+
+    /**
+     * Check if user can manage grades (Hakaes or Vasiki)
+     * 
+     * @return bool
+     */
+    public static function canManageGrades()
+    {
+        $role = self::getSessionValue('role');
+        return $role === 'Hakaes' || $role === 'Vasiki';
     }
 
     // ==================================================

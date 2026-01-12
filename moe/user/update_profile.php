@@ -9,8 +9,8 @@ session_start();
 require_once '../core/csrf.php';
 include '../config/connection.php';
 
-// Authentication check - Allow Nethera, Vasiki, and Anubis
-if (!isset($_SESSION['status_login']) || !in_array($_SESSION['role'], ['Nethera', 'Vasiki', 'Anubis'])) {
+// Authentication check - Allow Nethera, Vasiki, Anubis, and Hakaes
+if (!isset($_SESSION['status_login']) || !in_array($_SESSION['role'], ['Nethera', 'Vasiki', 'Anubis', 'Hakaes'])) {
     header('Content-Type: application/json');
     echo json_encode(['success' => false, 'message' => 'Unauthorized']);
     exit();

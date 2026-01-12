@@ -4,8 +4,8 @@ session_start();
 include '../config/connection.php';
 require_once '../core/helpers.php';
 
-// Check if user is logged in - Allow Nethera, Vasiki, and Anubis
-if (!isset($_SESSION['status_login']) || !in_array($_SESSION['role'], ['Nethera', 'Vasiki', 'Anubis'])) {
+// Check if user is logged in - Allow Nethera, Vasiki, Anubis, and Hakaes
+if (!isset($_SESSION['status_login']) || !in_array($_SESSION['role'], ['Nethera', 'Vasiki', 'Anubis', 'Hakaes'])) {
     header("Location: ../index.php");
     exit();
 }

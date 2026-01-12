@@ -8,9 +8,9 @@
 
 require_once '../core/bootstrap.php';
 
-// Allow Nethera, Vasiki, and Anubis
+// Allow Nethera, Vasiki, Anubis, and Hakaes (teacher)
 $role = Auth::role();
-if (!Auth::isLoggedIn() || !in_array($role, ['Nethera', 'Vasiki', 'Anubis'])) {
+if (!Auth::isLoggedIn() || !in_array($role, ['Nethera', 'Vasiki', 'Anubis', 'Hakaes'])) {
     redirect('../index.php?pesan=gagal_akses');
 }
 
