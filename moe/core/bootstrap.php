@@ -49,6 +49,16 @@ header("X-Content-Type-Options: nosniff");
 header("X-XSS-Protection: 1; mode=block");
 
 // ==================================================
+// 3.1 CACHE CONTROL (Development Mode)
+// ==================================================
+// Disable browser caching during development so mobile users
+// always get fresh content without clearing cache
+// NOTE: Remove or modify this section for production
+header("Cache-Control: no-cache, no-store, must-revalidate");
+header("Pragma: no-cache");
+header("Expires: 0");
+
+// ==================================================
 // 4. LOAD DATABASE CONNECTION
 // ==================================================
 require_once __DIR__ . '/../config/connection.php';
