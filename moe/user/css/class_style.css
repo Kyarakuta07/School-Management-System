@@ -576,7 +576,71 @@
     border: 1px solid rgba(231, 76, 60, 0.4);
 }
 
-/* Extra small screens (380px) */
+/* ================================================
+   TABLE STACKING FOR ALL MOBILE DEVICES (768px and below)
+   Covers wide phones like iPhone 15 Pro Max (430px)
+   ================================================ */
+@media (max-width: 768px) {
+
+    /* Table: Stack on mobile as cards */
+    .grades-table-wrapper {
+        overflow-x: visible;
+    }
+
+    .grades-table {
+        display: block;
+        width: 100%;
+    }
+
+    .grades-table thead {
+        display: none;
+    }
+
+    .grades-table tbody {
+        display: block;
+    }
+
+    .grades-table tr {
+        display: block;
+        margin-bottom: 12px;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+        padding: 14px;
+        border: 1px solid rgba(212, 175, 55, 0.2);
+    }
+
+    .grades-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        white-space: normal;
+        font-size: 0.85rem;
+    }
+
+    .grades-table td:last-child {
+        border-bottom: none;
+    }
+
+    .grades-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #d4af37;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        flex-shrink: 0;
+        margin-right: 12px;
+    }
+
+    /* Status badges on mobile */
+    .status-badge {
+        padding: 3px 8px;
+        font-size: 0.7rem;
+    }
+}
+
+/* Extra small screens (480px) */
 @media (max-width: 480px) {
     .class-main-content {
         padding: 10px;

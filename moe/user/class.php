@@ -362,21 +362,21 @@ $csrf_token = generate_csrf_token();
                                 <tbody>
                                     <?php foreach ($all_grades as $grade): ?>
                                         <tr>
-                                            <td><?= e($grade['nama_lengkap']) ?></td>
-                                            <td><?= e($grade['nama_sanctuary'] ?? '-') ?></td>
+                                            <td data-label="Nama"><?= e($grade['nama_lengkap']) ?></td>
+                                            <td data-label="Sanctuary"><?= e($grade['nama_sanctuary'] ?? '-') ?></td>
                                             <?php if ($is_vasiki || $hakaes_subject === 'history'): ?>
-                                                <td><?= $grade['history'] ?></td>
+                                                <td data-label="History"><?= $grade['history'] ?></td>
                                             <?php endif; ?>
                                             <?php if ($is_vasiki || $hakaes_subject === 'herbology'): ?>
-                                                <td><?= $grade['herbology'] ?></td>
+                                                <td data-label="Herbology"><?= $grade['herbology'] ?></td>
                                             <?php endif; ?>
                                             <?php if ($is_vasiki || $hakaes_subject === 'oceanology'): ?>
-                                                <td><?= $grade['oceanology'] ?></td>
+                                                <td data-label="Oceanology"><?= $grade['oceanology'] ?></td>
                                             <?php endif; ?>
                                             <?php if ($is_vasiki || $hakaes_subject === 'astronomy'): ?>
-                                                <td><?= $grade['astronomy'] ?></td>
+                                                <td data-label="Astronomy"><?= $grade['astronomy'] ?></td>
                                             <?php endif; ?>
-                                            <td><strong><?= $grade['total_pp'] ?></strong></td>
+                                            <td data-label="Total PP"><strong><?= $grade['total_pp'] ?></strong></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
@@ -413,21 +413,22 @@ $csrf_token = generate_csrf_token();
                                 <tbody>
                                     <?php foreach ($quiz_results as $result): ?>
                                         <tr>
-                                            <td><?= e($result['nama_lengkap']) ?></td>
+                                            <td data-label="Siswa"><?= e($result['nama_lengkap']) ?></td>
                                             <?php if ($is_vasiki): ?>
-                                                <td><?= ucfirst($result['subject']) ?></td>
+                                                <td data-label="Subject"><?= ucfirst($result['subject']) ?></td>
                                             <?php endif; ?>
-                                            <td><?= e($result['quiz_title']) ?></td>
-                                            <td><?= $result['score'] ?>/<?= $result['max_score'] ?></td>
-                                            <td><?= number_format($result['percentage'], 0) ?>%</td>
-                                            <td>
+                                            <td data-label="Quiz"><?= e($result['quiz_title']) ?></td>
+                                            <td data-label="Score"><?= $result['score'] ?>/<?= $result['max_score'] ?></td>
+                                            <td data-label="Persen"><?= number_format($result['percentage'], 0) ?>%</td>
+                                            <td data-label="Status">
                                                 <?php if ($result['passed']): ?>
                                                     <span class="status-badge passed">✓ Pass</span>
                                                 <?php else: ?>
                                                     <span class="status-badge failed">✗ Fail</span>
                                                 <?php endif; ?>
                                             </td>
-                                            <td><?= date('d M, H:i', strtotime($result['completed_at'])) ?></td>
+                                            <td data-label="Selesai"><?= date('d M, H:i', strtotime($result['completed_at'])) ?>
+                                            </td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
