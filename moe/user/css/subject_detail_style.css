@@ -4,6 +4,45 @@
  */
 
 /* ================================================
+   BODY & BACKGROUND (Required for dark theme)
+   ================================================ */
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Outfit', sans-serif;
+    background: #0a0a0c;
+    color: #fff;
+    min-height: 100vh;
+}
+
+.bg-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('../assets/img/bg-pyramid.png') center center no-repeat;
+    background-size: cover;
+    z-index: -2;
+}
+
+.bg-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 10, 12, 0.85);
+    z-index: -1;
+}
+
+.main-dashboard-wrapper {
+    min-height: 100vh;
+    padding-bottom: 80px;
+}
+
+/* ================================================
    SUBJECT HEADER
    ================================================ */
 
