@@ -1,15 +1,27 @@
 <?php
 require_once '../core/security_config.php';
 session_start();
+include '../config/connection.php';
+require_once '../core/helpers.php';
 
-// Check if user is logged in - Allow both Nethera and Vasiki (admin)
-if (!isset($_SESSION['status_login']) || ($_SESSION['role'] != 'Nethera' && $_SESSION['role'] != 'Vasiki')) {
+// Check if user is logged in - Allow Nethera, Vasiki, and Anubis
+if (!isset($_SESSION['status_login']) || !in_array($_SESSION['role'], ['Nethera', 'Vasiki', 'Anubis'])) {
     header("Location: ../index.php");
     exit();
 }
 
 $username = $_SESSION['nama_lengkap'] ?? $_SESSION['username'] ?? 'User';
 $id_nethera = $_SESSION['id_nethera'];
+
+// Check for active punishment (only for Nethera role)
+if ($_SESSION['role'] === 'Nethera') {
+    $punishment = has_active_punishment($conn, $id_nethera);
+    if ($punishment && is_feature_locked($conn, $id_nethera, 'trapeza')) {
+        // Redirect to punishment page with locked message
+        header("Location: punishment.php?locked=trapeza");
+        exit();
+    }
+}
 ?>
 
 <!DOCTYPE html>

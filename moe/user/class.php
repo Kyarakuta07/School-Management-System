@@ -8,10 +8,22 @@
 
 require_once '../core/bootstrap.php';
 
-Auth::requireNetheraOrVasiki(); // Allow admin to access user pages
+// Allow Nethera, Vasiki, and Anubis
+$role = Auth::role();
+if (!Auth::isLoggedIn() || !in_array($role, ['Nethera', 'Vasiki', 'Anubis'])) {
+    redirect('../index.php?pesan=gagal_akses');
+}
 
 $user_id = Auth::id();
 $user_name = Auth::name();
+
+// Check for active punishment (only for Nethera role)
+if ($role === 'Nethera') {
+    $conn = DB::getConnection();
+    if (is_feature_locked($conn, $user_id, 'class')) {
+        redirect('punishment.php?locked=class');
+    }
+}
 
 // ==================================================
 // FETCH DATA

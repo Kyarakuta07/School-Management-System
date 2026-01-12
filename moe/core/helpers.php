@@ -363,3 +363,56 @@ function app_log($message, $level = 'INFO')
     $timestamp = date('Y-m-d H:i:s');
     error_log("[$timestamp] [$level] $message");
 }
+
+// ==================================================
+// PUNISHMENT HELPERS
+// ==================================================
+
+/**
+ * Check if user has active punishment
+ * @param mysqli $conn Database connection
+ * @param int $user_id User ID to check
+ * @return array|false Returns punishment data if active, false otherwise
+ */
+function has_active_punishment($conn, $user_id)
+{
+    $stmt = mysqli_prepare(
+        $conn,
+        "SELECT * FROM punishment_log 
+         WHERE id_nethera = ? AND status_hukuman = 'active' 
+         ORDER BY tanggal_pelanggaran DESC LIMIT 1"
+    );
+
+    if ($stmt) {
+        mysqli_stmt_bind_param($stmt, "i", $user_id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $punishment = mysqli_fetch_assoc($result);
+        mysqli_stmt_close($stmt);
+        return $punishment ?: false;
+    }
+
+    return false;
+}
+
+/**
+ * Check if a specific feature is locked for user
+ * @param mysqli $conn Database connection
+ * @param int $user_id User ID
+ * @param string $feature Feature name (trapeza, pet, class)
+ * @return bool True if locked
+ */
+function is_feature_locked($conn, $user_id, $feature)
+{
+    $punishment = has_active_punishment($conn, $user_id);
+
+    if (!$punishment) {
+        return false;
+    }
+
+    $locked = $punishment['locked_features'] ?? 'trapeza,pet,class';
+    $locked_arr = explode(',', $locked);
+
+    return in_array($feature, $locked_arr);
+}
+

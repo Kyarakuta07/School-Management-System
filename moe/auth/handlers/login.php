@@ -74,6 +74,10 @@ if ($stmt) {
         if ($data['role'] == 'Vasiki') {
             header("Location: ../../admin/index.php");
             exit();
+        } else if ($data['role'] == 'Anubis') {
+            // Anubis goes to punishment management page
+            header("Location: ../../user/punishment.php");
+            exit();
         } else {
             header("Location: ../../user/beranda.php");
             exit();

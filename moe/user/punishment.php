@@ -3,13 +3,12 @@
  * Punishment & Discipline Page
  * Mediterranean of Egypt - School Management System
  * 
- * Displays user's punishment history, active sanctions,
- * and sanctuary code of conduct.
+ * - Nethera: View their own punishment history and status
+ * - Anubis/Vasiki: Manage punishments for all Nethera users
  */
 
 // ==================================================
-// SETUP - Using hybrid approach like beranda.php
-// SECURITY FIX: Added security_config
+// SETUP
 // ==================================================
 require_once '../core/security_config.php';
 session_start();
@@ -21,14 +20,25 @@ require_once '../core/csrf.php';
 // Initialize DB wrapper
 DB::init($conn);
 
-// Authentication check - Allow both Nethera and Vasiki (admin)
-if (!isset($_SESSION['status_login']) || ($_SESSION['role'] != 'Nethera' && $_SESSION['role'] != 'Vasiki')) {
+// Authentication check - Allow Nethera, Vasiki, and Anubis
+$role = $_SESSION['role'] ?? '';
+if (!isset($_SESSION['status_login']) || !in_array($role, ['Nethera', 'Vasiki', 'Anubis'])) {
     header("Location: ../index.php?pesan=gagal_akses");
     exit();
 }
 
 $user_id = $_SESSION['id_nethera'];
 $user_name = htmlspecialchars($_SESSION['nama_lengkap']);
+$can_manage = ($role === 'Anubis' || $role === 'Vasiki');
+
+// Check if user came from a locked feature
+$locked_feature = $_GET['locked'] ?? '';
+$locked_messages = [
+    'trapeza' => 'Akses ke Trapeza (Bank) dibatasi karena Anda memiliki hukuman aktif.',
+    'pet' => 'Akses ke Pet System dibatasi karena Anda memiliki hukuman aktif.',
+    'class' => 'Akses ke Class Schedule dibatasi karena Anda memiliki hukuman aktif.'
+];
+$lock_message = $locked_messages[$locked_feature] ?? '';
 
 // Get user info with sanctuary
 $user_info = DB::queryOne(
@@ -40,110 +50,136 @@ $user_info = DB::queryOne(
 );
 
 $sanctuary_name = $user_info['nama_sanctuary'] ?? 'Unknown';
-$sanctuary_id = $user_info['id_sanctuary'] ?? 0;
-
-// CSRF Token for future forms
 $csrf_token = generate_csrf_token();
+
+// ==================================================
+// HANDLE ANUBIS ACTIONS (POST)
+// ==================================================
+$action_message = '';
+$action_error = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $can_manage) {
+    if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
+        $action_error = 'Invalid CSRF token';
+    } else {
+        $action = $_POST['action'] ?? '';
+
+        // ADD PUNISHMENT
+        if ($action === 'add_punishment') {
+            $target_id = (int) ($_POST['target_id'] ?? 0);
+            $jenis_pelanggaran = trim($_POST['jenis_pelanggaran'] ?? '');
+            $deskripsi = trim($_POST['deskripsi'] ?? '');
+            $jenis_hukuman = trim($_POST['jenis_hukuman'] ?? '');
+            $poin = (int) ($_POST['poin'] ?? 0);
+
+            if ($target_id && $jenis_pelanggaran && $jenis_hukuman) {
+                $stmt = mysqli_prepare(
+                    $conn,
+                    "INSERT INTO punishment_log (id_nethera, jenis_pelanggaran, deskripsi_pelanggaran, jenis_hukuman, poin_pelanggaran, status_hukuman, given_by) 
+                     VALUES (?, ?, ?, ?, ?, 'active', ?)"
+                );
+                mysqli_stmt_bind_param($stmt, "isssis", $target_id, $jenis_pelanggaran, $deskripsi, $jenis_hukuman, $poin, $user_id);
+
+                if (mysqli_stmt_execute($stmt)) {
+                    $action_message = 'Punishment berhasil ditambahkan!';
+                } else {
+                    $action_error = 'Gagal menambah punishment.';
+                }
+                mysqli_stmt_close($stmt);
+            }
+        }
+
+        // RELEASE PUNISHMENT
+        if ($action === 'release_punishment') {
+            $punishment_id = (int) ($_POST['punishment_id'] ?? 0);
+
+            if ($punishment_id) {
+                $stmt = mysqli_prepare(
+                    $conn,
+                    "UPDATE punishment_log SET status_hukuman = 'completed', tanggal_selesai = NOW(), released_by = ? WHERE id_punishment = ?"
+                );
+                mysqli_stmt_bind_param($stmt, "ii", $user_id, $punishment_id);
+
+                if (mysqli_stmt_execute($stmt)) {
+                    $action_message = 'Punishment berhasil dilepas!';
+                } else {
+                    $action_error = 'Gagal melepas punishment.';
+                }
+                mysqli_stmt_close($stmt);
+            }
+        }
+    }
+}
 
 // ==================================================
 // FETCH PUNISHMENT DATA
 // ==================================================
-
-// Check if punishment table exists, if not create mock data
 $punishment_history = [];
 $active_punishments = [];
 $total_punishment_points = 0;
+$all_nethera = []; // For Anubis dropdown
 
-// Try to fetch from database (if table exists)
 try {
-    // Fetch user's punishment history
-    $punishment_history = DB::query(
-        "SELECT * FROM punishment_log 
-         WHERE id_nethera = ? 
-         ORDER BY tanggal_pelanggaran DESC 
-         LIMIT 10",
-        [$user_id]
-    );
+    if ($can_manage) {
+        // Anubis/Vasiki sees ALL punishments
+        $punishment_history = DB::query(
+            "SELECT p.*, n.nama_lengkap as user_name 
+             FROM punishment_log p
+             JOIN nethera n ON p.id_nethera = n.id_nethera
+             ORDER BY p.tanggal_pelanggaran DESC LIMIT 50"
+        );
 
-    // Fetch active punishments
-    $active_punishments = DB::query(
-        "SELECT * FROM punishment_log 
-         WHERE id_nethera = ? 
-         AND status_hukuman = 'active' 
-         ORDER BY tanggal_selesai ASC",
-        [$user_id]
-    );
+        $active_punishments = DB::query(
+            "SELECT p.*, n.nama_lengkap as user_name 
+             FROM punishment_log p
+             JOIN nethera n ON p.id_nethera = n.id_nethera
+             WHERE p.status_hukuman = 'active'
+             ORDER BY p.tanggal_pelanggaran DESC"
+        );
 
-    // Calculate total points
+        // Get all Nethera users for dropdown
+        $all_nethera = DB::query("SELECT id_nethera, nama_lengkap FROM nethera WHERE role = 'Nethera' ORDER BY nama_lengkap");
+
+    } else {
+        // Nethera sees only their own
+        $punishment_history = DB::query(
+            "SELECT * FROM punishment_log WHERE id_nethera = ? ORDER BY tanggal_pelanggaran DESC LIMIT 10",
+            [$user_id]
+        );
+
+        $active_punishments = DB::query(
+            "SELECT * FROM punishment_log WHERE id_nethera = ? AND status_hukuman = 'active' ORDER BY tanggal_pelanggaran DESC",
+            [$user_id]
+        );
+    }
+
+    // Calculate total points for current user
     $points_result = DB::queryOne(
-        "SELECT SUM(poin_pelanggaran) as total_points 
-         FROM punishment_log 
-         WHERE id_nethera = ?",
+        "SELECT COALESCE(SUM(poin_pelanggaran), 0) as total_points FROM punishment_log WHERE id_nethera = ?",
         [$user_id]
     );
-
     $total_punishment_points = $points_result['total_points'] ?? 0;
 
 } catch (Exception $e) {
-    // Table doesn't exist yet - use empty arrays
-    $punishment_history = [];
-    $active_punishments = [];
+    error_log("Punishment query error: " . $e->getMessage());
 }
 
-// Sanctuary Code of Conduct (hardcoded for now)
-$code_of_conduct = [
-    [
-        'category' => 'Academic Integrity',
-        'rules' => [
-            'No cheating during examinations or assignments',
-            'Properly cite all sources in academic work',
-            'Do not plagiarize or copy others\' work'
-        ],
-        'severity' => 'High',
-        'points' => '10-20'
-    ],
-    [
-        'category' => 'Respect & Conduct',
-        'rules' => [
-            'Treat all members with respect and dignity',
-            'No bullying, harassment, or discrimination',
-            'Maintain appropriate language in all communications'
-        ],
-        'severity' => 'Medium',
-        'points' => '5-15'
-    ],
-    [
-        'category' => 'Attendance & Punctuality',
-        'rules' => [
-            'Attend all scheduled classes and activities',
-            'Arrive on time for all sessions',
-            'Notify in advance if unable to attend'
-        ],
-        'severity' => 'Low',
-        'points' => '2-5'
-    ],
-    [
-        'category' => 'Property & Resources',
-        'rules' => [
-            'Respect sanctuary property and resources',
-            'Do not vandalize or damage facilities',
-            'Return borrowed items in good condition'
-        ],
-        'severity' => 'Medium',
-        'points' => '5-10'
-    ],
-    [
-        'category' => 'Safety & Security',
-        'rules' => [
-            'Follow all safety protocols and guidelines',
-            'Report any security concerns immediately',
-            'Do not bring prohibited items to sanctuary'
-        ],
-        'severity' => 'High',
-        'points' => '15-25'
-    ]
+// Violation types for dropdown
+$violation_types = [
+    'Academic Dishonesty' => 'Ketidakjujuran Akademik',
+    'Disrespect' => 'Tidak Hormat',
+    'Attendance Issue' => 'Masalah Kehadiran',
+    'Property Damage' => 'Kerusakan Properti',
+    'Safety Violation' => 'Pelanggaran Keamanan',
+    'Other' => 'Lainnya'
 ];
 
+$punishment_types = [
+    'Warning' => 'Peringatan',
+    'Feature Lock' => 'Penguncian Fitur',
+    'Suspension' => 'Skorsing',
+    'Probation' => 'Masa Percobaan'
+];
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -158,6 +194,115 @@ $code_of_conduct = [
     <link rel="stylesheet" href="css/beranda_style.css" />
     <link rel="stylesheet" href="css/punishment_style.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* Additional styles for Anubis panel */
+        .anubis-panel {
+            background: rgba(139, 69, 19, 0.2);
+            border: 1px solid #DAA520;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .anubis-panel h3 {
+            color: #FFD700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: #ccc;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 10px;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            border-color: #FFD700;
+            outline: none;
+        }
+
+        .btn-anubis {
+            background: linear-gradient(135deg, #8B4513, #DAA520);
+            color: #000;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .btn-anubis:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-release {
+            background: #2ecc71;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .alert-lock {
+            background: rgba(231, 76, 60, 0.15);
+            border: 1px solid #e74c3c;
+            color: #ff6b6b;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-success {
+            background: rgba(46, 204, 113, 0.15);
+            border: 1px solid #2ecc71;
+            color: #2ecc71;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-error {
+            background: rgba(231, 76, 60, 0.15);
+            border: 1px solid #e74c3c;
+            color: #e74c3c;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .role-badge {
+            background: linear-gradient(135deg, #8B4513, #DAA520);
+            color: #000;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+    </style>
 </head>
 
 <body>
@@ -169,7 +314,12 @@ $code_of_conduct = [
 
         <header class="top-user-header">
             <h1 class="main-h1 cinzel-title">PUNISHMENT & DISCIPLINE</h1>
-            <p class="main-h2"><?= e($sanctuary_name) ?> Sanctuary - Code of Conduct</p>
+            <p class="main-h2">
+                <?= e($sanctuary_name) ?> Sanctuary
+                <?php if ($can_manage): ?>
+                    <span class="role-badge"><i class="fas fa-shield-alt"></i> <?= e($role) ?> Mode</span>
+                <?php endif; ?>
+            </p>
         </header>
 
         <nav class="top-nav-menu">
@@ -187,29 +337,41 @@ $code_of_conduct = [
             <!-- LEFT SIDEBAR: Stats & Active Punishments -->
             <aside class="punishment-sidebar">
 
+                <?php if ($lock_message): ?>
+                    <div class="alert-lock">
+                        <i class="fas fa-lock"></i>
+                        <span><?= e($lock_message) ?></span>
+                    </div>
+                <?php endif; ?>
+
+                <?php if ($action_message): ?>
+                    <div class="alert-success"><i class="fas fa-check"></i> <?= e($action_message) ?></div>
+                <?php endif; ?>
+
+                <?php if ($action_error): ?>
+                    <div class="alert-error"><i class="fas fa-times"></i> <?= e($action_error) ?></div>
+                <?php endif; ?>
+
                 <!-- Stats Card -->
                 <div class="punishment-card stats-card">
                     <div class="card-header">
-                        <h3><i class="fas fa-chart-line"></i> Your Status</h3>
+                        <h3><i class="fas fa-chart-line"></i> <?= $can_manage ? 'System Stats' : 'Your Status' ?></h3>
                     </div>
                     <div class="card-body">
                         <div class="stat-item">
-                            <span class="stat-label">Total Points</span>
+                            <span class="stat-label"><?= $can_manage ? 'Active Cases' : 'Total Points' ?></span>
                             <span
                                 class="stat-value <?= $total_punishment_points > 20 ? 'danger' : ($total_punishment_points > 10 ? 'warning' : 'safe') ?>">
-                                <?= $total_punishment_points ?>
+                                <?= $can_manage ? count($active_punishments) : $total_punishment_points ?>
                             </span>
                         </div>
                         <div class="stat-item">
-                            <span class="stat-label">Active Sanctions</span>
-                            <span class="stat-value"><?= count($active_punishments) ?></span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label">Total Violations</span>
-                            <span class="stat-value"><?= count($punishment_history) ?></span>
+                            <span class="stat-label"><?= $can_manage ? 'Total Records' : 'Active Sanctions' ?></span>
+                            <span
+                                class="stat-value"><?= $can_manage ? count($punishment_history) : count($active_punishments) ?></span>
                         </div>
 
-                        <?php if ($total_punishment_points == 0): ?>
+                        <?php if (!$can_manage && $total_punishment_points == 0): ?>
                             <div class="clean-record-badge">
                                 <i class="fas fa-check-circle"></i>
                                 <span>Clean Record</span>
@@ -217,6 +379,61 @@ $code_of_conduct = [
                         <?php endif; ?>
                     </div>
                 </div>
+
+                <!-- ANUBIS: Add Punishment Form -->
+                <?php if ($can_manage): ?>
+                    <div class="anubis-panel">
+                        <h3><i class="fas fa-plus-circle"></i> Add Punishment</h3>
+                        <form action="" method="POST">
+                            <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
+                            <input type="hidden" name="action" value="add_punishment">
+
+                            <div class="form-group">
+                                <label>Select Nethera</label>
+                                <select name="target_id" class="form-control" required>
+                                    <option value="">-- Pilih User --</option>
+                                    <?php foreach ($all_nethera as $nethera): ?>
+                                        <option value="<?= $nethera['id_nethera'] ?>"><?= e($nethera['nama_lengkap']) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Jenis Pelanggaran</label>
+                                <select name="jenis_pelanggaran" class="form-control" required>
+                                    <?php foreach ($violation_types as $en => $id): ?>
+                                        <option value="<?= $en ?>"><?= $id ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Deskripsi</label>
+                                <textarea name="deskripsi" class="form-control" rows="2"
+                                    placeholder="Detail pelanggaran..."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Jenis Hukuman</label>
+                                <select name="jenis_hukuman" class="form-control" required>
+                                    <?php foreach ($punishment_types as $en => $id): ?>
+                                        <option value="<?= $en ?>"><?= $id ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Poin Pelanggaran</label>
+                                <input type="number" name="poin" class="form-control" value="5" min="1" max="100">
+                            </div>
+
+                            <button type="submit" class="btn-anubis">
+                                <i class="fas fa-gavel"></i> Tambah Punishment
+                            </button>
+                        </form>
+                    </div>
+                <?php endif; ?>
 
                 <!-- Active Punishments Card -->
                 <?php if (count($active_punishments) > 0): ?>
@@ -227,11 +444,22 @@ $code_of_conduct = [
                         <div class="card-body">
                             <?php foreach ($active_punishments as $punishment): ?>
                                 <div class="active-punishment-item">
+                                    <?php if ($can_manage): ?>
+                                        <div class="punishment-user"><?= e($punishment['user_name'] ?? 'Unknown') ?></div>
+                                    <?php endif; ?>
                                     <div class="punishment-title"><?= e($punishment['jenis_pelanggaran']) ?></div>
                                     <div class="punishment-points"><?= $punishment['poin_pelanggaran'] ?> pts</div>
-                                    <div class="punishment-end">Ends:
-                                        <?= date('d M Y', strtotime($punishment['tanggal_selesai'])) ?>
-                                    </div>
+
+                                    <?php if ($can_manage): ?>
+                                        <form action="" method="POST" style="margin-top: 5px;">
+                                            <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
+                                            <input type="hidden" name="action" value="release_punishment">
+                                            <input type="hidden" name="punishment_id" value="<?= $punishment['id_punishment'] ?>">
+                                            <button type="submit" class="btn-release">
+                                                <i class="fas fa-unlock"></i> Release
+                                            </button>
+                                        </form>
+                                    <?php endif; ?>
                                 </div>
                             <?php endforeach; ?>
                         </div>
@@ -240,52 +468,22 @@ $code_of_conduct = [
                     <div class="punishment-card no-active-card">
                         <div class="card-body text-center">
                             <i class="fas fa-smile fa-3x" style="color: var(--gold); margin-bottom: 10px;"></i>
-                            <p>No active sanctions</p>
-                            <small>Keep up the good behavior!</small>
+                            <p><?= $can_manage ? 'No active punishments' : 'No active sanctions' ?></p>
+                            <small><?= $can_manage ? 'All users are in good standing!' : 'Keep up the good behavior!' ?></small>
                         </div>
                     </div>
                 <?php endif; ?>
 
             </aside>
 
-            <!-- MAIN CONTENT: Code of Conduct & History -->
+            <!-- MAIN CONTENT: History -->
             <div class="punishment-main">
-
-                <!-- Code of Conduct Section -->
-                <section class="punishment-card code-card">
-                    <div class="card-header">
-                        <h2><i class="fas fa-scroll"></i> Sanctuary Code of Conduct</h2>
-                        <p class="header-subtitle">Rules and regulations for all members</p>
-                    </div>
-                    <div class="card-body">
-                        <div class="code-grid">
-                            <?php foreach ($code_of_conduct as $code): ?>
-                                <div class="code-category">
-                                    <div class="code-header">
-                                        <h4><?= e($code['category']) ?></h4>
-                                        <span class="severity-badge <?= strtolower($code['severity']) ?>">
-                                            <?= e($code['severity']) ?> Risk
-                                        </span>
-                                    </div>
-                                    <ul class="code-rules">
-                                        <?php foreach ($code['rules'] as $rule): ?>
-                                            <li><i class="fas fa-check-circle"></i> <?= e($rule) ?></li>
-                                        <?php endforeach; ?>
-                                    </ul>
-                                    <div class="code-points">
-                                        <i class="fas fa-exclamation-circle"></i>
-                                        Violation: <strong><?= e($code['points']) ?> points</strong>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-                </section>
 
                 <!-- Punishment History Section -->
                 <section class="punishment-card history-card">
                     <div class="card-header">
-                        <h2><i class="fas fa-history"></i> Your Punishment History</h2>
+                        <h2><i class="fas fa-history"></i>
+                            <?= $can_manage ? 'All Records' : 'Your Punishment History' ?></h2>
                     </div>
                     <div class="card-body">
                         <?php if (count($punishment_history) > 0): ?>
@@ -293,17 +491,21 @@ $code_of_conduct = [
                                 <table>
                                     <thead>
                                         <tr>
+                                            <?php if ($can_manage): ?>
+                                                <th>User</th><?php endif; ?>
                                             <th>Date</th>
                                             <th>Violation</th>
                                             <th>Sanction</th>
                                             <th>Points</th>
                                             <th>Status</th>
-                                            <th>End Date</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php foreach ($punishment_history as $record): ?>
                                             <tr>
+                                                <?php if ($can_manage): ?>
+                                                    <td><?= e($record['user_name'] ?? 'Unknown') ?></td>
+                                                <?php endif; ?>
                                                 <td><?= date('d M Y', strtotime($record['tanggal_pelanggaran'])) ?></td>
                                                 <td><?= e($record['jenis_pelanggaran']) ?></td>
                                                 <td><?= e($record['jenis_hukuman']) ?></td>
@@ -313,8 +515,6 @@ $code_of_conduct = [
                                                         <?= ucfirst($record['status_hukuman']) ?>
                                                     </span>
                                                 </td>
-                                                <td><?= $record['tanggal_selesai'] ? date('d M Y', strtotime($record['tanggal_selesai'])) : '-' ?>
-                                                </td>
                                             </tr>
                                         <?php endforeach; ?>
                                     </tbody>
@@ -323,8 +523,9 @@ $code_of_conduct = [
                         <?php else: ?>
                             <div class="empty-state">
                                 <i class="fas fa-clipboard-check fa-4x"></i>
-                                <h3>Perfect Record!</h3>
-                                <p>You have no punishment history. Keep maintaining excellent conduct!</p>
+                                <h3><?= $can_manage ? 'No Records' : 'Perfect Record!' ?></h3>
+                                <p><?= $can_manage ? 'No punishment records in the system.' : 'You have no punishment history. Keep maintaining excellent conduct!' ?>
+                                </p>
                             </div>
                         <?php endif; ?>
                     </div>

@@ -163,6 +163,50 @@ class Auth
         }
     }
 
+    /**
+     * Require Anubis role (punishment manager)
+     * 
+     * @param string $redirectUrl Optional custom redirect URL
+     */
+    public static function requireAnubis($redirectUrl = '../index.php?pesan=gagal_akses')
+    {
+        if (!self::isLoggedIn() || !self::hasRole('Anubis')) {
+            header("Location: $redirectUrl");
+            exit();
+        }
+    }
+
+    /**
+     * Require Anubis OR Vasiki role (for punishment management)
+     * Both can manage punishments
+     * 
+     * @param string $redirectUrl Optional custom redirect URL
+     */
+    public static function requireAnubisOrVasiki($redirectUrl = '../index.php?pesan=gagal_akses')
+    {
+        if (!self::isLoggedIn()) {
+            header("Location: $redirectUrl");
+            exit();
+        }
+
+        $role = self::getSessionValue('role');
+        if ($role !== 'Anubis' && $role !== 'Vasiki') {
+            header("Location: $redirectUrl");
+            exit();
+        }
+    }
+
+    /**
+     * Check if user can manage punishments (Anubis or Vasiki)
+     * 
+     * @return bool
+     */
+    public static function canManagePunishment()
+    {
+        $role = self::getSessionValue('role');
+        return $role === 'Anubis' || $role === 'Vasiki';
+    }
+
     // ==================================================
     // USER DATA METHODS
     // ==================================================
