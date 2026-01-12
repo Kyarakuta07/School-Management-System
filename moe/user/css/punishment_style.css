@@ -721,7 +721,84 @@
 }
 
 /* ================================================
-   EXTRA SMALL SCREENS (320px - iPhone SE, Galaxy Fold)
+   TABLE STACKING FOR PHONES (480px - covers all phones including iPhone 15 Pro Max)
+   ================================================ */
+@media (max-width: 480px) {
+    .stat-value {
+        font-size: 1.6rem;
+    }
+
+    .code-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .severity-badge {
+        align-self: flex-start;
+    }
+
+    /* Table: Stack on mobile as cards */
+    .history-table {
+        overflow-x: visible;
+    }
+
+    .history-table table {
+        display: block;
+        width: 100%;
+    }
+
+    .history-table thead {
+        display: none;
+    }
+
+    .history-table tbody {
+        display: block;
+    }
+
+    .history-table tr {
+        display: block;
+        margin-bottom: 12px;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 8px;
+        padding: 12px;
+        border: 1px solid rgba(218, 165, 32, 0.2);
+    }
+
+    .history-table td {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        font-size: 0.85rem;
+    }
+
+    .history-table td:last-child {
+        border-bottom: none;
+    }
+
+    .history-table td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: var(--gold);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+    }
+
+    .points-badge,
+    .status-badge {
+        padding: 4px 10px;
+        font-size: 0.7rem;
+    }
+
+    /* Code of conduct grid fix */
+    .code-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* ================================================
+   EXTRA SMALL SCREENS (380px - iPhone SE, Galaxy Fold)
    ================================================ */
 @media (max-width: 380px) {
     .punishment-main-content {
