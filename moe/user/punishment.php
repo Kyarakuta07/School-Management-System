@@ -571,13 +571,15 @@ $punishment_types = [
                                         <?php foreach ($punishment_history as $record): ?>
                                             <tr>
                                                 <?php if ($can_manage): ?>
-                                                    <td><?= e($record['user_name'] ?? 'Unknown') ?></td>
+                                                    <td data-label="User"><?= e($record['user_name'] ?? 'Unknown') ?></td>
                                                 <?php endif; ?>
-                                                <td><?= date('d M Y', strtotime($record['tanggal_pelanggaran'])) ?></td>
-                                                <td><?= e($record['jenis_pelanggaran']) ?></td>
-                                                <td><?= e($record['jenis_hukuman']) ?></td>
-                                                <td><span class="points-badge"><?= $record['poin_pelanggaran'] ?></span></td>
-                                                <td>
+                                                <td data-label="Date">
+                                                    <?= date('d M Y', strtotime($record['tanggal_pelanggaran'])) ?></td>
+                                                <td data-label="Violation"><?= e($record['jenis_pelanggaran']) ?></td>
+                                                <td data-label="Sanction"><?= e($record['jenis_hukuman']) ?></td>
+                                                <td data-label="Points"><span
+                                                        class="points-badge"><?= $record['poin_pelanggaran'] ?></span></td>
+                                                <td data-label="Status">
                                                     <span class="status-badge <?= $record['status_hukuman'] ?>">
                                                         <?= ucfirst($record['status_hukuman']) ?>
                                                     </span>
