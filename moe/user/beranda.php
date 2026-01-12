@@ -197,7 +197,7 @@ if ($hour >= 5 && $hour < 12) {
                         style="display: none;">
 
                     <h2 class="profile-name"><?= e($user_name) ?></h2>
-                    <p class="profile-role"><i class="fas fa-user-shield"></i> Nethera</p>
+                    <p class="profile-role"><i class="fas fa-user-shield"></i> <?= e($user_role) ?></p>
 
                     <div class="profile-divider"></div>
 
