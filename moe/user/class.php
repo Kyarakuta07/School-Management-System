@@ -104,6 +104,24 @@ if ($can_manage_grades) {
     );
 }
 
+// For Hakaes: Get their assigned subject from class_schedule
+$hakaes_subject = null;
+$hakaes_subject_name = null;
+if (Auth::role() === 'Hakaes') {
+    $schedule = DB::queryOne(
+        "SELECT class_name FROM class_schedule WHERE id_hakaes = ?",
+        [$user_id]
+    );
+    if ($schedule) {
+        // Map class_name to subject key (lowercase)
+        $hakaes_subject_name = $schedule['class_name'];
+        $hakaes_subject = strtolower($schedule['class_name']);
+    }
+}
+
+// Vasiki (admin) can edit all subjects
+$is_vasiki = Auth::role() === 'Vasiki';
+
 $csrf_token = generate_csrf_token();
 ?>
 <!DOCTYPE html>
@@ -242,6 +260,11 @@ $csrf_token = generate_csrf_token();
 
                                 <div class="grade-inputs">
                                     <?php foreach ($subjects as $key => $subject): ?>
+                                        <?php
+                                        // Skip if Hakaes and not their assigned subject
+                                        if (!$is_vasiki && $hakaes_subject !== null && $key !== $hakaes_subject)
+                                            continue;
+                                        ?>
                                         <div class="grade-input-item" style="--subject-color: <?= $subject['color'] ?>">
                                             <label><i class="fa-solid <?= $subject['icon'] ?>"></i>
                                                 <?= $subject['name'] ?></label>

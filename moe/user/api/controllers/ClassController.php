@@ -72,11 +72,61 @@ class ClassController
             return $this->json(['success' => false, 'error' => 'Student ID and grades required'], 400);
         }
 
-        // Validate grades (must be integers 0-100)
-        $history = max(0, min(100, intval($grades['history'] ?? 0)));
-        $herbology = max(0, min(100, intval($grades['herbology'] ?? 0)));
-        $oceanology = max(0, min(100, intval($grades['oceanology'] ?? 0)));
-        $astronomy = max(0, min(100, intval($grades['astronomy'] ?? 0)));
+        // Get current user role and their assigned subject (for Hakaes)
+        $currentRole = Auth::role();
+        $currentUserId = Auth::id();
+        $hakaesSubject = null;
+
+        if ($currentRole === 'Hakaes') {
+            // Get Hakaes assigned subject from class_schedule
+            $schedule = DB::queryOne(
+                "SELECT class_name FROM class_schedule WHERE id_hakaes = ?",
+                [$currentUserId]
+            );
+            if ($schedule) {
+                $hakaesSubject = strtolower($schedule['class_name']);
+            } else {
+                return $this->json(['success' => false, 'error' => 'You are not assigned to any subject'], 403);
+            }
+        }
+
+        // Get existing grades first (to preserve values Hakaes shouldn't modify)
+        $existingGrades = DB::queryOne(
+            "SELECT history, herbology, oceanology, astronomy FROM class_grades WHERE id_nethera = ?",
+            [$studentId]
+        );
+
+        // Validate and merge grades
+        if ($currentRole === 'Hakaes' && $hakaesSubject) {
+            // Hakaes can only update their subject, others remain as is
+            $history = $existingGrades['history'] ?? 0;
+            $herbology = $existingGrades['herbology'] ?? 0;
+            $oceanology = $existingGrades['oceanology'] ?? 0;
+            $astronomy = $existingGrades['astronomy'] ?? 0;
+
+            // Update only the assigned subject
+            switch ($hakaesSubject) {
+                case 'history':
+                    $history = max(0, min(100, intval($grades['history'] ?? $history)));
+                    break;
+                case 'herbology':
+                    $herbology = max(0, min(100, intval($grades['herbology'] ?? $herbology)));
+                    break;
+                case 'oceanology':
+                    $oceanology = max(0, min(100, intval($grades['oceanology'] ?? $oceanology)));
+                    break;
+                case 'astronomy':
+                    $astronomy = max(0, min(100, intval($grades['astronomy'] ?? $astronomy)));
+                    break;
+            }
+        } else {
+            // Vasiki can update all subjects
+            $history = max(0, min(100, intval($grades['history'] ?? 0)));
+            $herbology = max(0, min(100, intval($grades['herbology'] ?? 0)));
+            $oceanology = max(0, min(100, intval($grades['oceanology'] ?? 0)));
+            $astronomy = max(0, min(100, intval($grades['astronomy'] ?? 0)));
+        }
+
         $totalPP = $history + $herbology + $oceanology + $astronomy;
 
         // Check if student exists
