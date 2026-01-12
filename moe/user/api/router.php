@@ -51,6 +51,8 @@ require_once __DIR__ . '/controllers/EvolutionController.php';
 require_once __DIR__ . '/controllers/RewardController.php';
 require_once __DIR__ . '/controllers/TrapezaController.php';
 require_once __DIR__ . '/controllers/ClassController.php';
+require_once __DIR__ . '/controllers/MaterialController.php';
+require_once __DIR__ . '/controllers/QuizController.php';
 
 // ==================================================
 // ROUTE MAPPING
@@ -112,6 +114,22 @@ $routes = [
     'getGrades' => ['ClassController', 'getGrades'],
     'updateGrades' => ['ClassController', 'updateGrades'],
     'getStudents' => ['ClassController', 'getStudents'],
+
+    // Material Controller (Subject materials)
+    'getMaterials' => ['MaterialController', 'getMaterials'],
+    'addMaterial' => ['MaterialController', 'addMaterial'],
+    'deleteMaterial' => ['MaterialController', 'deleteMaterial'],
+    'uploadPdf' => ['MaterialController', 'uploadPdf'],
+
+    // Quiz Controller
+    'getQuizzes' => ['QuizController', 'getQuizzes'],
+    'createQuiz' => ['QuizController', 'createQuiz'],
+    'addQuestion' => ['QuizController', 'addQuestion'],
+    'getQuizDetails' => ['QuizController', 'getQuizDetails'],
+    'submitQuiz' => ['QuizController', 'submitQuiz'],
+    'updateQuizStatus' => ['QuizController', 'updateQuizStatus'],
+    'deleteQuestion' => ['QuizController', 'deleteQuestion'],
+    'getAttemptHistory' => ['QuizController', 'getAttemptHistory'],
 ];
 
 // ==================================================

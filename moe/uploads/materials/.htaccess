@@ -1,0 +1,11 @@
+# Protect uploaded files
+<FilesMatch "\.php$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Allow PDF files only
+<FilesMatch "\.pdf$">
+    Order allow,deny
+    Allow from all
+</FilesMatch>
