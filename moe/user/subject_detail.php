@@ -538,7 +538,8 @@ $csrf_token = generate_csrf_token();
             </h2>
 
             <?php if ($can_manage): ?>
-                <button class="add-material-btn" onclick="openQuizModal()" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);">
+                <button class="add-material-btn" onclick="openQuizModal()"
+                    style="background: linear-gradient(135deg, #9b59b6, #8e44ad);">
                     <i class="fas fa-plus"></i> Create Quiz
                 </button>
             <?php endif; ?>
@@ -553,36 +554,41 @@ $csrf_token = generate_csrf_token();
                                 </div>
                                 <span class="material-title"><?= e($quiz['title']) ?></span>
                                 <?php if ($can_manage): ?>
-                                    <span class="status-badge <?= $quiz['status'] ?>" style="padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; background: <?= $quiz['status'] === 'active' ? 'rgba(76,175,80,0.2)' : ($quiz['status'] === 'draft' ? 'rgba(255,193,7,0.2)' : 'rgba(231,76,60,0.2)') ?>; color: <?= $quiz['status'] === 'active' ? '#4caf50' : ($quiz['status'] === 'draft' ? '#ffc107' : '#e74c3c') ?>;">
+                                    <span class="status-badge <?= $quiz['status'] ?>"
+                                        style="padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; background: <?= $quiz['status'] === 'active' ? 'rgba(76,175,80,0.2)' : ($quiz['status'] === 'draft' ? 'rgba(255,193,7,0.2)' : 'rgba(231,76,60,0.2)') ?>; color: <?= $quiz['status'] === 'active' ? '#4caf50' : ($quiz['status'] === 'draft' ? '#ffc107' : '#e74c3c') ?>;">
                                         <?= ucfirst($quiz['status']) ?>
                                     </span>
                                 <?php endif; ?>
                             </div>
                             <div class="material-meta">
-                                <i class="fas fa-question"></i> <?= $quiz['question_count'] ?> questions · 
+                                <i class="fas fa-question"></i> <?= $quiz['question_count'] ?> questions ·
                                 <i class="fas fa-clock"></i> <?= $quiz['time_limit'] ?> min ·
                                 <i class="fas fa-trophy"></i> Pass: <?= $quiz['passing_score'] ?>%
                             </div>
                             <p style="color: rgba(255,255,255,0.7); margin: 12px 0; font-size: 0.9rem;">
                                 <?= e($quiz['description'] ?: 'No description') ?>
                             </p>
-                            
+
                             <?php if ($can_manage): ?>
                                 <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                                    <a href="quiz_manage.php?id=<?= $quiz['id_quiz'] ?>" class="pdf-btn view" style="background: rgba(155, 89, 182, 0.2); color: #9b59b6;">
+                                    <a href="quiz_manage.php?id=<?= $quiz['id_quiz'] ?>" class="pdf-btn view"
+                                        style="background: rgba(155, 89, 182, 0.2); color: #9b59b6;">
                                         <i class="fas fa-cog"></i> Manage
                                     </a>
-                                    <button onclick="updateQuizStatus(<?= $quiz['id_quiz'] ?>, '<?= $quiz['status'] === 'active' ? 'closed' : 'active' ?>')" class="pdf-btn download" style="border: none; cursor: pointer;">
+                                    <button
+                                        onclick="updateQuizStatus(<?= $quiz['id_quiz'] ?>, '<?= $quiz['status'] === 'active' ? 'closed' : 'active' ?>')"
+                                        class="pdf-btn download" style="border: none; cursor: pointer;">
                                         <i class="fas fa-<?= $quiz['status'] === 'active' ? 'pause' : 'play' ?>"></i>
                                         <?= $quiz['status'] === 'active' ? 'Close' : 'Activate' ?>
                                     </button>
                                 </div>
                             <?php else: ?>
-                                <?php 
+                                <?php
                                 $can_take = ($quiz['attempts_used'] ?? 0) < $quiz['max_attempts'] && $quiz['question_count'] > 0;
                                 ?>
                                 <?php if ($can_take): ?>
-                                    <a href="quiz_attempt.php?id=<?= $quiz['id_quiz'] ?>" class="pdf-btn view" style="background: rgba(76, 175, 80, 0.2); color: #4caf50;">
+                                    <a href="quiz_attempt.php?id=<?= $quiz['id_quiz'] ?>" class="pdf-btn view"
+                                        style="background: rgba(76, 175, 80, 0.2); color: #4caf50;">
                                         <i class="fas fa-play"></i> Take Quiz
                                     </a>
                                     <span style="font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-left: 12px;">
@@ -590,7 +596,8 @@ $csrf_token = generate_csrf_token();
                                     </span>
                                 <?php else: ?>
                                     <span style="color: rgba(255,255,255,0.5); font-size: 0.9rem;">
-                                        <i class="fas fa-check-circle"></i> Completed (<?= $quiz['attempts_used'] ?? 0 ?>/<?= $quiz['max_attempts'] ?> attempts used)
+                                        <i class="fas fa-check-circle"></i> Completed
+                                        (<?= $quiz['attempts_used'] ?? 0 ?>/<?= $quiz['max_attempts'] ?> attempts used)
                                     </span>
                                 <?php endif; ?>
                             <?php endif; ?>
@@ -788,12 +795,12 @@ $csrf_token = generate_csrf_token();
                 document.getElementById('quizModal').classList.remove('active');
             }
 
-            document.getElementById('createQuizForm').addEventListener('submit', async function(e) {
+            document.getElementById('createQuizForm').addEventListener('submit', async function (e) {
                 e.preventDefault();
-                
+
                 const formData = new FormData(this);
                 const resultDiv = document.getElementById('quizFormResult');
-                
+
                 const data = {
                     csrf_token: csrfToken,
                     subject: currentSubject,
@@ -826,7 +833,7 @@ $csrf_token = generate_csrf_token();
 
             async function updateQuizStatus(quizId, newStatus) {
                 if (!confirm(`Change quiz status to "${newStatus}"?`)) return;
-                
+
                 try {
                     const response = await fetch('api/router.php?action=updateQuizStatus', {
                         method: 'POST',
@@ -854,8 +861,10 @@ $csrf_token = generate_csrf_token();
                 if (e.target === this) closeQuizModal();
             });
         </script>
+    <?php endif; ?>
 
-        <!-- Quiz Create Modal -->
+    <!-- Quiz Create Modal (outside php block so it loads with page) -->
+    <?php if ($can_manage): ?>
         <div class="modal-overlay" id="quizModal">
             <div class="modal-content">
                 <div class="modal-header">
@@ -863,14 +872,16 @@ $csrf_token = generate_csrf_token();
                     <button class="modal-close" onclick="closeQuizModal()">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <form id="createQuizForm">
+                    <form id="createQuizForm" onsubmit="submitQuizForm(event)">
                         <div class="form-group">
                             <label>Quiz Title</label>
-                            <input type="text" name="quiz_title" class="form-input" required placeholder="e.g., Chapter 1 Quiz">
+                            <input type="text" name="quiz_title" class="form-input" required
+                                placeholder="e.g., Chapter 1 Quiz">
                         </div>
                         <div class="form-group">
                             <label>Description</label>
-                            <textarea name="quiz_description" class="form-textarea" rows="3" placeholder="Brief description of the quiz..."></textarea>
+                            <textarea name="quiz_description" class="form-textarea" rows="3"
+                                placeholder="Brief description of the quiz..."></textarea>
                         </div>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                             <div class="form-group">
@@ -882,7 +893,8 @@ $csrf_token = generate_csrf_token();
                                 <input type="number" name="passing_score" class="form-input" value="70" min="0" max="100">
                             </div>
                         </div>
-                        <button type="submit" class="btn-submit" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);">
+                        <button type="submit" class="btn-submit"
+                            style="background: linear-gradient(135deg, #9b59b6, #8e44ad);">
                             <i class="fas fa-plus"></i> Create & Add Questions
                         </button>
                     </form>
@@ -890,6 +902,51 @@ $csrf_token = generate_csrf_token();
                 </div>
             </div>
         </div>
+
+        <script>
+            // Quiz form submit handler (defined after DOM element exists)
+            async function submitQuizForm(e) {
+                e.preventDefault();
+
+                const form = document.getElementById('createQuizForm');
+                const formData = new FormData(form);
+                const resultDiv = document.getElementById('quizFormResult');
+
+                const data = {
+                    csrf_token: '<?= $csrf_token ?>',
+                    subject: '<?= $subject ?>',
+                    title: formData.get('quiz_title'),
+                    description: formData.get('quiz_description'),
+                    time_limit: parseInt(formData.get('time_limit')),
+                    passing_score: parseInt(formData.get('passing_score'))
+                };
+
+                try {
+                    const response = await fetch('api/router.php?action=createQuiz', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+
+                    const result = await response.json();
+                    if (result.success) {
+                        resultDiv.innerHTML = '<span style="color: #4caf50;">✓ Quiz created! Redirecting...</span>';
+                        setTimeout(() => {
+                            window.location.href = 'quiz_manage.php?id=' + result.quiz_id;
+                        }, 1000);
+                    } else {
+                        resultDiv.innerHTML = '<span style="color: #e74c3c;">✗ ' + (result.error || 'Failed to create') + '</span>';
+                    }
+                } catch (err) {
+                    resultDiv.innerHTML = '<span style="color: #e74c3c;">✗ Network error</span>';
+                }
+            }
+
+            // Close quiz modal on outside click
+            document.getElementById('quizModal').addEventListener('click', function (e) {
+                if (e.target === this) closeQuizModal();
+            });
+        </script>
     <?php endif; ?>
 
     <!-- BOTTOM NAVIGATION (Mobile Only) -->
