@@ -20,9 +20,9 @@ require_once '../core/csrf.php';
 // Initialize DB wrapper
 DB::init($conn);
 
-// Authentication check - Allow Nethera, Vasiki, and Anubis
+// Authentication check - Allow Nethera, Vasiki, Anubis, and Hakaes
 $role = $_SESSION['role'] ?? '';
-if (!isset($_SESSION['status_login']) || !in_array($role, ['Nethera', 'Vasiki', 'Anubis'])) {
+if (!isset($_SESSION['status_login']) || !in_array($role, ['Nethera', 'Vasiki', 'Anubis', 'Hakaes'])) {
     header("Location: ../index.php?pesan=gagal_akses");
     exit();
 }
