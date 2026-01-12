@@ -6,7 +6,7 @@ require_once '../../core/activity_logger.php';
 include '../../config/connection.php';
 
 // Proteksi Halaman
-if (!isset($_SESSION['status_login']) || $_SESSION['role'] != 'Vasiki') {
+if (!isset($_SESSION['status_login']) || !in_array($_SESSION['role'], ['Vasiki', 'Hakaes'])) {
     header("Location: ../../index.php?pesan=gagal");
     exit();
 }

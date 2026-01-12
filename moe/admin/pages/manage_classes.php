@@ -17,7 +17,8 @@ header("X-XSS-Protection: 1; mode=block");
 
 include '../../config/connection.php';
 
-if (!isset($_SESSION['status_login']) || $_SESSION['role'] != 'Vasiki') {
+// Allow Vasiki (admin) and Hakaes (teacher) to access
+if (!isset($_SESSION['status_login']) || !in_array($_SESSION['role'], ['Vasiki', 'Hakaes'])) {
     header("Location: ../../index.php?pesan=gagal");
     exit();
 }

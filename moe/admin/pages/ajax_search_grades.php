@@ -5,7 +5,7 @@ session_start();
 require_once '../../core/csrf.php';
 
 // Check admin authentication
-if (!isset($_SESSION['status_login']) || $_SESSION['role'] != 'Vasiki') {
+if (!isset($_SESSION['status_login']) || !in_array($_SESSION['role'], ['Vasiki', 'Hakaes'])) {
     http_response_code(403);
     echo '<tr><td colspan="9" style="color:red; text-align:center;">Unauthorized Access</td></tr>';
     exit();

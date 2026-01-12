@@ -74,8 +74,12 @@ if ($stmt) {
         if ($data['role'] == 'Vasiki') {
             header("Location: ../../admin/index.php");
             exit();
+        } elseif ($data['role'] == 'Hakaes') {
+            // Hakaes goes to admin manage classes page
+            header("Location: ../../admin/pages/manage_classes.php");
+            exit();
         } else {
-            // Nethera, Anubis, and Hakaes go to user dashboard
+            // Nethera and Anubis go to user dashboard
             header("Location: ../../user/beranda.php");
             exit();
         }
