@@ -447,25 +447,25 @@ $code_of_conduct = [
                     class="fa-solid fa-sign-out-alt"></i><span>Logout</span></a>
         </nav>
 
+        <?php if ($lock_message): ?>
+            <div class="alert-lock alert-top">
+                <i class="fas fa-lock"></i>
+                <span><?= e($lock_message) ?></span>
+            </div>
+        <?php endif; ?>
+
+        <?php if ($action_message): ?>
+            <div class="alert-success alert-top"><i class="fas fa-check"></i> <?= e($action_message) ?></div>
+        <?php endif; ?>
+
+        <?php if ($action_error): ?>
+            <div class="alert-error alert-top"><i class="fas fa-times"></i> <?= e($action_error) ?></div>
+        <?php endif; ?>
+
         <main class="punishment-main-content">
 
             <!-- LEFT SIDEBAR: Stats & Active Punishments -->
             <aside class="punishment-sidebar">
-
-                <?php if ($lock_message): ?>
-                    <div class="alert-lock">
-                        <i class="fas fa-lock"></i>
-                        <span><?= e($lock_message) ?></span>
-                    </div>
-                <?php endif; ?>
-
-                <?php if ($action_message): ?>
-                    <div class="alert-success"><i class="fas fa-check"></i> <?= e($action_message) ?></div>
-                <?php endif; ?>
-
-                <?php if ($action_error): ?>
-                    <div class="alert-error"><i class="fas fa-times"></i> <?= e($action_error) ?></div>
-                <?php endif; ?>
 
                 <!-- Stats Card -->
                 <div class="punishment-card stats-card">
