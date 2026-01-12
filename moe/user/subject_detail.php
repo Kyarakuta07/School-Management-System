@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Subject Detail Page
  * Mediterranean of Egypt - School Management System
@@ -92,7 +92,344 @@ $csrf_token = generate_csrf_token();
     <link rel="stylesheet" href="css/class_style.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <link rel="stylesheet" href="css/subject_detail_style.css" />
+    <style>
+        .subject-header {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(145deg, rgba(30, 30, 35, 0.95), rgba(20, 20, 25, 0.98));
+            border-radius: 16px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .subject-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 2rem;
+            color: #fff;
+        }
+
+        .subject-header h1 {
+            font-size: 1.6rem;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .subject-header p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.95rem;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Materials Grid */
+        .materials-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .material-card {
+            background: linear-gradient(145deg, rgba(40, 40, 45, 0.9), rgba(30, 30, 35, 0.95));
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .material-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .material-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .material-type-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .material-type-icon.text {
+            background: rgba(212, 175, 55, 0.2);
+            color: #d4af37;
+        }
+
+        .material-type-icon.youtube {
+            background: rgba(255, 0, 0, 0.2);
+            color: #ff0000;
+        }
+
+        .material-type-icon.pdf {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+        }
+
+        .material-title {
+            font-weight: 600;
+            color: #fff;
+            font-size: 1.1rem;
+            flex: 1;
+        }
+
+        .material-meta {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 12px;
+        }
+
+        .material-content {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+        }
+
+        .material-content p {
+            margin-bottom: 12px;
+        }
+
+        /* YouTube Embed */
+        .youtube-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 8px;
+            margin-top: 12px;
+        }
+
+        .youtube-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* PDF Actions */
+        .pdf-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            margin-top: 12px;
+        }
+
+        .pdf-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .pdf-btn.view {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+        }
+
+        .pdf-btn.view:hover {
+            background: rgba(231, 76, 60, 0.4);
+        }
+
+        .pdf-btn.download {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+
+        .pdf-btn.download:hover {
+            background: rgba(76, 175, 80, 0.4);
+        }
+
+        .pdf-filename {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            flex-basis: 100%;
+        }
+
+        /* Empty State */
+        .empty-materials {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .empty-materials i {
+            font-size: 4rem;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+
+        /* Hakaes Add Button */
+        .add-material-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #4caf50, #388e3c);
+            color: #fff;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .add-material-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        /* Add Material Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(145deg, #2a2a30, #1e1e22);
+            border-radius: 16px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            color: #fff;
+            font-size: 1.3rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #ccc;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .form-textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #4caf50, #388e3c);
+            border: none;
+            color: #fff;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-submit:hover {
+            opacity: 0.9;
+        }
+
+        @media (max-width: 480px) {
+            .subject-header {
+                padding: 20px 15px;
+            }
+
+            .subject-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+
+            .subject-header h1 {
+                font-size: 1.3rem;
+            }
+
+            .material-card {
+                padding: 15px;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -147,13 +484,6 @@ $csrf_token = generate_csrf_token();
                                     <?= e($material['title']) ?>
                                 </span>
                                 <?php if ($can_manage): ?>
-                                    <?php if ($material['material_type'] === 'text'): ?>
-                                        <button class="modal-close"
-                                            onclick="openEditModal(<?= $material['id_material'] ?>, '<?= e(addslashes($material['title'])) ?>', '<?= e(addslashes(strip_tags($material['content']))) ?>')"
-                                            title="Edit" style="color: #d4af37;">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                    <?php endif; ?>
                                     <button class="modal-close" onclick="deleteMaterial(<?= $material['id_material'] ?>)"
                                         title="Delete">
                                         <i class="fas fa-trash"></i>
@@ -162,21 +492,13 @@ $csrf_token = generate_csrf_token();
                             </div>
                             <div class="material-meta">
                                 <i class="fas fa-user"></i>
-                                <?= e($material['creator_name']) ?> Â·
+                                <?= e($material['creator_name']) ?> ·
                                 <i class="fas fa-clock"></i>
                                 <?= date('d M Y', strtotime($material['created_at'])) ?>
                             </div>
                             <div class="material-content">
                                 <?php if ($material['material_type'] === 'text'): ?>
-                                    <div class="text-content-wrapper" data-material-id="<?= $material['id_material'] ?>"
-                                        data-title="<?= e($material['title']) ?>">
-                                        <div class="text-content" id="content-<?= $material['id_material'] ?>">
-                                            <?= $material['content'] ?>
-                                        </div>
-                                        <button class="read-more-btn" onclick="openContentModal(this)">
-                                            <i class="fas fa-expand"></i> Read More
-                                        </button>
-                                    </div>
+                                    <?= $material['content'] ?>
                                 <?php elseif ($material['material_type'] === 'youtube'): ?>
                                     <?php
                                     // Extract YouTube video ID
@@ -242,8 +564,8 @@ $csrf_token = generate_csrf_token();
                                 <?php endif; ?>
                             </div>
                             <div class="material-meta">
-                                <i class="fas fa-question"></i> <?= $quiz['question_count'] ?> questions Â·
-                                <i class="fas fa-clock"></i> <?= $quiz['time_limit'] ?> min Â·
+                                <i class="fas fa-question"></i> <?= $quiz['question_count'] ?> questions ·
+                                <i class="fas fa-clock"></i> <?= $quiz['time_limit'] ?> min ·
                                 <i class="fas fa-trophy"></i> Pass: <?= $quiz['passing_score'] ?>%
                             </div>
                             <p style="color: rgba(255,255,255,0.7); margin: 12px 0; font-size: 0.9rem;">
@@ -294,50 +616,6 @@ $csrf_token = generate_csrf_token();
             <?php endif; ?>
 
         </main>
-    </div>
-
-    <!-- BOTTOM NAVIGATION (Mobile Only) -->
-    <nav class="bottom-nav">
-        <a href="beranda.php" class="bottom-nav-item">
-            <i class="fa-solid fa-home"></i>
-            <span>Home</span>
-        </a>
-        <a href="class.php" class="bottom-nav-item active">
-            <i class="fa-solid fa-book-open"></i>
-            <span>Class</span>
-        </a>
-        <a href="pet.php" class="bottom-nav-item">
-            <i class="fa-solid fa-paw"></i>
-            <span>Pet</span>
-        </a>
-        <a href="trapeza.php" class="bottom-nav-item">
-            <i class="fa-solid fa-credit-card"></i>
-            <span>Bank</span>
-        </a>
-        <a href="punishment.php" class="bottom-nav-item">
-            <i class="fa-solid fa-gavel"></i>
-            <span>Rules</span>
-        </a>
-    </nav>
-
-    <!-- Content Read More Modal -->
-    <div class="content-modal" id="contentModal">
-        <div class="content-modal-inner">
-            <div class="content-modal-header">
-                <h3 id="contentModalTitle">Material</h3>
-                <button class="content-modal-close" onclick="closeContentModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="content-modal-body" id="contentModalBody">
-                <!-- Content will be loaded here -->
-            </div>
-            <div class="content-modal-footer">
-                <button onclick="closeContentModal()">
-                    <i class="fas fa-chevron-up"></i> Show Less
-                </button>
-            </div>
-        </div>
     </div>
 
     <!-- Add Material Modal -->
@@ -395,81 +673,9 @@ $csrf_token = generate_csrf_token();
             </div>
         </div>
 
-        <!-- Edit Material Modal -->
-        <div class="modal-overlay" id="editModal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2><i class="fas fa-edit"></i> Edit Material</h2>
-                    <button class="modal-close" onclick="closeEditModal()">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <form id="editMaterialForm">
-                        <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
-                        <input type="hidden" name="id_material" id="editMaterialId">
-
-                        <div class="form-group">
-                            <label>Title</label>
-                            <input type="text" name="title" id="editTitle" class="form-input" required
-                                placeholder="Material title...">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Content</label>
-                            <textarea name="content" id="editContent" class="form-textarea"
-                                placeholder="Write your material content here..." style="min-height: 200px;"></textarea>
-                        </div>
-
-                        <button type="submit" class="btn-submit"
-                            style="background: linear-gradient(135deg, #d4af37, #b8860b);">
-                            <i class="fas fa-save"></i> Update Material
-                        </button>
-                    </form>
-                    <div id="editFormResult" style="margin-top: 16px; text-align: center;"></div>
-                </div>
-            </div>
-        </div>
-
         <script>
             const csrfToken = '<?= $csrf_token ?>';
             const currentSubject = '<?= $subject ?>';
-
-            // Open content in modal popup
-            function openContentModal(btn) {
-                const wrapper = btn.closest('.text-content-wrapper');
-                const content = wrapper.querySelector('.text-content');
-                const title = wrapper.dataset.title || 'Material';
-
-                document.getElementById('contentModalTitle').textContent = title;
-                document.getElementById('contentModalBody').innerHTML = content.innerHTML;
-                document.getElementById('contentModal').classList.add('active');
-                document.body.style.overflow = 'hidden'; // Prevent background scroll
-            }
-
-            // Close content modal
-            function closeContentModal() {
-                document.getElementById('contentModal').classList.remove('active');
-                document.body.style.overflow = ''; // Restore scroll
-            }
-
-            // Close modal on outside click
-            document.getElementById('contentModal').addEventListener('click', function (e) {
-                if (e.target === this) closeContentModal();
-            });
-
-            // Close modal on Escape key
-            document.addEventListener('keydown', function (e) {
-                if (e.key === 'Escape') closeContentModal();
-            });
-
-            // Detect overflow and show Read More button only if needed
-            document.addEventListener('DOMContentLoaded', function () {
-                document.querySelectorAll('.text-content-wrapper').forEach(wrapper => {
-                    const content = wrapper.querySelector('.text-content');
-                    if (content.scrollHeight > content.clientHeight + 10) {
-                        wrapper.classList.add('has-overflow');
-                    }
-                });
-            });
 
             function openAddModal() {
                 document.getElementById('addModal').classList.add('active');
@@ -478,54 +684,6 @@ $csrf_token = generate_csrf_token();
             function closeAddModal() {
                 document.getElementById('addModal').classList.remove('active');
             }
-
-            // Edit Material Modal Functions
-            function openEditModal(id, title, content) {
-                document.getElementById('editMaterialId').value = id;
-                document.getElementById('editTitle').value = title;
-                document.getElementById('editContent').value = content;
-                document.getElementById('editModal').classList.add('active');
-            }
-
-            function closeEditModal() {
-                document.getElementById('editModal').classList.remove('active');
-                document.getElementById('editFormResult').innerHTML = '';
-            }
-
-            // Edit Modal Form Submit
-            document.getElementById('editMaterialForm').addEventListener('submit', async function (e) {
-                e.preventDefault();
-                const resultDiv = document.getElementById('editFormResult');
-                resultDiv.innerHTML = '<span style="color: #d4af37;">Updating...</span>';
-
-                try {
-                    const response = await fetch('api/router.php?action=updateMaterial', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            csrf_token: csrfToken,
-                            id_material: document.getElementById('editMaterialId').value,
-                            title: document.getElementById('editTitle').value,
-                            content: document.getElementById('editContent').value
-                        })
-                    });
-
-                    const result = await response.json();
-                    if (result.success) {
-                        resultDiv.innerHTML = '<span style="color: #4caf50;">✓ Material updated!</span>';
-                        setTimeout(() => location.reload(), 1000);
-                    } else {
-                        resultDiv.innerHTML = '<span style="color: #e74c3c;">✗ ' + (result.error || 'Update failed') + '</span>';
-                    }
-                } catch (err) {
-                    resultDiv.innerHTML = '<span style="color: #e74c3c;">✗ Network error</span>';
-                }
-            });
-
-            // Close edit modal on outside click
-            document.getElementById('editModal').addEventListener('click', function (e) {
-                if (e.target === this) closeEditModal();
-            });
 
             function toggleContentField() {
                 const type = document.getElementById('typeSelect').value;
@@ -545,7 +703,7 @@ $csrf_token = generate_csrf_token();
                 if (type === 'pdf') {
                     const pdfFile = document.getElementById('pdfFileInput').files[0];
                     if (!pdfFile) {
-                        resultDiv.innerHTML = '<span style="color: #e74c3c;">âœ— Please select a PDF file</span>';
+                        resultDiv.innerHTML = '<span style="color: #e74c3c;">✗ Please select a PDF file</span>';
                         return;
                     }
 
@@ -563,13 +721,13 @@ $csrf_token = generate_csrf_token();
 
                         const result = await response.json();
                         if (result.success) {
-                            resultDiv.innerHTML = '<span style="color: #4caf50;">âœ“ PDF uploaded successfully!</span>';
+                            resultDiv.innerHTML = '<span style="color: #4caf50;">✓ PDF uploaded successfully!</span>';
                             setTimeout(() => location.reload(), 1000);
                         } else {
-                            resultDiv.innerHTML = '<span style="color: #e74c3c;">âœ— ' + (result.error || 'Failed to upload') + '</span>';
+                            resultDiv.innerHTML = '<span style="color: #e74c3c;">✗ ' + (result.error || 'Failed to upload') + '</span>';
                         }
                     } catch (err) {
-                        resultDiv.innerHTML = '<span style="color: #e74c3c;">âœ— Network error</span>';
+                        resultDiv.innerHTML = '<span style="color: #e74c3c;">✗ Network error</span>';
                     }
                     return;
                 }
@@ -595,13 +753,13 @@ $csrf_token = generate_csrf_token();
                     const result = await response.json();
 
                     if (result.success) {
-                        resultDiv.innerHTML = '<span style="color: #4caf50;">âœ“ Material added successfully!</span>';
+                        resultDiv.innerHTML = '<span style="color: #4caf50;">✓ Material added successfully!</span>';
                         setTimeout(() => location.reload(), 1000);
                     } else {
-                        resultDiv.innerHTML = '<span style="color: #e74c3c;">âœ— ' + (result.error || 'Failed to add') + '</span>';
+                        resultDiv.innerHTML = '<span style="color: #e74c3c;">✗ ' + (result.error || 'Failed to add') + '</span>';
                     }
                 } catch (err) {
-                    resultDiv.innerHTML = '<span style="color: #e74c3c;">âœ— Network error</span>';
+                    resultDiv.innerHTML = '<span style="color: #e74c3c;">✗ Network error</span>';
                 }
             });
 
@@ -664,15 +822,15 @@ $csrf_token = generate_csrf_token();
 
                     const result = await response.json();
                     if (result.success) {
-                        resultDiv.innerHTML = '<span style="color: #4caf50;">âœ“ Quiz created! Redirecting to add questions...</span>';
+                        resultDiv.innerHTML = '<span style="color: #4caf50;">✓ Quiz created! Redirecting to add questions...</span>';
                         setTimeout(() => {
                             window.location.href = 'quiz_manage.php?id=' + result.quiz_id;
                         }, 1000);
                     } else {
-                        resultDiv.innerHTML = '<span style="color: #e74c3c;">âœ— ' + (result.error || 'Failed to create') + '</span>';
+                        resultDiv.innerHTML = '<span style="color: #e74c3c;">✗ ' + (result.error || 'Failed to create') + '</span>';
                     }
                 } catch (err) {
-                    resultDiv.innerHTML = '<span style="color: #e74c3c;">âœ— Network error</span>';
+                    resultDiv.innerHTML = '<span style="color: #e74c3c;">✗ Network error</span>';
                 }
             });
 
@@ -775,15 +933,15 @@ $csrf_token = generate_csrf_token();
 
                     const result = await response.json();
                     if (result.success) {
-                        resultDiv.innerHTML = '<span style="color: #4caf50;">âœ“ Quiz created! Redirecting...</span>';
+                        resultDiv.innerHTML = '<span style="color: #4caf50;">✓ Quiz created! Redirecting...</span>';
                         setTimeout(() => {
                             window.location.href = 'quiz_manage.php?id=' + result.quiz_id;
                         }, 1000);
                     } else {
-                        resultDiv.innerHTML = '<span style="color: #e74c3c;">âœ— ' + (result.error || 'Failed to create') + '</span>';
+                        resultDiv.innerHTML = '<span style="color: #e74c3c;">✗ ' + (result.error || 'Failed to create') + '</span>';
                     }
                 } catch (err) {
-                    resultDiv.innerHTML = '<span style="color: #e74c3c;">âœ— Network error</span>';
+                    resultDiv.innerHTML = '<span style="color: #e74c3c;">✗ Network error</span>';
                 }
             }
 
