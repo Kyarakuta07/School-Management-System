@@ -141,6 +141,28 @@ if ($can_manage_grades) {
     );
 }
 
+// For Hakaes/Vasiki: Get quiz attempts for monitoring
+$quiz_results = [];
+if ($can_manage_grades) {
+    $subject_filter = ($hakaes_subject && !$is_vasiki) ? "AND q.subject = ?" : "";
+    $params = ($hakaes_subject && !$is_vasiki) ? [$hakaes_subject] : [];
+
+    $quiz_results = DB::query(
+        "SELECT qa.id_attempt, qa.score, qa.max_score, qa.percentage, qa.passed, qa.completed_at,
+                q.title as quiz_title, q.subject,
+                n.nama_lengkap, n.username,
+                s.nama_sanctuary
+         FROM quiz_attempts qa
+         JOIN class_quizzes q ON qa.id_quiz = q.id_quiz
+         JOIN nethera n ON qa.id_nethera = n.id_nethera
+         LEFT JOIN sanctuary s ON n.id_sanctuary = s.id_sanctuary
+         WHERE qa.completed_at IS NOT NULL $subject_filter
+         ORDER BY qa.completed_at DESC
+         LIMIT 50",
+        $params
+    );
+}
+
 $csrf_token = generate_csrf_token();
 ?>
 <!DOCTYPE html>
@@ -312,7 +334,7 @@ $csrf_token = generate_csrf_token();
                     <!-- ALL CLASS GRADES TABLE -->
                     <div class="class-card grades-table-card">
                         <h3 class="card-title">
-                            <i class="fa-solid fa-table"></i> 
+                            <i class="fa-solid fa-table"></i>
                             <?= $hakaes_subject_name ? strtoupper($hakaes_subject_name) . ' GRADES' : 'ALL CLASS GRADES' ?>
                         </h3>
 
@@ -362,6 +384,57 @@ $csrf_token = generate_csrf_token();
                         </div>
 
                         <p class="grades-count"><?= count($all_grades) ?> siswa</p>
+                    </div>
+                <?php endif; ?>
+
+                <?php if ($can_manage_grades && !empty($quiz_results)): ?>
+                    <!-- QUIZ RESULTS TABLE -->
+                    <div class="class-card quiz-results-card">
+                        <h3 class="card-title">
+                            <i class="fa-solid fa-clipboard-check"></i>
+                            <?= $hakaes_subject_name ? strtoupper($hakaes_subject_name) . ' QUIZ RESULTS' : 'ALL QUIZ RESULTS' ?>
+                        </h3>
+
+                        <div class="grades-table-wrapper">
+                            <table class="grades-table quiz-results-table">
+                                <thead>
+                                    <tr>
+                                        <th>Siswa</th>
+                                        <?php if ($is_vasiki): ?>
+                                            <th>Subject</th>
+                                        <?php endif; ?>
+                                        <th>Quiz</th>
+                                        <th>Score</th>
+                                        <th>%</th>
+                                        <th>Status</th>
+                                        <th>Selesai</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($quiz_results as $result): ?>
+                                        <tr>
+                                            <td><?= e($result['nama_lengkap']) ?></td>
+                                            <?php if ($is_vasiki): ?>
+                                                <td><?= ucfirst($result['subject']) ?></td>
+                                            <?php endif; ?>
+                                            <td><?= e($result['quiz_title']) ?></td>
+                                            <td><?= $result['score'] ?>/<?= $result['max_score'] ?></td>
+                                            <td><?= number_format($result['percentage'], 0) ?>%</td>
+                                            <td>
+                                                <?php if ($result['passed']): ?>
+                                                    <span class="status-badge passed">✓ Pass</span>
+                                                <?php else: ?>
+                                                    <span class="status-badge failed">✗ Fail</span>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td><?= date('d M, H:i', strtotime($result['completed_at'])) ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <p class="grades-count"><?= count($quiz_results) ?> hasil quiz</p>
                     </div>
                 <?php endif; ?>
 
