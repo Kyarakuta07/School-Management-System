@@ -90,6 +90,43 @@ $subjects = [
     'astronomy' => ['icon' => 'fa-star', 'color' => '#9b59b6', 'name' => 'Astronomy'],
 ];
 
+// Student Progress Tracking (for Nethera users)
+$student_progress = [];
+if ($role === 'Nethera') {
+    foreach (array_keys($subjects) as $subj) {
+        // Get total active quizzes for this subject
+        $total_quizzes = DB::queryValue(
+            "SELECT COUNT(*) FROM class_quizzes WHERE subject = ? AND status = 'active'",
+            [$subj]
+        );
+
+        // Get completed quiz attempts for this student
+        $completed = DB::queryValue(
+            "SELECT COUNT(DISTINCT qa.id_quiz) 
+             FROM quiz_attempts qa
+             JOIN class_quizzes q ON qa.id_quiz = q.id_quiz
+             WHERE qa.id_nethera = ? AND q.subject = ? AND qa.completed_at IS NOT NULL",
+            [$user_id, $subj]
+        );
+
+        // Get passed quizzes
+        $passed = DB::queryValue(
+            "SELECT COUNT(DISTINCT qa.id_quiz) 
+             FROM quiz_attempts qa
+             JOIN class_quizzes q ON qa.id_quiz = q.id_quiz
+             WHERE qa.id_nethera = ? AND q.subject = ? AND qa.passed = 1",
+            [$user_id, $subj]
+        );
+
+        $student_progress[$subj] = [
+            'total' => (int) $total_quizzes,
+            'completed' => (int) $completed,
+            'passed' => (int) $passed,
+            'percentage' => $total_quizzes > 0 ? round(($completed / $total_quizzes) * 100) : 0
+        ];
+    }
+}
+
 // Check if user can manage grades (Hakaes or Vasiki)
 $can_manage_grades = Auth::canManageGrades();
 
@@ -162,6 +199,32 @@ if ($can_manage_grades) {
          WHERE qa.completed_at IS NOT NULL $subject_filter
          ORDER BY qa.completed_at DESC
          LIMIT 50",
+        $params
+    );
+
+    // Quiz Analytics Statistics
+    $quiz_stats = DB::queryOne(
+        "SELECT 
+            COUNT(*) as total_attempts,
+            ROUND(AVG(qa.percentage), 1) as avg_score,
+            SUM(CASE WHEN qa.passed = 1 THEN 1 ELSE 0 END) as passed_count,
+            ROUND(SUM(CASE WHEN qa.passed = 1 THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 1) as pass_rate
+         FROM quiz_attempts qa
+         JOIN class_quizzes q ON qa.id_quiz = q.id_quiz
+         WHERE qa.completed_at IS NOT NULL $subject_filter",
+        $params
+    );
+
+    // Best performing quiz
+    $best_quiz = DB::queryOne(
+        "SELECT q.title, ROUND(AVG(qa.percentage), 1) as avg_score, COUNT(*) as attempts
+         FROM quiz_attempts qa
+         JOIN class_quizzes q ON qa.id_quiz = q.id_quiz
+         WHERE qa.completed_at IS NOT NULL $subject_filter
+         GROUP BY q.id_quiz
+         HAVING COUNT(*) >= 3
+         ORDER BY AVG(qa.percentage) DESC
+         LIMIT 1",
         $params
     );
 }
@@ -247,6 +310,50 @@ $csrf_token = generate_csrf_token();
                         </div>
                     <?php endif; ?>
                 </div>
+
+                <?php if ($role === 'Nethera' && !empty($student_progress)): ?>
+                    <!-- STUDENT PROGRESS -->
+                    <div class="class-card" style="border-color: rgba(52, 152, 219, 0.4);">
+                        <h3 class="card-title" style="color: #3498db;">
+                            <i class="fa-solid fa-tasks"></i> MY QUIZ PROGRESS
+                        </h3>
+
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <?php foreach ($subjects as $key => $subject):
+                                $progress = $student_progress[$key] ?? ['total' => 0, 'completed' => 0, 'passed' => 0, 'percentage' => 0];
+                                ?>
+                                <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px;">
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <i class="fa-solid <?= $subject['icon'] ?>"
+                                                style="color: <?= $subject['color'] ?>;"></i>
+                                            <span style="font-weight: 500; color: #fff;"><?= $subject['name'] ?></span>
+                                        </div>
+                                        <span style="font-size: 0.75rem; color: rgba(255,255,255,0.5);">
+                                            <?= $progress['completed'] ?>/<?= $progress['total'] ?> quizzes
+                                        </span>
+                                    </div>
+                                    <div
+                                        style="background: rgba(255,255,255,0.1); height: 8px; border-radius: 4px; overflow: hidden;">
+                                        <div
+                                            style="width: <?= $progress['percentage'] ?>%; height: 100%; background: <?= $subject['color'] ?>; transition: width 0.5s;">
+                                        </div>
+                                    </div>
+                                    <?php if ($progress['passed'] > 0): ?>
+                                        <div style="font-size: 0.7rem; color: #2ecc71; margin-top: 6px;">
+                                            <i class="fa-solid fa-check-circle"></i> <?= $progress['passed'] ?> passed
+                                        </div>
+                                    <?php elseif ($progress['total'] > 0 && $progress['completed'] == 0): ?>
+                                        <div style="font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-top: 6px;">
+                                            <i class="fa-solid fa-clock"></i> Not started
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
 
                 <!-- SANCTUARY RANKING -->
                 <div class="class-card ranking-card">
@@ -387,6 +494,70 @@ $csrf_token = generate_csrf_token();
                         </div>
 
                         <p class="grades-count"><?= count($all_grades) ?> siswa</p>
+                    </div>
+                <?php endif; ?>
+
+                <?php if ($can_manage_grades && isset($quiz_stats) && $quiz_stats['total_attempts'] > 0): ?>
+                    <!-- QUIZ ANALYTICS DASHBOARD -->
+                    <div class="class-card" style="border-color: rgba(155, 89, 182, 0.4);">
+                        <h3 class="card-title" style="color: #9b59b6;">
+                            <i class="fa-solid fa-chart-line"></i>
+                            <?= $hakaes_subject_name ? strtoupper($hakaes_subject_name) . ' ANALYTICS' : 'QUIZ ANALYTICS' ?>
+                        </h3>
+
+                        <div
+                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; margin-bottom: 16px;">
+                            <!-- Total Attempts -->
+                            <div
+                                style="background: linear-gradient(145deg, rgba(155, 89, 182, 0.15), rgba(155, 89, 182, 0.05)); padding: 16px; border-radius: 12px; text-align: center; border: 1px solid rgba(155, 89, 182, 0.2);">
+                                <div style="font-size: 1.8rem; font-weight: 700; color: #9b59b6;">
+                                    <?= $quiz_stats['total_attempts'] ?>
+                                </div>
+                                <div style="font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-top: 4px;">Total
+                                    Attempts</div>
+                            </div>
+
+                            <!-- Average Score -->
+                            <div
+                                style="background: linear-gradient(145deg, rgba(52, 152, 219, 0.15), rgba(52, 152, 219, 0.05)); padding: 16px; border-radius: 12px; text-align: center; border: 1px solid rgba(52, 152, 219, 0.2);">
+                                <div style="font-size: 1.8rem; font-weight: 700; color: #3498db;">
+                                    <?= $quiz_stats['avg_score'] ?? 0 ?>%
+                                </div>
+                                <div style="font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-top: 4px;">Avg Score
+                                </div>
+                            </div>
+
+                            <!-- Pass Rate -->
+                            <div
+                                style="background: linear-gradient(145deg, rgba(46, 204, 113, 0.15), rgba(46, 204, 113, 0.05)); padding: 16px; border-radius: 12px; text-align: center; border: 1px solid rgba(46, 204, 113, 0.2);">
+                                <div style="font-size: 1.8rem; font-weight: 700; color: #2ecc71;">
+                                    <?= $quiz_stats['pass_rate'] ?? 0 ?>%
+                                </div>
+                                <div style="font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-top: 4px;">Pass Rate
+                                </div>
+                            </div>
+
+                            <!-- Passed Count -->
+                            <div
+                                style="background: linear-gradient(145deg, rgba(212, 175, 55, 0.15), rgba(212, 175, 55, 0.05)); padding: 16px; border-radius: 12px; text-align: center; border: 1px solid rgba(212, 175, 55, 0.2);">
+                                <div style="font-size: 1.8rem; font-weight: 700; color: #d4af37;">
+                                    <?= $quiz_stats['passed_count'] ?? 0 ?>
+                                </div>
+                                <div style="font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-top: 4px;">Passed</div>
+                            </div>
+                        </div>
+
+                        <?php if (isset($best_quiz) && $best_quiz): ?>
+                            <div
+                                style="background: rgba(46, 204, 113, 0.1); padding: 12px 16px; border-radius: 8px; border-left: 3px solid #2ecc71;">
+                                <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 4px;">🏆 Best
+                                    Performing Quiz</div>
+                                <div style="color: #fff; font-weight: 600;"><?= e($best_quiz['title']) ?></div>
+                                <div style="font-size: 0.8rem; color: #2ecc71; margin-top: 4px;">
+                                    Avg: <?= $best_quiz['avg_score'] ?>% (<?= $best_quiz['attempts'] ?> attempts)
+                                </div>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 <?php endif; ?>
 

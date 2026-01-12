@@ -118,6 +118,7 @@ $routes = [
     // Material Controller (Subject materials)
     'getMaterials' => ['MaterialController', 'getMaterials'],
     'addMaterial' => ['MaterialController', 'addMaterial'],
+    'updateMaterial' => ['MaterialController', 'updateMaterial'],
     'deleteMaterial' => ['MaterialController', 'deleteMaterial'],
     'uploadPdf' => ['MaterialController', 'uploadPdf'],
 

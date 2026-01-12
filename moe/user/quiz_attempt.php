@@ -633,6 +633,35 @@ $current_subject = $subjects[$quiz['subject']] ?? ['icon' => 'fa-book', 'color' 
         };
     </script>
 
+    <!-- BOTTOM NAVIGATION (Mobile Only) -->
+    <nav class="bottom-nav"
+        style="position: fixed; bottom: 0; left: 0; right: 0; background: linear-gradient(180deg, rgba(20,20,25,0.95), rgba(10,10,12,0.98)); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid rgba(212,175,55,0.3); z-index: 1000;">
+        <a href="beranda.php"
+            style="display: flex; flex-direction: column; align-items: center; text-decoration: none; color: rgba(255,255,255,0.6); font-size: 0.7rem; gap: 4px;">
+            <i class="fa-solid fa-home" style="font-size: 1.1rem;"></i>
+            <span>Home</span>
+        </a>
+        <a href="class.php"
+            style="display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #d4af37; font-size: 0.7rem; gap: 4px;">
+            <i class="fa-solid fa-book-open" style="font-size: 1.1rem;"></i>
+            <span>Class</span>
+        </a>
+        <a href="pet.php"
+            style="display: flex; flex-direction: column; align-items: center; text-decoration: none; color: rgba(255,255,255,0.6); font-size: 0.7rem; gap: 4px;">
+            <i class="fa-solid fa-paw" style="font-size: 1.1rem;"></i>
+            <span>Pet</span>
+        </a>
+        <a href="trapeza.php"
+            style="display: flex; flex-direction: column; align-items: center; text-decoration: none; color: rgba(255,255,255,0.6); font-size: 0.7rem; gap: 4px;">
+            <i class="fa-solid fa-credit-card" style="font-size: 1.1rem;"></i>
+            <span>Bank</span>
+        </a>
+        <a href="punishment.php"
+            style="display: flex; flex-direction: column; align-items: center; text-decoration: none; color: rgba(255,255,255,0.6); font-size: 0.7rem; gap: 4px;">
+            <i class="fa-solid fa-gavel" style="font-size: 1.1rem;"></i>
+            <span>Rules</span>
+        </a>
+    </nav>
 </body>
 
 </html>

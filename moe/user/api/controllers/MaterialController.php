@@ -143,6 +143,75 @@ class MaterialController
     }
 
     /**
+     * Update material (Hakaes only - text type only)
+     */
+    public function updateMaterial()
+    {
+        // Require Hakaes or Vasiki role
+        if (!Auth::canManageGrades()) {
+            return $this->json(['success' => false, 'error' => 'Access denied'], 403);
+        }
+
+        // Get JSON input
+        $input = json_decode(file_get_contents('php://input'), true);
+
+        // CSRF validation
+        if (!isset($input['csrf_token']) || !validate_csrf_token($input['csrf_token'])) {
+            return $this->json(['success' => false, 'error' => 'Invalid CSRF token'], 403);
+        }
+
+        $materialId = intval($input['id_material'] ?? 0);
+        $title = trim($input['title'] ?? '');
+        $content = trim($input['content'] ?? '');
+
+        if (!$materialId) {
+            return $this->json(['success' => false, 'error' => 'Material ID required'], 400);
+        }
+
+        if (empty($title)) {
+            return $this->json(['success' => false, 'error' => 'Title is required'], 400);
+        }
+
+        if (empty($content)) {
+            return $this->json(['success' => false, 'error' => 'Content is required'], 400);
+        }
+
+        // Verify material exists and is text type
+        $material = DB::queryOne(
+            "SELECT id_material, material_type FROM class_materials WHERE id_material = ? AND is_active = 1",
+            [$materialId]
+        );
+
+        if (!$material) {
+            return $this->json(['success' => false, 'error' => 'Material not found'], 404);
+        }
+
+        if ($material['material_type'] !== 'text') {
+            return $this->json(['success' => false, 'error' => 'Only text materials can be edited'], 400);
+        }
+
+        // Wrap content in paragraph if not HTML
+        if (!preg_match('/<[^>]+>/', $content)) {
+            $content = '<p>' . nl2br(htmlspecialchars($content)) . '</p>';
+        }
+
+        // Update material
+        $result = DB::execute(
+            "UPDATE class_materials SET title = ?, content = ?, updated_at = NOW() WHERE id_material = ?",
+            [$title, $content, $materialId]
+        );
+
+        if ($result) {
+            return $this->json([
+                'success' => true,
+                'message' => 'Material updated successfully'
+            ]);
+        }
+
+        return $this->json(['success' => false, 'error' => 'Failed to update material'], 500);
+    }
+
+    /**
      * Upload PDF material (Hakaes only)
      * Uses multipart/form-data for file upload
      */
