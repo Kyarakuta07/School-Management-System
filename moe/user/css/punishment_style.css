@@ -721,9 +721,9 @@
 }
 
 /* ================================================
-   TABLE STACKING FOR PHONES (480px - covers all phones including iPhone 15 Pro Max)
+   TABLE STACKING FOR PHONES & TABLETS (768px - covers ALL mobile devices)
    ================================================ */
-@media (max-width: 480px) {
+@media (max-width: 768px) {
     .stat-value {
         font-size: 1.6rem;
     }
@@ -740,20 +740,20 @@
 
     /* Table: Stack on mobile as cards */
     .history-table {
-        overflow-x: visible;
+        overflow-x: visible !important;
     }
 
     .history-table table {
-        display: block;
-        width: 100%;
+        display: block !important;
+        width: 100% !important;
     }
 
     .history-table thead {
-        display: none;
+        display: none !important;
     }
 
     .history-table tbody {
-        display: block;
+        display: block !important;
     }
 
     .history-table tr {
