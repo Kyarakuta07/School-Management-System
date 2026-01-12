@@ -223,11 +223,6 @@ $csrf_token = generate_csrf_token();
         .text-content {
             max-height: 150px;
             overflow: hidden;
-            transition: max-height 0.3s ease;
-        }
-
-        .text-content.expanded {
-            max-height: none;
         }
 
         .text-content-wrapper.has-overflow::after {
@@ -239,11 +234,6 @@ $csrf_token = generate_csrf_token();
             height: 50px;
             background: linear-gradient(transparent, rgba(40, 40, 45, 1));
             pointer-events: none;
-            transition: opacity 0.3s;
-        }
-
-        .text-content-wrapper.expanded::after {
-            opacity: 0;
         }
 
         .read-more-btn {
@@ -266,6 +256,112 @@ $csrf_token = generate_csrf_token();
 
         .text-content-wrapper.has-overflow .read-more-btn {
             display: block;
+        }
+
+        /* Read More Modal */
+        .content-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 2000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .content-modal.active {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        .content-modal-inner {
+            background: linear-gradient(145deg, #2a2a30, #1e1e22);
+            border-radius: 16px;
+            max-width: 700px;
+            width: 100%;
+            margin: 40px auto;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content-modal-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .content-modal-header h3 {
+            color: #d4af37;
+            font-size: 1.2rem;
+            margin: 0;
+        }
+
+        .content-modal-close {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #fff;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .content-modal-close:hover {
+            background: rgba(231, 76, 60, 0.3);
+            color: #e74c3c;
+        }
+
+        .content-modal-body {
+            padding: 24px;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.8;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .content-modal-body p {
+            margin-bottom: 16px;
+        }
+
+        .content-modal-footer {
+            padding: 16px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .content-modal-footer button {
+            padding: 10px 24px;
+            background: rgba(212, 175, 55, 0.2);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            color: #d4af37;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .content-modal-footer button:hover {
+            background: rgba(212, 175, 55, 0.3);
         }
 
         /* YouTube Embed */
@@ -551,12 +647,13 @@ $csrf_token = generate_csrf_token();
                             </div>
                             <div class="material-content">
                                 <?php if ($material['material_type'] === 'text'): ?>
-                                    <div class="text-content-wrapper" data-material-id="<?= $material['id_material'] ?>">
-                                        <div class="text-content">
+                                    <div class="text-content-wrapper" data-material-id="<?= $material['id_material'] ?>"
+                                        data-title="<?= e($material['title']) ?>">
+                                        <div class="text-content" id="content-<?= $material['id_material'] ?>">
                                             <?= $material['content'] ?>
                                         </div>
-                                        <button class="read-more-btn" onclick="toggleContent(this)">
-                                            <i class="fas fa-chevron-down"></i> Read More
+                                        <button class="read-more-btn" onclick="openContentModal(this)">
+                                            <i class="fas fa-expand"></i> Read More
                                         </button>
                                     </div>
                                 <?php elseif ($material['material_type'] === 'youtube'): ?>
@@ -678,6 +775,26 @@ $csrf_token = generate_csrf_token();
         </main>
     </div>
 
+    <!-- Content Read More Modal -->
+    <div class="content-modal" id="contentModal">
+        <div class="content-modal-inner">
+            <div class="content-modal-header">
+                <h3 id="contentModalTitle">Material</h3>
+                <button class="content-modal-close" onclick="closeContentModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="content-modal-body" id="contentModalBody">
+                <!-- Content will be loaded here -->
+            </div>
+            <div class="content-modal-footer">
+                <button onclick="closeContentModal()">
+                    <i class="fas fa-chevron-up"></i> Show Less
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Add Material Modal -->
     <?php if ($can_manage): ?>
         <div class="modal-overlay" id="addModal">
@@ -737,17 +854,33 @@ $csrf_token = generate_csrf_token();
             const csrfToken = '<?= $csrf_token ?>';
             const currentSubject = '<?= $subject ?>';
 
-            // Toggle Read More/Show Less for text content
-            function toggleContent(btn) {
+            // Open content in modal popup
+            function openContentModal(btn) {
                 const wrapper = btn.closest('.text-content-wrapper');
                 const content = wrapper.querySelector('.text-content');
-                const isExpanded = wrapper.classList.toggle('expanded');
-                content.classList.toggle('expanded');
+                const title = wrapper.dataset.title || 'Material';
 
-                btn.innerHTML = isExpanded
-                    ? '<i class="fas fa-chevron-up"></i> Show Less'
-                    : '<i class="fas fa-chevron-down"></i> Read More';
+                document.getElementById('contentModalTitle').textContent = title;
+                document.getElementById('contentModalBody').innerHTML = content.innerHTML;
+                document.getElementById('contentModal').classList.add('active');
+                document.body.style.overflow = 'hidden'; // Prevent background scroll
             }
+
+            // Close content modal
+            function closeContentModal() {
+                document.getElementById('contentModal').classList.remove('active');
+                document.body.style.overflow = ''; // Restore scroll
+            }
+
+            // Close modal on outside click
+            document.getElementById('contentModal').addEventListener('click', function (e) {
+                if (e.target === this) closeContentModal();
+            });
+
+            // Close modal on Escape key
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') closeContentModal();
+            });
 
             // Detect overflow and show Read More button only if needed
             document.addEventListener('DOMContentLoaded', function () {
