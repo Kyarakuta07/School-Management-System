@@ -8,7 +8,7 @@
 
 require_once '../core/bootstrap.php';
 
-Auth::requireNethera();
+Auth::requireNetheraOrVasiki(); // Allow admin to access user pages
 
 $user_id = Auth::id();
 $user_name = Auth::name();

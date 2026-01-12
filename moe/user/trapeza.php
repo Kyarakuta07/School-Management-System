@@ -2,8 +2,8 @@
 require_once '../core/security_config.php';
 session_start();
 
-// Check if user is logged in
-if (!isset($_SESSION['status_login']) || $_SESSION['role'] != 'Nethera') {
+// Check if user is logged in - Allow both Nethera and Vasiki (admin)
+if (!isset($_SESSION['status_login']) || ($_SESSION['role'] != 'Nethera' && $_SESSION['role'] != 'Vasiki')) {
     header("Location: ../index.php");
     exit();
 }

@@ -14,8 +14,8 @@ require_once '../core/security_config.php';
 session_start();
 include '../config/connection.php';
 
-// Authentication check
-if (!isset($_SESSION['status_login']) || $_SESSION['role'] != 'Nethera') {
+// Authentication check - Allow both Nethera and Vasiki (admin)
+if (!isset($_SESSION['status_login']) || ($_SESSION['role'] != 'Nethera' && $_SESSION['role'] != 'Vasiki')) {
     header("Location: ../index.php?pesan=gagal_akses");
     exit();
 }

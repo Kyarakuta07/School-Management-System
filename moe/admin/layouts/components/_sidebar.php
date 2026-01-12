@@ -24,6 +24,9 @@ $currentPage = $currentPage ?? 'dashboard';
         <a href="<?= $basePath ?? '' ?>pages/manage_classes.php" <?= $currentPage === 'classes' ? 'class="active"' : '' ?>>
             <i class="uil uil-book-open"></i> <span>Manage Classes</span>
         </a>
+        <a href="<?= $basePath ?? '' ?>../user/beranda.php" <?= $currentPage === 'user_view' ? 'class="active"' : '' ?>>
+            <i class="uil uil-eye"></i> <span>View User Dashboard</span>
+        </a>
         <a href="#" <?= $currentPage === 'settings' ? 'class="active"' : '' ?>>
             <i class="uil uil-setting"></i> <span>Settings</span>
         </a>

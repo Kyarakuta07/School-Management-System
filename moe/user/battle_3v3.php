@@ -3,8 +3,10 @@
  * MOE Pet System - Battle 3v3 Arena
  * Dragon City-style turn-based 3v3 combat
  * LANDSCAPE ONLY - Shows rotate overlay in portrait
+ * SECURITY FIX: Added security_config
  */
 
+require_once '../core/security_config.php';
 session_start();
 
 // Check if user is logged in

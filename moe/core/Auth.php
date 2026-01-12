@@ -45,6 +45,35 @@ class Auth
     }
 
     /**
+     * Require Nethera OR Vasiki role. Allows admins to view user dashboard.
+     * Call this at the top of user pages that admin should also access.
+     * 
+     * @param string $redirectUrl Optional custom redirect URL
+     */
+    public static function requireNetheraOrVasiki($redirectUrl = '../index.php?pesan=gagal_akses')
+    {
+        if (!self::isLoggedIn()) {
+            header("Location: $redirectUrl");
+            exit();
+        }
+
+        $role = self::getSessionValue('role');
+        if ($role !== 'Nethera' && $role !== 'Vasiki') {
+            header("Location: $redirectUrl");
+            exit();
+        }
+
+        // Check if account is still active (skip for admin)
+        if ($role === 'Nethera' && !self::isAccountActive()) {
+            session_destroy();
+            $status = self::getSessionValue('status_akun', 'Pending');
+            $message = $status === 'Pending' ? 'pending_approval' : 'access_denied';
+            header("Location: ../index.php?pesan=$message");
+            exit();
+        }
+    }
+
+    /**
      * Require Vasiki (admin) role. Redirects to login if not authenticated.
      * Call this at the top of any admin-only page.
      * 
@@ -83,6 +112,35 @@ class Auth
                 'success' => false,
                 'error' => 'Unauthorized. Please login.',
                 'error_code' => 'UNAUTHORIZED'
+            ]);
+            exit();
+        }
+    }
+
+    /**
+     * For API endpoints - Nethera OR Vasiki role (allows admin access)
+     */
+    public static function requireNetheraOrVasikiApi()
+    {
+        if (!self::isLoggedIn()) {
+            header('Content-Type: application/json');
+            http_response_code(401);
+            echo json_encode([
+                'success' => false,
+                'error' => 'Unauthorized. Please login.',
+                'error_code' => 'UNAUTHORIZED'
+            ]);
+            exit();
+        }
+
+        $role = self::getSessionValue('role');
+        if ($role !== 'Nethera' && $role !== 'Vasiki') {
+            header('Content-Type: application/json');
+            http_response_code(403);
+            echo json_encode([
+                'success' => false,
+                'error' => 'Access denied.',
+                'error_code' => 'FORBIDDEN'
             ]);
             exit();
         }

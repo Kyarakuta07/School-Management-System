@@ -9,8 +9,8 @@ session_start();
 require_once '../core/csrf.php';
 include '../config/connection.php';
 
-// Authentication check
-if (!isset($_SESSION['status_login']) || $_SESSION['role'] != 'Nethera') {
+// Authentication check - Allow both Nethera and Vasiki (admin)
+if (!isset($_SESSION['status_login']) || ($_SESSION['role'] != 'Nethera' && $_SESSION['role'] != 'Vasiki')) {
     header('Content-Type: application/json');
     echo json_encode(['success' => false, 'message' => 'Unauthorized']);
     exit();

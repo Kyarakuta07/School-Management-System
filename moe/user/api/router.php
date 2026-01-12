@@ -29,8 +29,8 @@ require_once '../pet/pet_loader.php'; // Load pet logic functions
 // API-specific response helpers
 require_once '../../core/api_response.php';
 
-// Require Nethera auth (returns JSON error if not authenticated)
-Auth::requireNetheraApi();
+// Require auth - allow both Nethera and Vasiki (admin can view user dashboard)
+Auth::requireNetheraOrVasikiApi();
 
 $user_id = Auth::id();
 $conn = DB::getConnection();
