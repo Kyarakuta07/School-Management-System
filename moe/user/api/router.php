@@ -50,6 +50,7 @@ require_once __DIR__ . '/controllers/BattleController.php';
 require_once __DIR__ . '/controllers/EvolutionController.php';
 require_once __DIR__ . '/controllers/RewardController.php';
 require_once __DIR__ . '/controllers/TrapezaController.php';
+require_once __DIR__ . '/controllers/ClassController.php';
 
 // ==================================================
 // ROUTE MAPPING
@@ -106,6 +107,11 @@ $routes = [
     'get_transactions' => ['TrapezaController', 'getTransactions'],
     'transfer_gold' => ['TrapezaController', 'transferGold'],
     'search_nethera' => ['TrapezaController', 'searchNethera'],
+
+    // Class Controller (Hakaes grade management)
+    'getGrades' => ['ClassController', 'getGrades'],
+    'updateGrades' => ['ClassController', 'updateGrades'],
+    'getStudents' => ['ClassController', 'getStudents'],
 ];
 
 // ==================================================
