@@ -29,6 +29,10 @@ if (!isset($_SESSION['status_login']) || !in_array($_SESSION['role'], ['Nethera'
 
 $user_id = $_SESSION['id_nethera'];
 $user_name = htmlspecialchars($_SESSION['nama_lengkap']);
+$user_role = $_SESSION['role'];
+
+// Check if user can access admin dashboard
+$can_access_admin = in_array($user_role, ['Vasiki', 'Anubis', 'Hakaes']);
 
 // Get user info with sanctuary (using DB wrapper)
 $user_info = DB::queryOne(
@@ -142,6 +146,11 @@ if ($hour >= 5 && $hour < 12) {
                         <h1 class="user-name-hero"><?= e($user_name) ?></h1>
                     </div>
                 </div>
+                <?php if ($can_access_admin): ?>
+                    <a href="../admin/index.php" class="admin-btn-hero" title="Admin Dashboard">
+                        <i class="fa-solid fa-crown"></i>
+                    </a>
+                <?php endif; ?>
                 <a href="../auth/handlers/logout.php" class="logout-btn-hero" title="Logout">
                     <i class="fa-solid fa-sign-out-alt"></i>
                 </a>
@@ -427,10 +436,17 @@ if ($hour >= 5 && $hour < 12) {
             <i class="fa-solid fa-credit-card"></i>
             <span>Bank</span>
         </a>
-        <a href="punishment.php" class="bottom-nav-item">
-            <i class="fa-solid fa-gavel"></i>
-            <span>Rules</span>
-        </a>
+        <?php if ($can_access_admin): ?>
+            <a href="../admin/index.php" class="bottom-nav-item admin-nav">
+                <i class="fa-solid fa-crown"></i>
+                <span>Admin</span>
+            </a>
+        <?php else: ?>
+            <a href="punishment.php" class="bottom-nav-item">
+                <i class="fa-solid fa-gavel"></i>
+                <span>Rules</span>
+            </a>
+        <?php endif; ?>
     </nav>
 
 </body>

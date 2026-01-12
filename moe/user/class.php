@@ -17,6 +17,9 @@ if (!Auth::isLoggedIn() || !in_array($role, ['Nethera', 'Vasiki', 'Anubis', 'Hak
 $user_id = Auth::id();
 $user_name = Auth::name();
 
+// Check if user can access admin dashboard
+$can_access_admin = in_array($role, ['Vasiki', 'Anubis', 'Hakaes']);
+
 // Check for active punishment (only for Nethera role)
 if ($role === 'Nethera') {
     $conn = DB::getConnection();
@@ -534,10 +537,17 @@ $csrf_token = generate_csrf_token();
             <i class="fa-solid fa-credit-card"></i>
             <span>Bank</span>
         </a>
-        <a href="punishment.php" class="bottom-nav-item">
-            <i class="fa-solid fa-gavel"></i>
-            <span>Rules</span>
-        </a>
+        <?php if ($can_access_admin): ?>
+            <a href="../admin/index.php" class="bottom-nav-item admin-nav">
+                <i class="fa-solid fa-crown"></i>
+                <span>Admin</span>
+            </a>
+        <?php else: ?>
+            <a href="punishment.php" class="bottom-nav-item">
+                <i class="fa-solid fa-gavel"></i>
+                <span>Rules</span>
+            </a>
+        <?php endif; ?>
     </nav>
 
     <?php if ($can_manage_grades): ?>

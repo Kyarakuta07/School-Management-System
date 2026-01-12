@@ -31,6 +31,9 @@ $user_id = $_SESSION['id_nethera'];
 $user_name = htmlspecialchars($_SESSION['nama_lengkap']);
 $can_manage = ($role === 'Anubis' || $role === 'Vasiki');
 
+// Check if user can access admin dashboard
+$can_access_admin = in_array($role, ['Vasiki', 'Anubis', 'Hakaes']);
+
 // Check if user came from a locked feature
 $locked_feature = $_GET['locked'] ?? '';
 $locked_messages = [
@@ -702,10 +705,17 @@ $code_of_conduct = [
             <i class="fa-solid fa-credit-card"></i>
             <span>Bank</span>
         </a>
-        <a href="punishment.php" class="bottom-nav-item active">
-            <i class="fa-solid fa-gavel"></i>
-            <span>Rules</span>
-        </a>
+        <?php if ($can_access_admin): ?>
+            <a href="../admin/index.php" class="bottom-nav-item admin-nav">
+                <i class="fa-solid fa-crown"></i>
+                <span>Admin</span>
+            </a>
+        <?php else: ?>
+            <a href="punishment.php" class="bottom-nav-item active">
+                <i class="fa-solid fa-gavel"></i>
+                <span>Rules</span>
+            </a>
+        <?php endif; ?>
     </nav>
 
 </body>
