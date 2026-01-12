@@ -488,3 +488,127 @@
         gap: 12px;
     }
 }
+
+/* Extra small screens (380px) */
+@media (max-width: 480px) {
+    .class-main-content {
+        padding: 10px;
+        gap: 16px;
+    }
+
+    .class-card {
+        padding: 16px;
+    }
+
+    .class-card .card-title {
+        font-size: 0.9rem;
+    }
+
+    .pp-value {
+        font-size: 1.6rem;
+    }
+
+    .grade-item {
+        padding: 10px;
+        gap: 8px;
+    }
+
+    .ranking-item {
+        padding: 10px;
+        gap: 8px;
+    }
+
+    .schedule-item {
+        padding: 12px;
+    }
+
+    .subject-card {
+        padding: 16px;
+    }
+
+    .subject-icon {
+        font-size: 2rem;
+    }
+}
+
+/* Tiny screens (320px - iPhone SE, Galaxy Fold) */
+@media (max-width: 380px) {
+    .class-main-content {
+        padding: 8px;
+        gap: 12px;
+    }
+
+    .class-card {
+        padding: 12px;
+        border-radius: 12px;
+    }
+
+    .class-card .card-title {
+        font-size: 0.85rem;
+        gap: 6px;
+    }
+
+    .pp-value {
+        font-size: 1.4rem;
+    }
+
+    .pp-label {
+        font-size: 0.65rem;
+    }
+
+    .rank-badge {
+        padding: 6px 12px;
+        font-size: 0.75rem;
+    }
+
+    .grade-item {
+        padding: 8px;
+    }
+
+    .grade-name {
+        font-size: 0.75rem;
+    }
+
+    .grade-value {
+        font-size: 0.9rem;
+    }
+
+    .schedule-day {
+        min-width: 60px;
+        padding: 8px;
+    }
+
+    .day-name {
+        font-size: 0.75rem;
+    }
+
+    .class-name {
+        font-size: 0.9rem;
+    }
+
+    .teacher-name {
+        font-size: 0.8rem;
+    }
+
+    .subject-card h4 {
+        font-size: 0.9rem;
+    }
+
+    .subject-card p {
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 320px) {
+    .class-main-content {
+        padding: 4px;
+    }
+
+    .class-card {
+        padding: 10px;
+    }
+
+    .pp-value {
+        font-size: 1.2rem;
+    }
+}

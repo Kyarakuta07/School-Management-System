@@ -53,14 +53,15 @@ $sanctuary_name = $user_info['nama_sanctuary'] ?? 'Unknown';
 $csrf_token = generate_csrf_token();
 
 // ==================================================
-// HANDLE ANUBIS ACTIONS (POST)
+// HANDLE ANUBIS ACTIONS (POST) - Using PRG Pattern
 // ==================================================
-$action_message = '';
-$action_error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $can_manage) {
     if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
-        $action_error = 'Invalid CSRF token';
+        // Store error in session and redirect
+        $_SESSION['punishment_error'] = 'Invalid CSRF token';
+        header("Location: punishment.php?error=csrf");
+        exit();
     } else {
         $action = $_POST['action'] ?? '';
 
@@ -81,12 +82,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $can_manage) {
                 mysqli_stmt_bind_param($stmt, "isssis", $target_id, $jenis_pelanggaran, $deskripsi, $jenis_hukuman, $poin, $user_id);
 
                 if (mysqli_stmt_execute($stmt)) {
-                    $action_message = 'Punishment berhasil ditambahkan!';
+                    $_SESSION['punishment_success'] = 'Punishment berhasil ditambahkan!';
                 } else {
-                    $action_error = 'Gagal menambah punishment.';
+                    $_SESSION['punishment_error'] = 'Gagal menambah punishment.';
                 }
                 mysqli_stmt_close($stmt);
             }
+
+            // Redirect to prevent resubmission (PRG Pattern)
+            header("Location: punishment.php");
+            exit();
         }
 
         // RELEASE PUNISHMENT
@@ -101,15 +106,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $can_manage) {
                 mysqli_stmt_bind_param($stmt, "ii", $user_id, $punishment_id);
 
                 if (mysqli_stmt_execute($stmt)) {
-                    $action_message = 'Punishment berhasil dilepas!';
+                    $_SESSION['punishment_success'] = 'Punishment berhasil dilepas!';
                 } else {
-                    $action_error = 'Gagal melepas punishment.';
+                    $_SESSION['punishment_error'] = 'Gagal melepas punishment.';
                 }
                 mysqli_stmt_close($stmt);
             }
+
+            // Redirect to prevent resubmission (PRG Pattern)
+            header("Location: punishment.php");
+            exit();
         }
     }
 }
+
+// Get flash messages from session (and clear them)
+$action_message = $_SESSION['punishment_success'] ?? '';
+$action_error = $_SESSION['punishment_error'] ?? '';
+unset($_SESSION['punishment_success'], $_SESSION['punishment_error']);
 
 // ==================================================
 // FETCH PUNISHMENT DATA
@@ -301,6 +315,59 @@ $punishment_types = [
             border-radius: 12px;
             font-size: 0.75rem;
             font-weight: bold;
+        }
+
+        /* Mobile responsive for Anubis panel */
+        @media (max-width: 480px) {
+            .anubis-panel {
+                padding: 1rem;
+            }
+
+            .anubis-panel h3 {
+                font-size: 1rem;
+            }
+
+            .form-group label {
+                font-size: 0.8rem;
+            }
+
+            .form-control {
+                padding: 8px;
+                font-size: 0.9rem;
+            }
+
+            .btn-anubis {
+                padding: 12px;
+                font-size: 0.9rem;
+            }
+
+            .alert-lock,
+            .alert-success,
+            .alert-error {
+                padding: 0.75rem;
+                font-size: 0.85rem;
+            }
+
+            .punishment-user {
+                font-size: 0.8rem;
+                color: #ccc;
+                margin-bottom: 4px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .anubis-panel {
+                padding: 0.75rem;
+            }
+
+            .form-group {
+                margin-bottom: 0.75rem;
+            }
+
+            .role-badge {
+                padding: 2px 8px;
+                font-size: 0.65rem;
+            }
         }
     </style>
 </head>

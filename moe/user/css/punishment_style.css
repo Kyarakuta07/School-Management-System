@@ -719,3 +719,200 @@
         align-self: flex-start;
     }
 }
+
+/* ================================================
+   EXTRA SMALL SCREENS (320px - iPhone SE, Galaxy Fold)
+   ================================================ */
+@media (max-width: 380px) {
+    .punishment-main-content {
+        padding: 8px;
+        gap: 12px;
+    }
+
+    .card-header {
+        padding: 16px 12px;
+    }
+
+    .card-header h2,
+    .card-header h3 {
+        font-size: 1rem;
+        letter-spacing: 0.5px;
+    }
+
+    .card-body {
+        padding: 12px;
+    }
+
+    .stat-item {
+        padding: 12px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+    }
+
+    .stat-value {
+        font-size: 1.4rem;
+    }
+
+    .clean-record-badge {
+        padding: 12px;
+        font-size: 0.9rem;
+    }
+
+    .code-category {
+        padding: 14px;
+    }
+
+    .code-header h4 {
+        font-size: 0.95rem;
+    }
+
+    .code-rules li {
+        padding: 8px 0;
+        font-size: 0.85rem;
+        gap: 8px;
+    }
+
+    .code-points {
+        padding: 10px 12px;
+        font-size: 0.8rem;
+    }
+
+    /* Table: Stack on mobile */
+    .history-table table {
+        display: block;
+    }
+
+    .history-table thead {
+        display: none;
+    }
+
+    .history-table tbody {
+        display: block;
+    }
+
+    .history-table tr {
+        display: block;
+        margin-bottom: 12px;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 8px;
+        padding: 12px;
+        border: 1px solid rgba(218, 165, 32, 0.2);
+    }
+
+    .history-table td {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        font-size: 0.85rem;
+    }
+
+    .history-table td:last-child {
+        border-bottom: none;
+    }
+
+    .history-table td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: var(--gold);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+    }
+
+    .points-badge,
+    .status-badge {
+        padding: 4px 10px;
+        font-size: 0.7rem;
+    }
+
+    .empty-state {
+        padding: 40px 16px;
+    }
+
+    .empty-state h3 {
+        font-size: 1.3rem;
+    }
+
+    .empty-state p {
+        font-size: 0.9rem;
+    }
+
+    .empty-state i.fa-4x {
+        font-size: 2.5rem;
+    }
+
+    .active-punishment-item {
+        padding: 12px;
+    }
+
+    .punishment-title {
+        font-size: 0.95rem;
+    }
+
+    .punishment-points {
+        font-size: 0.9rem;
+    }
+
+    .punishment-end {
+        font-size: 0.8rem;
+    }
+
+    /* Hide effects on small screens for performance */
+    .stats-card::before,
+    .punishment-card::before,
+    .code-category::before {
+        display: none;
+    }
+
+    /* Bigger touch targets */
+    .btn-release {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+    }
+}
+
+/* ================================================
+   MINIMUM SCREEN (280px - Galaxy Fold closed)
+   ================================================ */
+@media (max-width: 320px) {
+    body {
+        font-size: 14px;
+    }
+
+    .punishment-main-content {
+        padding: 4px;
+    }
+
+    .card-header h2,
+    .card-header h3 {
+        font-size: 0.9rem;
+        gap: 6px;
+    }
+
+    .card-header h2 i,
+    .card-header h3 i {
+        font-size: 0.9rem;
+    }
+
+    .stat-value {
+        font-size: 1.2rem;
+    }
+
+    .code-category {
+        padding: 10px;
+    }
+
+    .code-header h4 {
+        font-size: 0.85rem;
+    }
+
+    .severity-badge {
+        padding: 4px 8px;
+        font-size: 0.6rem;
+    }
+}

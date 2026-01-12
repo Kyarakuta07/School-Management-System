@@ -118,7 +118,7 @@ class Auth
     }
 
     /**
-     * For API endpoints - Nethera OR Vasiki role (allows admin access)
+     * For API endpoints - Nethera, Vasiki, OR Anubis role (allows all main roles)
      */
     public static function requireNetheraOrVasikiApi()
     {
@@ -134,7 +134,7 @@ class Auth
         }
 
         $role = self::getSessionValue('role');
-        if ($role !== 'Nethera' && $role !== 'Vasiki') {
+        if (!in_array($role, ['Nethera', 'Vasiki', 'Anubis'])) {
             header('Content-Type: application/json');
             http_response_code(403);
             echo json_encode([

@@ -113,13 +113,22 @@ body {
     right: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
     animation: pulse 4s ease-in-out infinite;
 }
 
 @keyframes pulse {
-    0%, 100% { transform: scale(1); opacity: 0.5; }
-    50% { transform: scale(1.1); opacity: 0.3; }
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 0.3;
+    }
 }
 
 .balance-header {
@@ -376,8 +385,13 @@ body {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 .modal-content {
@@ -391,8 +405,15 @@ body {
 }
 
 @keyframes slideUp {
-    from { transform: translateY(50px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 .modal-header {
@@ -707,18 +728,145 @@ input:focus {
     .header-title {
         font-size: 1.2rem;
     }
-    
+
     .balance-amount span {
         font-size: 2.5rem;
     }
-    
+
     .transaction-left {
         gap: 0.7rem;
     }
-    
+
     .transaction-icon {
         width: 40px;
         height: 40px;
         font-size: 1rem;
+    }
+}
+
+/* Extra small screens (380px) */
+@media (max-width: 380px) {
+    .trapeza-header {
+        padding: 0.8rem 1rem;
+    }
+
+    .header-title {
+        font-size: 1rem;
+        letter-spacing: 1px;
+    }
+
+    .trapeza-container {
+        padding: 1rem;
+    }
+
+    .balance-card {
+        padding: 1.5rem;
+        border-radius: 16px;
+    }
+
+    .balance-amount span {
+        font-size: 2rem;
+    }
+
+    .gold-icon {
+        font-size: 2rem;
+    }
+
+    .quick-actions {
+        gap: 0.8rem;
+    }
+
+    .action-btn {
+        padding: 1rem;
+    }
+
+    .action-btn i {
+        font-size: 1.5rem;
+    }
+
+    .action-btn span {
+        font-size: 0.9rem;
+    }
+
+    .section-header h2 {
+        font-size: 1.1rem;
+    }
+
+    .transaction-item {
+        padding: 0.8rem;
+    }
+
+    .transaction-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 0.9rem;
+    }
+
+    .transaction-type {
+        font-size: 0.85rem;
+    }
+
+    .transaction-description {
+        font-size: 0.75rem;
+    }
+
+    .transaction-amount {
+        font-size: 0.95rem;
+    }
+
+    .modal-content {
+        width: 95%;
+    }
+
+    .modal-header {
+        padding: 1rem;
+    }
+
+    .modal-body {
+        padding: 1rem;
+    }
+}
+
+/* Tiny screens (320px) */
+@media (max-width: 320px) {
+    .trapeza-header {
+        padding: 0.6rem 0.8rem;
+    }
+
+    .header-title {
+        font-size: 0.9rem;
+    }
+
+    .back-btn {
+        font-size: 1.1rem;
+        padding: 0.3rem;
+    }
+
+    .trapeza-container {
+        padding: 0.75rem;
+    }
+
+    .balance-card {
+        padding: 1rem;
+    }
+
+    .balance-amount span {
+        font-size: 1.6rem;
+    }
+
+    .gold-icon {
+        font-size: 1.5rem;
+    }
+
+    .balance-label {
+        font-size: 0.8rem;
+    }
+
+    .action-btn {
+        padding: 0.8rem;
+    }
+
+    .action-btn i {
+        font-size: 1.3rem;
     }
 }
