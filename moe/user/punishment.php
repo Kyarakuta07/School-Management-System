@@ -194,6 +194,54 @@ $punishment_types = [
     'Suspension' => 'Skorsing',
     'Probation' => 'Masa Percobaan'
 ];
+
+// Sanctuary Code of Conduct (for Nethera reference)
+$code_of_conduct = [
+    [
+        'category' => 'Academic Integrity',
+        'icon' => 'fa-book',
+        'rules' => [
+            'No cheating during examinations or assignments',
+            'Properly cite all sources in academic work',
+            'Do not plagiarize or copy others\' work'
+        ],
+        'severity' => 'High',
+        'points' => '10-20'
+    ],
+    [
+        'category' => 'Respect & Conduct',
+        'icon' => 'fa-handshake',
+        'rules' => [
+            'Treat all members with respect and dignity',
+            'No bullying, harassment, or discrimination',
+            'Maintain appropriate language in all communications'
+        ],
+        'severity' => 'Medium',
+        'points' => '5-15'
+    ],
+    [
+        'category' => 'Attendance & Punctuality',
+        'icon' => 'fa-clock',
+        'rules' => [
+            'Attend all scheduled classes and activities',
+            'Arrive on time for all sessions',
+            'Notify in advance if unable to attend'
+        ],
+        'severity' => 'Low',
+        'points' => '2-5'
+    ],
+    [
+        'category' => 'Safety & Security',
+        'icon' => 'fa-shield-alt',
+        'rules' => [
+            'Follow all safety protocols and guidelines',
+            'Report any security concerns immediately',
+            'Do not bring prohibited items to sanctuary'
+        ],
+        'severity' => 'High',
+        'points' => '15-25'
+    ]
+];
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -574,7 +622,8 @@ $punishment_types = [
                                                     <td data-label="User"><?= e($record['user_name'] ?? 'Unknown') ?></td>
                                                 <?php endif; ?>
                                                 <td data-label="Date">
-                                                    <?= date('d M Y', strtotime($record['tanggal_pelanggaran'])) ?></td>
+                                                    <?= date('d M Y', strtotime($record['tanggal_pelanggaran'])) ?>
+                                                </td>
                                                 <td data-label="Violation"><?= e($record['jenis_pelanggaran']) ?></td>
                                                 <td data-label="Sanction"><?= e($record['jenis_hukuman']) ?></td>
                                                 <td data-label="Points"><span
@@ -597,6 +646,35 @@ $punishment_types = [
                                 </p>
                             </div>
                         <?php endif; ?>
+                    </div>
+                </section>
+
+                <!-- Code of Conduct Section -->
+                <section class="punishment-card conduct-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-scroll"></i> Sanctuary Code of Conduct</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="code-grid">
+                            <?php foreach ($code_of_conduct as $code): ?>
+                                <div class="code-category">
+                                    <div class="code-header">
+                                        <h4><i class="fas <?= $code['icon'] ?>"></i> <?= $code['category'] ?></h4>
+                                        <span
+                                            class="severity-badge <?= strtolower($code['severity']) ?>"><?= $code['severity'] ?></span>
+                                    </div>
+                                    <ul class="code-rules">
+                                        <?php foreach ($code['rules'] as $rule): ?>
+                                            <li><i class="fas fa-chevron-right"></i> <?= $rule ?></li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                    <div class="code-points">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                        Penalty: <strong><?= $code['points'] ?> points</strong>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
                 </section>
 
