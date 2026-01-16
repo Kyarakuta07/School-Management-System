@@ -71,8 +71,29 @@ function getExpForNextLevel($current_level)
 }
 
 /**
+ * Get level cap based on evolution stage
+ * Pets cannot level beyond these caps until they evolve
+ * 
+ * @param string $stage Evolution stage (egg, baby, adult)
+ * @return int Maximum level for this stage
+ */
+function getLevelCapForStage($stage)
+{
+    switch ($stage) {
+        case 'egg':
+            return 10;  // Egg caps at level 10
+        case 'baby':
+            return 20;  // Baby caps at level 20
+        case 'adult':
+        default:
+            return 99;  // Adult has no practical cap
+    }
+}
+
+/**
  * Add EXP to a pet and handle level ups
  * NOTE: Level ups do NOT trigger evolution - evolution is sacrifice-only
+ * LEVEL CAPS: Egg caps at 10, Baby caps at 20, Adult caps at 99
  *
  * @param mysqli $conn Database connection
  * @param int $pet_id Pet ID
@@ -94,13 +115,25 @@ function addExpToPet($conn, $pet_id, $exp_amount)
     $current_level = $pet['level'];
     $current_exp = $pet['exp'] + $exp_amount;
     $level_ups = 0;
-    $current_stage = $pet['evolution_stage']; // Stage stays the same, no auto-evolution
+    $current_stage = $pet['evolution_stage'] ?? 'egg';
+
+    // LEVEL CAPS based on evolution stage
+    $level_cap = getLevelCapForStage($current_stage);
+    $at_cap = false;
 
     // Process level ups (but NOT evolution - that's sacrifice-only)
-    while ($current_exp >= getExpForNextLevel($current_level)) {
+    while ($current_exp >= getExpForNextLevel($current_level) && $current_level < $level_cap) {
         $current_exp -= getExpForNextLevel($current_level);
         $current_level++;
         $level_ups++;
+    }
+
+    // If at level cap, keep EXP but mark as capped
+    if ($current_level >= $level_cap) {
+        $current_level = $level_cap;
+        $at_cap = true;
+        // Cap EXP at 0 so it doesn't accumulate endlessly
+        $current_exp = 0;
     }
 
     // Update database - evolution_stage is NOT changed here
@@ -115,7 +148,87 @@ function addExpToPet($conn, $pet_id, $exp_amount)
         'new_exp' => $current_exp,
         'level_ups' => $level_ups,
         'evolved' => false, // Never auto-evolve
-        'new_stage' => $current_stage // Stage unchanged
+        'new_stage' => $current_stage, // Stage unchanged
+        'at_cap' => $at_cap,
+        'level_cap' => $level_cap
+    ];
+}
+
+/**
+ * Get eligible fodder pets for evolution
+ * Returns pets of the same rarity that are not active and owned by user
+ * 
+ * @param mysqli $conn Database connection
+ * @param int $user_id User's ID
+ * @param int $main_pet_id Pet to evolve (to get its rarity)
+ * @return array Result with candidates and required rarity
+ */
+function getEvolutionCandidates($conn, $user_id, $main_pet_id)
+{
+    // First, get the main pet's rarity and stage
+    $main_stmt = mysqli_prepare(
+        $conn,
+        "SELECT up.id, up.level, up.evolution_stage, ps.rarity 
+         FROM user_pets up 
+         JOIN pet_species ps ON up.species_id = ps.id 
+         WHERE up.id = ? AND up.user_id = ?"
+    );
+    mysqli_stmt_bind_param($main_stmt, "ii", $main_pet_id, $user_id);
+    mysqli_stmt_execute($main_stmt);
+    $main_result = mysqli_stmt_get_result($main_stmt);
+    $main_pet = mysqli_fetch_assoc($main_result);
+    mysqli_stmt_close($main_stmt);
+
+    if (!$main_pet) {
+        return ['success' => false, 'error' => 'Main pet not found'];
+    }
+
+    $required_rarity = $main_pet['rarity'];
+    $current_stage = $main_pet['evolution_stage'] ?? 'egg';
+
+    // Check if already at max stage
+    if ($current_stage === 'adult') {
+        return ['success' => false, 'error' => 'Pet is already at Adult stage (max)'];
+    }
+
+    // Get potential fodder pets (same rarity, not active, not the main pet, alive)
+    $fodder_stmt = mysqli_prepare(
+        $conn,
+        "SELECT up.id, up.level, up.nickname, up.evolution_stage, up.species_id,
+                ps.name as species_name, ps.rarity, ps.img_egg, ps.img_baby, ps.img_adult
+         FROM user_pets up 
+         JOIN pet_species ps ON up.species_id = ps.id 
+         WHERE up.user_id = ? 
+           AND up.id != ? 
+           AND up.is_active = 0 
+           AND up.status = 'ALIVE'
+           AND ps.rarity = ?
+         ORDER BY up.level ASC"
+    );
+    mysqli_stmt_bind_param($fodder_stmt, "iis", $user_id, $main_pet_id, $required_rarity);
+    mysqli_stmt_execute($fodder_stmt);
+    $fodder_result = mysqli_stmt_get_result($fodder_stmt);
+
+    $candidates = [];
+    while ($row = mysqli_fetch_assoc($fodder_result)) {
+        $candidates[] = [
+            'id' => (int) $row['id'],
+            'level' => (int) $row['level'],
+            'nickname' => $row['nickname'],
+            'species_name' => $row['species_name'],
+            'rarity' => $row['rarity'],
+            'evolution_stage' => $row['evolution_stage'],
+            'img_egg' => $row['img_egg'],
+            'img_baby' => $row['img_baby'],
+            'img_adult' => $row['img_adult']
+        ];
+    }
+    mysqli_stmt_close($fodder_stmt);
+
+    return [
+        'success' => true,
+        'required_rarity' => $required_rarity,
+        'candidates' => $candidates
     ];
 }
 

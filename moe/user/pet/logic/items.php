@@ -130,13 +130,28 @@ function useItemOnPet($conn, $user_id, $pet_id, $item_id, $quantity = 1)
                 if ($pet['status'] === 'DEAD') {
                     return ['success' => false, 'error' => 'Cannot give EXP to a dead pet!'];
                 }
+
+                // Check if pet is at level cap before using
+                require_once __DIR__ . '/evolution.php';
+                $current_stage = $pet['evolution_stage'] ?? 'egg';
+                $level_cap = getLevelCapForStage($current_stage);
+
+                if ($pet['level'] >= $level_cap) {
+                    $next_stage = ($current_stage === 'egg') ? 'Baby' : 'Adult';
+                    return ['success' => false, 'error' => "Pet is at level cap ($level_cap)! Evolve to $next_stage first to continue leveling."];
+                }
+
                 $exp_result = addExpToPet($conn, $pet_id, $total_effect);
                 $result_message = "Used $quantity scroll(s)! Gained $total_effect EXP!";
 
-                if ($exp_result['evolved']) {
-                    $result_message .= " EVOLVED to " . $exp_result['new_stage'] . "!";
-                } else if ($exp_result['level_ups'] > 0) {
-                    $result_message .= " Level Up!";
+                if ($exp_result['level_ups'] > 0) {
+                    $result_message .= " Level Up! (Lv.{$exp_result['new_level']})";
+                }
+
+                // Warn if now at cap
+                if (isset($exp_result['at_cap']) && $exp_result['at_cap']) {
+                    $next_stage = ($current_stage === 'egg') ? 'Baby' : 'Adult';
+                    $result_message .= " ⚠️ MAX LEVEL for $current_stage stage! Evolve to $next_stage to continue.";
                 }
                 break;
 

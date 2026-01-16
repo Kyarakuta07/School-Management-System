@@ -279,7 +279,7 @@ async function openEvolutionModal(mainPetId) {
 
     // Load candidates
     try {
-        const response = await fetch(`${API_BASE}?action=get_evolution_candidates&main_pet_id=${mainPetId}`);
+        const response = await fetch(`${API_BASE}?action=get_evolution_candidates&pet_id=${mainPetId}`);
         const data = await response.json();
 
         if (data.success) {
@@ -382,7 +382,7 @@ async function proceedEvolution() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                main_pet_id: evolutionState.mainPetId,
+                pet_id: evolutionState.mainPetId,
                 fodder_ids: evolutionState.selectedFodder
             })
         });
@@ -594,13 +594,18 @@ function renderCollectionWithButtons() {
                 </button>
             `;
         } else if (pet.status === 'ALIVE' && !pet.is_active) {
+            // Determine if evolution is possible based on current stage and level
+            const currentStage = pet.evolution_stage || 'egg';
+            const canEvolve = (currentStage === 'egg' && pet.level >= 10) ||
+                (currentStage === 'baby' && pet.level >= 20);
+
             actionButtons = `
                 <div class="pet-action-row">
                     <button class="pet-action-btn btn-sell" onclick="event.stopPropagation(); sellPet(${pet.id})" title="Sell Pet">
                         <i class="fas fa-coins"></i>
                     </button>
-                    ${pet.level >= 20 ? `
-                        <button class="pet-action-btn btn-evolve" onclick="event.stopPropagation(); openEvolutionModal(${pet.id})" title="Manual Evolution">
+                    ${canEvolve ? `
+                        <button class="pet-action-btn btn-evolve" onclick="event.stopPropagation(); openEvolutionModal(${pet.id})" title="Evolve to ${currentStage === 'egg' ? 'Baby' : 'Adult'}">
                             <i class="fas fa-star"></i>
                         </button>
                     ` : ''}
