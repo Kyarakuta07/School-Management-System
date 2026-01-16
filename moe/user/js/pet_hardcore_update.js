@@ -593,7 +593,7 @@ function renderCollectionWithButtons() {
                     <i class="fas fa-box-open"></i> Retrieve
                 </button>
             `;
-        } else if (pet.status === 'ALIVE' && !pet.is_active) {
+        } else if (pet.status === 'ALIVE') {
             // Determine if evolution is possible based on current stage and level
             const currentStage = pet.evolution_stage || 'egg';
             const canEvolve = (currentStage === 'egg' && pet.level >= 10) ||
@@ -601,12 +601,14 @@ function renderCollectionWithButtons() {
 
             actionButtons = `
                 <div class="pet-action-row">
-                    <button class="pet-action-btn btn-sell" onclick="event.stopPropagation(); sellPet(${pet.id})" title="Sell Pet">
-                        <i class="fas fa-coins"></i>
-                    </button>
+                    ${!pet.is_active ? `
+                        <button class="pet-action-btn btn-sell" onclick="event.stopPropagation(); sellPet(${pet.id})" title="Sell Pet">
+                            <i class="fas fa-coins"></i>
+                        </button>
+                    ` : ''}
                     ${canEvolve ? `
                         <button class="pet-action-btn btn-evolve" onclick="event.stopPropagation(); openEvolutionModal(${pet.id})" title="Evolve to ${currentStage === 'egg' ? 'Baby' : 'Adult'}">
-                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i> Evolve
                         </button>
                     ` : ''}
                 </div>
