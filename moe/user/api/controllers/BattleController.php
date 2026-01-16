@@ -77,6 +77,7 @@ class BattleController extends BaseController
         }
 
         $player_won = ($winner === 'attacker');
+        $loser_pet_id = $player_won ? $defender_pet_id : $attacker_pet_id;
 
         // Record battle in pet_battles table
         try {
@@ -101,6 +102,45 @@ class BattleController extends BaseController
                 addExpToPet($this->conn, $attacker_pet_id, $exp_reward);
             }
 
+            // HARDCORE: Apply HP damage to loser pet
+            $pet_died = false;
+            $shield_blocked = false;
+            $hp_damage = 20;
+
+            if ($loser_pet_id > 0) { // Only for real pets (not AI with negative IDs)
+                // Check for shield
+                $shield_stmt = mysqli_prepare($this->conn, "SELECT hp, has_shield FROM user_pets WHERE id = ?");
+                mysqli_stmt_bind_param($shield_stmt, "i", $loser_pet_id);
+                mysqli_stmt_execute($shield_stmt);
+                $shield_result = mysqli_stmt_get_result($shield_stmt);
+                $loser_data = mysqli_fetch_assoc($shield_result);
+                mysqli_stmt_close($shield_stmt);
+
+                if ($loser_data) {
+                    $current_hp = (int) $loser_data['hp'];
+                    $has_shield = (int) ($loser_data['has_shield'] ?? 0);
+
+                    if ($has_shield) {
+                        // Shield blocks damage
+                        $shield_blocked = true;
+                        $consume_shield = mysqli_prepare($this->conn, "UPDATE user_pets SET has_shield = 0 WHERE id = ?");
+                        mysqli_stmt_bind_param($consume_shield, "i", $loser_pet_id);
+                        mysqli_stmt_execute($consume_shield);
+                        mysqli_stmt_close($consume_shield);
+                    } else {
+                        // Apply HP damage
+                        $new_hp = max(0, $current_hp - $hp_damage);
+                        $new_status = $new_hp <= 0 ? 'DEAD' : 'ALIVE';
+                        $pet_died = ($new_hp <= 0);
+
+                        $update_hp = mysqli_prepare($this->conn, "UPDATE user_pets SET hp = ?, status = ? WHERE id = ?");
+                        mysqli_stmt_bind_param($update_hp, "isi", $new_hp, $new_status, $loser_pet_id);
+                        mysqli_stmt_execute($update_hp);
+                        mysqli_stmt_close($update_hp);
+                    }
+                }
+            }
+
             // Update arena stats
             $this->updateArenaStats($player_won);
 
@@ -112,7 +152,12 @@ class BattleController extends BaseController
                 'recorded' => true,
                 'won' => $player_won,
                 'gold' => $gold_reward,
-                'exp' => $exp_reward
+                'exp' => $exp_reward,
+                'hardcore' => [
+                    'hp_damage' => $shield_blocked ? 0 : $hp_damage,
+                    'shield_blocked' => $shield_blocked,
+                    'pet_died' => $pet_died
+                ]
             ]);
         } catch (Exception $e) {
             $this->error('Failed to record battle result: ' . $e->getMessage());
@@ -974,5 +1019,132 @@ class BattleController extends BaseController
         mysqli_stmt_close($stmt);
 
         $this->success(['opponents' => $opponents]);
+    }
+
+    /**
+     * POST: Finish 3v3 battle and apply HP damage to fainted pets
+     * Input: { battle_id: "xxx" }
+     */
+    public function finish3v3Battle()
+    {
+        $this->requirePost();
+
+        $input = $this->getInput();
+        $battle_id = isset($input['battle_id']) ? $input['battle_id'] : '';
+
+        if (empty($battle_id)) {
+            $this->error('Battle ID required');
+            return;
+        }
+
+        require_once __DIR__ . '/../../pet/logic/BattleStateManager.php';
+        $state_manager = new BattleStateManager();
+
+        $state = $state_manager->getState($battle_id);
+        if (!$state) {
+            $this->error('Battle not found or expired');
+            return;
+        }
+
+        if (!$state_manager->validateOwnership($battle_id, $this->user_id)) {
+            $this->error('This is not your battle');
+            return;
+        }
+
+        // Only process if battle ended
+        if ($state['status'] !== 'victory' && $state['status'] !== 'defeat') {
+            $this->error('Battle is still active');
+            return;
+        }
+
+        $player_won = ($state['status'] === 'victory');
+        $hp_damage_per_faint = 20;
+        $pets_damaged = [];
+        $pets_died = [];
+
+        // HARDCORE: Apply HP damage to player's fainted pets
+        foreach ($state['player_pets'] as $pet) {
+            $pet_id = (int) ($pet['id'] ?? 0);
+
+            // Skip AI pets (negative IDs) or no ID
+            if ($pet_id <= 0)
+                continue;
+
+            // Check if this pet fainted in battle
+            if (isset($pet['is_fainted']) && $pet['is_fainted']) {
+                // Get current HP
+                $hp_stmt = mysqli_prepare($this->conn, "SELECT hp, has_shield FROM user_pets WHERE id = ?");
+                mysqli_stmt_bind_param($hp_stmt, "i", $pet_id);
+                mysqli_stmt_execute($hp_stmt);
+                $hp_result = mysqli_stmt_get_result($hp_stmt);
+                $pet_data = mysqli_fetch_assoc($hp_result);
+                mysqli_stmt_close($hp_stmt);
+
+                if ($pet_data) {
+                    $current_hp = (int) $pet_data['hp'];
+                    $has_shield = (int) ($pet_data['has_shield'] ?? 0);
+
+                    if ($has_shield) {
+                        // Shield blocks damage
+                        $consume = mysqli_prepare($this->conn, "UPDATE user_pets SET has_shield = 0 WHERE id = ?");
+                        mysqli_stmt_bind_param($consume, "i", $pet_id);
+                        mysqli_stmt_execute($consume);
+                        mysqli_stmt_close($consume);
+                        $pets_damaged[] = ['id' => $pet_id, 'blocked' => true];
+                    } else {
+                        // Apply damage
+                        $new_hp = max(0, $current_hp - $hp_damage_per_faint);
+                        $new_status = $new_hp <= 0 ? 'DEAD' : 'ALIVE';
+
+                        $update = mysqli_prepare($this->conn, "UPDATE user_pets SET hp = ?, status = ? WHERE id = ?");
+                        mysqli_stmt_bind_param($update, "isi", $new_hp, $new_status, $pet_id);
+                        mysqli_stmt_execute($update);
+                        mysqli_stmt_close($update);
+
+                        $pets_damaged[] = ['id' => $pet_id, 'hp_lost' => $hp_damage_per_faint, 'new_hp' => $new_hp];
+
+                        if ($new_hp <= 0) {
+                            $pets_died[] = $pet_id;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Give rewards if player won
+        $gold_reward = 0;
+        $exp_reward = 0;
+
+        if ($player_won) {
+            $gold_reward = rand(BATTLE_3V3_WIN_GOLD_MIN, BATTLE_3V3_WIN_GOLD_MAX);
+            $exp_reward = rand(25, 50);
+
+            $this->addGold($gold_reward);
+
+            // Give EXP to surviving pets
+            foreach ($state['player_pets'] as $pet) {
+                $pet_id = (int) ($pet['id'] ?? 0);
+                if ($pet_id > 0 && !($pet['is_fainted'] ?? false)) {
+                    addExpToPet($this->conn, $pet_id, $exp_reward);
+                }
+            }
+        }
+
+        // Update arena stats
+        $this->updateArenaStats($player_won);
+
+        // Clear battle state
+        $state_manager->endBattle($battle_id);
+
+        $this->success([
+            'finished' => true,
+            'player_won' => $player_won,
+            'gold_reward' => $gold_reward,
+            'exp_reward' => $exp_reward,
+            'hardcore' => [
+                'pets_damaged' => $pets_damaged,
+                'pets_died' => $pets_died
+            ]
+        ]);
     }
 }

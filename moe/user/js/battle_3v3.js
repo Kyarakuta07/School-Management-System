@@ -741,11 +741,34 @@ function sleep(ms) {
 // ================================================
 // BATTLE END
 // ================================================
-function endBattle(playerWon) {
+async function endBattle(playerWon) {
     disableControls(true);
 
-    const goldReward = playerWon ? 50 + Math.floor(Math.random() * 100) : 0;
-    const expReward = playerWon ? 60 + Math.floor(Math.random() * 60) : 0;
+    // Call API to apply HP damage and get rewards from server
+    let goldReward = 0;
+    let expReward = 0;
+    let petsDamaged = [];
+    let petsDied = [];
+
+    try {
+        const response = await fetch(`${API_BASE}?action=finish_3v3_battle`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ battle_id: BattleState.battleId })
+        });
+        const data = await response.json();
+
+        if (data.success) {
+            goldReward = data.gold_reward || 0;
+            expReward = data.exp_reward || 0;
+            petsDamaged = data.hardcore?.pets_damaged || [];
+            petsDied = data.hardcore?.pets_died || [];
+
+            console.log('Battle finished:', data);
+        }
+    } catch (error) {
+        console.error('Error finishing battle:', error);
+    }
 
     // Trigger PixiJS effects
     if (playerWon) {
@@ -772,6 +795,19 @@ function endBattle(playerWon) {
 
         document.getElementById('reward-gold').textContent = `+${goldReward}`;
         document.getElementById('reward-exp').textContent = `+${expReward}`;
+
+        // Show HP damage info if any pets were damaged
+        if (petsDamaged.length > 0 || petsDied.length > 0) {
+            const damageInfo = document.createElement('div');
+            damageInfo.className = 'hardcore-damage-info';
+            damageInfo.innerHTML = `
+                <div style="color: #e74c3c; font-size: 0.8rem; margin-top: 0.5rem;">
+                    ⚠️ Hardcore: ${petsDamaged.length} pet(s) lost HP
+                    ${petsDied.length > 0 ? `<br>💀 ${petsDied.length} pet(s) DIED!` : ''}
+                </div>
+            `;
+            document.querySelector('.result-stats').appendChild(damageInfo);
+        }
 
         DOM.resultOverlay.classList.remove('hidden');
     }, 1000);

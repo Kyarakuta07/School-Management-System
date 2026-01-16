@@ -94,6 +94,7 @@ $routes = [
     'battle_switch' => ['BattleController', 'switchPet'],
     'battle_enemy_turn' => ['BattleController', 'enemyTurn'],
     'get_opponents_3v3' => ['BattleController', 'getOpponents3v3'],
+    'finish_3v3_battle' => ['BattleController', 'finish3v3Battle'],
 
     // Evolution Controller
     'get_evolution_candidates' => ['EvolutionController', 'getEvolutionCandidates'],

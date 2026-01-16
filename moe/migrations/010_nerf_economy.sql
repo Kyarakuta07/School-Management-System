@@ -49,3 +49,10 @@ ALTER TABLE user_achievements ADD COLUMN claimed TINYINT(1) DEFAULT 0;
 
 -- Set existing unlocked achievements as already claimed (to avoid giving free gold)
 UPDATE user_achievements SET claimed = 1 WHERE unlocked_at IS NOT NULL;
+
+-- =====================================================
+-- SHOP PRICE ADJUSTMENTS (SPECIAL ITEMS ONLY)
+-- =====================================================
+UPDATE shop_items SET price = 60 WHERE name = 'Wisdom Scroll';      -- Was 40
+UPDATE shop_items SET price = 150 WHERE name = 'Ancient Tome';      -- Was 100
+UPDATE shop_items SET price = 200 WHERE name = 'Divine Shield';     -- Was 250
