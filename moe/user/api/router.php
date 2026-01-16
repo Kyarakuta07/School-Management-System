@@ -103,6 +103,7 @@ $routes = [
     'get_daily_reward' => ['RewardController', 'getDailyReward'],
     'claim_daily_reward' => ['RewardController', 'claimDailyReward'],
     'get_achievements' => ['RewardController', 'getAchievements'],
+    'claim_achievement' => ['RewardController', 'claimAchievement'],
 
     // Trapeza Controller
     'get_balance' => ['TrapezaController', 'getBalance'],

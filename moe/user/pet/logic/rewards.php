@@ -173,36 +173,37 @@ function claimDailyReward($conn, $user_id)
  */
 function calculateDailyReward($day)
 {
-    // Base gold reward
-    $goldReward = 50 + ($day * 5); // Increases with day
+    // HARDCORE ECONOMY: Reduced daily gold rewards
+    // Base formula: 5 + floor(day * 1.5)
+    $goldReward = 5 + floor($day * 1.5); // Was: 50 + ($day * 5)
 
-    // Special rewards on milestone days
+    // Special rewards on milestone days (also nerfed)
     $itemReward = null;
     $itemName = null;
 
     switch ($day) {
         case 7:  // Week 1
-            $goldReward = 200;
+            $goldReward = 20;   // Was 200
             $itemReward = getItemIdByName('Basic Food Pack');
             $itemName = 'Basic Food Pack';
             break;
         case 14: // Week 2
-            $goldReward = 400;
+            $goldReward = 35;   // Was 400
             $itemReward = getItemIdByName('Health Potion');
             $itemName = 'Health Potion';
             break;
         case 21: // Week 3
-            $goldReward = 600;
+            $goldReward = 50;   // Was 600
             $itemReward = getItemIdByName('Evolution Stone');
             $itemName = 'Evolution Stone';
             break;
         case 28: // Week 4
-            $goldReward = 800;
+            $goldReward = 75;   // Was 800
             $itemReward = getItemIdByName('Rare Gacha Ticket');
             $itemName = 'Rare Gacha Ticket';
             break;
         case 30: // Month complete
-            $goldReward = 1000;
+            $goldReward = 100;  // Was 1000
             $itemReward = getItemIdByName('Epic Gacha Ticket');
             $itemName = 'Epic Gacha Ticket';
             break;

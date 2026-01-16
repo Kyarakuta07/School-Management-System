@@ -212,7 +212,8 @@ async function loadAchievements() {
                             </div>
                             <div class="achievement-progress-text">${currentProgress} / ${targetValue}</div>
                             ` : ''}
-                            ${ach.reward_gold ? `<div class="achievement-reward"><i class="fas fa-coins"></i> ${ach.reward_gold}</div>` : ''}
+                            ${isComplete && !ach.claimed ? `<button class="ach-claim-btn" onclick="claimAchievement(${ach.id})"><i class="fas fa-gift"></i> Claim ${ach.reward_gold}g</button>` : ''}
+                            ${ach.claimed ? `<div class="achievement-reward claimed"><i class="fas fa-check"></i> Claimed</div>` : (!isComplete && ach.reward_gold ? `<div class="achievement-reward"><i class="fas fa-coins"></i> ${ach.reward_gold}</div>` : '')}
                         </div>
                     </div>
                 `;
@@ -232,6 +233,43 @@ async function loadAchievements() {
         `;
     }
 }
+
+// Claim achievement reward
+async function claimAchievement(achievementId) {
+    try {
+        const response = await fetch('api/router.php?action=claim_achievement', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ achievement_id: achievementId })
+        });
+        const data = await response.json();
+        if (data.success) {
+            if (typeof showToast === 'function') {
+                showToast(data.message || `Claimed ${data.gold_earned} gold!`, 'success');
+            }
+            // Refresh gold display if function exists
+            if (typeof updateGoldDisplay === 'function') {
+                updateGoldDisplay(data.new_balance);
+            }
+            // Reload achievements to update UI
+            loadAchievements();
+        } else {
+            if (typeof showToast === 'function') {
+                showToast(data.error || 'Failed to claim', 'error');
+            } else {
+                alert(data.error || 'Failed to claim');
+            }
+        }
+    } catch (error) {
+        console.error('Error claiming achievement:', error);
+        if (typeof showToast === 'function') {
+            showToast('Network error', 'error');
+        }
+    }
+}
+
+// Make claimAchievement globally accessible
+window.claimAchievement = claimAchievement;
 
 // ================================================
 // 3V3 TEAM BATTLE SYSTEM

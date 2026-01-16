@@ -161,16 +161,17 @@ class PetController extends BaseController
         $species = mysqli_fetch_assoc($species_result);
         mysqli_stmt_close($species_stmt);
 
-        // Calculate sell price based on rarity and level
+        // HARDCORE ECONOMY: Minimal sell prices with diminishing returns
+        // Formula: base_rarity * floor(sqrt(level))
         $rarity_multiplier = [
-            'common' => 10,
-            'uncommon' => 25,
-            'rare' => 50,
-            'epic' => 100,
-            'legendary' => 250
+            'common' => 1,      // Was 10
+            'uncommon' => 2,    // Was 25
+            'rare' => 3,        // Was 50
+            'epic' => 10,       // Was 100
+            'legendary' => 25   // Was 250
         ];
-        $base_price = $rarity_multiplier[strtolower($species['rarity'])] ?? 10;
-        $sell_price = $base_price * $pet['level'];
+        $base_price = $rarity_multiplier[strtolower($species['rarity'])] ?? 1;
+        $sell_price = $base_price * max(1, floor(sqrt($pet['level']))); // Diminishing returns
 
         // Delete pet and add gold
         mysqli_begin_transaction($this->conn);

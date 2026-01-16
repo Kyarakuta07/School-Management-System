@@ -1756,12 +1756,35 @@ function renderAchievements(achievements, category = 'all') {
                     <div class="ach-progress-fill" style="width: ${progress}%"></div>
                 </div>
                 ` : ''}
+                ${ach.unlocked && !ach.claimed ? `<button class="ach-claim-btn" onclick="claimAchievement(${ach.id})"><i class="fas fa-gift"></i> ${ach.reward_gold}g</button>` : ''}
             </div>
             <div class="ach-rarity ${ach.rarity}">${ach.rarity}</div>
             <div class="ach-check">${checkIcon}</div>
         </div>
         `;
     }).join('');
+}
+
+// Claim achievement reward
+async function claimAchievement(achievementId) {
+    try {
+        const response = await fetch(`${API_BASE}?action=claim_achievement`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ achievement_id: achievementId })
+        });
+        const data = await response.json();
+        if (data.success) {
+            showToast(data.message || `Claimed ${data.gold_earned} gold!`, 'success');
+            updateGoldDisplay(data.new_balance);
+            loadAchievements();
+        } else {
+            showToast(data.error || 'Failed to claim', 'error');
+        }
+    } catch (error) {
+        console.error('Error claiming achievement:', error);
+        showToast('Network error', 'error');
+    }
 }
 
 // ================================================

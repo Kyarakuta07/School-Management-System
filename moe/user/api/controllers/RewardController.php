@@ -47,8 +47,8 @@ class RewardController extends BaseController
     {
         $this->requireGet();
 
-        // Get all achievements with user unlock status
-        $query = "SELECT a.*, ua.unlocked_at
+        // Get all achievements with user unlock and claim status
+        $query = "SELECT a.*, ua.unlocked_at, ua.claimed
                   FROM achievements a
                   LEFT JOIN user_achievements ua ON a.id = ua.achievement_id AND ua.user_id = ?
                   ORDER BY a.category, a.requirement_value";
@@ -58,19 +58,37 @@ class RewardController extends BaseController
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
 
+        // Get user progress for achievement tracking
+        $progress = $this->getAchievementProgress();
+
         $achievements = [];
+        $unlocked = 0;
         while ($row = mysqli_fetch_assoc($result)) {
             $row['unlocked'] = !is_null($row['unlocked_at']);
+            $row['claimed'] = (bool) ($row['claimed'] ?? false);
+
+            // Add current progress based on requirement_type
+            $reqType = $row['requirement_type'];
+            $row['current_progress'] = $progress[$reqType] ?? 0;
+
+            // Check if should be unlocked but isn't yet
+            if (!$row['unlocked'] && $row['current_progress'] >= $row['requirement_value']) {
+                // Auto-unlock achievement
+                $this->unlockAchievement($row['id']);
+                $row['unlocked'] = true;
+            }
+
+            if ($row['unlocked'])
+                $unlocked++;
             $achievements[] = $row;
         }
         mysqli_stmt_close($stmt);
 
-        // Get user progress for achievement tracking
-        $progress = $this->getAchievementProgress();
-
         $this->success([
             'achievements' => $achievements,
-            'progress' => $progress
+            'progress' => $progress,
+            'unlocked' => $unlocked,
+            'total' => count($achievements)
         ]);
     }
 
@@ -194,5 +212,90 @@ class RewardController extends BaseController
         $progress['rhythm_games'] = 0; // Will need tracking
 
         return $progress;
+    }
+
+    /**
+     * Helper: Unlock an achievement for user
+     */
+    private function unlockAchievement($achievement_id)
+    {
+        $stmt = mysqli_prepare(
+            $this->conn,
+            "INSERT IGNORE INTO user_achievements (user_id, achievement_id, unlocked_at, claimed) VALUES (?, ?, NOW(), 0)"
+        );
+        mysqli_stmt_bind_param($stmt, "ii", $this->user_id, $achievement_id);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+    }
+
+    /**
+     * POST: Claim achievement reward
+     */
+    public function claimAchievement()
+    {
+        $this->requirePost();
+
+        $input = $this->getInput();
+        $achievement_id = isset($input['achievement_id']) ? (int) $input['achievement_id'] : 0;
+
+        if (!$achievement_id) {
+            $this->error('Achievement ID required');
+            return;
+        }
+
+        // Check if achievement is unlocked and not yet claimed
+        $stmt = mysqli_prepare(
+            $this->conn,
+            "SELECT ua.*, a.reward_gold, a.name 
+             FROM user_achievements ua
+             JOIN achievements a ON ua.achievement_id = a.id
+             WHERE ua.user_id = ? AND ua.achievement_id = ?"
+        );
+        mysqli_stmt_bind_param($stmt, "ii", $this->user_id, $achievement_id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $record = mysqli_fetch_assoc($result);
+        mysqli_stmt_close($stmt);
+
+        if (!$record) {
+            $this->error('Achievement not unlocked yet');
+            return;
+        }
+
+        if ($record['claimed']) {
+            $this->error('Already claimed this reward');
+            return;
+        }
+
+        // Claim the reward
+        mysqli_begin_transaction($this->conn);
+        try {
+            // Mark as claimed
+            $stmt = mysqli_prepare(
+                $this->conn,
+                "UPDATE user_achievements SET claimed = 1 WHERE user_id = ? AND achievement_id = ?"
+            );
+            mysqli_stmt_bind_param($stmt, "ii", $this->user_id, $achievement_id);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
+
+            // Give gold reward
+            $gold = (int) $record['reward_gold'];
+            if ($gold > 0) {
+                $this->addGold($gold);
+                $this->logGoldTransaction(0, $this->user_id, $gold, 'achievement', 'Achievement: ' . $record['name']);
+            }
+
+            mysqli_commit($this->conn);
+
+            $this->success([
+                'gold_earned' => $gold,
+                'new_balance' => $this->getUserGold()
+            ], "Claimed {$gold} gold from achievement!");
+
+        } catch (Exception $e) {
+            mysqli_rollback($this->conn);
+            $this->error('Failed to claim reward');
+        }
     }
 }

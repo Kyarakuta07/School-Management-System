@@ -300,7 +300,8 @@ function endBattle(playerWon) {
     let expReward = 0;
 
     if (playerWon) {
-        goldReward = 20 + Math.floor(Math.random() * 30) + (BATTLE_CONFIG.defenderLevel * 2);
+        // HARDCORE ECONOMY: Minimal gold rewards (was 20-50 base)
+        goldReward = 2 + Math.floor(Math.random() * 6) + Math.floor(BATTLE_CONFIG.defenderLevel * 0.2);
         expReward = 30 + Math.floor(Math.random() * 30) + (BATTLE_CONFIG.defenderLevel * 3);
     }
 

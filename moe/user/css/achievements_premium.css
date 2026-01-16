@@ -179,6 +179,48 @@
     font-size: 0.6rem;
 }
 
+/* Claim Button */
+.ach-claim-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    margin-top: auto;
+    padding: 0.4rem 0.75rem;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    border: none;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #0a0a0a;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+}
+
+.ach-claim-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.5);
+}
+
+.ach-claim-btn:active {
+    transform: scale(0.98);
+}
+
+.ach-claim-btn i {
+    font-size: 0.65rem;
+}
+
+/* Claimed State */
+.achievement-reward.claimed {
+    background: rgba(39, 174, 96, 0.2);
+    color: #27ae60;
+}
+
+.achievement-reward.claimed i {
+    color: #27ae60;
+}
+
 /* Loading Spinner */
 .achievements-grid .loading-spinner {
     grid-column: 1 / -1;

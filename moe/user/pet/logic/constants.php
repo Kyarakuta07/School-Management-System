@@ -40,10 +40,10 @@ define('GACHA_COST_NORMAL', 100);
 define('GACHA_COST_PREMIUM', 500);
 
 // ================================================
-// BATTLE SYSTEM
+// BATTLE SYSTEM (HARDCORE ECONOMY)
 // ================================================
-define('BATTLE_WIN_GOLD_MIN', 20);
-define('BATTLE_WIN_GOLD_MAX', 50);
+define('BATTLE_WIN_GOLD_MIN', 2);   // Was 20
+define('BATTLE_WIN_GOLD_MAX', 8);   // Was 50
 define('BATTLE_WIN_EXP_MIN', 30);
 define('BATTLE_WIN_EXP_MAX', 60);
 
@@ -53,12 +53,12 @@ define('BATTLE_WIN_EXP_MAX', 60);
 define('SHELTER_ENABLED', true);
 
 // ================================================
-// 3v3 BATTLE SYSTEM
+// 3v3 BATTLE SYSTEM (HARDCORE ECONOMY)
 // ================================================
 define('BATTLE_3V3_MAX_TURNS', 50);
 define('BATTLE_3V3_SESSION_TIMEOUT', 3600); // 1 hour
-define('BATTLE_3V3_WIN_GOLD_MIN', 50);
-define('BATTLE_3V3_WIN_GOLD_MAX', 150);
+define('BATTLE_3V3_WIN_GOLD_MIN', 8);   // Was 50
+define('BATTLE_3V3_WIN_GOLD_MAX', 20);  // Was 150
 define('BATTLE_3V3_WIN_EXP_MIN', 60);
 define('BATTLE_3V3_WIN_EXP_MAX', 120);
 
