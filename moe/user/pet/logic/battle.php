@@ -249,7 +249,7 @@ function getElementMultiplier($attacker_element, $defender_element)
 function getOpponents($conn, $user_id)
 {
     // Find other users who have alive pets
-    $query = "SELECT up.id as pet_id, up.level, up.nickname, up.hp, up.evolution_stage,
+    $query = "SELECT up.id as pet_id, up.level, up.nickname, up.health, up.evolution_stage,
                      ps.name as species_name, ps.element, 
                      ps.img_egg, ps.img_baby, ps.img_adult, ps.rarity,
                      ps.base_attack, ps.base_defense,
@@ -272,14 +272,8 @@ function getOpponents($conn, $user_id)
     while ($row = mysqli_fetch_assoc($result)) {
         $level = (int) $row['level'];
 
-        // Calculate evolution stage based on level (same as evolution.php logic)
-        if ($level >= 10) {
-            $evolution_stage = 'adult';
-        } elseif ($level >= 5) {
-            $evolution_stage = 'baby';
-        } else {
-            $evolution_stage = 'egg';
-        }
+        // Use evolution_stage from database (manual evolution system)
+        $evolution_stage = $row['evolution_stage'] ?? 'egg';
 
         $opponents[] = [
             'pet_id' => (int) $row['pet_id'],
@@ -292,7 +286,7 @@ function getOpponents($conn, $user_id)
             'img_egg' => $row['img_egg'],
             'img_baby' => $row['img_baby'],
             'img_adult' => $row['img_adult'],
-            'hp' => (int) ($row['hp'] ?? 100),
+            'hp' => (int) ($row['health'] ?? 100),
             'atk' => (int) ($row['base_attack'] ?? 10),
             'def' => (int) ($row['base_defense'] ?? 10),
             'owner_name' => $row['owner_name'] ?: 'Unknown Trainer'
