@@ -109,7 +109,7 @@ class BattleController extends BaseController
 
             if ($loser_pet_id > 0) { // Only for real pets (not AI with negative IDs)
                 // Check for shield
-                $shield_stmt = mysqli_prepare($this->conn, "SELECT hp, has_shield FROM user_pets WHERE id = ?");
+                $shield_stmt = mysqli_prepare($this->conn, "SELECT health, has_shield FROM user_pets WHERE id = ?");
                 mysqli_stmt_bind_param($shield_stmt, "i", $loser_pet_id);
                 mysqli_stmt_execute($shield_stmt);
                 $shield_result = mysqli_stmt_get_result($shield_stmt);
@@ -117,7 +117,7 @@ class BattleController extends BaseController
                 mysqli_stmt_close($shield_stmt);
 
                 if ($loser_data) {
-                    $current_hp = (int) $loser_data['hp'];
+                    $current_hp = (int) $loser_data['health'];
                     $has_shield = (int) ($loser_data['has_shield'] ?? 0);
 
                     if ($has_shield) {
@@ -133,7 +133,7 @@ class BattleController extends BaseController
                         $new_status = $new_hp <= 0 ? 'DEAD' : 'ALIVE';
                         $pet_died = ($new_hp <= 0);
 
-                        $update_hp = mysqli_prepare($this->conn, "UPDATE user_pets SET hp = ?, status = ? WHERE id = ?");
+                        $update_hp = mysqli_prepare($this->conn, "UPDATE user_pets SET health = ?, status = ? WHERE id = ?");
                         mysqli_stmt_bind_param($update_hp, "isi", $new_hp, $new_status, $loser_pet_id);
                         mysqli_stmt_execute($update_hp);
                         mysqli_stmt_close($update_hp);
@@ -1073,7 +1073,7 @@ class BattleController extends BaseController
             // Check if this pet fainted in battle
             if (isset($pet['is_fainted']) && $pet['is_fainted']) {
                 // Get current HP
-                $hp_stmt = mysqli_prepare($this->conn, "SELECT hp, has_shield FROM user_pets WHERE id = ?");
+                $hp_stmt = mysqli_prepare($this->conn, "SELECT health, has_shield FROM user_pets WHERE id = ?");
                 mysqli_stmt_bind_param($hp_stmt, "i", $pet_id);
                 mysqli_stmt_execute($hp_stmt);
                 $hp_result = mysqli_stmt_get_result($hp_stmt);
@@ -1081,7 +1081,7 @@ class BattleController extends BaseController
                 mysqli_stmt_close($hp_stmt);
 
                 if ($pet_data) {
-                    $current_hp = (int) $pet_data['hp'];
+                    $current_hp = (int) $pet_data['health'];
                     $has_shield = (int) ($pet_data['has_shield'] ?? 0);
 
                     if ($has_shield) {
@@ -1096,7 +1096,7 @@ class BattleController extends BaseController
                         $new_hp = max(0, $current_hp - $hp_damage_per_faint);
                         $new_status = $new_hp <= 0 ? 'DEAD' : 'ALIVE';
 
-                        $update = mysqli_prepare($this->conn, "UPDATE user_pets SET hp = ?, status = ? WHERE id = ?");
+                        $update = mysqli_prepare($this->conn, "UPDATE user_pets SET health = ?, status = ? WHERE id = ?");
                         mysqli_stmt_bind_param($update, "isi", $new_hp, $new_status, $pet_id);
                         mysqli_stmt_execute($update);
                         mysqli_stmt_close($update);
