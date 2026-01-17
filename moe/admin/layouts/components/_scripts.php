@@ -6,7 +6,7 @@
  * Optional variable: $extraScripts (array) - additional JS files to include
  * Optional variable: $inlineScript (string) - inline JavaScript code
  */
-require_once dirname(__DIR__, 2) . '/core/helpers.php';
+require_once dirname(__DIR__, 3) . '/core/helpers.php';
 $extraScripts = $extraScripts ?? [];
 $inlineScript = $inlineScript ?? '';
 ?>

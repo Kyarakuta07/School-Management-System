@@ -6,7 +6,7 @@
  * Required variable: $pageTitle (string) - page title
  * Optional variable: $extraCss (array) - additional CSS files to include
  */
-require_once dirname(__DIR__, 2) . '/core/helpers.php';
+require_once dirname(__DIR__, 3) . '/core/helpers.php';
 $pageTitle = $pageTitle ?? 'MOE Admin';
 $extraCss = $extraCss ?? [];
 ?>
