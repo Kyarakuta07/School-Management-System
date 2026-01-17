@@ -115,22 +115,29 @@ mysqli_stmt_close($def_skills_query);
 $attacker_max_hp = 100 + ($attacker['level'] * 5);
 $defender_max_hp = 100 + ($defender['level'] * 5);
 
-// Helper function to get correct pet image based on level
-function getPetImageByLevel($pet)
+// Helper function to get correct pet image based on evolution_stage from database
+function getPetImageByStage($pet)
 {
-    $level = (int) $pet['level'];
-    if ($level >= 10) {
-        $img = $pet['img_adult'] ?? $pet['img_baby'] ?? $pet['img_egg'];
-    } elseif ($level >= 5) {
-        $img = $pet['img_baby'] ?? $pet['img_egg'] ?? $pet['img_adult'];
-    } else {
-        $img = $pet['img_egg'] ?? $pet['img_baby'] ?? $pet['img_adult'];
+    // Use evolution_stage from database (manual evolution system), NOT level
+    $stage = $pet['evolution_stage'] ?? 'egg';
+
+    switch ($stage) {
+        case 'adult':
+            $img = $pet['img_adult'] ?? $pet['img_baby'] ?? $pet['img_egg'];
+            break;
+        case 'baby':
+            $img = $pet['img_baby'] ?? $pet['img_egg'] ?? $pet['img_adult'];
+            break;
+        case 'egg':
+        default:
+            $img = $pet['img_egg'] ?? $pet['img_baby'] ?? $pet['img_adult'];
+            break;
     }
     return $img ?: 'placeholder.png';
 }
 
-$attacker_img = getPetImageByLevel($attacker);
-$defender_img = getPetImageByLevel($defender);
+$attacker_img = getPetImageByStage($attacker);
+$defender_img = getPetImageByStage($defender);
 ?>
 <!DOCTYPE html>
 <html lang="en">
