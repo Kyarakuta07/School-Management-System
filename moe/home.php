@@ -1,114 +1,173 @@
-position: absolute;
-top: 0;
-right: 0;
-width: 50%;
-height: 100vh;
-z-index: 2;
-pointer-events: none;
-}
+<?php require_once __DIR__ . '/core/helpers.php'; ?>
+<!DOCTYPE html>
+<html lang="en">
 
-.spline-container spline-viewer {
-width: 100%;
-height: 100%;
-pointer-events: auto;
-}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mediterranean of Egypt - Virtual Academy | Home</title>
 
-/* Hide character image when Spline is active */
-.hero-right.spline-active .character-container {
-display: none;
-}
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="Mediterranean of Egypt - A premier virtual academy bridging ancient wisdom and digital learning. Explore gamified education with pet companions, structured curriculum from Oceanology to Dark Arts.">
+    <meta name="keywords"
+        content="MOE, Mediterranean of Egypt, virtual academy, online school, gamified learning, pet companions, education platform, Moon Knight inspired">
+    <meta name="author" content="Mediterranean of Egypt School">
+    <meta name="robots" content="index, follow">
 
-/* Fallback - show character if Spline fails */
-.hero-right .character-container {
-transition: opacity 0.5s ease;
-}
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Mediterranean of Egypt - Virtual Academy">
+    <meta property="og:description"
+        content="A premier virtual academy bridging ancient wisdom and digital learning. Explore gamified education with pet companions.">
+    <meta property="og:image" content="assets/landing/logo.png">
+    <meta property="og:site_name" content="MOE - Mediterranean of Egypt">
 
-/* Spline loading indicator */
-.spline-loading {
-position: absolute;
-top: 50%;
-left: 50%;
-transform: translate(-50%, -50%);
-color: var(--gold, #DAA520);
-font-size: 1rem;
-text-align: center;
-}
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Mediterranean of Egypt - Virtual Academy">
+    <meta name="twitter:description" content="Explore gamified education with pet companions at MOE Virtual Academy.">
+    <meta name="twitter:image" content="assets/landing/logo.png">
 
-.spline-loading i {
-font-size: 2rem;
-animation: spin 1s linear infinite;
-}
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#0a0a0a">
 
-@keyframes spin {
-from {
-transform: rotate(0deg);
-}
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/landing/logo.png">
+    <link rel="shortcut icon" type="image/png" href="assets/landing/logo.png">
+    <link rel="apple-touch-icon" href="assets/landing/logo.png">
 
-to {
-transform: rotate(360deg);
-}
-}
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Lato:wght@400;700&display=swap"
+        rel="stylesheet">
 
-/* Mobile: stack layout, Spline on top */
-@media (max-width: 768px) {
-.spline-container {
-position: relative;
-width: 100%;
-height: 300px;
-}
-}
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-/* Enhanced hero section for Spline integration */
-.hero-section.with-spline {
-position: relative;
-}
+    <!-- Global CSS (with cache busting) -->
+    <link rel="stylesheet" href="<?= asset('assets/css/navbar.css') ?>">
+    <link rel="stylesheet" href="<?= asset('assets/css/landing-style.css') ?>">
 
-.hero-section.with-spline .hero-left {
-z-index: 5;
-}
+    <!-- Home Page CSS -->
+    <link rel="stylesheet" href="<?= asset('assets/css/home.css') ?>">
 
-/* Floating particles overlay */
-.particles-overlay {
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-pointer-events: none;
-z-index: 1;
-overflow: hidden;
-}
+    <!-- Spline 3D Styles -->
+    <style>
+        /* Spline 3D Container */
+        .spline-container {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100vh;
+            z-index: 2;
+            pointer-events: none;
+        }
 
-.particle-gold {
-position: absolute;
-width: 4px;
-height: 4px;
-background: radial-gradient(circle, #ffd700 0%, transparent 70%);
-border-radius: 50%;
-animation: floatParticle 10s linear infinite;
-opacity: 0.6;
-}
+        .spline-container spline-viewer {
+            width: 100%;
+            height: 100%;
+            pointer-events: auto;
+        }
 
-@keyframes floatParticle {
-0% {
-transform: translateY(100vh) translateX(0);
-opacity: 0;
-}
+        /* Hide character image when Spline is active */
+        .hero-right.spline-active .character-container {
+            display: none;
+        }
 
-10% {
-opacity: 0.6;
-}
+        /* Fallback - show character if Spline fails */
+        .hero-right .character-container {
+            transition: opacity 0.5s ease;
+        }
 
-90% {
-opacity: 0.6;
-}
+        /* Spline loading indicator */
+        .spline-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--gold, #DAA520);
+            font-size: 1rem;
+            text-align: center;
+        }
 
-100% {
-transform: translateY(-100px) translateX(50px);
-opacity: 0;
-}
-}
-</style>
+        .spline-loading i {
+            font-size: 2rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Mobile: stack layout, Spline on top */
+        @media (max-width: 768px) {
+            .spline-container {
+                position: relative;
+                width: 100%;
+                height: 300px;
+            }
+        }
+
+        /* Enhanced hero section for Spline integration */
+        .hero-section.with-spline {
+            position: relative;
+        }
+
+        .hero-section.with-spline .hero-left {
+            z-index: 5;
+        }
+
+        /* Floating particles overlay */
+        .particles-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .particle-gold {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: radial-gradient(circle, #ffd700 0%, transparent 70%);
+            border-radius: 50%;
+            animation: floatParticle 10s linear infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 0.6;
+            }
+
+            90% {
+                opacity: 0.6;
+            }
+
+            100% {
+                transform: translateY(-100px) translateX(50px);
+                opacity: 0;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -187,9 +246,6 @@ opacity: 0;
             <span class="marquee-item">MEDITERRANEAN OF EGYPT &nbsp; ✦</span>
         </div>
     </footer>
-
-    <!-- Spline Viewer Component -->
-
 
     <!-- Particle Generator Script -->
     <script>
