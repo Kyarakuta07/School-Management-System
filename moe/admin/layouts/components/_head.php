@@ -6,7 +6,6 @@
  * Required variable: $pageTitle (string) - page title
  * Optional variable: $extraCss (array) - additional CSS files to include
  */
-require_once dirname(__DIR__, 3) . '/core/helpers.php';
 $pageTitle = $pageTitle ?? 'MOE Admin';
 $extraCss = $extraCss ?? [];
 ?>
@@ -27,12 +26,12 @@ $extraCss = $extraCss ?? [];
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Lato:wght@400;700&display=swap"
         rel="stylesheet">
 
-    <!-- Core Styles (with cache busting) -->
-    <link rel="stylesheet" href="<?= asset('admin/css/style.css', $cssPath ?? '') ?>" />
-    <link rel="stylesheet" href="<?= asset('admin/css/cards.css', $cssPath ?? '') ?>" />
+    <!-- Core Styles -->
+    <link rel="stylesheet" href="<?= $cssPath ?? '' ?>css/style.css" />
+    <link rel="stylesheet" href="<?= $cssPath ?? '' ?>css/cards.css" />
 
     <!-- Extra CSS -->
     <?php foreach ($extraCss as $css): ?>
-        <link rel="stylesheet" href="<?= asset('admin/' . $css, $cssPath ?? '') ?>" />
+        <link rel="stylesheet" href="<?= $cssPath ?? '' ?><?= htmlspecialchars($css) ?>" />
     <?php endforeach; ?>
 </head>
