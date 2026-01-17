@@ -423,16 +423,19 @@ function closeEvolutionModal() {
 
 let sellPetId = null;
 
-// Calculate sell price based on rarity and level
+// Calculate sell price based on rarity and level (HARDCORE ECONOMY)
+// Must match backend formula in PetController.php: base_rarity * floor(sqrt(level))
 function calculateSellPrice(pet) {
     const basePrices = {
-        'Common': 50,
-        'Rare': 100,
-        'Epic': 200,
-        'Legendary': 500
+        'Common': 1,
+        'Uncommon': 2,
+        'Rare': 3,
+        'Epic': 10,
+        'Legendary': 25
     };
-    const base = basePrices[pet.rarity] || 50;
-    return base + (pet.level * 10);
+    const base = basePrices[pet.rarity] || 1;
+    const levelMultiplier = Math.max(1, Math.floor(Math.sqrt(pet.level)));
+    return base * levelMultiplier;
 }
 
 // Open sell modal
