@@ -117,8 +117,17 @@ function getUserPetsWithStats($conn, $user_id)
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
 
-    $pets = [];
+    // IMPORTANT: Fetch ALL pets first and close statement BEFORE calling updatePetStats
+    // This prevents "Prepared statement needs to be re-prepared" error
+    $raw_pets = [];
     while ($pet = mysqli_fetch_assoc($result)) {
+        $raw_pets[] = $pet;
+    }
+    mysqli_stmt_close($stmt);
+
+    // Now iterate and call updatePetStats (which uses its own prepared statements)
+    $pets = [];
+    foreach ($raw_pets as $pet) {
         // Update stats lazily for each pet
         $updated_pet = updatePetStats($conn, $pet['id']);
         if ($updated_pet) {
@@ -136,6 +145,5 @@ function getUserPetsWithStats($conn, $user_id)
         $pets[] = $pet;
     }
 
-    mysqli_stmt_close($stmt);
     return $pets;
 }
