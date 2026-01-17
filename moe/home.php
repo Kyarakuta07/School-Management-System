@@ -4,11 +4,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mediterranean of Egypt - Home</title>
+    <title>Mediterranean of Egypt - Virtual Academy | Home</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="Mediterranean of Egypt - A premier virtual academy bridging ancient wisdom and digital learning. Explore gamified education with pet companions, structured curriculum from Oceanology to Dark Arts.">
+    <meta name="keywords"
+        content="MOE, Mediterranean of Egypt, virtual academy, online school, gamified learning, pet companions, education platform, Moon Knight inspired">
+    <meta name="author" content="Mediterranean of Egypt School">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Mediterranean of Egypt - Virtual Academy">
+    <meta property="og:description"
+        content="A premier virtual academy bridging ancient wisdom and digital learning. Explore gamified education with pet companions.">
+    <meta property="og:image" content="assets/landing/logo.png">
+    <meta property="og:site_name" content="MOE - Mediterranean of Egypt">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Mediterranean of Egypt - Virtual Academy">
+    <meta name="twitter:description" content="Explore gamified education with pet companions at MOE Virtual Academy.">
+    <meta name="twitter:image" content="assets/landing/logo.png">
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#0a0a0a">
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="assets/landing/logo.png">
     <link rel="shortcut icon" type="image/png" href="assets/landing/logo.png">
+    <link rel="apple-touch-icon" href="assets/landing/logo.png">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

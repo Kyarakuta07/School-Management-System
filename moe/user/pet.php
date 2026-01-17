@@ -51,8 +51,23 @@ mysqli_stmt_close($gold_stmt);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0a0a0a">
-    <title>Pet Companion - MOE</title>
-    <link rel="icon" type="image/png" href="../assets/images/logo.png">
+    <title>Pet Companion - MOE Virtual Academy</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="Collect, evolve, and battle with your virtual pet companions in MOE. Features gacha system, arena battles, and gamified pet care.">
+    <meta name="keywords" content="MOE pet, virtual pet, gacha, pet battle, pet evolution, school gamification">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Pet Companion - MOE">
+    <meta property="og:description" content="Collect and battle with virtual pet companions!">
+    <meta property="og:image" content="../assets/landing/logo.png">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../assets/landing/logo.png">
+    <link rel="apple-touch-icon" href="../assets/landing/logo.png">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

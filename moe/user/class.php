@@ -239,6 +239,25 @@ $csrf_token = generate_csrf_token();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Classes - <?= APP_NAME ?></title>
 
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="View your class schedule, grades, and quizzes at MOE. Track your academic progress across History, Herbology, Oceanology, and Astronomy.">
+    <meta name="keywords" content="MOE classes, school schedule, grades, quizzes, academic progress, student portal">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Classes - MOE School System">
+    <meta property="og:description" content="Track your academic progress and class schedule.">
+    <meta property="og:image" content="../assets/landing/logo.png">
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#0a0a0a">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../assets/landing/logo.png">
+    <link rel="apple-touch-icon" href="../assets/landing/logo.png">
+
     <link rel="stylesheet" href="../assets/css/global.css" />
     <link rel="stylesheet" href="../assets/css/landing-style.css" />
     <link rel="stylesheet" href="css/beranda_style.css" />

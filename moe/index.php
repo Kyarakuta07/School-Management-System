@@ -23,11 +23,36 @@ if (isset($_SESSION['status_login']) && $_SESSION['status_login'] == 'berhasil')
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Mediterranean Of Egypt</title>
+    <title>Login - Mediterranean Of Egypt School System</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="Login to Mediterranean Of Egypt School System. Access your student portal, manage classes, and enjoy gamified learning with pet companions.">
+    <meta name="keywords"
+        content="MOE, Mediterranean of Egypt, school login, student portal, education, school management">
+    <meta name="author" content="Mediterranean of Egypt School">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Login - Mediterranean Of Egypt School System">
+    <meta property="og:description"
+        content="Access your student portal. Manage classes and enjoy gamified learning with pet companions.">
+    <meta property="og:image" content="assets/landing/logo.png">
+    <meta property="og:site_name" content="MOE - Mediterranean of Egypt">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Login - Mediterranean Of Egypt">
+    <meta name="twitter:description" content="Access your student portal with gamified learning experience.">
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#0a0a0a">
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="assets/landing/logo.png">
     <link rel="shortcut icon" type="image/png" href="assets/landing/logo.png">
+    <link rel="apple-touch-icon" href="assets/landing/logo.png">
 
     <!-- Preconnect hints for faster resource loading -->
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">

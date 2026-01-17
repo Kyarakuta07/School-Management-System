@@ -121,8 +121,28 @@ if ($hour >= 5 && $hour < 12) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beranda - <?= e($sanctuary_name) ?> Sanctuary | MOE</title>
 
-    <title>Beranda - <?= e($sanctuary_name) ?> Sanctuary</title>
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="Dashboard Mediterranean Of Egypt School System. Lihat profil, pet companion, dan informasi sanctuary Anda.">
+    <meta name="keywords"
+        content="MOE, Mediterranean of Egypt, student dashboard, beranda, pet companion, school portal">
+    <meta name="author" content="Mediterranean of Egypt School">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Dashboard - MOE School System">
+    <meta property="og:description" content="Access your student dashboard with pet companions and gamified learning.">
+    <meta property="og:image" content="../assets/landing/logo.png">
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#0a0a0a">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../assets/landing/logo.png">
+    <link rel="apple-touch-icon" href="../assets/landing/logo.png">
 
     <link rel="stylesheet" href="../assets/css/global.css" />
     <link rel="stylesheet" href="../assets/css/landing-style.css" />
