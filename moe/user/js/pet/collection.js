@@ -64,6 +64,26 @@ export function renderCollection() {
                     <i class="fas fa-box-open"></i> Retrieve
                 </button>
             `;
+        } else if (pet.status === 'ALIVE') {
+            // Determine if evolution is possible based on current stage and level
+            const currentStage = pet.evolution_stage || 'egg';
+            const canEvolve = (currentStage === 'egg' && pet.level >= 10) ||
+                (currentStage === 'baby' && pet.level >= 20);
+
+            actionButtonHTML = `
+                <div class="pet-action-row" style="display: flex; gap: 4px; margin-top: 8px;">
+                    ${!pet.is_active ? `
+                        <button class="pet-action-btn btn-sell" onclick="event.stopPropagation(); sellPet(${pet.id})" title="Sell Pet" style="background: linear-gradient(135deg, #f39c12, #e67e22); border: none; border-radius: 6px; padding: 6px 10px; color: white; cursor: pointer;">
+                            <i class="fas fa-coins"></i>
+                        </button>
+                    ` : ''}
+                    ${canEvolve ? `
+                        <button class="pet-action-btn btn-evolve" onclick="event.stopPropagation(); openEvolutionModal(${pet.id})" title="Evolve to ${currentStage === 'egg' ? 'Baby' : 'Adult'}" style="background: linear-gradient(135deg, #9B59B6, #8E44AD); border: none; border-radius: 6px; padding: 6px 10px; color: white; cursor: pointer;">
+                            <i class="fas fa-star"></i> Evolve
+                        </button>
+                    ` : ''}
+                </div>
+            `;
         }
 
         return `
