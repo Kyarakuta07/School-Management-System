@@ -78,16 +78,16 @@ mysqli_stmt_close($gold_stmt);
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Styles -->
-    <link rel="stylesheet" href="css/pet_v2.css">
-    <link rel="stylesheet" href="css/gacha_premium.css">
-    <link rel="stylesheet" href="css/gacha_result_modal.css">
-    <link rel="stylesheet" href="css/my_pet_premium.css">
-    <link rel="stylesheet" href="css/collection_premium.css">
-    <link rel="stylesheet" href="css/shop_premium.css">
-    <link rel="stylesheet" href="css/arena_premium.css">
-    <link rel="stylesheet" href="css/achievements_premium.css">
-    <link rel="stylesheet" href="css/daily_login.css">
+    <!-- Styles (with cache busting) -->
+    <link rel="stylesheet" href="<?= asset('user/css/pet_v2.css', '../') ?>">
+    <link rel="stylesheet" href="<?= asset('user/css/gacha_premium.css', '../') ?>">
+    <link rel="stylesheet" href="<?= asset('user/css/gacha_result_modal.css', '../') ?>">
+    <link rel="stylesheet" href="<?= asset('user/css/my_pet_premium.css', '../') ?>">
+    <link rel="stylesheet" href="<?= asset('user/css/collection_premium.css', '../') ?>">
+    <link rel="stylesheet" href="<?= asset('user/css/shop_premium.css', '../') ?>">
+    <link rel="stylesheet" href="<?= asset('user/css/arena_premium.css', '../') ?>">
+    <link rel="stylesheet" href="<?= asset('user/css/achievements_premium.css', '../') ?>">
+    <link rel="stylesheet" href="<?= asset('user/css/daily_login.css', '../') ?>">
 
     <!-- PixiJS for particles -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.3.2/pixi.min.js"></script>

@@ -40,8 +40,8 @@ if ($_SESSION['role'] === 'Nethera') {
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/trapeza.css">
+    <!-- Custom CSS (with cache busting) -->
+    <link rel="stylesheet" href="<?= asset('user/css/trapeza.css', '../') ?>">
 </head>
 
 <body>
@@ -211,8 +211,8 @@ if ($_SESSION['role'] === 'Nethera') {
     <!-- Toast Notification -->
     <div id="toast" class="toast"></div>
 
-    <!-- Scripts -->
-    <script src="js/trapeza.js"></script>
+    <!-- Scripts (with cache busting) -->
+    <script src="<?= asset('user/js/trapeza.js', '../') ?>"></script>
 </body>
 
 </html>

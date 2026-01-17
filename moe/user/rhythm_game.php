@@ -6,6 +6,7 @@
  */
 
 require_once '../core/security_config.php';
+require_once '../core/helpers.php';
 session_start();
 
 // Check if user is logged in
@@ -39,8 +40,8 @@ if (!$pet_id) {
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Game CSS -->
-    <link rel="stylesheet" href="css/rhythm_game.css">
+    <!-- Game CSS (with cache busting) -->
+    <link rel="stylesheet" href="<?= asset('user/css/rhythm_game.css', '../') ?>">
 </head>
 
 <body>
@@ -166,9 +167,9 @@ if (!$pet_id) {
         const API_BASE = 'api/router.php';
     </script>
 
-    <!-- Game JS -->
-    <script src="js/sound_manager.js"></script>
-    <script src="js/rhythm_game.js"></script>
+    <!-- Game JS (with cache busting) -->
+    <script src="<?= asset('user/js/sound_manager.js', '../') ?>"></script>
+    <script src="<?= asset('user/js/rhythm_game.js', '../') ?>"></script>
 </body>
 
 </html>

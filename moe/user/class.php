@@ -258,10 +258,10 @@ $csrf_token = generate_csrf_token();
     <link rel="icon" type="image/png" href="../assets/landing/logo.png">
     <link rel="apple-touch-icon" href="../assets/landing/logo.png">
 
-    <link rel="stylesheet" href="../assets/css/global.css" />
-    <link rel="stylesheet" href="../assets/css/landing-style.css" />
-    <link rel="stylesheet" href="css/beranda_style.css" />
-    <link rel="stylesheet" href="css/class_style.css" />
+    <link rel="stylesheet" href="<?= asset('assets/css/global.css', '../') ?>" />
+    <link rel="stylesheet" href="<?= asset('assets/css/landing-style.css', '../') ?>" />
+    <link rel="stylesheet" href="<?= asset('user/css/beranda_style.css', '../') ?>" />
+    <link rel="stylesheet" href="<?= asset('user/css/class_style.css', '../') ?>" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 

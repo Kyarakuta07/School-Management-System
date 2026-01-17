@@ -19,6 +19,7 @@ $user_id = $_SESSION['id_nethera'];
 
 // Include database connection
 include '../config/connection.php';
+require_once '../core/helpers.php';
 
 // Get battle parameters
 $battle_id = isset($_GET['battle_id']) ? $_GET['battle_id'] : '';
@@ -46,8 +47,8 @@ if (empty($battle_id)) {
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Battle 3v3 CSS -->
-    <link rel="stylesheet" href="css/battle_3v3.css">
+    <!-- Battle 3v3 CSS (with cache busting) -->
+    <link rel="stylesheet" href="<?= asset('user/css/battle_3v3.css', '../') ?>">
 
     <!-- PixiJS for visual effects -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.3.2/pixi.min.js"></script>
@@ -203,10 +204,10 @@ if (empty($battle_id)) {
         const API_BASE = 'api/router.php';
     </script>
 
-    <!-- Battle JS -->
-    <script src="js/sound_manager.js"></script>
-    <script src="js/pixi_battle.js"></script>
-    <script src="js/battle_3v3.js"></script>
+    <!-- Battle JS (with cache busting) -->
+    <script src="<?= asset('user/js/sound_manager.js', '../') ?>"></script>
+    <script src="<?= asset('user/js/pixi_battle.js', '../') ?>"></script>
+    <script src="<?= asset('user/js/battle_3v3.js', '../') ?>"></script>
 </body>
 
 </html>

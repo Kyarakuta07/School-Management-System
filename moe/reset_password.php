@@ -7,6 +7,7 @@
  */
 
 require_once __DIR__ . '/core/security_config.php';
+require_once __DIR__ . '/core/helpers.php';
 session_start();
 require_once __DIR__ . '/core/csrf.php';
 require_once __DIR__ . '/config/connection.php';
@@ -105,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $valid_token) {
         href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Outfit:wght@300;400;600&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="assets/css/global.css" />
+    <link rel="stylesheet" href="<?= asset('assets/css/global.css') ?>" />
     <style>
         :root {
             --gold-primary: #FFD700;

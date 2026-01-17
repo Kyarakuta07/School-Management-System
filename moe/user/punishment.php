@@ -254,10 +254,10 @@ $code_of_conduct = [
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Punishment & Discipline - <?= e($sanctuary_name) ?> Sanctuary</title>
 
-    <link rel="stylesheet" href="../assets/css/global.css" />
-    <link rel="stylesheet" href="../assets/css/landing-style.css" />
-    <link rel="stylesheet" href="css/beranda_style.css" />
-    <link rel="stylesheet" href="css/punishment_style.css" />
+    <link rel="stylesheet" href="<?= asset('assets/css/global.css', '../') ?>" />
+    <link rel="stylesheet" href="<?= asset('assets/css/landing-style.css', '../') ?>" />
+    <link rel="stylesheet" href="<?= asset('user/css/beranda_style.css', '../') ?>" />
+    <link rel="stylesheet" href="<?= asset('user/css/punishment_style.css', '../') ?>" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>

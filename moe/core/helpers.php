@@ -144,6 +144,65 @@ function arr_pluck($array, $key)
 // ==================================================
 
 /**
+ * Get base path for the current file context
+ * Call this at the start of each page to set proper asset paths
+ * @param string $relativePath Path from current file to moe/ folder (e.g., '../' for user/ files)
+ */
+function define_base_path($relativePath = '')
+{
+    if (!defined('ASSET_BASE_PATH')) {
+        define('ASSET_BASE_PATH', $relativePath);
+    }
+}
+
+/**
+ * Generate file version hash for cache busting
+ * @param string $filePath Relative path to the file from moe/ folder
+ * @return string Short hash of file content or timestamp
+ */
+function asset_version($filePath)
+{
+    // Try to find the file from moe/ directory
+    $basePath = defined('MOE_ROOT') ? MOE_ROOT : dirname(__DIR__);
+    $fullPath = $basePath . '/' . ltrim($filePath, '/');
+
+    if (file_exists($fullPath)) {
+        // Use first 8 chars of md5 hash for short version
+        return substr(md5_file($fullPath), 0, 8);
+    }
+
+    // Fallback to timestamp if file not found
+    return time();
+}
+
+/**
+ * Generate asset URL with cache busting version
+ * Use this for all JS and CSS includes to auto-bust cache on file changes
+ * 
+ * @param string $path Relative path to asset (e.g., 'js/pet.js' or 'css/style.css')
+ * @param string $basePath Optional base path prefix (e.g., '../' for user/ directory)
+ * @return string Full URL with version query string
+ * 
+ * Usage:
+ *   <script src="<?= asset('js/pet.js') ?>"></script>
+ *   <link href="<?= asset('css/style.css', '../') ?>" rel="stylesheet">
+ */
+function asset($path, $basePath = null)
+{
+    // Use defined base path if available
+    if ($basePath === null && defined('ASSET_BASE_PATH')) {
+        $basePath = ASSET_BASE_PATH;
+    }
+    $basePath = $basePath ?? '';
+
+    // Generate version hash
+    $version = asset_version($path);
+
+    // Build URL with version query string
+    return $basePath . $path . '?v=' . $version;
+}
+
+/**
  * Redirect to URL
  * @param string $url
  */

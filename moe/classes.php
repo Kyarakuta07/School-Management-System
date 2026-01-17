@@ -1,5 +1,7 @@
+<?php require_once __DIR__ . '/core/helpers.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,17 +10,18 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Lato:wght@400;700&display=swap"
+        rel="stylesheet">
 
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-    <!-- Global CSS -->
-    <link rel="stylesheet" href="assets/css/navbar.css">
-    <link rel="stylesheet" href="assets/css/landing-style.css">
+    <!-- Global CSS (with cache busting) -->
+    <link rel="stylesheet" href="<?= asset('assets/css/navbar.css') ?>">
+    <link rel="stylesheet" href="<?= asset('assets/css/landing-style.css') ?>">
 
     <!-- Class Page CSS -->
-    <link rel="stylesheet" href="assets/css/class.css">
+    <link rel="stylesheet" href="<?= asset('assets/css/class.css') ?>">
 </head>
 
 <body>
@@ -37,7 +40,7 @@
 
         <h2 class="section-title">ANCIENT KNOWLEDGE CLASSES</h2>
         <p class="section-subtitle">Unlock the mysteries of the Mediterranean.</p>
-        
+
         <div class="class-grid">
 
             <!-- Oceanology -->
@@ -69,4 +72,5 @@
     </section>
 
 </body>
+
 </html>

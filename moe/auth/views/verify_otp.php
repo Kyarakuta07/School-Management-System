@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../core/security_config.php';
+require_once __DIR__ . '/../../core/helpers.php';
 session_start();
 // Wajib ada untuk cek database
 require_once __DIR__ . '/../../config/connection.php';
@@ -57,7 +58,7 @@ mysqli_stmt_close($stmt_check);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Lato:wght@400;700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="../../assets/css/global.css" />
+    <link rel="stylesheet" href="<?= asset('assets/css/global.css', '../../') ?>" />
 </head>
 
 <body>

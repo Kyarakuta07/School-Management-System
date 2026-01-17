@@ -1,15 +1,15 @@
-<!-- JavaScript -->
-<script src="js/pixi_bg.js"></script>
-<script type="module" src="js/pet/main.js"></script>
-<script src="js/pixi_pet.js"></script>
-<script src="js/pet_animations.js"></script>
-<script src="js/pet_hardcore_update.js"></script>
+<!-- JavaScript (with cache busting) -->
+<script src="<?= asset('user/js/pixi_bg.js', '../') ?>"></script>
+<script type="module" src="<?= asset('user/js/pet/main.js', '../') ?>"></script>
+<script src="<?= asset('user/js/pixi_pet.js', '../') ?>"></script>
+<script src="<?= asset('user/js/pet_animations.js', '../') ?>"></script>
+<script src="<?= asset('user/js/pet_hardcore_update.js', '../') ?>"></script>
 
 <!-- Arena & Achievements Module -->
-<script src="js/pet_arena.js"></script>
+<script src="<?= asset('user/js/pet_arena.js', '../') ?>"></script>
 
 <!-- Collection Phase 2 (Search, Filter, Sort) -->
-<script src="js/collection_phase2.js"></script>
+<script src="<?= asset('user/js/collection_phase2.js', '../') ?>"></script>
 
 <!-- Arena Integration Script -->
 <script>

@@ -1,3 +1,4 @@
+<?php require_once __DIR__ . '/core/helpers.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -36,12 +37,12 @@
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-    <!-- Global CSS -->
-    <link rel="stylesheet" href="assets/css/navbar.css">
-    <link rel="stylesheet" href="assets/css/landing-style.css">
+    <!-- Global CSS (with cache busting) -->
+    <link rel="stylesheet" href="<?= asset('assets/css/navbar.css') ?>">
+    <link rel="stylesheet" href="<?= asset('assets/css/landing-style.css') ?>">
 
     <!-- Staff Page CSS -->
-    <link rel="stylesheet" href="assets/css/staff.css">
+    <link rel="stylesheet" href="<?= asset('assets/css/staff.css') ?>">
 </head>
 
 <body>
