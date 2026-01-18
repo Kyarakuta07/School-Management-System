@@ -125,10 +125,10 @@ function renderLeaderboard(data) {
  */
 function getRankIcon(rank) {
     switch (rank) {
-        case 1: return '🥇';
-        case 2: return '🥈';
-        case 3: return '🥉';
-        default: return `#${rank}`;
+        case 1: return '\u{1F947}'; // Gold medal
+        case 2: return '\u{1F948}'; // Silver medal
+        case 3: return '\u{1F949}'; // Bronze medal
+        default: return '#' + rank;
     }
 }
 
@@ -143,21 +143,21 @@ function populateElementFilter(elements) {
     const currentValue = select.value;
 
     // Clear and rebuild
-    select.innerHTML = '<option value="all">🌈 All Elements</option>';
+    select.innerHTML = '<option value="all">All Elements</option>';
 
     const elementIcons = {
-        'fire': '🔥',
-        'water': '💧',
-        'earth': '🌍',
-        'air': '💨',
-        'light': '✨',
-        'dark': '🌙',
-        'nature': '🌿',
-        'electric': '⚡'
+        'fire': '[F]',
+        'water': '[W]',
+        'earth': '[E]',
+        'air': '[A]',
+        'light': '[L]',
+        'dark': '[D]',
+        'nature': '[N]',
+        'electric': '[Z]'
     };
 
     elements.forEach(el => {
-        const icon = elementIcons[el.toLowerCase()] || '🔮';
+        const icon = elementIcons[el.toLowerCase()] || '[?]';
         const option = document.createElement('option');
         option.value = el;
         option.textContent = `${icon} ${el}`;
