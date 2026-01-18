@@ -105,7 +105,7 @@ function renderLeaderboard(data) {
                 <img class="pet-img" src="${imgPath}" 
                      onerror="this.src='../assets/placeholder.png'" alt="${displayName}">
                 <div class="pet-info">
-                    <div class="pet-name ${shinyClass}">${displayName} ${pet.is_shiny ? '✨' : ''}</div>
+                    <div class="pet-name ${shinyClass}">${displayName} ${pet.is_shiny ? '[S]' : ''}</div>
                     <div class="pet-meta">
                         <span class="element-badge ${pet.element?.toLowerCase()}">${pet.element || '?'}</span>
                         <span class="owner">${pet.owner_name}</span>
