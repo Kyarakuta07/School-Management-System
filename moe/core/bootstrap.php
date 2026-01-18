@@ -47,6 +47,8 @@ header("X-Frame-Options: SAMEORIGIN");
 header("X-Content-Type-Options: nosniff");
 // Enable XSS filter
 header("X-XSS-Protection: 1; mode=block");
+// Content Security Policy - allow inline scripts for pet system
+header("Content-Security-Policy: script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: https:; connect-src 'self';");
 
 // ==================================================
 // 3.1 CACHE CONTROL (Environment-based)
