@@ -156,50 +156,47 @@ function define_base_path($relativePath = '')
 }
 
 /**
- * Generate file version hash for cache busting
- * @param string $filePath Relative path to the file from moe/ folder
- * @return string Short hash of file content or timestamp
+ * Simple cache busting using file modification time
+ * 
+ * HOW TO USE:
+ * 1. Include helpers.php at top of your PHP file
+ * 2. Call asset() with the path relative to moe/
+ * 3. The function auto-detects the calling file's directory
+ * 
+ * @param string $path Path to asset relative to moe/ folder (e.g., 'user/css/pet.css')
+ * @param string $prefix Optional prefix for URL (e.g., '../' when calling from moe/user/)
+ * @return string URL with ?v=timestamp
+ * 
+ * Examples:
+ *   From moe/home.php:     asset('assets/css/home.css') 
+ *   From moe/user/pet.php: asset('user/css/pet.css', '../')
  */
-function asset_version($filePath)
+function asset($path, $prefix = '')
 {
-    // Try to find the file from moe/ directory
-    $basePath = defined('MOE_ROOT') ? MOE_ROOT : dirname(__DIR__);
-    $fullPath = $basePath . '/' . ltrim($filePath, '/');
+    // Get moe root directory
+    $moeRoot = dirname(__DIR__);
 
+    // Full path to the asset file
+    $fullPath = $moeRoot . '/' . ltrim($path, '/');
+
+    // Get file modification time for cache busting
     if (file_exists($fullPath)) {
-        // Use first 8 chars of md5 hash for short version
-        return substr(md5_file($fullPath), 0, 8);
+        $version = filemtime($fullPath);
+    } else {
+        // Fallback: try relative to calling file
+        $callerDir = dirname(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1)[0]['file']);
+        $relativePath = $callerDir . '/' . $prefix . $path;
+
+        if (file_exists($relativePath)) {
+            $version = filemtime($relativePath);
+        } else {
+            // Final fallback: use current timestamp (forces reload)
+            $version = time();
+        }
     }
 
-    // Fallback to timestamp if file not found
-    return time();
-}
-
-/**
- * Generate asset URL with cache busting version
- * Use this for all JS and CSS includes to auto-bust cache on file changes
- * 
- * @param string $path Relative path to asset (e.g., 'js/pet.js' or 'css/style.css')
- * @param string $basePath Optional base path prefix (e.g., '../' for user/ directory)
- * @return string Full URL with version query string
- * 
- * Usage:
- *   <script src="<?= asset('js/pet.js') ?>"></script>
- *   <link href="<?= asset('css/style.css', '../') ?>" rel="stylesheet">
- */
-function asset($path, $basePath = null)
-{
-    // Use defined base path if available
-    if ($basePath === null && defined('ASSET_BASE_PATH')) {
-        $basePath = ASSET_BASE_PATH;
-    }
-    $basePath = $basePath ?? '';
-
-    // Generate version hash
-    $version = asset_version($path);
-
-    // Build URL with version query string
-    return $basePath . $path . '?v=' . $version;
+    // Return URL with version query string
+    return $prefix . $path . '?v=' . $version;
 }
 
 /**
