@@ -99,10 +99,24 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    // Handle ALL main tab button clicks (except Battle which opens sheet)
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        if (btn.id !== 'battle-tab-btn') {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const tabName = this.dataset.tab;
+                if (tabName) {
+                    switchToTab(tabName);
+                }
+            });
+        }
+    });
+    
     // Battle button opens bottom sheet
     if (battleBtn) {
         battleBtn.addEventListener('click', function(e) {
             e.preventDefault();
+            e.stopPropagation();
             openBattleSheet();
         });
     }
