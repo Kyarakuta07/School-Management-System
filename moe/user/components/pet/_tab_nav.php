@@ -153,13 +153,19 @@ function closeBattleSheet() {
 }
 
 function switchToTab(tabName) {
-    // Hide all tab contents
-    document.querySelectorAll('.tab-content').forEach(content => {
+    // Hide ALL tab contents (both old and new format)
+    document.querySelectorAll('.tab-content, .tab-panel').forEach(content => {
         content.style.display = 'none';
     });
     
-    // Show selected tab content
-    const tabContent = document.getElementById('tab-' + tabName);
+    // Try new format first (tab-war, tab-leaderboard)
+    let tabContent = document.getElementById('tab-' + tabName);
+    
+    // If not found, try legacy format (arena, arena3v3)
+    if (!tabContent) {
+        tabContent = document.getElementById(tabName);
+    }
+    
     if (tabContent) {
         tabContent.style.display = 'block';
     }
