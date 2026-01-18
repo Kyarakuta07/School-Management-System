@@ -203,7 +203,7 @@ body {
 
 .lane-key {
     position: absolute;
-    bottom: 10px;
+    bottom: 120px;
     left: 50%;
     transform: translateX(-50%);
     width: 42px;
@@ -234,7 +234,7 @@ body {
    ================================================ */
 .hit-zone {
     position: absolute;
-    bottom: 60px;
+    bottom: 170px;
     left: 0;
     right: 0;
     height: 4px;
