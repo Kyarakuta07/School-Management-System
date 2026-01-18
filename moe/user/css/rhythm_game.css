@@ -334,23 +334,23 @@ body {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 80px;
+    height: 180px;
     display: flex;
     z-index: 30;
-    background: linear-gradient(180deg,
-            transparent 0%,
-            rgba(0, 0, 0, 0.3) 100%);
+    background: transparent;
+    pointer-events: auto;
 }
 
 .touch-lane {
     flex: 1;
     background: transparent;
     border: none;
-    transition: all 0.15s;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .touch-lane:active {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(var(--lane-color-rgb, 255, 255, 255), 0.1);
 }
 
 /* ================================================
