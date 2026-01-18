@@ -125,9 +125,9 @@ function renderLeaderboard(data) {
  */
 function getRankIcon(rank) {
     switch (rank) {
-        case 1: return '\u{1F947}'; // Gold medal
-        case 2: return '\u{1F948}'; // Silver medal
-        case 3: return '\u{1F949}'; // Bronze medal
+        case 1: return '1st';
+        case 2: return '2nd';
+        case 3: return '3rd';
         default: return '#' + rank;
     }
 }
