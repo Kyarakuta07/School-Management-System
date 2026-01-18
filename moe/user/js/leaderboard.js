@@ -3,7 +3,7 @@
  * Handles leaderboard loading and display
  */
 
-const ASSETS_BASE = '/moe/assets/pets/';
+var ASSETS_BASE = '/moe/assets/pets/';
 
 /**
  * Initialize leaderboard tab
@@ -15,156 +15,132 @@ function initLeaderboard() {
 /**
  * Load pet leaderboard from API
  */
-async function loadPetLeaderboard() {
-    const sortSelect = document.getElementById('lb-sort');
-    const elementSelect = document.getElementById('lb-element');
-    const listContainer = document.getElementById('leaderboard-list');
+function loadPetLeaderboard() {
+    var sortSelect = document.getElementById('lb-sort');
+    var elementSelect = document.getElementById('lb-element');
+    var listContainer = document.getElementById('leaderboard-list');
 
     if (!listContainer) {
         console.error('Leaderboard container not found');
         return;
     }
 
-    const sort = sortSelect ? sortSelect.value : 'level';
-    const element = elementSelect ? elementSelect.value : 'all';
+    var sort = sortSelect ? sortSelect.value : 'level';
+    var element = elementSelect ? elementSelect.value : 'all';
 
     listContainer.innerHTML = '<div class="loading-spinner">Loading...</div>';
 
-    try {
-        const url = `api/router.php?action=get_pet_leaderboard&sort=${sort}&element=${element}&limit=15`;
-        console.log('Fetching leaderboard:', url);
+    var url = 'api/router.php?action=get_pet_leaderboard&sort=' + sort + '&element=' + element + '&limit=15';
+    console.log('Fetching leaderboard:', url);
 
-        const response = await fetch(url);
-        const text = await response.text();
-
-        // Try to parse JSON, handle errors
-        let data;
-        try {
-            data = JSON.parse(text);
-        } catch (e) {
-            console.error('JSON parse error:', text.substring(0, 500));
-            listContainer.innerHTML = '<div class="empty-state">Server error - check console</div>';
-            return;
-        }
-
-        console.log('Leaderboard response:', data);
-
-        if (data.success) {
-            renderLeaderboard(data);
-            populateElementFilter(data.available_elements);
-        } else {
-            console.error('API error:', data.error);
-            listContainer.innerHTML = `<div class="empty-state">${data.error || 'Failed to load'}</div>`;
-        }
-    } catch (error) {
-        console.error('Leaderboard fetch error:', error);
-        listContainer.innerHTML = '<div class="empty-state">Network error</div>';
-    }
+    fetch(url)
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (data) {
+            console.log('Leaderboard response:', data);
+            if (data.success) {
+                renderLeaderboard(data);
+                populateElementFilter(data.available_elements);
+            } else {
+                console.error('API error:', data.error);
+                listContainer.innerHTML = '<div class="empty-state">' + (data.error || 'Failed to load') + '</div>';
+            }
+        })
+        .catch(function (error) {
+            console.error('Leaderboard fetch error:', error);
+            listContainer.innerHTML = '<div class="empty-state">Network error</div>';
+        });
 }
 
 /**
  * Render leaderboard list
  */
 function renderLeaderboard(data) {
-    const container = document.getElementById('leaderboard-list');
-    const pets = data.leaderboard;
+    var container = document.getElementById('leaderboard-list');
+    var pets = data.leaderboard;
 
     if (!pets || pets.length === 0) {
         container.innerHTML = '<div class="empty-state">No pets found</div>';
         return;
     }
 
-    container.innerHTML = pets.map(pet => {
-        const rankClass = pet.rank <= 3 ? `rank-${pet.rank}` : '';
-        const shinyClass = pet.is_shiny ? 'shiny' : '';
-        const displayName = pet.nickname || pet.species_name;
-        const imgPath = ASSETS_BASE + pet.current_image;
+    var html = '';
+    for (var i = 0; i < pets.length; i++) {
+        var pet = pets[i];
+        var rankClass = pet.rank <= 3 ? 'rank-' + pet.rank : '';
+        var shinyClass = pet.is_shiny ? 'shiny' : '';
+        var displayName = pet.nickname || pet.species_name;
+        var imgPath = ASSETS_BASE + pet.current_image;
+        var shinyMark = pet.is_shiny ? ' *' : '';
 
-        // Determine main stat based on sort
-        const sortValue = document.getElementById('lb-sort')?.value || 'level';
-        let mainStat = '';
-        let statLabel = '';
+        var sortSelect = document.getElementById('lb-sort');
+        var sortValue = sortSelect ? sortSelect.value : 'level';
+        var mainStat = '';
+        var statLabel = '';
 
-        switch (sortValue) {
-            case 'wins':
-                mainStat = pet.battle_wins;
-                statLabel = 'Wins';
-                break;
-            case 'power':
-                mainStat = pet.power_score;
-                statLabel = 'Power';
-                break;
-            default:
-                mainStat = `Lv.${pet.level}`;
-                statLabel = 'Level';
+        if (sortValue === 'wins') {
+            mainStat = pet.battle_wins;
+            statLabel = 'Wins';
+        } else if (sortValue === 'power') {
+            mainStat = pet.power_score;
+            statLabel = 'Power';
+        } else {
+            mainStat = 'Lv.' + pet.level;
+            statLabel = 'Level';
         }
 
-        return `
-            <div class="lb-pet-card ${rankClass}">
-                <div class="rank">${getRankIcon(pet.rank)}</div>
-                <img class="pet-img" src="${imgPath}" 
-                     onerror="this.src='../assets/placeholder.png'" alt="${displayName}">
-                <div class="pet-info">
-                    <div class="pet-name ${shinyClass}">${displayName} ${pet.is_shiny ? '[S]' : ''}</div>
-                    <div class="pet-meta">
-                        <span class="element-badge ${pet.element?.toLowerCase()}">${pet.element || '?'}</span>
-                        <span class="owner">${pet.owner_name}</span>
-                    </div>
-                </div>
-                <div class="pet-stats">
-                    <div class="stat-main">${mainStat}</div>
-                    <div class="stat-label">${statLabel}</div>
-                </div>
-            </div>
-        `;
-    }).join('');
+        var elementClass = pet.element ? pet.element.toLowerCase() : '';
+
+        html += '<div class="lb-pet-card ' + rankClass + '">';
+        html += '<div class="rank">' + getRankIcon(pet.rank) + '</div>';
+        html += '<img class="pet-img" src="' + imgPath + '" onerror="this.src=\'../assets/placeholder.png\'" alt="' + displayName + '">';
+        html += '<div class="pet-info">';
+        html += '<div class="pet-name ' + shinyClass + '">' + displayName + shinyMark + '</div>';
+        html += '<div class="pet-meta">';
+        html += '<span class="element-badge ' + elementClass + '">' + (pet.element || '?') + '</span>';
+        html += '<span class="owner">' + pet.owner_name + '</span>';
+        html += '</div>';
+        html += '</div>';
+        html += '<div class="pet-stats">';
+        html += '<div class="stat-main">' + mainStat + '</div>';
+        html += '<div class="stat-label">' + statLabel + '</div>';
+        html += '</div>';
+        html += '</div>';
+    }
+
+    container.innerHTML = html;
 }
 
 /**
  * Get rank icon
  */
 function getRankIcon(rank) {
-    switch (rank) {
-        case 1: return '1st';
-        case 2: return '2nd';
-        case 3: return '3rd';
-        default: return '#' + rank;
-    }
+    if (rank === 1) return '1st';
+    if (rank === 2) return '2nd';
+    if (rank === 3) return '3rd';
+    return '#' + rank;
 }
 
 /**
  * Populate element filter dropdown
  */
 function populateElementFilter(elements) {
-    const select = document.getElementById('lb-element');
+    var select = document.getElementById('lb-element');
     if (!select || !elements) return;
 
-    // Keep current selection
-    const currentValue = select.value;
+    var currentValue = select.value;
 
-    // Clear and rebuild
     select.innerHTML = '<option value="all">All Elements</option>';
 
-    const elementIcons = {
-        'fire': '[F]',
-        'water': '[W]',
-        'earth': '[E]',
-        'air': '[A]',
-        'light': '[L]',
-        'dark': '[D]',
-        'nature': '[N]',
-        'electric': '[Z]'
-    };
-
-    elements.forEach(el => {
-        const icon = elementIcons[el.toLowerCase()] || '[?]';
-        const option = document.createElement('option');
+    for (var i = 0; i < elements.length; i++) {
+        var el = elements[i];
+        var option = document.createElement('option');
         option.value = el;
-        option.textContent = `${icon} ${el}`;
+        option.textContent = el;
         select.appendChild(option);
-    });
+    }
 
-    // Restore selection
     if (currentValue) select.value = currentValue;
 }
 
