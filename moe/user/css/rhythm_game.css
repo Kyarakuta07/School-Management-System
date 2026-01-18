@@ -203,21 +203,23 @@ body {
 
 .lane-key {
     position: absolute;
-    bottom: 20px;
+    bottom: 10px;
     left: 50%;
     transform: translateX(-50%);
-    width: 36px;
-    height: 36px;
+    width: 42px;
+    height: 42px;
     display: grid;
     place-items: center;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.8);
     border: 2px solid var(--lane-color);
-    border-radius: 8px;
-    font-size: 1rem;
+    border-radius: 10px;
+    font-size: 1.1rem;
     font-weight: 700;
     color: var(--lane-color);
     z-index: 20;
     transition: all 0.1s;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5),
+        0 0 8px var(--lane-color);
 }
 
 .lane.active .lane-key {
@@ -232,15 +234,16 @@ body {
    ================================================ */
 .hit-zone {
     position: absolute;
-    bottom: 70px;
+    bottom: 60px;
     left: 0;
     right: 0;
     height: 4px;
     background: linear-gradient(90deg,
             transparent,
-            rgba(218, 165, 32, 0.8),
+            rgba(218, 165, 32, 1),
             transparent);
     z-index: 10;
+    box-shadow: 0 0 20px rgba(218, 165, 32, 0.6);
 }
 
 .hit-indicator {
@@ -331,20 +334,23 @@ body {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 150px;
+    height: 80px;
     display: flex;
     z-index: 30;
+    background: linear-gradient(180deg,
+            transparent 0%,
+            rgba(0, 0, 0, 0.3) 100%);
 }
 
 .touch-lane {
     flex: 1;
     background: transparent;
-    border: 1px solid transparent;
+    border: none;
     transition: all 0.15s;
 }
 
 .touch-lane:active {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.15);
 }
 
 /* ================================================
