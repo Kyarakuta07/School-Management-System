@@ -218,7 +218,18 @@ export async function selectPet(petId) {
     }
 
     if (pet.status === 'SHELTER') {
-        if (confirm(`Retrieve ${pet.nickname || pet.species_name} from shelter?`)) {
+        // Use custom confirm modal (falls back to native if not available)
+        if (typeof showConfirm === 'function') {
+            showConfirm(
+                `Are you sure you want to retrieve ${pet.nickname || pet.species_name} from the shelter?`,
+                'Retrieve from Shelter',
+                'fa-box-open'
+            ).then(confirmed => {
+                if (confirmed) {
+                    toggleShelter(petId);
+                }
+            });
+        } else if (confirm(`Retrieve ${pet.nickname || pet.species_name} from shelter?`)) {
             toggleShelter(petId);
         }
         return;

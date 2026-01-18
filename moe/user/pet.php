@@ -131,6 +131,7 @@ mysqli_stmt_close($gold_stmt);
     <?php include 'components/pet/modals/_evolution.php'; ?>
     <?php include 'components/pet/modals/_daily_login.php'; ?>
     <?php include 'components/pet/modals/_shop_modals.php'; ?>
+    <?php include 'components/pet/modals/_confirm.php'; ?>
 
     <!-- Inline Styles -->
     <?php include 'components/pet/_inline_styles.php'; ?>

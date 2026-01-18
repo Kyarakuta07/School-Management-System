@@ -593,9 +593,15 @@ async function selectPet(petId) {
 
     // --- LOGIKA SHELTER RETRIEVE ---
     if (pet.status === 'SHELTER') {
-        if (confirm(`Retrieve ${pet.nickname || pet.species_name} from shelter?`)) {
-            toggleShelter(petId);
-        }
+        showConfirm(
+            `Are you sure you want to retrieve ${pet.nickname || pet.species_name} from the shelter?`,
+            'Retrieve from Shelter',
+            'fa-box-open'
+        ).then(confirmed => {
+            if (confirmed) {
+                toggleShelter(petId);
+            }
+        });
         return;
     }
 
