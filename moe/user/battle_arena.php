@@ -153,8 +153,8 @@ $defender_img = getPetImageByStage($defender);
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Battle CSS (with cache busting) -->
-    <link rel="stylesheet" href="<?= asset('user/css/battle_arena_premium.css', '../') ?>">
+    <!-- Battle CSS -->
+    <link rel="stylesheet" href="css/battle_arena_premium.css">
 
     <!-- PixiJS for Premium Effects -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.3.2/pixi.min.js"></script>
@@ -320,10 +320,10 @@ $defender_img = getPetImageByStage($defender);
         const API_BASE = 'api/router.php';
     </script>
 
-    <!-- Battle JS (with cache busting) -->
-    <script src="<?= asset('user/js/sound_manager.js', '../') ?>"></script>
-    <script src="<?= asset('user/js/battle_arena.js', '../') ?>"></script>
-    <script src="<?= asset('user/js/pixi_battle.js', '../') ?>"></script>
+    <!-- Battle JS -->
+    <script src="js/sound_manager.js"></script>
+    <script src="js/battle_arena.js"></script>
+    <script src="js/pixi_battle.js"></script>
 </body>
 
 </html>
