@@ -1068,23 +1068,44 @@ $csrf_token = generate_csrf_token();
 
     <!-- Top Scholars Filter Script -->
     <script>
+        // Store original scholars HTML for reset
+        const originalScholarsHTML = document.getElementById('scholars-list')?.innerHTML || '';
+
         function filterScholars(sanctuaryId) {
-            const rows = document.querySelectorAll('.scholar-row');
+            const scholarsList = document.getElementById('scholars-list');
+            if (!scholarsList) return;
+
+            // Reset to original if no filter
+            if (!sanctuaryId) {
+                scholarsList.innerHTML = originalScholarsHTML;
+                return;
+            }
+
+            const rows = scholarsList.querySelectorAll('.scholar-row');
+            let visibleCount = 0;
+
             rows.forEach(row => {
-                if (!sanctuaryId || row.dataset.sanctuary === sanctuaryId) {
+                const rowSanctuary = row.getAttribute('data-sanctuary');
+                if (rowSanctuary === sanctuaryId) {
                     row.style.display = 'flex';
+                    visibleCount++;
                 } else {
                     row.style.display = 'none';
                 }
             });
 
-            // Check if any visible
-            const visibleRows = document.querySelectorAll('.scholar-row[style*="display: flex"], .scholar-row:not([style*="display"])');
-            const noScholars = document.querySelector('.no-scholars');
-            const scholarsList = document.getElementById('scholars-list');
-
-            if (visibleRows.length === 0 && !noScholars) {
-                scholarsList.innerHTML = '<div class="no-scholars"><i class="fa-solid fa-filter"></i><p>No scholars from this sanctuary yet.</p></div>';
+            // Show message if no results
+            if (visibleCount === 0) {
+                const existingMsg = scholarsList.querySelector('.no-scholars');
+                if (!existingMsg) {
+                    const msg = document.createElement('div');
+                    msg.className = 'no-scholars filter-msg';
+                    msg.innerHTML = '<i class="fa-solid fa-filter"></i><p>No scholars from this sanctuary.</p>';
+                    scholarsList.appendChild(msg);
+                }
+            } else {
+                const filterMsg = scholarsList.querySelector('.filter-msg');
+                if (filterMsg) filterMsg.remove();
             }
         }
     </script>
