@@ -61,6 +61,20 @@ $sanctuary_ranking = DB::query(
      ORDER BY total_points DESC"
 );
 
+// Get top 5 individual scholars by total PP
+$top_scholars = DB::query(
+    "SELECT n.id_nethera, n.nama_lengkap, s.nama_sanctuary, s.id_sanctuary, cg.total_pp
+     FROM class_grades cg
+     JOIN nethera n ON cg.id_nethera = n.id_nethera
+     LEFT JOIN sanctuary s ON n.id_sanctuary = s.id_sanctuary
+     WHERE n.role = 'Nethera' AND n.status_akun = 'Aktif' AND cg.total_pp > 0
+     ORDER BY cg.total_pp DESC
+     LIMIT 5"
+);
+
+// Get all sanctuaries for filter dropdown
+$all_sanctuaries = DB::query("SELECT id_sanctuary, nama_sanctuary FROM sanctuary ORDER BY nama_sanctuary");
+
 // Get user's sanctuary info
 $user_info = DB::queryOne(
     "SELECT n.*, s.nama_sanctuary 
@@ -328,6 +342,58 @@ $csrf_token = generate_csrf_token();
                             <small>Nilai akan muncul setelah mengikuti kelas.</small>
                         </div>
                     <?php endif; ?>
+                </div>
+
+                <!-- TOP SCHOLARS LEADERBOARD -->
+                <div class="class-card top-scholars-card">
+                    <div class="card-header-row">
+                        <h3 class="card-title"><i class="fa-solid fa-trophy"></i> TOP SCHOLARS</h3>
+                        <select id="sanctuary-filter" class="sanctuary-filter" onchange="filterScholars(this.value)">
+                            <option value="">All Sanctuaries</option>
+                            <?php foreach ($all_sanctuaries as $sanctuary): ?>
+                                <option value="<?= $sanctuary['id_sanctuary'] ?>">
+                                    <?= htmlspecialchars($sanctuary['nama_sanctuary']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="scholars-list" id="scholars-list">
+                        <?php if (!empty($top_scholars)): ?>
+                            <?php $rank = 1;
+                            foreach ($top_scholars as $scholar): ?>
+                                <div class="scholar-row rank-<?= $rank ?>" data-sanctuary="<?= $scholar['id_sanctuary'] ?>">
+                                    <div class="scholar-rank">
+                                        <?php if ($rank === 1): ?>
+                                            <span class="rank-icon gold">👑</span>
+                                        <?php elseif ($rank === 2): ?>
+                                            <span class="rank-icon silver">🥈</span>
+                                        <?php elseif ($rank === 3): ?>
+                                            <span class="rank-icon bronze">🥉</span>
+                                        <?php else: ?>
+                                            <span class="rank-number">#<?= $rank ?></span>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="scholar-info">
+                                        <span class="scholar-name"><?= htmlspecialchars($scholar['nama_lengkap']) ?></span>
+                                        <span class="scholar-sanctuary">
+                                            <i class="fa-solid fa-shield-halved"></i>
+                                            <?= htmlspecialchars($scholar['nama_sanctuary'] ?? 'Unknown') ?>
+                                        </span>
+                                    </div>
+                                    <div class="scholar-pp">
+                                        <span class="pp-value"><?= number_format($scholar['total_pp']) ?></span>
+                                        <span class="pp-label">PP</span>
+                                    </div>
+                                </div>
+                                <?php $rank++; endforeach; ?>
+                        <?php else: ?>
+                            <div class="no-scholars">
+                                <i class="fa-solid fa-users-slash"></i>
+                                <p>No rankings available yet.</p>
+                            </div>
+                        <?php endif; ?>
+                    </div>
                 </div>
 
                 <?php if ($role === 'Nethera' && !empty($student_progress)): ?>
@@ -999,6 +1065,29 @@ $csrf_token = generate_csrf_token();
             });
         </script>
     <?php endif; ?>
+
+    <!-- Top Scholars Filter Script -->
+    <script>
+        function filterScholars(sanctuaryId) {
+            const rows = document.querySelectorAll('.scholar-row');
+            rows.forEach(row => {
+                if (!sanctuaryId || row.dataset.sanctuary === sanctuaryId) {
+                    row.style.display = 'flex';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            // Check if any visible
+            const visibleRows = document.querySelectorAll('.scholar-row[style*="display: flex"], .scholar-row:not([style*="display"])');
+            const noScholars = document.querySelector('.no-scholars');
+            const scholarsList = document.getElementById('scholars-list');
+
+            if (visibleRows.length === 0 && !noScholars) {
+                scholarsList.innerHTML = '<div class="no-scholars"><i class="fa-solid fa-filter"></i><p>No scholars from this sanctuary yet.</p></div>';
+            }
+        }
+    </script>
 
 </body>
 

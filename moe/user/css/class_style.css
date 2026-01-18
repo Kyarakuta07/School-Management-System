@@ -763,3 +763,199 @@
         font-size: 1.2rem;
     }
 }
+
+/* ================================================
+   TOP SCHOLARS LEADERBOARD
+   ================================================ */
+
+.top-scholars-card {
+    border-color: rgba(218, 165, 32, 0.4);
+}
+
+.card-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.card-header-row .card-title {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.sanctuary-filter {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 8px;
+    color: #fff;
+    padding: 6px 10px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.sanctuary-filter:hover,
+.sanctuary-filter:focus {
+    border-color: #d4af37;
+    background: rgba(212, 175, 55, 0.1);
+}
+
+.sanctuary-filter option {
+    background: #1a1a2e;
+    color: #fff;
+}
+
+.scholars-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.scholar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.scholar-row:hover {
+    background: rgba(255, 255, 255, 0.06);
+    transform: translateX(4px);
+}
+
+/* Rank 1: Gold */
+.scholar-row.rank-1 {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(218, 165, 32, 0.1));
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.15);
+    animation: goldGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes goldGlow {
+    from {
+        box-shadow: 0 0 15px rgba(255, 215, 0, 0.15);
+    }
+
+    to {
+        box-shadow: 0 0 25px rgba(255, 215, 0, 0.3);
+    }
+}
+
+/* Rank 2: Silver */
+.scholar-row.rank-2 {
+    background: linear-gradient(135deg, rgba(192, 192, 192, 0.12), rgba(169, 169, 169, 0.08));
+    border: 1px solid rgba(192, 192, 192, 0.25);
+    box-shadow: 0 0 15px rgba(192, 192, 192, 0.1);
+}
+
+/* Rank 3: Bronze */
+.scholar-row.rank-3 {
+    background: linear-gradient(135deg, rgba(205, 127, 50, 0.12), rgba(184, 115, 51, 0.08));
+    border: 1px solid rgba(205, 127, 50, 0.25);
+    box-shadow: 0 0 15px rgba(205, 127, 50, 0.1);
+}
+
+.scholar-rank {
+    min-width: 36px;
+    text-align: center;
+}
+
+.rank-icon {
+    font-size: 1.4rem;
+    display: block;
+}
+
+.rank-icon.gold {
+    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
+}
+
+.rank-icon.silver {
+    filter: drop-shadow(0 0 6px rgba(192, 192, 192, 0.5));
+}
+
+.rank-icon.bronze {
+    filter: drop-shadow(0 0 6px rgba(205, 127, 50, 0.5));
+}
+
+.rank-number {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #888;
+}
+
+.scholar-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.scholar-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rank-1 .scholar-name {
+    color: #ffd700;
+}
+
+.scholar-sanctuary {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.scholar-sanctuary i {
+    color: #d4af37;
+    font-size: 0.7rem;
+}
+
+.scholar-pp {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    min-width: 55px;
+}
+
+.scholar-pp .pp-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #d4af37;
+}
+
+.scholar-pp .pp-label {
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+}
+
+.no-scholars {
+    text-align: center;
+    padding: 30px;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.no-scholars i {
+    font-size: 2rem;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.no-scholars p {
+    font-size: 0.9rem;
+}
