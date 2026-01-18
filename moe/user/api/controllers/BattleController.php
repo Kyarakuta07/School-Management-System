@@ -133,7 +133,12 @@ class BattleController extends BaseController
                         $new_status = $new_hp <= 0 ? 'DEAD' : 'ALIVE';
                         $pet_died = ($new_hp <= 0);
 
-                        $update_hp = mysqli_prepare($this->conn, "UPDATE user_pets SET health = ?, status = ? WHERE id = ?");
+                        // If pet died, also deactivate it
+                        if ($pet_died) {
+                            $update_hp = mysqli_prepare($this->conn, "UPDATE user_pets SET health = ?, status = ?, is_active = 0 WHERE id = ?");
+                        } else {
+                            $update_hp = mysqli_prepare($this->conn, "UPDATE user_pets SET health = ?, status = ? WHERE id = ?");
+                        }
                         mysqli_stmt_bind_param($update_hp, "isi", $new_hp, $new_status, $loser_pet_id);
                         mysqli_stmt_execute($update_hp);
                         mysqli_stmt_close($update_hp);
@@ -1096,7 +1101,12 @@ class BattleController extends BaseController
                         $new_hp = max(0, $current_hp - $hp_damage_per_faint);
                         $new_status = $new_hp <= 0 ? 'DEAD' : 'ALIVE';
 
-                        $update = mysqli_prepare($this->conn, "UPDATE user_pets SET health = ?, status = ? WHERE id = ?");
+                        // If pet died, also deactivate it
+                        if ($new_hp <= 0) {
+                            $update = mysqli_prepare($this->conn, "UPDATE user_pets SET health = ?, status = ?, is_active = 0 WHERE id = ?");
+                        } else {
+                            $update = mysqli_prepare($this->conn, "UPDATE user_pets SET health = ?, status = ? WHERE id = ?");
+                        }
                         mysqli_stmt_bind_param($update, "isi", $new_hp, $new_status, $pet_id);
                         mysqli_stmt_execute($update);
                         mysqli_stmt_close($update);
