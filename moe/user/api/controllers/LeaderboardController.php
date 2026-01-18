@@ -16,99 +16,103 @@ class LeaderboardController extends BaseController
     {
         $this->requireGet();
 
-        $sort = $_GET['sort'] ?? 'level';
-        $element = $_GET['element'] ?? null;
-        $limit = min(50, max(5, (int) ($_GET['limit'] ?? 10)));
+        try {
+            $sort = $_GET['sort'] ?? 'level';
+            $element = $_GET['element'] ?? null;
+            $limit = min(50, max(5, (int) ($_GET['limit'] ?? 10)));
 
-        // Build query based on sort type
-        switch ($sort) {
-            case 'wins':
-                $orderBy = 'COALESCE(battle_stats.wins, 0) DESC, up.level DESC';
-                break;
-            case 'power':
-                $orderBy = '(ps.base_attack + ps.base_defense + up.level * 3) DESC';
-                break;
-            default:
-                $orderBy = 'up.level DESC, up.exp DESC';
+            // Build query based on sort type
+            switch ($sort) {
+                case 'wins':
+                    $orderBy = 'battle_wins DESC, up.level DESC';
+                    break;
+                case 'power':
+                    $orderBy = 'power_score DESC';
+                    break;
+                default:
+                    $orderBy = 'up.level DESC, up.exp DESC';
+            }
+
+            $elementFilter = '';
+            $params = [];
+            $types = '';
+
+            if ($element && $element !== 'all') {
+                $elementFilter = 'AND ps.element = ?';
+                $params[] = $element;
+                $types .= 's';
+            }
+
+            // Simplified query - no complex subquery
+            $sql = "SELECT 
+                        up.id as pet_id,
+                        up.nickname,
+                        up.level,
+                        up.exp,
+                        up.is_shiny,
+                        up.evolution_stage,
+                        ps.name as species_name,
+                        ps.element,
+                        ps.rarity,
+                        ps.base_attack,
+                        ps.base_defense,
+                        ps.img_egg, ps.img_baby, ps.img_adult,
+                        n.nama_lengkap as owner_name,
+                        (ps.base_attack + ps.base_defense + up.level * 3) as power_score,
+                        (SELECT COUNT(*) FROM pet_battles pb WHERE pb.winner_pet_id = up.id) as battle_wins
+                    FROM user_pets up
+                    JOIN pet_species ps ON ps.id = up.species_id
+                    JOIN nethera n ON n.id_nethera = up.user_id
+                    WHERE up.status = 'ALIVE' 
+                    AND up.evolution_stage != 'egg'
+                    $elementFilter
+                    ORDER BY $orderBy
+                    LIMIT ?";
+
+            $params[] = $limit;
+            $types .= 'i';
+
+            $stmt = mysqli_prepare($this->conn, $sql);
+
+            if (!$stmt) {
+                $this->error('Database error: ' . mysqli_error($this->conn));
+                return;
+            }
+
+            if (!empty($types)) {
+                mysqli_stmt_bind_param($stmt, $types, ...$params);
+            }
+
+            if (!mysqli_stmt_execute($stmt)) {
+                $this->error('Query failed: ' . mysqli_stmt_error($stmt));
+                return;
+            }
+
+            $result = mysqli_stmt_get_result($stmt);
+
+            $leaderboard = [];
+            $rank = 1;
+            while ($row = mysqli_fetch_assoc($result)) {
+                $row['rank'] = $rank++;
+                $row['current_image'] = $this->getPetImage($row);
+                $leaderboard[] = $row;
+            }
+            mysqli_stmt_close($stmt);
+
+            // Get available elements for filter
+            $elements = $this->getAvailableElements();
+
+            $this->success([
+                'leaderboard' => $leaderboard,
+                'sort' => $sort,
+                'element_filter' => $element,
+                'total_count' => count($leaderboard),
+                'available_elements' => $elements
+            ]);
+
+        } catch (Exception $e) {
+            $this->error('Server error: ' . $e->getMessage());
         }
-
-        $elementFilter = '';
-        $params = [];
-        $types = '';
-
-        if ($element && $element !== 'all') {
-            $elementFilter = 'AND ps.element = ?';
-            $params[] = $element;
-            $types .= 's';
-        }
-
-        $sql = "SELECT 
-                    up.id as pet_id,
-                    up.nickname,
-                    up.level,
-                    up.exp,
-                    up.is_shiny,
-                    up.evolution_stage,
-                    ps.name as species_name,
-                    ps.element,
-                    ps.rarity,
-                    ps.base_attack,
-                    ps.base_defense,
-                    ps.img_egg, ps.img_baby, ps.img_adult,
-                    n.nama_lengkap as owner_name,
-                    s.nama_sanctuary as sanctuary_name,
-                    COALESCE(battle_stats.wins, 0) as battle_wins,
-                    COALESCE(battle_stats.total, 0) as total_battles,
-                    (ps.base_attack + ps.base_defense + up.level * 3) as power_score
-                FROM user_pets up
-                JOIN pet_species ps ON ps.id = up.species_id
-                JOIN nethera n ON n.id_nethera = up.user_id
-                LEFT JOIN sanctuary s ON s.id_sanctuary = n.id_sanctuary
-                LEFT JOIN (
-                    SELECT winner_pet_id as pet_id, 
-                           COUNT(*) as wins,
-                           (SELECT COUNT(*) FROM pet_battles pb2 WHERE pb2.player_pet_id = pet_battles.winner_pet_id) as total
-                    FROM pet_battles 
-                    WHERE winner_pet_id IS NOT NULL
-                    GROUP BY winner_pet_id
-                ) battle_stats ON battle_stats.pet_id = up.id
-                WHERE up.status = 'ALIVE' 
-                AND up.evolution_stage != 'egg'
-                $elementFilter
-                ORDER BY $orderBy
-                LIMIT ?";
-
-        $params[] = $limit;
-        $types .= 'i';
-
-        $stmt = mysqli_prepare($this->conn, $sql);
-
-        if (!empty($types)) {
-            mysqli_stmt_bind_param($stmt, $types, ...$params);
-        }
-
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
-
-        $leaderboard = [];
-        $rank = 1;
-        while ($row = mysqli_fetch_assoc($result)) {
-            $row['rank'] = $rank++;
-            $row['current_image'] = $this->getPetImage($row);
-            $leaderboard[] = $row;
-        }
-        mysqli_stmt_close($stmt);
-
-        // Get available elements for filter
-        $elements = $this->getAvailableElements();
-
-        $this->success([
-            'leaderboard' => $leaderboard,
-            'sort' => $sort,
-            'element_filter' => $element,
-            'total_count' => count($leaderboard),
-            'available_elements' => $elements
-        ]);
     }
 
     /**
