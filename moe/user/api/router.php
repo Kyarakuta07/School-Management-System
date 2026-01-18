@@ -29,10 +29,17 @@ require_once '../pet/pet_loader.php'; // Load pet logic functions
 // API-specific response helpers
 require_once '../../core/api_response.php';
 
-// Require auth - allow both Nethera and Vasiki (admin can view user dashboard)
-Auth::requireNetheraOrVasikiApi();
+// Public endpoints that don't require authentication
+$public_actions = ['get_pet_leaderboard', 'get_war_leaderboard'];
+$action = isset($_GET['action']) ? $_GET['action'] : '';
 
-$user_id = Auth::id();
+// Skip auth for public endpoints
+if (!in_array($action, $public_actions)) {
+    // Require auth - allow both Nethera and Vasiki (admin can view user dashboard)
+    Auth::requireNetheraOrVasikiApi();
+}
+
+$user_id = Auth::id() ?? 0; // 0 for public endpoints
 $conn = DB::getConnection();
 
 // Initialize rate limiter
@@ -151,7 +158,7 @@ $routes = [
 
 header('Content-Type: application/json');
 
-$action = isset($_GET['action']) ? $_GET['action'] : '';
+// $action already defined above for public check
 
 if (empty($action)) {
     api_error('Action parameter required', 'MISSING_ACTION', HTTP_BAD_REQUEST);
