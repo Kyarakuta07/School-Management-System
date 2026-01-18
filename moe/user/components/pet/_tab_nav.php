@@ -153,11 +153,20 @@ function closeBattleSheet() {
 }
 
 function switchToTab(tabName) {
+    // Battle submenu items should highlight the Battle button
+    const battleTabs = ['arena', 'arena3v3', 'war', 'leaderboard'];
+    const isBattleTab = battleTabs.includes(tabName);
+    
     // Remove active from all tab buttons
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.remove('active');
-        // Mark the correct button as active
-        if (btn.dataset.tab === tabName) {
+        
+        // If this is a battle submenu tab, highlight the Battle button
+        if (isBattleTab && btn.dataset.tab === 'battle') {
+            btn.classList.add('active');
+        }
+        // Otherwise highlight matching button
+        else if (btn.dataset.tab === tabName) {
             btn.classList.add('active');
         }
     });
