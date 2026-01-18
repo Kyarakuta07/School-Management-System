@@ -63,8 +63,7 @@ class LeaderboardController extends BaseController
                     FROM user_pets up
                     JOIN pet_species ps ON ps.id = up.species_id
                     JOIN nethera n ON n.id_nethera = up.user_id
-                    WHERE up.status = 'ALIVE' 
-                    AND up.evolution_stage != 'egg'
+                    WHERE up.status = 'ALIVE'
                     $elementFilter
                     ORDER BY $orderBy
                     LIMIT ?";

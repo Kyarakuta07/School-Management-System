@@ -50,8 +50,8 @@ async function loadPetLeaderboard() {
         console.log('Leaderboard response:', data);
 
         if (data.success) {
-            renderLeaderboard(data.data);
-            populateElementFilter(data.data.available_elements);
+            renderLeaderboard(data);
+            populateElementFilter(data.available_elements);
         } else {
             console.error('API error:', data.error);
             listContainer.innerHTML = `<div class="empty-state">${data.error || 'Failed to load'}</div>`;
