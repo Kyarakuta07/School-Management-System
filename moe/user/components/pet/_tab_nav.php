@@ -153,20 +153,31 @@ function closeBattleSheet() {
 }
 
 function switchToTab(tabName) {
-    // Hide ALL tab contents (both old and new format)
+    // Remove active from all tab buttons
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        // Mark the correct button as active
+        if (btn.dataset.tab === tabName) {
+            btn.classList.add('active');
+        }
+    });
+    
+    // Remove active class from ALL content tabs
     document.querySelectorAll('.tab-content, .tab-panel').forEach(content => {
+        content.classList.remove('active');
         content.style.display = 'none';
     });
     
     // Try new format first (tab-war, tab-leaderboard)
     let tabContent = document.getElementById('tab-' + tabName);
     
-    // If not found, try legacy format (arena, arena3v3)
+    // If not found, try legacy format (arena, arena3v3, my-pet, collection, etc)
     if (!tabContent) {
         tabContent = document.getElementById(tabName);
     }
     
     if (tabContent) {
+        tabContent.classList.add('active');
         tabContent.style.display = 'block';
     }
     

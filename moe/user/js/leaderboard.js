@@ -20,26 +20,45 @@ async function loadPetLeaderboard() {
     const elementSelect = document.getElementById('lb-element');
     const listContainer = document.getElementById('leaderboard-list');
 
+    if (!listContainer) {
+        console.error('Leaderboard container not found');
+        return;
+    }
+
     const sort = sortSelect ? sortSelect.value : 'level';
     const element = elementSelect ? elementSelect.value : 'all';
 
     listContainer.innerHTML = '<div class="loading-spinner">Loading...</div>';
 
     try {
-        const response = await fetch(
-            `api/router.php?action=get_pet_leaderboard&sort=${sort}&element=${element}&limit=15`
-        );
-        const data = await response.json();
+        const url = `api/router.php?action=get_pet_leaderboard&sort=${sort}&element=${element}&limit=15`;
+        console.log('Fetching leaderboard:', url);
+
+        const response = await fetch(url);
+        const text = await response.text();
+
+        // Try to parse JSON, handle errors
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (e) {
+            console.error('JSON parse error:', text.substring(0, 500));
+            listContainer.innerHTML = '<div class="empty-state">Server error - check console</div>';
+            return;
+        }
+
+        console.log('Leaderboard response:', data);
 
         if (data.success) {
             renderLeaderboard(data.data);
             populateElementFilter(data.data.available_elements);
         } else {
-            listContainer.innerHTML = '<div class="empty-state">Failed to load leaderboard</div>';
+            console.error('API error:', data.error);
+            listContainer.innerHTML = `<div class="empty-state">${data.error || 'Failed to load'}</div>`;
         }
     } catch (error) {
-        console.error('Leaderboard error:', error);
-        listContainer.innerHTML = '<div class="empty-state">Error loading leaderboard</div>';
+        console.error('Leaderboard fetch error:', error);
+        listContainer.innerHTML = '<div class="empty-state">Network error</div>';
     }
 }
 
