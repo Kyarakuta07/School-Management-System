@@ -60,7 +60,7 @@ export function showToast(message, type = 'success') {
 // ================================================
 
 /**
- * Initialize tab navigation click handlers
+ * Initialize tab navigation click handlers and read tab from URL
  * @returns {void}
  */
 export function initTabs() {
@@ -71,6 +71,18 @@ export function initTabs() {
             switchTab(tab);
         });
     });
+
+    // Read tab from URL parameter and switch to it
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabFromUrl = urlParams.get('tab');
+    if (tabFromUrl) {
+        // Validate that the tab exists before switching
+        const tabExists = document.getElementById(tabFromUrl) ||
+            document.querySelector(`[data-tab="${tabFromUrl}"]`);
+        if (tabExists) {
+            switchTab(tabFromUrl);
+        }
+    }
 }
 
 /**
