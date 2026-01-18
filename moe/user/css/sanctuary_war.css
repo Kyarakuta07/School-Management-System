@@ -1,0 +1,381 @@
+/* ================================================
+   Sanctuary War Styles
+   ================================================ */
+
+.war-container {
+    padding: 1rem;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* War Header */
+.war-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.war-header .war-icon {
+    font-size: 3rem;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.war-header h2 {
+    font-family: 'Cinzel', serif;
+    color: var(--gold, #DAA520);
+    margin: 0.5rem 0;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+}
+
+.war-timer {
+    color: #ff6b6b;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* War Inactive State */
+.war-inactive {
+    text-align: center;
+    padding: 3rem 1rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    border: 1px dashed rgba(218, 165, 32, 0.3);
+}
+
+.war-inactive .inactive-icon {
+    font-size: 4rem;
+    opacity: 0.6;
+}
+
+.war-inactive h3 {
+    color: #888;
+    margin: 1rem 0 0.5rem;
+}
+
+.war-inactive p {
+    color: #666;
+    margin: 0.25rem 0;
+}
+
+.war-inactive .next-war {
+    color: var(--gold, #DAA520);
+    font-weight: 600;
+    margin-top: 1rem;
+}
+
+/* Your Sanctuary */
+.your-sanctuary {
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.2), rgba(218, 165, 32, 0.05));
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(218, 165, 32, 0.3);
+}
+
+.your-sanctuary .label {
+    color: #888;
+    font-size: 0.8rem;
+}
+
+.your-sanctuary .sanctuary-name {
+    color: var(--gold, #DAA520);
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 1.2rem;
+    display: block;
+    margin-top: 0.25rem;
+}
+
+/* Tickets Display */
+.tickets-display {
+    background: rgba(0, 0, 0, 0.4);
+    padding: 1rem;
+    border-radius: 10px;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.tickets-label {
+    color: #888;
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.tickets-icons {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.tickets-icons .ticket {
+    font-size: 1.5rem;
+    transition: transform 0.2s, opacity 0.3s;
+}
+
+.tickets-icons .ticket.used {
+    opacity: 0.2;
+    filter: grayscale(100%);
+}
+
+/* War Standings */
+.war-standings {
+    background: rgba(0, 0, 0, 0.4);
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+}
+
+.war-standings h3 {
+    color: var(--gold, #DAA520);
+    font-size: 1rem;
+    margin: 0 0 0.75rem;
+    text-align: center;
+}
+
+.standings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.standing-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 0.75rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.standing-row.rank-1 {
+    background: linear-gradient(90deg, rgba(255, 215, 0, 0.2), transparent);
+    border-left: 3px solid gold;
+}
+
+.standing-row.rank-2 {
+    background: linear-gradient(90deg, rgba(192, 192, 192, 0.15), transparent);
+    border-left: 3px solid silver;
+}
+
+.standing-row.rank-3 {
+    background: linear-gradient(90deg, rgba(205, 127, 50, 0.15), transparent);
+    border-left: 3px solid #cd7f32;
+}
+
+.standing-row .rank {
+    width: 24px;
+    font-weight: 700;
+}
+
+.standing-row.rank-1 .rank {
+    color: gold;
+}
+
+.standing-row.rank-2 .rank {
+    color: silver;
+}
+
+.standing-row.rank-3 .rank {
+    color: #cd7f32;
+}
+
+.standing-row .sanctuary {
+    flex: 1;
+    color: #fff;
+    font-weight: 500;
+    margin-left: 0.5rem;
+}
+
+.standing-row .points {
+    color: var(--gold, #DAA520);
+    font-weight: 600;
+}
+
+/* Your Contribution */
+.your-contribution {
+    background: rgba(218, 165, 32, 0.1);
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(218, 165, 32, 0.2);
+}
+
+.your-contribution h4 {
+    color: var(--gold, #DAA520);
+    margin: 0 0 0.75rem;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.contribution-stats {
+    display: flex;
+    justify-content: space-around;
+}
+
+.contribution-stats .stat {
+    text-align: center;
+}
+
+.contribution-stats .value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.contribution-stats .label {
+    font-size: 0.75rem;
+    color: #888;
+}
+
+/* Battle Button */
+.war-battle-btn {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #e63946, #c82333);
+    color: white;
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(230, 57, 70, 0.4);
+}
+
+.war-battle-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(230, 57, 70, 0.5);
+}
+
+.war-battle-btn:disabled {
+    background: #444;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+/* Result Modal */
+.war-result-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+.war-result-modal .result-content {
+    background: linear-gradient(135deg, #1a1a2e, #0f0f1a);
+    padding: 2rem;
+    border-radius: 16px;
+    text-align: center;
+    border: 1px solid rgba(218, 165, 32, 0.3);
+    max-width: 320px;
+    width: 90%;
+}
+
+.war-result-modal .result-icon {
+    font-size: 4rem;
+    margin-bottom: 0.5rem;
+}
+
+.war-result-modal h2 {
+    color: var(--gold, #DAA520);
+    font-family: 'Cinzel', serif;
+    margin: 0 0 1rem;
+}
+
+.war-result-modal h2.victory {
+    color: #4caf50;
+}
+
+.war-result-modal h2.defeat {
+    color: #e63946;
+}
+
+.war-result-modal h2.tie {
+    color: #888;
+}
+
+.result-details {
+    margin-bottom: 1rem;
+}
+
+.result-details p {
+    margin: 0.25rem 0;
+    color: #888;
+}
+
+.result-details .sanctuary-badge {
+    display: inline-block;
+    background: rgba(218, 165, 32, 0.2);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: var(--gold, #DAA520);
+}
+
+.result-rewards {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin: 1.5rem 0;
+}
+
+.result-rewards .reward {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+    color: #fff;
+}
+
+.result-rewards .icon {
+    font-size: 1.5rem;
+}
+
+.close-result-btn {
+    background: linear-gradient(135deg, #DAA520, #b8860b);
+    color: #000;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.close-result-btn:hover {
+    transform: scale(1.05);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}

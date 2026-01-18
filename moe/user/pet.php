@@ -88,6 +88,8 @@ mysqli_stmt_close($gold_stmt);
     <link rel="stylesheet" href="<?= asset('user/css/arena_premium.css', '../') ?>">
     <link rel="stylesheet" href="<?= asset('user/css/achievements_premium.css', '../') ?>">
     <link rel="stylesheet" href="<?= asset('user/css/daily_login.css', '../') ?>">
+    <link rel="stylesheet" href="<?= asset('user/css/sanctuary_war.css', '../') ?>">
+    <link rel="stylesheet" href="<?= asset('user/css/leaderboard.css', '../') ?>">
 
     <!-- PixiJS for particles -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.3.2/pixi.min.js"></script>
@@ -119,6 +121,8 @@ mysqli_stmt_close($gold_stmt);
             <?php include 'components/pet/tabs/_shop.php'; ?>
             <?php include 'components/pet/tabs/_arena.php'; ?>
             <?php include 'components/pet/tabs/_arena_3v3.php'; ?>
+            <?php include 'components/pet/tabs/_sanctuary_war.php'; ?>
+            <?php include 'components/pet/tabs/_leaderboard.php'; ?>
             <?php include 'components/pet/tabs/_achievements.php'; ?>
         </main>
     </div>

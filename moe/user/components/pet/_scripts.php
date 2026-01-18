@@ -11,6 +11,12 @@
 <!-- Collection Phase 2 (Search, Filter, Sort) -->
 <script src="<?= asset('user/js/collection_phase2.js', '../') ?>"></script>
 
+<!-- Sanctuary War -->
+<script src="<?= asset('user/js/sanctuary_war.js', '../') ?>"></script>
+
+<!-- Leaderboard -->
+<script src="<?= asset('user/js/leaderboard.js', '../') ?>"></script>
+
 <!-- Arena Integration Script -->
 <script>
     // Wait for DOM to be ready
@@ -40,6 +46,24 @@
                     setTimeout(() => {
                         if (typeof initCollectionSearch === 'function') {
                             initCollectionSearch();
+                        }
+                    }, 100);
+                }
+
+                // Initialize Sanctuary War when war tab is clicked
+                if (targetTab === 'war') {
+                    setTimeout(() => {
+                        if (typeof initSanctuaryWar === 'function') {
+                            initSanctuaryWar();
+                        }
+                    }, 100);
+                }
+
+                // Initialize Leaderboard when leaderboard tab is clicked
+                if (targetTab === 'leaderboard') {
+                    setTimeout(() => {
+                        if (typeof initLeaderboard === 'function') {
+                            initLeaderboard();
                         }
                     }, 100);
                 }

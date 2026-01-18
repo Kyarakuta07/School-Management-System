@@ -53,6 +53,8 @@ require_once __DIR__ . '/controllers/TrapezaController.php';
 require_once __DIR__ . '/controllers/ClassController.php';
 require_once __DIR__ . '/controllers/MaterialController.php';
 require_once __DIR__ . '/controllers/QuizController.php';
+require_once __DIR__ . '/controllers/SanctuaryWarController.php';
+require_once __DIR__ . '/controllers/LeaderboardController.php';
 
 // ==================================================
 // ROUTE MAPPING
@@ -133,6 +135,14 @@ $routes = [
     'updateQuizStatus' => ['QuizController', 'updateQuizStatus'],
     'deleteQuestion' => ['QuizController', 'deleteQuestion'],
     'getAttemptHistory' => ['QuizController', 'getAttemptHistory'],
+
+    // Sanctuary War Controller
+    'get_war_status' => ['SanctuaryWarController', 'getWarStatus'],
+    'war_battle' => ['SanctuaryWarController', 'startBattle'],
+
+    // Leaderboard Controller
+    'get_pet_leaderboard' => ['LeaderboardController', 'getPetLeaderboard'],
+    'get_war_leaderboard' => ['LeaderboardController', 'getWarLeaderboard'],
 ];
 
 // ==================================================

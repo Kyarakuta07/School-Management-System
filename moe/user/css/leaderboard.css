@@ -1,0 +1,234 @@
+/* ================================================
+   Pet Leaderboard Styles
+   ================================================ */
+
+.leaderboard-container {
+    padding: 1rem;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* Header */
+.leaderboard-header {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.leaderboard-header .lb-icon {
+    font-size: 2.5rem;
+}
+
+.leaderboard-header h2 {
+    font-family: 'Cinzel', serif;
+    color: var(--gold, #DAA520);
+    margin: 0.5rem 0;
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+}
+
+/* Filters */
+.leaderboard-filters {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.leaderboard-filters select {
+    flex: 1;
+    padding: 0.6rem;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(218, 165, 32, 0.3);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.leaderboard-filters select:focus {
+    outline: none;
+    border-color: var(--gold, #DAA520);
+}
+
+/* Leaderboard List */
+.leaderboard-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Pet Card */
+.lb-pet-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 10px;
+    transition: all 0.2s;
+}
+
+.lb-pet-card:hover {
+    background: rgba(0, 0, 0, 0.6);
+}
+
+/* Rank Styles */
+.lb-pet-card .rank {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.lb-pet-card.rank-1 {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(0, 0, 0, 0.4));
+    border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.lb-pet-card.rank-1 .rank {
+    background: linear-gradient(135deg, #ffd700, #ffb347);
+    color: #000;
+}
+
+.lb-pet-card.rank-2 {
+    background: linear-gradient(135deg, rgba(192, 192, 192, 0.15), rgba(0, 0, 0, 0.4));
+    border: 1px solid rgba(192, 192, 192, 0.3);
+}
+
+.lb-pet-card.rank-2 .rank {
+    background: linear-gradient(135deg, #c0c0c0, #a0a0a0);
+    color: #000;
+}
+
+.lb-pet-card.rank-3 {
+    background: linear-gradient(135deg, rgba(205, 127, 50, 0.15), rgba(0, 0, 0, 0.4));
+    border: 1px solid rgba(205, 127, 50, 0.3);
+}
+
+.lb-pet-card.rank-3 .rank {
+    background: linear-gradient(135deg, #cd7f32, #a06025);
+    color: #fff;
+}
+
+/* Pet Image */
+.lb-pet-card .pet-img {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    object-fit: cover;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+/* Pet Info */
+.lb-pet-card .pet-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.lb-pet-card .pet-name {
+    font-weight: 600;
+    color: #fff;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.lb-pet-card .pet-name.shiny {
+    color: #ffd700;
+}
+
+.lb-pet-card .pet-meta {
+    font-size: 0.75rem;
+    color: #888;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.lb-pet-card .owner {
+    color: #aaa;
+}
+
+/* Stats */
+.lb-pet-card .pet-stats {
+    text-align: right;
+}
+
+.lb-pet-card .stat-main {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--gold, #DAA520);
+}
+
+.lb-pet-card .stat-label {
+    font-size: 0.7rem;
+    color: #666;
+}
+
+/* Element Badge */
+.element-badge {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.element-badge.fire {
+    background: #ff6b35;
+    color: #fff;
+}
+
+.element-badge.water {
+    background: #4dabf7;
+    color: #fff;
+}
+
+.element-badge.earth {
+    background: #8b5a2b;
+    color: #fff;
+}
+
+.element-badge.air {
+    background: #74c0fc;
+    color: #000;
+}
+
+.element-badge.light {
+    background: #fff3bf;
+    color: #000;
+}
+
+.element-badge.dark {
+    background: #2c2c2c;
+    color: #fff;
+}
+
+.element-badge.nature {
+    background: #51cf66;
+    color: #fff;
+}
+
+.element-badge.electric {
+    background: #fcc419;
+    color: #000;
+}
+
+/* Loading */
+.leaderboard-list .loading-spinner {
+    text-align: center;
+    padding: 2rem;
+    color: #888;
+}
+
+/* Empty State */
+.leaderboard-list .empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+}

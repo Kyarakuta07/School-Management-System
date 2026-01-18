@@ -24,6 +24,14 @@
         <i class="fas fa-users"></i>
         <span>3v3</span>
     </button>
+    <button class="tab-btn" data-tab="war">
+        <i class="fas fa-flag"></i>
+        <span>War</span>
+    </button>
+    <button class="tab-btn" data-tab="leaderboard">
+        <i class="fas fa-crown"></i>
+        <span>Top</span>
+    </button>
     <button class="tab-btn" data-tab="achievements">
         <i class="fas fa-trophy"></i>
         <span>Badges</span>
