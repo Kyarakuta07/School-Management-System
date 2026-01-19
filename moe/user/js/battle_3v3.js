@@ -454,54 +454,85 @@ function renderBattleUI() {
 }
 
 function renderTeamIndicators() {
+    // Safety check
+    if (!BattleState.playerPets || !BattleState.enemyPets) {
+        console.error('Missing pets arrays');
+        return;
+    }
+
     // Player indicators
-    DOM.playerIndicators.innerHTML = BattleState.playerPets.map((pet, i) => `
+    DOM.playerIndicators.innerHTML = BattleState.playerPets.map((pet, i) => {
+        if (!pet) return '';
+        return `
         <div class="pet-indicator ${i === BattleState.activePlayerIndex ? 'active' : ''} ${pet.is_fainted ? 'fainted' : ''}">
-            <img src="${getBattlePetImage(pet)}" alt="${pet.species_name}" onerror="this.src='../assets/placeholder.png'">
+            <img src="${getBattlePetImage(pet)}" alt="${pet.species_name || 'Pet'}" onerror="this.src='../assets/placeholder.png'">
         </div>
-    `).join('');
+    `;
+    }).join('');
 
     // Enemy indicators
-    DOM.enemyIndicators.innerHTML = BattleState.enemyPets.map((pet, i) => `
+    DOM.enemyIndicators.innerHTML = BattleState.enemyPets.map((pet, i) => {
+        if (!pet) return '';
+        return `
         <div class="pet-indicator ${i === BattleState.activeEnemyIndex ? 'active' : ''} ${pet.is_fainted ? 'fainted' : ''}">
-            <img src="${getBattlePetImage(pet)}" alt="${pet.species_name}" onerror="this.src='../assets/placeholder.png'">
+            <img src="${getBattlePetImage(pet)}" alt="${pet.species_name || 'Pet'}" onerror="this.src='../assets/placeholder.png'">
         </div>
-    `).join('');
+    `;
+    }).join('');
 }
 
 function renderActivePets() {
     const playerPet = BattleState.playerPets[BattleState.activePlayerIndex];
     const enemyPet = BattleState.enemyPets[BattleState.activeEnemyIndex];
 
+    // Safety check
+    if (!playerPet || !enemyPet) {
+        console.error('Missing pet data:', {
+            playerPet, enemyPet,
+            playerIndex: BattleState.activePlayerIndex,
+            enemyIndex: BattleState.activeEnemyIndex,
+            playerPets: BattleState.playerPets,
+            enemyPets: BattleState.enemyPets
+        });
+        return;
+    }
+
     // Player
-    DOM.playerName.textContent = playerPet.nickname || playerPet.species_name;
-    DOM.playerElement.textContent = playerPet.element;
-    DOM.playerElement.className = `element-badge ${playerPet.element.toLowerCase()}`;
+    DOM.playerName.textContent = playerPet.nickname || playerPet.species_name || 'Unknown';
+    DOM.playerElement.textContent = playerPet.element || 'Fire';
+    DOM.playerElement.className = `element-badge ${(playerPet.element || 'fire').toLowerCase()}`;
     DOM.playerImg.src = getBattlePetImage(playerPet);
     DOM.playerImg.onerror = function () { this.src = '../assets/placeholder.png'; };
-    updatePlayerHp(playerPet.hp, playerPet.is_fainted);
+    updatePlayerHp(playerPet.hp || 0, playerPet.is_fainted);
 
     // Enemy
-    DOM.enemyName.textContent = enemyPet.nickname || enemyPet.species_name;
-    DOM.enemyElement.textContent = enemyPet.element;
-    DOM.enemyElement.className = `element-badge ${enemyPet.element.toLowerCase()}`;
+    DOM.enemyName.textContent = enemyPet.nickname || enemyPet.species_name || 'Unknown';
+    DOM.enemyElement.textContent = enemyPet.element || 'Fire';
+    DOM.enemyElement.className = `element-badge ${(enemyPet.element || 'fire').toLowerCase()}`;
     DOM.enemyImg.src = getBattlePetImage(enemyPet);
     DOM.enemyImg.onerror = function () { this.src = '../assets/placeholder.png'; };
-    updateEnemyHp(enemyPet.hp, enemyPet.is_fainted);
+    updateEnemyHp(enemyPet.hp || 0, enemyPet.is_fainted);
 }
 
 function renderSkills() {
     const activePet = BattleState.playerPets[BattleState.activePlayerIndex];
+
+    // Safety check
+    if (!activePet) {
+        console.error('No active pet for skills');
+        return;
+    }
+
     const skills = BattleState.playerSkills.length > 0
         ? BattleState.playerSkills
-        : getDefaultSkills(activePet.element);
+        : getDefaultSkills(activePet.element || 'Fire');
 
     DOM.skillsGrid.innerHTML = skills.slice(0, 4).map(skill => `
-        <button class="skill-btn ${skill.skill_element.toLowerCase()}" 
+        <button class="skill-btn ${(skill.skill_element || 'fire').toLowerCase()}" 
                 onclick="handleAttack(${skill.id})"
                 ${BattleState.currentTurn !== 'player' ? 'disabled' : ''}>
-            <span class="skill-name">${skill.skill_name}</span>
-            <span class="skill-damage"><i class="fas fa-bolt"></i> ${skill.base_damage}</span>
+            <span class="skill-name">${skill.skill_name || 'Attack'}</span>
+            <span class="skill-damage"><i class="fas fa-bolt"></i> ${skill.base_damage || 25}</span>
         </button>
     `).join('');
 }
