@@ -3,7 +3,7 @@
  * Handles leaderboard pods, tabs, and element classification
  */
 
-console.log('[LB] leaderboard.js loaded');
+console.error('[LB] leaderboard.js FORCE LOADED');
 
 var ASSETS_BASE = '/moe/assets/pets/';
 var currentSort = 'level';
