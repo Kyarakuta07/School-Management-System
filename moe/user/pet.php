@@ -123,6 +123,7 @@ mysqli_stmt_close($gold_stmt);
             <?php include 'components/pet/tabs/_arena_3v3.php'; ?>
             <?php include 'components/pet/tabs/_sanctuary_war.php'; ?>
             <?php include 'components/pet/tabs/_leaderboard.php'; ?>
+            <?php include 'components/pet/tabs/_history.php'; ?>
             <?php include 'components/pet/tabs/_achievements.php'; ?>
         </main>
     </div>

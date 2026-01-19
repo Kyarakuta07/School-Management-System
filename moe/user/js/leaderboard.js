@@ -144,6 +144,72 @@ function populateElementFilter(elements) {
     if (currentValue) select.value = currentValue;
 }
 
+/**
+ * Load battle history tab
+ */
+function loadBattleHistoryTab() {
+    var listContainer = document.getElementById('history-list');
+    var winsEl = document.getElementById('total-wins');
+    var lossesEl = document.getElementById('total-losses');
+    var streakEl = document.getElementById('win-streak');
+
+    if (!listContainer) {
+        console.error('History container not found');
+        return;
+    }
+
+    listContainer.innerHTML = '<div class="loading-spinner">Loading...</div>';
+
+    fetch('api/router.php?action=battle_history')
+        .then(function (response) { return response.json(); })
+        .then(function (data) {
+            if (!data.success) {
+                listContainer.innerHTML = '<div class="empty-history">Failed to load history</div>';
+                return;
+            }
+
+            // Update stats
+            if (winsEl) winsEl.textContent = data.stats.wins || 0;
+            if (lossesEl) lossesEl.textContent = data.stats.losses || 0;
+            if (streakEl) streakEl.textContent = data.stats.current_streak || 0;
+
+            // Render history
+            var history = data.history || [];
+            if (history.length === 0) {
+                listContainer.innerHTML = '<div class="empty-history">No battles yet. Challenge someone!</div>';
+                return;
+            }
+
+            var html = history.map(function (battle) {
+                var date = new Date(battle.created_at).toLocaleDateString('id-ID');
+                var won = battle.won ? true : false;
+
+                return '<div class="history-item">' +
+                    '<div class="history-pets">' +
+                    '<div class="history-pet">' +
+                    '<div class="history-pet-name">' + (battle.pet_name || 'Your Pet') + '</div>' +
+                    '</div>' +
+                    '<span class="history-vs">VS</span>' +
+                    '<div class="history-pet">' +
+                    '<div class="history-pet-name">' + (battle.opponent_name || 'Enemy') + '</div>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div>' +
+                    '<span class="history-result ' + (won ? 'win' : 'lose') + '">' + (won ? '✓ WIN' : '✗ LOSE') + '</span>' +
+                    '<div class="history-date">' + date + '</div>' +
+                    '</div>' +
+                    '</div>';
+            }).join('');
+
+            listContainer.innerHTML = html;
+        })
+        .catch(function (error) {
+            console.error('Error loading history:', error);
+            listContainer.innerHTML = '<div class="empty-history">Failed to load history</div>';
+        });
+}
+
 // Expose to global scope
 window.loadPetLeaderboard = loadPetLeaderboard;
 window.initLeaderboard = initLeaderboard;
+window.loadBattleHistoryTab = loadBattleHistoryTab;

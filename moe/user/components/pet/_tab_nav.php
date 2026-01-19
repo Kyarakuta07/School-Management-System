@@ -74,149 +74,158 @@
             </div>
             <i class="fas fa-chevron-right"></i>
         </button>
+        <button class="sheet-option" data-tab="history">
+            <div class="option-icon">📜</div>
+            <div class="option-info">
+                <span class="option-title">Battle History</span>
+                <span class="option-desc">Your battle records</span>
+            </div>
+            <i class="fas fa-chevron-right"></i>
+        </button>
     </div>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const tabNav = document.getElementById('tab-nav');
-    const battleBtn = document.getElementById('battle-tab-btn');
-    const battleSheet = document.getElementById('battle-sheet');
-    const battleOverlay = document.getElementById('battle-sheet-overlay');
-    const indicatorThumb = document.getElementById('indicator-thumb');
-    
-    // Scroll indicator
-    if (tabNav && indicatorThumb) {
-        tabNav.addEventListener('scroll', function() {
-            const scrollPercent = tabNav.scrollLeft / (tabNav.scrollWidth - tabNav.clientWidth);
-            const thumbPosition = scrollPercent * (100 - 30); // 30% thumb width
-            indicatorThumb.style.left = thumbPosition + '%';
-        });
-        
-        // Hide indicator if no scroll needed
-        if (tabNav.scrollWidth <= tabNav.clientWidth) {
-            document.getElementById('scroll-indicator').style.display = 'none';
+    document.addEventListener('DOMContentLoaded', function () {
+        const tabNav = document.getElementById('tab-nav');
+        const battleBtn = document.getElementById('battle-tab-btn');
+        const battleSheet = document.getElementById('battle-sheet');
+        const battleOverlay = document.getElementById('battle-sheet-overlay');
+        const indicatorThumb = document.getElementById('indicator-thumb');
+
+        // Scroll indicator
+        if (tabNav && indicatorThumb) {
+            tabNav.addEventListener('scroll', function () {
+                const scrollPercent = tabNav.scrollLeft / (tabNav.scrollWidth - tabNav.clientWidth);
+                const thumbPosition = scrollPercent * (100 - 30); // 30% thumb width
+                indicatorThumb.style.left = thumbPosition + '%';
+            });
+
+            // Hide indicator if no scroll needed
+            if (tabNav.scrollWidth <= tabNav.clientWidth) {
+                document.getElementById('scroll-indicator').style.display = 'none';
+            }
         }
-    }
-    
-    // Handle ALL main tab button clicks (except Battle which opens sheet)
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        if (btn.id !== 'battle-tab-btn') {
-            btn.addEventListener('click', function(e) {
+
+        // Handle ALL main tab button clicks (except Battle which opens sheet)
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            if (btn.id !== 'battle-tab-btn') {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const tabName = this.dataset.tab;
+                    if (tabName) {
+                        switchToTab(tabName);
+                    }
+                });
+            }
+        });
+
+        // Battle button opens bottom sheet
+        if (battleBtn) {
+            battleBtn.addEventListener('click', function (e) {
                 e.preventDefault();
-                const tabName = this.dataset.tab;
-                if (tabName) {
-                    switchToTab(tabName);
-                }
+                e.stopPropagation();
+                openBattleSheet();
             });
         }
-    });
-    
-    // Battle button opens bottom sheet
-    if (battleBtn) {
-        battleBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            openBattleSheet();
+
+        // Close sheet on overlay click
+        if (battleOverlay) {
+            battleOverlay.addEventListener('click', closeBattleSheet);
+        }
+
+        // Handle sheet option clicks
+        document.querySelectorAll('.sheet-option').forEach(option => {
+            option.addEventListener('click', function () {
+                const tabName = this.dataset.tab;
+                closeBattleSheet();
+                switchToTab(tabName);
+
+                // Mark battle tab as active
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                battleBtn.classList.add('active');
+            });
         });
-    }
-    
-    // Close sheet on overlay click
-    if (battleOverlay) {
-        battleOverlay.addEventListener('click', closeBattleSheet);
-    }
-    
-    // Handle sheet option clicks
-    document.querySelectorAll('.sheet-option').forEach(option => {
-        option.addEventListener('click', function() {
-            const tabName = this.dataset.tab;
-            closeBattleSheet();
-            switchToTab(tabName);
-            
-            // Mark battle tab as active
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            battleBtn.classList.add('active');
+
+        // Swipe down to close
+        let startY = 0;
+        battleSheet.addEventListener('touchstart', function (e) {
+            startY = e.touches[0].clientY;
+        });
+
+        battleSheet.addEventListener('touchmove', function (e) {
+            const currentY = e.touches[0].clientY;
+            const diff = currentY - startY;
+            if (diff > 50) {
+                closeBattleSheet();
+            }
         });
     });
-    
-    // Swipe down to close
-    let startY = 0;
-    battleSheet.addEventListener('touchstart', function(e) {
-        startY = e.touches[0].clientY;
-    });
-    
-    battleSheet.addEventListener('touchmove', function(e) {
-        const currentY = e.touches[0].clientY;
-        const diff = currentY - startY;
-        if (diff > 50) {
-            closeBattleSheet();
-        }
-    });
-});
 
-function openBattleSheet() {
-    document.getElementById('battle-sheet').classList.add('open');
-    document.getElementById('battle-sheet-overlay').classList.add('show');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeBattleSheet() {
-    document.getElementById('battle-sheet').classList.remove('open');
-    document.getElementById('battle-sheet-overlay').classList.remove('show');
-    document.body.style.overflow = '';
-}
-
-function switchToTab(tabName) {
-    // Battle submenu items should highlight the Battle button
-    const battleTabs = ['arena', 'arena3v3', 'war', 'leaderboard'];
-    const isBattleTab = battleTabs.includes(tabName);
-    
-    // Remove active from all tab buttons
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-        
-        // If this is a battle submenu tab, highlight the Battle button
-        if (isBattleTab && btn.dataset.tab === 'battle') {
-            btn.classList.add('active');
-        }
-        // Otherwise highlight matching button
-        else if (btn.dataset.tab === tabName) {
-            btn.classList.add('active');
-        }
-    });
-    
-    // Remove active class from ALL content tabs
-    document.querySelectorAll('.tab-content, .tab-panel').forEach(content => {
-        content.classList.remove('active');
-        content.style.display = 'none';
-    });
-    
-    // Try new format first (tab-war, tab-leaderboard)
-    let tabContent = document.getElementById('tab-' + tabName);
-    
-    // If not found, try legacy format (arena, arena3v3, my-pet, collection, etc)
-    if (!tabContent) {
-        tabContent = document.getElementById(tabName);
+    function openBattleSheet() {
+        document.getElementById('battle-sheet').classList.add('open');
+        document.getElementById('battle-sheet-overlay').classList.add('show');
+        document.body.style.overflow = 'hidden';
     }
-    
-    if (tabContent) {
-        tabContent.classList.add('active');
-        tabContent.style.display = 'block';
-    }
-    
-    // Trigger tab-specific load functions
-    setTimeout(() => {
-        if (tabName === 'arena' && typeof loadOpponents === 'function') loadOpponents();
-        if (tabName === 'arena3v3' && typeof loadTeamSelection === 'function') loadTeamSelection();
-        if (tabName === 'war' && typeof initSanctuaryWar === 'function') initSanctuaryWar();
-        if (tabName === 'leaderboard' && typeof initLeaderboard === 'function') initLeaderboard();
-        if (tabName === 'achievements' && typeof loadAchievements === 'function') loadAchievements();
-        if (tabName === 'collection' && typeof initCollectionSearch === 'function') initCollectionSearch();
-    }, 100);
-}
 
-// Expose globally
-window.openBattleSheet = openBattleSheet;
-window.closeBattleSheet = closeBattleSheet;
-window.switchToTab = switchToTab;
+    function closeBattleSheet() {
+        document.getElementById('battle-sheet').classList.remove('open');
+        document.getElementById('battle-sheet-overlay').classList.remove('show');
+        document.body.style.overflow = '';
+    }
+
+    function switchToTab(tabName) {
+        // Battle submenu items should highlight the Battle button
+        const battleTabs = ['arena', 'arena3v3', 'war', 'leaderboard'];
+        const isBattleTab = battleTabs.includes(tabName);
+
+        // Remove active from all tab buttons
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+
+            // If this is a battle submenu tab, highlight the Battle button
+            if (isBattleTab && btn.dataset.tab === 'battle') {
+                btn.classList.add('active');
+            }
+            // Otherwise highlight matching button
+            else if (btn.dataset.tab === tabName) {
+                btn.classList.add('active');
+            }
+        });
+
+        // Remove active class from ALL content tabs
+        document.querySelectorAll('.tab-content, .tab-panel').forEach(content => {
+            content.classList.remove('active');
+            content.style.display = 'none';
+        });
+
+        // Try new format first (tab-war, tab-leaderboard)
+        let tabContent = document.getElementById('tab-' + tabName);
+
+        // If not found, try legacy format (arena, arena3v3, my-pet, collection, etc)
+        if (!tabContent) {
+            tabContent = document.getElementById(tabName);
+        }
+
+        if (tabContent) {
+            tabContent.classList.add('active');
+            tabContent.style.display = 'block';
+        }
+
+        // Trigger tab-specific load functions
+        setTimeout(() => {
+            if (tabName === 'arena' && typeof loadOpponents === 'function') loadOpponents();
+            if (tabName === 'arena3v3' && typeof loadTeamSelection === 'function') loadTeamSelection();
+            if (tabName === 'war' && typeof initSanctuaryWar === 'function') initSanctuaryWar();
+            if (tabName === 'leaderboard' && typeof initLeaderboard === 'function') initLeaderboard();
+            if (tabName === 'history' && typeof loadBattleHistoryTab === 'function') loadBattleHistoryTab();
+            if (tabName === 'achievements' && typeof loadAchievements === 'function') loadAchievements();
+            if (tabName === 'collection' && typeof initCollectionSearch === 'function') initCollectionSearch();
+        }, 100);
+    }
+
+    // Expose globally
+    window.openBattleSheet = openBattleSheet;
+    window.closeBattleSheet = closeBattleSheet;
+    window.switchToTab = switchToTab;
 </script>
