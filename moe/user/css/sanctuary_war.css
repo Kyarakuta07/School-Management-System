@@ -1,3 +1,11 @@
+/* ================================================
+   Sanctuary War Styles
+   ================================================ */
+
+.war-container {
+    padding: 1rem;
+    max-width: 500px;
+    margin: 0 auto;
 }
 
 /* War Header */
