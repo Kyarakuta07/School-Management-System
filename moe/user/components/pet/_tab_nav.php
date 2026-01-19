@@ -217,7 +217,10 @@
             if (tabName === 'arena' && typeof loadOpponents === 'function') loadOpponents();
             if (tabName === 'arena3v3' && typeof loadTeamSelection === 'function') loadTeamSelection();
             if (tabName === 'war' && typeof initSanctuaryWar === 'function') initSanctuaryWar();
-            if (tabName === 'leaderboard' && typeof initLeaderboard === 'function') initLeaderboard();
+            if (tabName === 'leaderboard') {
+                console.log('[TAB] Leaderboard tab - initLeaderboard type:', typeof initLeaderboard);
+                if (typeof initLeaderboard === 'function') initLeaderboard();
+            }
             if (tabName === 'history' && typeof loadBattleHistoryTab === 'function') loadBattleHistoryTab();
             if (tabName === 'achievements' && typeof loadAchievements === 'function') loadAchievements();
             if (tabName === 'collection' && typeof initCollectionSearch === 'function') initCollectionSearch();

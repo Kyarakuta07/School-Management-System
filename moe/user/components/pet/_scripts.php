@@ -161,6 +161,7 @@
 
     window.loadPetLeaderboard = loadPetLeaderboard;
     window.initLeaderboard = initLeaderboard;
+    console.log('[LB] Script loaded - initLeaderboard defined:', typeof initLeaderboard);
 </script>
 
 <!-- Arena Integration Script -->
