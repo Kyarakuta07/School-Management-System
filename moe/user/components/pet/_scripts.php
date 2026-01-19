@@ -15,7 +15,7 @@
 <script src="<?= asset('user/js/sanctuary_war.js', '../') ?>"></script>
 
 <!-- Leaderboard Module -->
-<script src="../user/js/leaderboard.js?t=<?= time() ?>"></script>
+<script src="js/leaderboard.js?v=<?= time() ?>"></script>
 
 <!-- Arena Integration Script -->
 <script>

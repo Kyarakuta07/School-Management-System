@@ -3,7 +3,8 @@
  * Handles leaderboard pods, tabs, and element classification
  */
 
-console.error('[LB] leaderboard.js FORCE LOADED');
+console.error('[LB] leaderboard.js STARTING UP');
+// alert('Leaderboard Script Loaded!'); // Debug alert
 
 var ASSETS_BASE = '/moe/assets/pets/';
 var currentSort = 'level';
@@ -25,7 +26,7 @@ function setupLeaderboardTabs() {
     if (tabs.length === 0) console.warn('[LB] No tabs found');
 
     tabs.forEach(function (tab) {
-        tab.onclick = function () {
+        tab.addEventListener('click', function () {
             console.log('[LB] Tab clicked:', tab.dataset.sort);
             tabs.forEach(function (t) { t.classList.remove('active'); });
             tab.classList.add('active');
@@ -33,7 +34,7 @@ function setupLeaderboardTabs() {
             var sortSelect = document.getElementById('lb-sort');
             if (sortSelect) sortSelect.value = currentSort;
             loadPetLeaderboard();
-        };
+        });
     });
 }
 
@@ -41,7 +42,7 @@ function setupElementPills() {
     var container = document.getElementById('element-pills');
     if (!container) return;
 
-    container.onclick = function (e) {
+    container.addEventListener('click', function (e) {
         if (e.target.classList.contains('element-pill')) {
             console.log('[LB] Pill clicked:', e.target.dataset.element);
             var pills = container.querySelectorAll('.element-pill');
@@ -50,7 +51,7 @@ function setupElementPills() {
             currentElement = e.target.dataset.element;
             loadPetLeaderboard();
         }
-    };
+    });
 }
 
 function loadPetLeaderboard() {
@@ -63,6 +64,7 @@ function loadPetLeaderboard() {
         return;
     }
 
+    // Don't clear list completely to avoid flickering if possible, but for now clear
     if (podiumContainer) podiumContainer.innerHTML = '';
     listContainer.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><span>Loading champions...</span></div>';
 
@@ -185,7 +187,7 @@ function populateElementPills(elements) {
     container.innerHTML = html;
 }
 
-// BATTLE HISTORY TAB (Needed for History Tab)
+// BATTLE HISTORY TAB
 function loadBattleHistoryTab() {
     var listContainer = document.getElementById('history-list');
     var winsEl = document.getElementById('total-wins');
@@ -196,7 +198,7 @@ function loadBattleHistoryTab() {
 
     listContainer.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><span>Loading...</span></div>';
 
-    // Absolute path
+    // Absolute path is safer
     fetch('/moe/user/api/router.php?action=battle_history')
         .then(function (r) { return r.json(); })
         .then(function (data) {
