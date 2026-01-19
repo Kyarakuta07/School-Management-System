@@ -19,12 +19,21 @@ class LeaderboardController extends BaseController
         try {
             $sort = $_GET['sort'] ?? 'level';
             $element = $_GET['element'] ?? null;
+            $period = $_GET['period'] ?? 'monthly'; // 'monthly' (default) or 'alltime'
             $limit = min(50, max(5, (int) ($_GET['limit'] ?? 10)));
 
-            // Build query based on sort type
+            // Build query based on sort type and period
+            $useMonthlyFilter = ($period === 'monthly');
+
             switch ($sort) {
                 case 'wins':
-                    $orderBy = 'battle_wins DESC, up.level DESC';
+                    if ($useMonthlyFilter) {
+                        // Monthly: count wins from pet_battles this month
+                        $orderBy = 'battle_wins DESC, up.level DESC';
+                    } else {
+                        // All-time: use persistent total_wins column
+                        $orderBy = 'up.total_wins DESC, up.level DESC';
+                    }
                     break;
                 case 'power':
                     $orderBy = 'power_score DESC';
@@ -43,7 +52,17 @@ class LeaderboardController extends BaseController
                 $types .= 's';
             }
 
-            // Simplified query - no complex subquery
+            // Different subquery for wins based on period
+            if ($sort === 'wins' && $useMonthlyFilter) {
+                // Monthly wins: count from pet_battles where created_at is this month
+                $winsSubquery = "(SELECT COUNT(*) FROM pet_battles pb 
+                                  WHERE pb.winner_pet_id = up.id 
+                                  AND pb.created_at >= DATE_FORMAT(NOW(), '%Y-%m-01')) as battle_wins";
+            } else {
+                // All time or non-wins sort: use pet_battles count or total_wins
+                $winsSubquery = "COALESCE(up.total_wins, 0) as battle_wins";
+            }
+
             $sql = "SELECT 
                         up.id as pet_id,
                         up.nickname,
@@ -51,6 +70,7 @@ class LeaderboardController extends BaseController
                         up.exp,
                         up.is_shiny,
                         up.evolution_stage,
+                        COALESCE(up.total_wins, 0) as total_wins,
                         ps.name as species_name,
                         ps.element,
                         ps.rarity,
@@ -59,7 +79,7 @@ class LeaderboardController extends BaseController
                         ps.img_egg, ps.img_baby, ps.img_adult,
                         n.nama_lengkap as owner_name,
                         (ps.base_attack + ps.base_defense + up.level * 3) as power_score,
-                        (SELECT COUNT(*) FROM pet_battles pb WHERE pb.winner_pet_id = up.id) as battle_wins
+                        $winsSubquery
                     FROM user_pets up
                     JOIN pet_species ps ON ps.id = up.species_id
                     JOIN nethera n ON n.id_nethera = up.user_id
@@ -101,9 +121,14 @@ class LeaderboardController extends BaseController
             // Get available elements for filter
             $elements = $this->getAvailableElements();
 
+            // Get current month name for UI
+            $currentMonth = date('F Y');
+
             $this->success([
                 'leaderboard' => $leaderboard,
                 'sort' => $sort,
+                'period' => $period,
+                'current_month' => $currentMonth,
                 'element_filter' => $element,
                 'total_count' => count($leaderboard),
                 'available_elements' => $elements

@@ -33,6 +33,15 @@
             <!-- Populated by JS -->
         </div>
 
+        <!-- Period Toggle (Monthly / All Time) -->
+        <div class="period-toggle-container">
+            <span class="period-toggle-label">Leaderboard Period <span id="period-label">(Resets Monthly)</span></span>
+            <div class="period-toggle" id="period-toggle">
+                <button class="period-btn active" data-period="monthly">🌙 Monthly</button>
+                <button class="period-btn" data-period="alltime">⭐ All Time</button>
+            </div>
+        </div>
+
         <!-- Top 3 Podium -->
         <div class="podium-section" id="podium-section">
             <!-- Will be populated by JS -->
@@ -211,6 +220,53 @@
     .element-pill[data-element="Dark"] {
         border-color: #9C27B0;
         color: #BA68C8;
+    }
+
+    /* Period Toggle */
+    .period-toggle-container {
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .period-toggle-label {
+        display: block;
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.5);
+        margin-bottom: 0.5rem;
+    }
+
+    #period-label {
+        color: #D4AF37;
+    }
+
+    .period-toggle {
+        display: inline-flex;
+        gap: 0.5rem;
+        background: rgba(0, 0, 0, 0.3);
+        padding: 4px;
+        border-radius: 12px;
+    }
+
+    .period-btn {
+        background: transparent;
+        border: none;
+        padding: 0.5rem 1rem;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.8rem;
+        font-weight: 600;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .period-btn:hover {
+        color: #fff;
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .period-btn.active {
+        background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%);
+        color: #1a1a2e;
     }
 
     /* ================================================

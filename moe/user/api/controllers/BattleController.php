@@ -92,6 +92,14 @@ class BattleController extends BaseController
             mysqli_stmt_execute($stmt);
             mysqli_stmt_close($stmt);
 
+            // Increment total_wins for the winning pet (for persistent leaderboard)
+            if ($winner_pet_id > 0) {
+                $update_wins = mysqli_prepare($this->conn, "UPDATE user_pets SET total_wins = COALESCE(total_wins, 0) + 1 WHERE id = ?");
+                mysqli_stmt_bind_param($update_wins, "i", $winner_pet_id);
+                mysqli_stmt_execute($update_wins);
+                mysqli_stmt_close($update_wins);
+            }
+
             // If player won, give rewards
             if ($player_won && $gold_reward > 0) {
                 // Calculate bonus rewards
@@ -183,9 +191,27 @@ class BattleController extends BaseController
                     'pet_died' => $pet_died
                 ]
             ]);
+            // Probabilistically cleanup old battle history (1% chance)
+            if (rand(1, 100) === 1) {
+                $this->cleanupBattleHistory();
+            }
         } catch (Exception $e) {
             $this->error('Failed to record battle result: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Cleanup old battle history to prevent table bloat
+     * Deletes battles older than 60 days.
+     * Also limits per-user history to last 100 entries.
+     */
+    private function cleanupBattleHistory()
+    {
+        // Delete battles older than 60 days
+        mysqli_query(
+            $this->conn,
+            "DELETE FROM pet_battles WHERE created_at < DATE_SUB(NOW(), INTERVAL 60 DAY)"
+        );
     }
 
     /**

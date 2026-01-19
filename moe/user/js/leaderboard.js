@@ -9,12 +9,14 @@ console.error('[LB] leaderboard.js STARTING UP');
 var ASSETS_BASE = '/moe/assets/pets/';
 var currentSort = 'level';
 var currentElement = 'all';
+var currentPeriod = 'monthly'; // 'monthly' (resets monthly) or 'alltime'
 
 function initLeaderboard() {
     console.log('[LB] initLeaderboard called');
     try {
         setupLeaderboardTabs();
         setupElementPills();
+        setupPeriodToggle();
         loadPetLeaderboard();
     } catch (e) {
         console.error('[LB] initLeaderboard error:', e);
@@ -54,6 +56,30 @@ function setupElementPills() {
     });
 }
 
+function setupPeriodToggle() {
+    var container = document.getElementById('period-toggle');
+    if (!container) return;
+
+    container.addEventListener('click', function (e) {
+        var btn = e.target.closest('.period-btn');
+        if (!btn) return;
+
+        console.log('[LB] Period toggled:', btn.dataset.period);
+        var btns = container.querySelectorAll('.period-btn');
+        btns.forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        currentPeriod = btn.dataset.period;
+
+        // Update header label
+        var label = document.getElementById('period-label');
+        if (label) {
+            label.textContent = currentPeriod === 'monthly' ? '(Resets Monthly)' : '(All Time)';
+        }
+
+        loadPetLeaderboard();
+    });
+}
+
 function loadPetLeaderboard() {
     console.log('[LB] Loading leaderboard. Sort:', currentSort, 'Element:', currentElement);
     var podiumContainer = document.getElementById('podium-section');
@@ -68,7 +94,7 @@ function loadPetLeaderboard() {
     if (podiumContainer) podiumContainer.innerHTML = '';
     listContainer.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><span>Loading champions...</span></div>';
 
-    var url = '/user/api/router.php?action=get_pet_leaderboard&sort=' + currentSort + '&element=' + currentElement + '&limit=15';
+    var url = '/user/api/router.php?action=get_pet_leaderboard&sort=' + currentSort + '&element=' + currentElement + '&period=' + currentPeriod + '&limit=15';
     console.log('[LB] Fetch URL:', url);
 
     fetch(url)
