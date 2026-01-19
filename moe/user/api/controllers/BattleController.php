@@ -379,27 +379,30 @@ class BattleController extends BaseController
                     ps.element as my_pet_element,
                     CASE 
                         WHEN up.evolution_stage = 'adult' THEN ps.img_adult 
-                        ELSE ps.img_baby 
+                        WHEN up.evolution_stage = 'baby' THEN ps.img_baby
+                        ELSE ps.img_egg
                     END as my_pet_image,
                     
-                    -- Opponent Pet Params
-                    COALESCE(def_up.nickname, def_ps.name) as opp_pet_name,
-                    def_up.level as opp_pet_level,
-                    def_ps.element as opp_pet_element,
+                    -- Opponent Pet Params (with fallback for AI opponents)
+                    COALESCE(def_up.nickname, def_ps.name, 'Wild Pet') as opp_pet_name,
+                    COALESCE(def_up.level, 10) as opp_pet_level,
+                    COALESCE(def_ps.element, 'Dark') as opp_pet_element,
                     CASE 
-                        WHEN def_up.evolution_stage = 'adult' THEN def_ps.img_adult 
-                        ELSE def_ps.img_baby 
+                        WHEN def_up.id IS NULL THEN 'ai_pet.png'
+                        WHEN def_up.evolution_stage = 'adult' THEN COALESCE(def_ps.img_adult, 'default.png')
+                        WHEN def_up.evolution_stage = 'baby' THEN COALESCE(def_ps.img_baby, 'default.png')
+                        ELSE COALESCE(def_ps.img_egg, 'default.png')
                     END as opp_pet_image,
                     
                     -- Opponent Owner
-                    def_u.username as opp_username,
+                    COALESCE(def_u.username, 'Wild Trainer') as opp_username,
                     
                     -- Result
                     (pb.winner_pet_id = pb.attacker_pet_id) as won
              FROM pet_battles pb
              JOIN user_pets up ON pb.attacker_pet_id = up.id
              JOIN pet_species ps ON up.species_id = ps.id
-             LEFT JOIN user_pets def_up ON pb.defender_pet_id = def_up.id
+             LEFT JOIN user_pets def_up ON pb.defender_pet_id = def_up.id AND pb.defender_pet_id > 0
              LEFT JOIN pet_species def_ps ON def_up.species_id = def_ps.id
              LEFT JOIN nethera def_u ON def_up.user_id = def_u.id_nethera
              WHERE up.user_id = ?
