@@ -107,6 +107,7 @@ $routes = [
 
     // 1v1 Battle (server-side damage)
     'attack_1v1' => ['BattleController', 'attack1v1'],
+    'enemy_turn_1v1' => ['BattleController', 'enemyTurn1v1'],
 
     // Evolution Controller
     'get_evolution_candidates' => ['EvolutionController', 'getEvolutionCandidates'],
