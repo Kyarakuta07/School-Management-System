@@ -58,25 +58,37 @@ function setupElementPills() {
 
 function setupPeriodToggle() {
     var container = document.getElementById('period-toggle');
-    if (!container) return;
+    if (!container) {
+        console.warn('[LB] Period toggle container not found');
+        return;
+    }
 
-    container.addEventListener('click', function (e) {
-        var btn = e.target.closest('.period-btn');
-        if (!btn) return;
+    console.log('[LB] Setting up period toggle');
 
-        console.log('[LB] Period toggled:', btn.dataset.period);
-        var btns = container.querySelectorAll('.period-btn');
-        btns.forEach(function (b) { b.classList.remove('active'); });
-        btn.classList.add('active');
-        currentPeriod = btn.dataset.period;
+    // Add click handlers to each button directly
+    var btns = container.querySelectorAll('.period-btn');
+    btns.forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
 
-        // Update header label
-        var label = document.getElementById('period-label');
-        if (label) {
-            label.textContent = currentPeriod === 'monthly' ? '(Resets Monthly)' : '(All Time)';
-        }
+            console.log('[LB] Period toggled:', this.dataset.period);
 
-        loadPetLeaderboard();
+            // Remove active from all
+            btns.forEach(function (b) { b.classList.remove('active'); });
+
+            // Add active to clicked
+            this.classList.add('active');
+            currentPeriod = this.dataset.period;
+
+            // Update header label
+            var label = document.getElementById('period-label');
+            if (label) {
+                label.textContent = currentPeriod === 'monthly' ? '(Resets Monthly)' : '(All Time)';
+            }
+
+            loadPetLeaderboard();
+        });
     });
 }
 

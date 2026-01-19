@@ -37,8 +37,8 @@
         <div class="period-toggle-container">
             <span class="period-toggle-label">Leaderboard Period <span id="period-label">(Resets Monthly)</span></span>
             <div class="period-toggle" id="period-toggle">
-                <button class="period-btn active" data-period="monthly">🌙 Monthly</button>
-                <button class="period-btn" data-period="alltime">⭐ All Time</button>
+                <button type="button" class="period-btn active" data-period="monthly">🌙 Monthly</button>
+                <button type="button" class="period-btn" data-period="alltime">⭐ All Time</button>
             </div>
         </div>
 
