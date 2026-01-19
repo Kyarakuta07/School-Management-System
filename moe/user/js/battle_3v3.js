@@ -383,66 +383,7 @@ async function enemyTurn() {
     }
 }
 
-/**
- * Switch pet
- */
-async function switchToPet(newIndex) {
-    if (newIndex === BattleState.activePlayerIndex) return;
-    if (BattleState.playerPets[newIndex].is_fainted) return;
-    if (BattleState.isAnimating) return;
-
-    closeSwapModal();
-    BattleState.isAnimating = true;
-    disableControls(true);
-
-    try {
-        const response = await fetch(`${API_BASE}?action=battle_switch`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                battle_id: BattleState.battleId,
-                new_pet_index: newIndex
-            })
-        });
-
-        const data = await response.json();
-
-        if (!data.success) {
-            console.error('Switch failed:', data.error);
-            BattleState.isAnimating = false;
-            disableControls(false);
-            return;
-        }
-
-        addBattleLog(data.message, 'player-action');
-
-        // Update state
-        const battleState = data.battle_state;
-        BattleState.activePlayerIndex = battleState.active_player_index;
-        BattleState.currentTurn = battleState.current_turn;
-        BattleState.turnCount = battleState.turn_count;
-        BattleState.playerPets = battleState.player_pets;
-        BattleState.playerSkills = data.new_skills || getDefaultSkills(BattleState.playerPets[newIndex].element);
-
-        // Re-render
-        renderBattleUI();
-
-        // Enemy turn if applicable
-        if (BattleState.currentTurn === 'enemy') {
-            await sleep(500);
-            await enemyTurn();
-        }
-
-    } catch (error) {
-        console.error('Switch error:', error);
-    } finally {
-        BattleState.isAnimating = false;
-        if (BattleState.currentTurn === 'player') {
-            disableControls(false);
-        }
-    }
-}
-
+// Note: switchToPet function is defined below in UI HELPERS section
 // ================================================
 // RENDER FUNCTIONS
 // ================================================

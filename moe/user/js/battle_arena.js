@@ -59,25 +59,15 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ================================================
-// SKILL USAGE
+// SKILL USAGE (Server-side damage calculation)
 // ================================================
-function useSkill(skillId, baseDamage, skillElement) {
+async function useSkill(skillId, baseDamage, skillElement) {
     if (BattleState.isBattleOver || !BattleState.isPlayerTurn) return;
 
     // Disable skills during animation
     disableSkills(true);
     BattleState.isPlayerTurn = false;
     BattleState.turnCount++;
-
-    // Calculate damage
-    const multiplier = getElementalMultiplier(skillElement, BATTLE_CONFIG.defenderElement);
-    const levelBonus = 1 + (BATTLE_CONFIG.attackerLevel * 0.02);
-    const defenseReduction = 1 - (BATTLE_CONFIG.defenderBaseDef * 0.005);
-    const critChance = Math.random() < 0.15;
-    const critMultiplier = critChance ? 1.5 : 1;
-
-    let damage = Math.floor(baseDamage * multiplier * levelBonus * defenseReduction * critMultiplier);
-    damage = Math.max(1, damage); // Minimum 1 damage
 
     // Play attack animation
     DOM.playerSprite.classList.add('attacking');
@@ -86,51 +76,87 @@ function useSkill(skillId, baseDamage, skillElement) {
     // Show projectile flying to enemy
     showProjectile(DOM.playerSprite, DOM.enemySprite, skillElement);
 
-    setTimeout(() => {
-        DOM.playerSprite.classList.remove('attacking');
-        DOM.enemySprite.classList.add('hit');
+    try {
+        // Call server-side API for damage calculation
+        const response = await fetch(`${API_BASE}?action=attack_1v1`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                skill_id: skillId,
+                attacker_pet_id: BATTLE_CONFIG.attackerPetId,
+                defender_pet_id: BATTLE_CONFIG.defenderPetId
+            })
+        });
 
-        // Apply damage
-        BattleState.enemyHp = Math.max(0, BattleState.enemyHp - damage);
-        updateHpDisplay();
+        const data = await response.json();
 
-        // Show damage popup and sparks
-        showDamagePopup(DOM.enemySprite, damage, multiplier, critChance);
-        showDamageSparks(DOM.enemySprite, critChance);
-        if (critChance) {
-            SoundManager.critical();
-        } else {
-            SoundManager.damage();
+        if (!data.success) {
+            console.error('Attack failed:', data.error);
+            BattleState.isPlayerTurn = true;
+            disableSkills(false);
+            return;
         }
 
-        // Log the attack
-        let logClass = 'player-action';
-        let logText = `You dealt ${damage} damage!`;
-        if (multiplier > 1) {
-            logClass += ' effective';
-            logText += ' Super effective!';
-        } else if (multiplier < 1) {
-            logClass += ' weak';
-            logText += ' Not very effective...';
-        }
-        if (critChance) {
-            logClass += ' critical';
-            logText = `CRITICAL HIT! ${logText}`;
-        }
-        addBattleLog(logText, logClass);
+        const damage = data.damage_dealt;
+        const isCritical = data.is_critical;
+        const elementAdvantage = data.element_advantage;
 
         setTimeout(() => {
-            DOM.enemySprite.classList.remove('hit');
+            DOM.playerSprite.classList.remove('attacking');
+            DOM.enemySprite.classList.add('hit');
 
-            // Check if enemy defeated
-            if (BattleState.enemyHp <= 0) {
-                endBattle(true);
+            // Apply damage
+            BattleState.enemyHp = Math.max(0, BattleState.enemyHp - damage);
+            updateHpDisplay();
+
+            // Determine multiplier for popup
+            let multiplier = 1;
+            if (elementAdvantage === 'super_effective') multiplier = 1.5;
+            else if (elementAdvantage === 'not_effective') multiplier = 0.75;
+
+            // Show damage popup and sparks
+            showDamagePopup(DOM.enemySprite, damage, multiplier, isCritical);
+            showDamageSparks(DOM.enemySprite, isCritical);
+            if (isCritical) {
+                SoundManager.critical();
             } else {
-                // Enemy turn
-                enemyTurn();
+                SoundManager.damage();
             }
-        }, 400);
-    }, 300);
+
+            // Log the attack
+            let logClass = 'player-action';
+            let logText = `You dealt ${damage} damage!`;
+            if (elementAdvantage === 'super_effective') {
+                logClass += ' effective';
+                logText += ' Super effective!';
+            } else if (elementAdvantage === 'not_effective') {
+                logClass += ' weak';
+                logText += ' Not very effective...';
+            }
+            if (isCritical) {
+                logClass += ' critical';
+                logText = `CRITICAL HIT! ${logText}`;
+            }
+            addBattleLog(logText, logClass);
+
+            setTimeout(() => {
+                DOM.enemySprite.classList.remove('hit');
+
+                // Check if enemy defeated
+                if (BattleState.enemyHp <= 0) {
+                    endBattle(true);
+                } else {
+                    // Enemy turn
+                    enemyTurn();
+                }
+            }, 400);
+        }, 300);
+
+    } catch (error) {
+        console.error('Attack error:', error);
+        BattleState.isPlayerTurn = true;
+        disableSkills(false);
+    }
 }
 
 // ================================================

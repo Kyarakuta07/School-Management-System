@@ -1160,4 +1160,78 @@ class BattleController extends BaseController
             ]
         ]);
     }
+
+    /**
+     * POST: Calculate damage for 1v1 arena (server-side)
+     * Input: { skill_id: 1, attacker_pet_id: 5, defender_pet_id: 10 }
+     */
+    public function attack1v1()
+    {
+        $this->requirePost();
+
+        $input = $this->getInput();
+        $skill_id = isset($input['skill_id']) ? (int) $input['skill_id'] : 0;
+        $attacker_pet_id = isset($input['attacker_pet_id']) ? (int) $input['attacker_pet_id'] : 0;
+        $defender_pet_id = isset($input['defender_pet_id']) ? (int) $input['defender_pet_id'] : 0;
+
+        if (!$skill_id || !$attacker_pet_id || !$defender_pet_id) {
+            $this->error('Missing required parameters');
+            return;
+        }
+
+        require_once __DIR__ . '/../../pet/logic/BattleEngine.php';
+        $engine = new BattleEngine($this->conn);
+
+        // Get attacker pet
+        $attacker = $engine->getPetForBattle($attacker_pet_id);
+        if (!$attacker) {
+            $this->error('Attacker pet not found');
+            return;
+        }
+
+        // Verify ownership
+        if ((int) $attacker['user_id'] !== $this->user_id) {
+            $this->error('This is not your pet');
+            return;
+        }
+
+        // Get defender pet
+        $defender = $engine->getPetForBattle($defender_pet_id);
+        if (!$defender) {
+            $this->error('Defender pet not found');
+            return;
+        }
+
+        // Get skill
+        $skill_query = "SELECT * FROM pet_skills WHERE id = ?";
+        $stmt = mysqli_prepare($this->conn, $skill_query);
+        mysqli_stmt_bind_param($stmt, "i", $skill_id);
+        mysqli_stmt_execute($stmt);
+        $skill_result = mysqli_stmt_get_result($stmt);
+        $skill = mysqli_fetch_assoc($skill_result);
+        mysqli_stmt_close($stmt);
+
+        if (!$skill) {
+            // Use default skill
+            $skill = [
+                'id' => $skill_id,
+                'skill_name' => 'Basic Attack',
+                'base_damage' => 25,
+                'skill_element' => $attacker['element']
+            ];
+        }
+
+        // Calculate damage using BattleEngine
+        $result = $engine->calculateDamage($attacker, $skill, $defender);
+
+        $this->success([
+            'damage_dealt' => $result['damage_dealt'],
+            'is_critical' => $result['is_critical'],
+            'element_advantage' => $result['element_advantage'],
+            'skill_name' => $skill['skill_name'],
+            'attacker_name' => $attacker['nickname'] ?? $attacker['species_name'],
+            'defender_name' => $defender['nickname'] ?? $defender['species_name'],
+            'logs' => $result['logs']
+        ]);
+    }
 }

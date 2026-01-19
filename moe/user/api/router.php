@@ -105,6 +105,9 @@ $routes = [
     'get_opponents_3v3' => ['BattleController', 'getOpponents3v3'],
     'finish_3v3_battle' => ['BattleController', 'finish3v3Battle'],
 
+    // 1v1 Battle (server-side damage)
+    'attack_1v1' => ['BattleController', 'attack1v1'],
+
     // Evolution Controller
     'get_evolution_candidates' => ['EvolutionController', 'getEvolutionCandidates'],
     'evolve_manual' => ['EvolutionController', 'evolveManual'],
