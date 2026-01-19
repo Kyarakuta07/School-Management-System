@@ -7,8 +7,9 @@
  * All calculations are server-side for security.
  */
 
-// Load constants
+// Load constants and helpers
 require_once __DIR__ . '/constants.php';
+require_once __DIR__ . '/StatusEffects.php';
 
 class BattleEngine
 {
@@ -32,39 +33,78 @@ class BattleEngine
     }
 
     /**
-     * Calculate damage for an attack
+     * Calculate damage for an attack with IMPROVED FORMULA + STATUS EFFECTS
      * 
-     * @param array $attacker_pet Attacker pet data with base_attack, level
-     * @param array $skill Skill data with base_damage, skill_element
+     * @param array $attacker_pet Attacker pet data with base_attack, level, rarity
+     * @param array $skill Skill data with base_damage, skill_element, status_effect, status_chance
      * @param array $defender_pet Defender pet data with base_defense, element
-     * @return array Result with damage_dealt, is_critical, element_advantage, logs
+     * @param array $attacker_effects Active status effects on attacker (for ATK modifiers)
+     * @param array $defender_effects Active status effects on defender (for DEF modifiers)
+     * @return array Result with damage_dealt, is_critical, element_advantage, status_applied, logs
      */
-    public function calculateDamage(array $attacker_pet, array $skill, array $defender_pet): array
+    public function calculateDamage(array $attacker_pet, array $skill, array $defender_pet, array $attacker_effects = [], array $defender_effects = []): array
     {
         $logs = [];
 
-        // Get skill element (fallback to pet's element if not specified)
+        // Get skill info
         $skill_element = $skill['skill_element'] ?? $attacker_pet['element'];
         $skill_name = $skill['skill_name'] ?? 'Attack';
         $base_damage = (int) ($skill['base_damage'] ?? 25);
 
-        // Base damage calculation
-        $attack_power = (int) ($attacker_pet['base_attack'] ?? 10);
-        $defense_power = (int) ($defender_pet['base_defense'] ?? 10);
+        // Get stats
+        $attack_power = (int) ($attacker_pet['base_attack'] ?? $attacker_pet['atk'] ?? 10);
+        $defense_power = (int) ($defender_pet['base_defense'] ?? $defender_pet['def'] ?? 10);
         $attacker_level = (int) ($attacker_pet['level'] ?? 1);
+        $attacker_rarity = $attacker_pet['rarity'] ?? 'Common';
 
-        // Formula: base_damage + (attack * 0.1) - (defense * 0.05)
-        $raw_damage = $base_damage + ($attack_power * 0.1) - ($defense_power * 0.05);
-        $raw_damage = max(1, $raw_damage); // Minimum 1 damage
+        // ============================================
+        // VARIANCE MECHANICS
+        // ============================================
 
-        // Level bonus: +2% per level
-        $level_multiplier = 1 + ($attacker_level * 0.02);
-        $damage = $raw_damage * $level_multiplier;
+        // 1. Dodge check (5% chance)
+        $is_dodge = (mt_rand(1, 100) <= 5);
+        if ($is_dodge) {
+            $logs[] = "💨 {$defender_pet['species_name']} dodged the attack!";
+            return [
+                'damage_dealt' => 0,
+                'is_dodge' => true,
+                'is_critical' => false,
+                'is_glancing' => false,
+                'is_lucky' => false,
+                'element_advantage' => 'neutral',
+                'skill_used' => $skill_name,
+                'skill_element' => $skill_element,
+                'logs' => $logs
+            ];
+        }
+
+        // 2. Glancing blow (10% chance)
+        $is_glancing = (mt_rand(1, 100) <= 10);
+
+        // 3. Lucky hit (5% chance, only if not glancing)
+        $is_lucky = !$is_glancing && (mt_rand(1, 100) <= 5);
+
+        // ============================================
+        // IMPROVED DAMAGE FORMULA
+        // ============================================
+
+        // 1. Raw damage = Base + ATK scaling (40% of ATK)
+        $atk_scaling = $attack_power * 0.4;
+        $raw_damage = $base_damage + $atk_scaling;
+
+        // 2. Level bonus (2% per level, capped at 2x)
+        $level_multiplier = min(2.0, 1 + ($attacker_level * 0.02));
+
+        // 3. Defense reduction with DIMINISHING RETURNS
+        $defense_reduction = 100 / (100 + $defense_power);
+
+        // 4. Rarity bonus
+        $rarity_bonus = $this->getRarityBonus($attacker_rarity);
 
         $logs[] = "{$attacker_pet['species_name']} used {$skill_name}!";
 
-        // Element advantage
-        $element_mult = $this->getElementAdvantage($skill_element, $defender_pet['element']);
+        // 5. Element advantage
+        $element_mult = $this->getElementAdvantage($skill_element, $defender_pet['element'] ?? 'Fire');
         $element_advantage = 'neutral';
 
         if ($element_mult >= ELEMENT_STRONG_MULTIPLIER) {
@@ -75,17 +115,40 @@ class BattleEngine
             $logs[] = "It's not very effective... (0.5x damage)";
         }
 
-        $damage *= $element_mult;
-
-        // Critical hit (15% chance, 1.5x damage)
+        // 6. Critical hit (15% chance, 1.5x damage)
         $is_critical = (mt_rand(1, 100) <= 15);
+        $crit_multiplier = $is_critical ? 1.5 : 1.0;
         if ($is_critical) {
-            $damage *= 1.5;
             $logs[] = "CRITICAL HIT!";
         }
 
-        // RNG variation (+/- 5%)
-        $damage = $this->applyRngVariation($damage);
+        // 7. RNG variation (+/- 5%)
+        $variance = $this->applyRngVariation(1.0);
+
+        // 8. Glancing blow penalty (50% damage)
+        $glancing_mult = $is_glancing ? 0.5 : 1.0;
+        if ($is_glancing) {
+            $logs[] = "⚡ Glancing blow!";
+        }
+
+        // 9. Lucky hit bonus (+25% damage)
+        $lucky_mult = $is_lucky ? 1.25 : 1.0;
+        if ($is_lucky) {
+            $logs[] = "🍀 Lucky hit!";
+        }
+
+        // ============================================
+        // STATUS EFFECT MODIFIERS
+        // ============================================
+
+        // 10. ATK Down modifier on attacker
+        $atk_modifier = StatusEffects::getAttackModifier($attacker_effects);
+
+        // 11. DEF Down modifier on defender (increases damage taken)
+        $def_modifier = StatusEffects::getDefenseModifier($defender_effects);
+
+        // FINAL DAMAGE CALCULATION with variance and status modifiers
+        $damage = $raw_damage * $level_multiplier * $defense_reduction * (1 + $rarity_bonus) * $element_mult * $crit_multiplier * $variance * $glancing_mult * $lucky_mult * $atk_modifier * $def_modifier;
 
         // Round to integer
         $damage_dealt = (int) round($damage);
@@ -93,14 +156,56 @@ class BattleEngine
 
         $logs[] = "Dealt {$damage_dealt} damage to {$defender_pet['species_name']}!";
 
+        // ============================================
+        // TRY TO APPLY STATUS EFFECT FROM SKILL
+        // ============================================
+        $status_applied = null;
+        if (!empty($skill['status_effect'])) {
+            $statusHandler = new StatusEffects($this->conn);
+            $status_applied = $statusHandler->tryApplyEffect($skill, $defender_pet, $defender_effects);
+
+            if ($status_applied) {
+                if (!empty($status_applied['applied'])) {
+                    $logs[] = "{$status_applied['icon']} {$defender_pet['species_name']} is now {$status_applied['name']}!";
+                } elseif (!empty($status_applied['refreshed'])) {
+                    $config = StatusEffects::getConfig($status_applied['type']);
+                    $logs[] = "{$config['icon']} {$defender_pet['species_name']}'s {$config['name']} was extended!";
+                } elseif (!empty($status_applied['resisted'])) {
+                    $config = StatusEffects::getConfig($status_applied['type']);
+                    $logs[] = "{$defender_pet['species_name']} resisted {$config['name']}!";
+                }
+            }
+        }
+
         return [
             'damage_dealt' => $damage_dealt,
+            'is_dodge' => false,
             'is_critical' => $is_critical,
+            'is_glancing' => $is_glancing,
+            'is_lucky' => $is_lucky,
             'element_advantage' => $element_advantage,
             'skill_used' => $skill_name,
             'skill_element' => $skill_element,
+            'status_applied' => $status_applied,
             'logs' => $logs
         ];
+    }
+
+    /**
+     * Get damage bonus based on pet rarity
+     * 
+     * @param string $rarity Pet rarity (Common, Rare, Epic, Legendary)
+     * @return float Bonus multiplier (0.0 to 0.25)
+     */
+    private function getRarityBonus(string $rarity): float
+    {
+        $bonuses = [
+            'Common' => 0.0,
+            'Rare' => 0.05,
+            'Epic' => 0.12,
+            'Legendary' => 0.25
+        ];
+        return $bonuses[$rarity] ?? 0.0;
     }
 
     /**

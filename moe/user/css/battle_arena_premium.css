@@ -1139,3 +1139,143 @@ body {
         max-height: 35px;
     }
 }
+
+/* ================================================
+   STATUS EFFECTS DISPLAY
+   ================================================ */
+.status-effects-container {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+    z-index: 50;
+    padding: 4px 8px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 12px;
+    backdrop-filter: blur(5px);
+}
+
+.status-icon {
+    font-size: 1.2rem;
+    filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.8));
+    animation: statusPulse 2s ease-in-out infinite;
+    cursor: help;
+}
+
+@keyframes statusPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+}
+
+/* Status-specific visual effects on pet sprites */
+.pet-sprite.has-burn img {
+    filter: drop-shadow(0 0 15px rgba(255, 100, 0, 0.6));
+    animation: burnGlow 1.5s ease-in-out infinite;
+}
+
+@keyframes burnGlow {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 0 15px rgba(255, 100, 0, 0.4));
+    }
+
+    50% {
+        filter: drop-shadow(0 0 25px rgba(255, 100, 0, 0.8));
+    }
+}
+
+.pet-sprite.has-freeze img {
+    filter: drop-shadow(0 0 15px rgba(100, 200, 255, 0.6)) hue-rotate(180deg) saturate(0.8);
+}
+
+.pet-sprite.has-poison img {
+    filter: drop-shadow(0 0 15px rgba(100, 255, 100, 0.6));
+    animation: poisonPulse 2s ease-in-out infinite;
+}
+
+@keyframes poisonPulse {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 0 15px rgba(100, 255, 100, 0.4)) brightness(1);
+    }
+
+    50% {
+        filter: drop-shadow(0 0 20px rgba(100, 255, 100, 0.7)) brightness(0.9);
+    }
+}
+
+.pet-sprite.has-stun img {
+    animation: stunShake 0.1s ease-in-out infinite;
+}
+
+@keyframes stunShake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    50% {
+        transform: translateX(2px);
+    }
+}
+
+.pet-sprite.dodge img {
+    animation: dodgeSlide 0.5s ease-out;
+}
+
+@keyframes dodgeSlide {
+
+    0%,
+    100% {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: translateX(30px) scale(0.9);
+        opacity: 0.6;
+    }
+}
+
+/* Log entry styles for status effects */
+.log-entry.status-burn {
+    border-left-color: #FF5722;
+    color: #FF8A65;
+}
+
+.log-entry.status-poison {
+    border-left-color: #4CAF50;
+    color: #81C784;
+}
+
+.log-entry.status-freeze {
+    border-left-color: #03A9F4;
+    color: #4FC3F7;
+}
+
+.log-entry.status-stun {
+    border-left-color: #FFC107;
+    color: #FFD54F;
+}
+
+.log-entry.status-atk_down {
+    border-left-color: #9C27B0;
+    color: #BA68C8;
+}
+
+.log-entry.status-def_down {
+    border-left-color: #607D8B;
+    color: #90A4AE;
+}

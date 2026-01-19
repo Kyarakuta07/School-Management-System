@@ -347,6 +347,8 @@ $defender_img = getPetImageByStage($defender);
             defenderBaseAtk: <?php echo $defender_battle_atk; ?>,
             attackerBaseDef: <?php echo $attacker_battle_def; ?>,
             defenderBaseDef: <?php echo $defender_battle_def; ?>,
+            attackerRarity: '<?php echo $attacker['rarity'] ?? 'Common'; ?>',
+            defenderRarity: '<?php echo $defender['rarity'] ?? 'Common'; ?>',
             attackerEvolution: '<?php echo $attacker['evolution_stage'] ?? 'egg'; ?>',
             defenderEvolution: '<?php echo $defender['evolution_stage'] ?? 'egg'; ?>',
             defenderSkills: <?php echo json_encode($defender_skills); ?>

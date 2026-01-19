@@ -764,6 +764,8 @@ class BattleController extends BaseController
     /**
      * POST: Process enemy turn in 3v3 battle
      * Input: { battle_id: "xxx" }
+     * 
+     * SMART AI: Selects best skill based on elemental advantage, HP strategy, and randomness
      */
     public function enemyTurn()
     {
@@ -777,9 +779,12 @@ class BattleController extends BaseController
             return;
         }
 
-        // Load battle state
+        // Load battle state and engine
         require_once __DIR__ . '/../../pet/logic/BattleStateManager.php';
+        require_once __DIR__ . '/../../pet/logic/BattleEngine.php';
+
         $state_manager = new BattleStateManager();
+        $engine = new BattleEngine($this->conn);
         $state = $state_manager->getState($battle_id);
 
         if (!$state || $state['user_id'] !== $this->user_id) {
@@ -805,14 +810,86 @@ class BattleController extends BaseController
         $player_index = $state['active_player_index'];
         $player_pet = $state['player_pets'][$player_index];
 
-        // Calculate damage (simpler AI attack)
-        $base_damage = 20 + rand(5, 15);
-        $attack_power = ($enemy_pet['atk'] ?? 10) + floor(($enemy_pet['level'] ?? 1) / 2);
-        $defense_power = ($player_pet['def'] ?? 8);
-        $damage = max(5, floor($base_damage + $attack_power - ($defense_power / 2)));
+        // ============================================
+        // SMART AI: Select best skill
+        // ============================================
+        $enemy_species_id = $enemy_pet['species_id'] ?? 1;
+        $enemy_skills = $engine->getPetSkills((int) $enemy_species_id);
+
+        // Calculate enemy HP percentage for strategy
+        $enemy_hp_percent = ($enemy_pet['hp'] ?? 100) / ($enemy_pet['max_hp'] ?? 100);
+
+        $best_skill = null;
+        $best_score = -INF;
+
+        foreach ($enemy_skills as $skill) {
+            // Base score from damage
+            $score = (float) ($skill['base_damage'] ?? 25);
+
+            // 1. Elemental advantage bonus (heavily weighted)
+            $elem_mult = $engine->getElementAdvantage(
+                $skill['skill_element'] ?? $enemy_pet['element'],
+                $player_pet['element'] ?? 'Fire'
+            );
+            $score *= $elem_mult;
+
+            // 2. HP-based strategy
+            if ($enemy_hp_percent < 0.3) {
+                // DESPERATE MODE: Low HP = prioritize highest damage (all-in)
+                $score *= 1.5;
+                // Extra bonus for special/ultimate skills
+                if (($skill['is_special'] ?? false) || ($skill['base_damage'] ?? 0) >= 60) {
+                    $score *= 1.3;
+                }
+            } elseif ($enemy_hp_percent < 0.5) {
+                // AGGRESSIVE MODE
+                $score *= 1.2;
+            }
+
+            // 3. Random variance for unpredictability (±15%)
+            $score *= (0.85 + (mt_rand(0, 30) / 100));
+
+            // 4. STAB bonus: Same element as pet's natural element
+            if (($skill['skill_element'] ?? '') === ($enemy_pet['element'] ?? '')) {
+                $score *= 1.1;
+            }
+
+            if ($score > $best_score) {
+                $best_score = $score;
+                $best_skill = $skill;
+            }
+        }
+
+        // Fallback if no skills
+        if (!$best_skill) {
+            $best_skill = [
+                'skill_name' => 'Attack',
+                'base_damage' => 25 + (($enemy_pet['level'] ?? 1) * 2),
+                'skill_element' => $enemy_pet['element'] ?? 'Fire',
+                'is_special' => false
+            ];
+        }
+
+        // ============================================
+        // Calculate damage using BattleEngine
+        // ============================================
+        $damage_result = $engine->calculateDamage($enemy_pet, $best_skill, $player_pet);
+        $damage = $damage_result['damage_dealt'];
 
         $logs = [];
-        $logs[] = "{$enemy_pet['species_name']} attacks {$player_pet['species_name']} for {$damage} damage!";
+        $skill_name = $best_skill['skill_name'] ?? 'Attack';
+        $log_msg = "{$enemy_pet['species_name']} used {$skill_name} on {$player_pet['species_name']} for {$damage} damage!";
+
+        // Add element advantage info
+        if ($damage_result['element_advantage'] === 'super_effective') {
+            $log_msg .= ' Super effective!';
+        } elseif ($damage_result['element_advantage'] === 'not_effective') {
+            $log_msg .= ' Not very effective...';
+        }
+        if ($damage_result['is_critical']) {
+            $log_msg = "CRITICAL! " . $log_msg;
+        }
+        $logs[] = $log_msg;
 
         // Apply damage to player pet
         $new_hp = max(0, $player_pet['hp'] - $damage);
@@ -858,6 +935,9 @@ class BattleController extends BaseController
 
         $this->success([
             'damage_dealt' => $damage,
+            'is_critical' => $damage_result['is_critical'],
+            'element_advantage' => $damage_result['element_advantage'],
+            'skill_used' => $skill_name,
             'player_fainted' => $player_fainted,
             'logs' => $logs,
             'battle_state' => [
@@ -1226,11 +1306,137 @@ class BattleController extends BaseController
 
         $this->success([
             'damage_dealt' => $result['damage_dealt'],
+            'is_dodge' => $result['is_dodge'] ?? false,
             'is_critical' => $result['is_critical'],
+            'is_glancing' => $result['is_glancing'] ?? false,
+            'is_lucky' => $result['is_lucky'] ?? false,
             'element_advantage' => $result['element_advantage'],
             'skill_name' => $skill['skill_name'],
+            'skill_element' => $skill['skill_element'] ?? $attacker['element'],
+            'status_applied' => $result['status_applied'] ?? null,
             'attacker_name' => $attacker['nickname'] ?? $attacker['species_name'],
             'defender_name' => $defender['nickname'] ?? $defender['species_name'],
+            'logs' => $result['logs']
+        ]);
+    }
+
+    /**
+     * POST: Enemy turn for 1v1 arena (server-side)
+     * Input: { attacker_pet_id: 5, defender_pet_id: 10, attacker_hp: 100, defender_hp: 80 }
+     * 
+     * Uses Smart AI to select best skill and calculates damage server-side
+     */
+    public function enemyTurn1v1()
+    {
+        $this->requirePost();
+
+        $input = $this->getInput();
+        $attacker_pet_id = isset($input['attacker_pet_id']) ? (int) $input['attacker_pet_id'] : 0;
+        $defender_pet_id = isset($input['defender_pet_id']) ? (int) $input['defender_pet_id'] : 0;
+        $defender_current_hp = isset($input['defender_hp']) ? (int) $input['defender_hp'] : 100;
+        $defender_max_hp = isset($input['defender_max_hp']) ? (int) $input['defender_max_hp'] : 100;
+
+        if (!$attacker_pet_id || !$defender_pet_id) {
+            $this->error('Missing required parameters');
+            return;
+        }
+
+        require_once __DIR__ . '/../../pet/logic/BattleEngine.php';
+        $engine = new BattleEngine($this->conn);
+
+        // Get attacker (player's pet - defender in this context since enemy is attacking)
+        $player_pet = $engine->getPetForBattle($attacker_pet_id);
+        if (!$player_pet) {
+            $this->error('Player pet not found');
+            return;
+        }
+
+        // Verify ownership
+        if ((int) $player_pet['user_id'] !== $this->user_id) {
+            $this->error('This is not your pet');
+            return;
+        }
+
+        // Get defender (enemy pet - attacker in this context)
+        $enemy_pet = $engine->getPetForBattle($defender_pet_id);
+        if (!$enemy_pet) {
+            $this->error('Enemy pet not found');
+            return;
+        }
+
+        // ============================================
+        // SMART AI: Select best skill for enemy
+        // ============================================
+        $enemy_species_id = $enemy_pet['species_id'] ?? 1;
+        $enemy_skills = $engine->getPetSkills((int) $enemy_species_id);
+
+        // Calculate enemy HP percentage for strategy
+        $enemy_hp_percent = $defender_current_hp / max(1, $defender_max_hp);
+
+        $best_skill = null;
+        $best_score = -INF;
+
+        foreach ($enemy_skills as $skill) {
+            // Base score from damage
+            $score = (float) ($skill['base_damage'] ?? 25);
+
+            // 1. Elemental advantage bonus
+            $elem_mult = $engine->getElementAdvantage(
+                $skill['skill_element'] ?? $enemy_pet['element'],
+                $player_pet['element'] ?? 'Fire'
+            );
+            $score *= $elem_mult;
+
+            // 2. HP-based strategy
+            if ($enemy_hp_percent < 0.3) {
+                // DESPERATE MODE
+                $score *= 1.5;
+                if (($skill['is_special'] ?? false) || ($skill['base_damage'] ?? 0) >= 60) {
+                    $score *= 1.3;
+                }
+            } elseif ($enemy_hp_percent < 0.5) {
+                // AGGRESSIVE MODE
+                $score *= 1.2;
+            }
+
+            // 3. Random variance (±15%)
+            $score *= (0.85 + (mt_rand(0, 30) / 100));
+
+            // 4. STAB bonus
+            if (($skill['skill_element'] ?? '') === ($enemy_pet['element'] ?? '')) {
+                $score *= 1.1;
+            }
+
+            if ($score > $best_score) {
+                $best_score = $score;
+                $best_skill = $skill;
+            }
+        }
+
+        // Fallback if no skills
+        if (!$best_skill) {
+            $best_skill = [
+                'skill_name' => 'Attack',
+                'base_damage' => 25 + (($enemy_pet['level'] ?? 1) * 2),
+                'skill_element' => $enemy_pet['element'] ?? 'Fire',
+                'is_special' => false
+            ];
+        }
+
+        // Calculate damage using BattleEngine (enemy attacks player)
+        $result = $engine->calculateDamage($enemy_pet, $best_skill, $player_pet);
+
+        $this->success([
+            'damage_dealt' => $result['damage_dealt'],
+            'is_dodge' => $result['is_dodge'] ?? false,
+            'is_critical' => $result['is_critical'],
+            'is_glancing' => $result['is_glancing'] ?? false,
+            'is_lucky' => $result['is_lucky'] ?? false,
+            'element_advantage' => $result['element_advantage'],
+            'skill_name' => $best_skill['skill_name'],
+            'skill_element' => $best_skill['skill_element'] ?? $enemy_pet['element'],
+            'attacker_name' => $enemy_pet['nickname'] ?? $enemy_pet['species_name'],
+            'defender_name' => $player_pet['nickname'] ?? $player_pet['species_name'],
             'logs' => $result['logs']
         ]);
     }

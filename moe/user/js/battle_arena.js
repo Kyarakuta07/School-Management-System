@@ -27,6 +27,158 @@ function getElementalMultiplier(attackerElement, defenderElement) {
     return 1.0; // Normal
 }
 
+/**
+ * Get damage bonus based on pet rarity
+ * @param {string} rarity - Common, Rare, Epic, or Legendary
+ * @returns {number} Bonus multiplier (0.0 to 0.25)
+ */
+function getRarityBonus(rarity) {
+    const bonuses = {
+        'common': 0.0,
+        'rare': 0.05,
+        'epic': 0.12,
+        'legendary': 0.25
+    };
+    return bonuses[(rarity || 'common').toLowerCase()] || 0.0;
+}
+
+// ================================================
+// STATUS EFFECTS SYSTEM
+// ================================================
+const STATUS_CONFIG = {
+    burn: { icon: '🔥', name: 'Burn', damagePercent: 5, preventsAction: false },
+    poison: { icon: '☠️', name: 'Poison', damagePercent: 3, preventsAction: false },
+    freeze: { icon: '❄️', name: 'Freeze', damagePercent: 0, preventsAction: true },
+    stun: { icon: '⚡', name: 'Stun', damagePercent: 0, preventsAction: true },
+    atk_down: { icon: '🔻', name: 'ATK Down', damagePercent: 0, preventsAction: false },
+    def_down: { icon: '🛡️', name: 'DEF Down', damagePercent: 0, preventsAction: false }
+};
+
+/**
+ * Process turn-start effects for a target
+ * @param {string} target - 'player' or 'enemy'
+ * @returns {Object} { damage: number, logs: string[], canAct: boolean }
+ */
+function processTurnStartEffects(target) {
+    const effects = target === 'player' ? BattleState.playerEffects : BattleState.enemyEffects;
+    const maxHp = target === 'player' ? BATTLE_CONFIG.attackerMaxHp : BATTLE_CONFIG.defenderMaxHp;
+    const targetName = target === 'player' ? 'Your pet' : 'Enemy';
+
+    let totalDamage = 0;
+    let logs = [];
+    let canAct = true;
+    let blockReason = null;
+
+    // Process each effect
+    for (let i = effects.length - 1; i >= 0; i--) {
+        const effect = effects[i];
+        const config = STATUS_CONFIG[effect.type];
+
+        if (!config) continue;
+
+        // Check if prevents action
+        if (config.preventsAction) {
+            canAct = false;
+            blockReason = config.name;
+            logs.push(`${config.icon} ${targetName} is ${config.name} and cannot act!`);
+        }
+
+        // Apply DOT damage
+        if (config.damagePercent > 0) {
+            const dotDamage = Math.ceil(maxHp * (config.damagePercent / 100));
+            totalDamage += dotDamage;
+            logs.push(`${config.icon} ${targetName} took ${dotDamage} ${config.name} damage!`);
+        }
+
+        // Decrement turns
+        effect.turns_left--;
+
+        // Remove expired effects
+        if (effect.turns_left <= 0) {
+            logs.push(`${config.icon} ${targetName} is no longer ${config.name}!`);
+            effects.splice(i, 1);
+        }
+    }
+
+    // Update effects display
+    updateStatusEffectsDisplay();
+
+    return { damage: totalDamage, logs, canAct, blockReason };
+}
+
+/**
+ * Add a status effect to target
+ * @param {string} target - 'player' or 'enemy'
+ * @param {Object} statusData - { type, turns_left, icon, name }
+ */
+function addStatusEffect(target, statusData) {
+    if (!statusData || !statusData.type) return;
+
+    const effects = target === 'player' ? BattleState.playerEffects : BattleState.enemyEffects;
+
+    // Check if already has this effect
+    const existing = effects.find(e => e.type === statusData.type);
+    if (existing) {
+        // Refresh duration if new is longer
+        if (statusData.turns_left > existing.turns_left) {
+            existing.turns_left = statusData.turns_left;
+        }
+        return;
+    }
+
+    // Add new effect
+    effects.push({
+        type: statusData.type,
+        turns_left: statusData.turns_left,
+        icon: statusData.icon || STATUS_CONFIG[statusData.type]?.icon || '❓',
+        name: statusData.name || STATUS_CONFIG[statusData.type]?.name || 'Unknown'
+    });
+
+    // Update display
+    updateStatusEffectsDisplay();
+}
+
+/**
+ * Update status effect icons on battle UI
+ */
+function updateStatusEffectsDisplay() {
+    // Update player effects
+    let playerEffectsHtml = BattleState.playerEffects.map(e =>
+        `<span class="status-icon" title="${e.name} (${e.turns_left} turns)">${e.icon}</span>`
+    ).join('');
+
+    // Update enemy effects
+    let enemyEffectsHtml = BattleState.enemyEffects.map(e =>
+        `<span class="status-icon" title="${e.name} (${e.turns_left} turns)">${e.icon}</span>`
+    ).join('');
+
+    // Find or create status containers
+    let playerStatusEl = document.getElementById('player-status-effects');
+    let enemyStatusEl = document.getElementById('enemy-status-effects');
+
+    if (!playerStatusEl) {
+        const playerSprite = document.querySelector('.player-sprite');
+        if (playerSprite) {
+            playerStatusEl = document.createElement('div');
+            playerStatusEl.id = 'player-status-effects';
+            playerStatusEl.className = 'status-effects-container';
+            playerSprite.parentElement.appendChild(playerStatusEl);
+        }
+    }
+
+    if (!enemyStatusEl) {
+        const enemySprite = document.querySelector('.enemy-sprite');
+        if (enemySprite) {
+            enemyStatusEl = document.createElement('div');
+            enemyStatusEl.id = 'enemy-status-effects';
+            enemyStatusEl.className = 'status-effects-container';
+            enemySprite.parentElement.appendChild(enemyStatusEl);
+        }
+    }
+
+    if (playerStatusEl) playerStatusEl.innerHTML = playerEffectsHtml;
+    if (enemyStatusEl) enemyStatusEl.innerHTML = enemyEffectsHtml;
+}
 // ================================================
 // BATTLE STATE
 // ================================================
@@ -35,7 +187,9 @@ const BattleState = {
     enemyHp: BATTLE_CONFIG.defenderMaxHp,
     isPlayerTurn: true,
     isBattleOver: false,
-    turnCount: 0
+    turnCount: 0,
+    playerEffects: [],  // Active status effects on player
+    enemyEffects: []    // Active status effects on enemy
 };
 
 // ================================================
@@ -59,10 +213,10 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ================================================
-// SKILL USAGE (Client-side for 1v1 casual mode)
-// Note: 3v3 Arena uses server-side calculation for security
+// SKILL USAGE (SERVER-SIDE for anti-cheat security)
+// All damage calculation is done on the server
 // ================================================
-function useSkill(skillId, baseDamage, skillElement) {
+async function useSkill(skillId, baseDamage, skillElement) {
     if (BattleState.isBattleOver || !BattleState.isPlayerTurn) return;
 
     // Disable skills during animation
@@ -70,146 +224,232 @@ function useSkill(skillId, baseDamage, skillElement) {
     BattleState.isPlayerTurn = false;
     BattleState.turnCount++;
 
-    // Calculate damage (client-side for casual 1v1)
-    const multiplier = getElementalMultiplier(skillElement, BATTLE_CONFIG.defenderElement);
-    const levelBonus = 1 + (BATTLE_CONFIG.attackerLevel * 0.02);
-    const defenseReduction = 1 - (BATTLE_CONFIG.defenderBaseDef * 0.005);
-    const critChance = Math.random() < 0.15;
-    const critMultiplier = critChance ? 1.5 : 1;
-
-    let damage = Math.floor(baseDamage * multiplier * levelBonus * defenseReduction * critMultiplier);
-    damage = Math.max(1, damage); // Minimum 1 damage
-
-    // Play attack animation
+    // Play attack animation immediately for responsiveness
     DOM.playerSprite.classList.add('attacking');
     SoundManager.attack();
-
-    // Show projectile flying to enemy
     showProjectile(DOM.playerSprite, DOM.enemySprite, skillElement);
 
-    setTimeout(() => {
-        DOM.playerSprite.classList.remove('attacking');
-        DOM.enemySprite.classList.add('hit');
+    try {
+        // Call server-side API for damage calculation
+        const response = await fetch(`${API_BASE}?action=attack_1v1`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                skill_id: skillId,
+                attacker_pet_id: BATTLE_CONFIG.attackerPetId,
+                defender_pet_id: BATTLE_CONFIG.defenderPetId
+            })
+        });
 
-        // Apply damage
-        BattleState.enemyHp = Math.max(0, BattleState.enemyHp - damage);
-        updateHpDisplay();
+        const data = await response.json();
 
-        // Show damage popup and sparks
-        showDamagePopup(DOM.enemySprite, damage, multiplier, critChance);
-        showDamageSparks(DOM.enemySprite, critChance);
-        if (critChance) {
-            SoundManager.critical();
-        } else {
-            SoundManager.damage();
+        if (!data.success) {
+            console.error('Attack failed:', data.error);
+            addBattleLog('Attack failed: ' + (data.error || 'Unknown error'), 'error');
+            BattleState.isPlayerTurn = true;
+            disableSkills(false);
+            DOM.playerSprite.classList.remove('attacking');
+            return;
         }
 
-        // Log the attack
-        let logClass = 'player-action';
-        let logText = `You dealt ${damage} damage!`;
-        if (multiplier > 1) {
-            logClass += ' effective';
-            logText += ' Super effective!';
-        } else if (multiplier < 1) {
-            logClass += ' weak';
-            logText += ' Not very effective...';
+        // Process server response
+        const damage = data.damage_dealt;
+        const isDodge = data.is_dodge;
+        const isCritical = data.is_critical;
+        const isGlancing = data.is_glancing;
+        const isLucky = data.is_lucky;
+        const elemAdvantage = data.element_advantage;
+        const skillName = data.skill_name;
+        const statusApplied = data.status_applied;
+
+        // If status effect was applied to enemy, add it
+        if (statusApplied && statusApplied.applied) {
+            addStatusEffect('enemy', statusApplied);
         }
-        if (critChance) {
-            logClass += ' critical';
-            logText = `CRITICAL HIT! ${logText}`;
-        }
-        addBattleLog(logText, logClass);
 
         setTimeout(() => {
-            DOM.enemySprite.classList.remove('hit');
+            DOM.playerSprite.classList.remove('attacking');
 
-            // Check if enemy defeated
-            if (BattleState.enemyHp <= 0) {
-                endBattle(true);
-            } else {
-                // Enemy turn
-                enemyTurn();
+            // Handle DODGE
+            if (isDodge) {
+                DOM.enemySprite.classList.add('dodge');
+                addBattleLog('💨 Enemy dodged the attack!', 'dodge');
+
+                setTimeout(() => {
+                    DOM.enemySprite.classList.remove('dodge');
+                    enemyTurn();
+                }, 600);
+                return;
             }
-        }, 400);
-    }, 300);
-}
-
-// ================================================
-// ENEMY AI (SMART)
-// ================================================
-function enemyTurn() {
-    if (BattleState.isBattleOver) return;
-
-    DOM.turnIndicator.textContent = "ENEMY TURN";
-    DOM.turnIndicator.classList.add('enemy-turn');
-
-    setTimeout(() => {
-        // Smart AI: Pick the best skill
-        let bestSkill = null;
-        let bestDamage = 0;
-
-        const defenderSkills = BATTLE_CONFIG.defenderSkills;
-
-        if (defenderSkills && defenderSkills.length > 0) {
-            defenderSkills.forEach(skill => {
-                const multiplier = getElementalMultiplier(skill.skill_element, BATTLE_CONFIG.attackerElement);
-                const potentialDamage = skill.base_damage * multiplier;
-
-                if (potentialDamage > bestDamage) {
-                    bestDamage = potentialDamage;
-                    bestSkill = skill;
-                }
-            });
-        }
-
-        // Fallback if no skills
-        if (!bestSkill) {
-            bestSkill = {
-                skill_name: 'Attack',
-                base_damage: 25 + (BATTLE_CONFIG.defenderLevel * 2),
-                skill_element: BATTLE_CONFIG.defenderElement
-            };
-        }
-
-        // Calculate actual damage
-        const multiplier = getElementalMultiplier(bestSkill.skill_element, BATTLE_CONFIG.attackerElement);
-        const levelBonus = 1 + (BATTLE_CONFIG.defenderLevel * 0.02);
-        const defenseReduction = 1 - (BATTLE_CONFIG.attackerBaseDef * 0.005);
-        const critChance = Math.random() < 0.1;
-        const critMultiplier = critChance ? 1.5 : 1;
-
-        let damage = Math.floor(bestSkill.base_damage * multiplier * levelBonus * defenseReduction * critMultiplier);
-        damage = Math.max(1, damage);
-
-        // Play attack animation
-        DOM.enemySprite.classList.add('attacking');
-        SoundManager.attack();
-
-        // Show projectile flying to player
-        showProjectile(DOM.enemySprite, DOM.playerSprite, bestSkill.skill_element || BATTLE_CONFIG.defenderElement);
-
-        setTimeout(() => {
-            DOM.enemySprite.classList.remove('attacking');
-            DOM.playerSprite.classList.add('hit');
 
             // Apply damage
-            BattleState.playerHp = Math.max(0, BattleState.playerHp - damage);
+            DOM.enemySprite.classList.add('hit');
+            BattleState.enemyHp = Math.max(0, BattleState.enemyHp - damage);
             updateHpDisplay();
 
+            // Calculate elemMultiplier for visual effects
+            const elemMultiplier = elemAdvantage === 'super_effective' ? 1.5 :
+                elemAdvantage === 'not_effective' ? 0.5 : 1.0;
+
             // Show damage popup and sparks
-            showDamagePopup(DOM.playerSprite, damage, multiplier, critChance);
-            showDamageSparks(DOM.playerSprite, critChance);
-            if (critChance) {
+            showDamagePopup(DOM.enemySprite, damage, elemMultiplier, isCritical);
+            showDamageSparks(DOM.enemySprite, isCritical || isLucky);
+
+            if (isCritical) {
                 SoundManager.critical();
             } else {
                 SoundManager.damage();
             }
 
-            // Log the attack
+            // Build log message with variance info
+            let logClass = 'player-action';
+            let logText = `You dealt ${damage} damage!`;
+
+            if (isGlancing) {
+                logClass += ' glancing';
+                logText = `⚡ Glancing blow! ${logText}`;
+            } else if (isLucky) {
+                logClass += ' lucky';
+                logText = `🍀 Lucky hit! ${logText}`;
+            }
+
+            if (elemAdvantage === 'super_effective') {
+                logClass += ' effective';
+                logText += ' Super effective!';
+            } else if (elemAdvantage === 'not_effective') {
+                logClass += ' weak';
+                logText += ' Not very effective...';
+            }
+
+            if (isCritical) {
+                logClass += ' critical';
+                logText = `CRITICAL HIT! ${logText}`;
+            }
+            addBattleLog(logText, logClass);
+
+            setTimeout(() => {
+                DOM.enemySprite.classList.remove('hit');
+
+                // Check if enemy defeated
+                if (BattleState.enemyHp <= 0) {
+                    endBattle(true);
+                } else {
+                    // Enemy turn
+                    enemyTurn();
+                }
+            }, 400);
+        }, 300);
+
+    } catch (error) {
+        console.error('Attack error:', error);
+        addBattleLog('Network error during attack', 'error');
+        BattleState.isPlayerTurn = true;
+        disableSkills(false);
+        DOM.playerSprite.classList.remove('attacking');
+    }
+}
+
+// ================================================
+// ENEMY AI (SERVER-SIDE for anti-cheat security)
+// Smart AI skill selection is now done on the server
+// ================================================
+async function enemyTurn() {
+    if (BattleState.isBattleOver) return;
+
+    DOM.turnIndicator.textContent = "ENEMY TURN";
+    DOM.turnIndicator.classList.add('enemy-turn');
+
+    // Add delay for better UX
+    await new Promise(resolve => setTimeout(resolve, 800));
+
+    try {
+        // Call server-side API for enemy's attack
+        const response = await fetch(`${API_BASE}?action=enemy_turn_1v1`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                attacker_pet_id: BATTLE_CONFIG.attackerPetId,
+                defender_pet_id: BATTLE_CONFIG.defenderPetId,
+                defender_hp: BattleState.enemyHp,
+                defender_max_hp: BATTLE_CONFIG.defenderMaxHp
+            })
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+            console.error('Enemy turn failed:', data.error);
+            addBattleLog('Enemy turn failed: ' + (data.error || 'Unknown error'), 'error');
+            // Give player turn back
+            BattleState.isPlayerTurn = true;
+            DOM.turnIndicator.textContent = "YOUR TURN";
+            DOM.turnIndicator.classList.remove('enemy-turn');
+            disableSkills(false);
+            return;
+        }
+
+        // Process server response
+        const damage = data.damage_dealt;
+        const isDodge = data.is_dodge;
+        const isCritical = data.is_critical;
+        const isGlancing = data.is_glancing;
+        const isLucky = data.is_lucky;
+        const elemAdvantage = data.element_advantage;
+        const skillName = data.skill_name;
+        const skillElement = data.skill_element || BATTLE_CONFIG.defenderElement;
+
+        // Play attack animation
+        DOM.enemySprite.classList.add('attacking');
+        SoundManager.attack();
+        showProjectile(DOM.enemySprite, DOM.playerSprite, skillElement);
+
+        setTimeout(() => {
+            DOM.enemySprite.classList.remove('attacking');
+
+            // Handle DODGE
+            if (isDodge) {
+                DOM.playerSprite.classList.add('dodge');
+                addBattleLog('💨 You dodged the enemy attack!', 'player-dodge');
+
+                setTimeout(() => {
+                    DOM.playerSprite.classList.remove('dodge');
+                    // Player turn
+                    BattleState.isPlayerTurn = true;
+                    DOM.turnIndicator.textContent = "YOUR TURN";
+                    DOM.turnIndicator.classList.remove('enemy-turn');
+                    disableSkills(false);
+                }, 600);
+                return;
+            }
+
+            // Apply damage
+            DOM.playerSprite.classList.add('hit');
+            BattleState.playerHp = Math.max(0, BattleState.playerHp - damage);
+            updateHpDisplay();
+
+            // Calculate elemMultiplier for visual effects
+            const elemMultiplier = elemAdvantage === 'super_effective' ? 1.5 :
+                elemAdvantage === 'not_effective' ? 0.5 : 1.0;
+
+            // Show damage popup and sparks
+            showDamagePopup(DOM.playerSprite, damage, elemMultiplier, isCritical);
+            showDamageSparks(DOM.playerSprite, isCritical || isLucky);
+
+            if (isCritical) {
+                SoundManager.critical();
+            } else {
+                SoundManager.damage();
+            }
+
+            // Build log message with variance info
             let logClass = 'enemy-action';
-            let logText = `Enemy used ${bestSkill.skill_name}! ${damage} damage!`;
-            if (multiplier > 1) logText += ' Super effective!';
-            if (critChance) logText = `CRITICAL! ${logText}`;
+            let logText = `Enemy used ${skillName}! ${damage} damage!`;
+
+            if (isGlancing) logText = `⚡ Glancing! ${logText}`;
+            else if (isLucky) logText = `🍀 Lucky! ${logText}`;
+
+            if (elemAdvantage === 'super_effective') logText += ' Super effective!';
+            if (isCritical) logText = `CRITICAL! ${logText}`;
             addBattleLog(logText, logClass);
 
             setTimeout(() => {
@@ -227,7 +467,16 @@ function enemyTurn() {
                 }
             }, 400);
         }, 300);
-    }, 1000);
+
+    } catch (error) {
+        console.error('Enemy turn error:', error);
+        addBattleLog('Network error during enemy turn', 'error');
+        // Give player turn back
+        BattleState.isPlayerTurn = true;
+        DOM.turnIndicator.textContent = "YOUR TURN";
+        DOM.turnIndicator.classList.remove('enemy-turn');
+        disableSkills(false);
+    }
 }
 
 // ================================================
