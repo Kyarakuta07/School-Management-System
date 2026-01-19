@@ -15,6 +15,77 @@
             <h3>No War Active</h3>
             <p>Wars happen every Saturday!</p>
             <p class="next-war">Next war: <span id="next-war-date">-</span></p>
+
+            <!-- Last War Recap (Hidden by default) -->
+            <div id="last-war-recap" class="last-war-recap" style="display: none;">
+                <div class="recap-divider"></div>
+
+                <div class="recap-header">
+                    <span class="recap-badge">LAST WAR RESULT</span>
+                    <span class="recap-date" id="recap-date">-</span>
+                </div>
+
+                <!-- Champion -->
+                <div class="champion-card rank-1">
+                    <div class="champion-glow"></div>
+                    <div class="crown-icon">🏆</div>
+                    <div class="champion-label">VICTORIOUS SANCTUARY</div>
+                    <div class="champion-name" id="recap-champion-name">-</div>
+                    <div class="champion-score"><span id="recap-champion-score">0</span> Points</div>
+                </div>
+
+                <!-- MVP -->
+                <div class="mvp-section">
+                    <div class="section-title">🎖️ WAR MVP</div>
+                    <div class="mvp-card">
+                        <div class="mvp-avatar-container">
+                            <img src="" onerror="this.src='../assets/img/defaults/profile_default.png'"
+                                class="mvp-avatar" id="recap-mvp-avatar">
+                            <div class="mvp-badge">MVP</div>
+                        </div>
+                        <div class="mvp-info">
+                            <div class="mvp-name" id="recap-mvp-name">-</div>
+                            <div class="mvp-sanctuary" id="recap-mvp-sanctuary">-</div>
+                            <div class="mvp-stats-row">
+                                <div class="mvp-stat">
+                                    <span class="icon">⚔️</span>
+                                    <span class="val" id="recap-mvp-wins">0</span>
+                                    <span class="lbl">Wins</span>
+                                </div>
+                                <div class="mvp-stat">
+                                    <span class="icon">⭐</span>
+                                    <span class="val" id="recap-mvp-points">0</span>
+                                    <span class="lbl">Pts</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Summary -->
+                <div class="war-stats-grid">
+                    <div class="mini-stat">
+                        <span class="val" id="recap-total-participants">0</span>
+                        <span class="lbl">Participants</span>
+                    </div>
+                    <div class="mini-stat">
+                        <span class="val" id="recap-total-battles">0</span>
+                        <span class="lbl">Battles</span>
+                    </div>
+                    <div class="mini-stat">
+                        <span class="val" id="recap-total-gold">0</span>
+                        <span class="lbl">Gold Looted</span>
+                    </div>
+                </div>
+
+                <!-- Full Standings -->
+                <div class="recap-standings">
+                    <div class="section-title">FINAL STANDINGS</div>
+                    <div class="standings-list" id="recap-standings-list">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- War Active State -->

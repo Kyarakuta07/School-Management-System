@@ -162,6 +162,127 @@ class SanctuaryWarController extends BaseController
         ]);
     }
 
+    /**
+     * GET: Get last war results (recap for when no war is active)
+     */
+    public function getLastWarResults()
+    {
+        $this->requireGet();
+
+        // Get the most recent completed war (not today's if it exists)
+        $today = date('Y-m-d');
+        $stmt = mysqli_prepare(
+            $this->conn,
+            "SELECT * FROM sanctuary_wars 
+             WHERE war_date < ? 
+             ORDER BY war_date DESC 
+             LIMIT 1"
+        );
+        mysqli_stmt_bind_param($stmt, "s", $today);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $lastWar = mysqli_fetch_assoc($result);
+        mysqli_stmt_close($stmt);
+
+        if (!$lastWar) {
+            $this->success([
+                'has_last_war' => false,
+                'message' => 'No previous wars found'
+            ]);
+            return;
+        }
+
+        // Get final standings
+        $standings = $this->getWarScores($lastWar['id']);
+
+        // Determine winner (highest points)
+        $winner = null;
+        if (!empty($standings)) {
+            $winner = $standings[0]; // Already sorted by total_points DESC
+        }
+
+        // Get MVP (top contributor across all sanctuaries)
+        $mvp = $this->getWarMVP($lastWar['id']);
+
+        // Get total participation stats
+        $stats = $this->getWarStats($lastWar['id']);
+
+        $this->success([
+            'has_last_war' => true,
+            'war_date' => $lastWar['war_date'],
+            'war_date_formatted' => date('l, d M Y', strtotime($lastWar['war_date'])),
+            'winner' => $winner,
+            'standings' => $standings,
+            'mvp' => $mvp,
+            'stats' => $stats
+        ]);
+    }
+
+    /**
+     * Get MVP (top contributor) for a war
+     */
+    private function getWarMVP($war_id)
+    {
+        $stmt = mysqli_prepare(
+            $this->conn,
+            "SELECT 
+                n.id_nethera as user_id,
+                n.nama_lengkap as name,
+                n.foto_profil as avatar,
+                s.nama_sanctuary as sanctuary_name,
+                SUM(wb.points_earned) as total_points,
+                SUM(CASE WHEN wb.winner_user_id = n.id_nethera THEN 1 ELSE 0 END) as wins,
+                COUNT(*) as battles
+             FROM war_battles wb
+             JOIN nethera n ON n.id_nethera = wb.user_id
+             LEFT JOIN sanctuary s ON s.id_sanctuary = n.id_sanctuary
+             WHERE wb.war_id = ?
+             GROUP BY n.id_nethera
+             ORDER BY total_points DESC, wins DESC
+             LIMIT 1"
+        );
+        mysqli_stmt_bind_param($stmt, "i", $war_id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $mvp = mysqli_fetch_assoc($result);
+        mysqli_stmt_close($stmt);
+
+        if ($mvp) {
+            $mvp['total_points'] = (int) $mvp['total_points'];
+            $mvp['wins'] = (int) $mvp['wins'];
+            $mvp['battles'] = (int) $mvp['battles'];
+        }
+
+        return $mvp;
+    }
+
+    /**
+     * Get overall war statistics
+     */
+    private function getWarStats($war_id)
+    {
+        $stmt = mysqli_prepare(
+            $this->conn,
+            "SELECT 
+                COUNT(DISTINCT user_id) as total_participants,
+                COUNT(*) as total_battles,
+                SUM(gold_earned) as total_gold_distributed
+             FROM war_battles 
+             WHERE war_id = ?"
+        );
+        mysqli_stmt_bind_param($stmt, "i", $war_id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $stats = mysqli_fetch_assoc($result);
+        mysqli_stmt_close($stmt);
+
+        return [
+            'participants' => (int) ($stats['total_participants'] ?? 0),
+            'battles' => (int) ($stats['total_battles'] ?? 0),
+            'gold_distributed' => (int) ($stats['total_gold_distributed'] ?? 0)
+        ];
+    }
+
     // ================================================
     // HELPER METHODS
     // ================================================

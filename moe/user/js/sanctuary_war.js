@@ -39,6 +39,87 @@ async function loadWarStatus() {
 }
 
 /**
+ * Load Last War Recap
+ */
+async function loadLastWarRecap() {
+    const container = document.getElementById('last-war-recap');
+    if (!container) return;
+
+    try {
+        const response = await fetch('api/router.php?action=get_last_war_results');
+        const data = await response.json();
+
+        if (data.success && data.has_last_war) {
+            renderLastWarRecap(data);
+            container.style.display = 'block';
+        } else {
+            container.style.display = 'none';
+        }
+    } catch (error) {
+        console.error('Error loading recap:', error);
+        container.style.display = 'none';
+    }
+}
+
+/**
+ * Render Last War Recap UI
+ */
+function renderLastWarRecap(data) {
+    // Header
+    document.getElementById('recap-date').textContent = data.war_date_formatted;
+
+    // Champion
+    if (data.winner) {
+        document.getElementById('recap-champion-name').textContent = data.winner.nama_sanctuary;
+        document.getElementById('recap-champion-score').textContent = data.winner.total_points;
+    }
+
+    // MVP
+    if (data.mvp) {
+        document.getElementById('recap-mvp-name').textContent = data.mvp.name;
+        document.getElementById('recap-mvp-wins').textContent = data.mvp.wins;
+        document.getElementById('recap-mvp-points').textContent = data.mvp.total_points;
+        document.getElementById('recap-mvp-sanctuary').textContent = data.mvp.sanctuary_name || '';
+
+        const avatarEl = document.getElementById('recap-mvp-avatar');
+        if (avatarEl) {
+            // Adjust path if needed, assuming standard profile path
+            let avatarPath = data.mvp.avatar;
+            if (avatarPath && !avatarPath.startsWith('http')) {
+                avatarPath = '../uploads/profil/' + avatarPath;
+            }
+            avatarEl.src = avatarPath || '../assets/img/defaults/profile_default.png';
+        }
+    }
+
+    // Stats
+    if (data.stats) {
+        document.getElementById('recap-total-participants').textContent = data.stats.participants;
+        document.getElementById('recap-total-battles').textContent = data.stats.battles;
+        document.getElementById('recap-total-gold').textContent = data.stats.gold_distributed;
+    }
+
+    // Standings List
+    const listContainer = document.getElementById('recap-standings-list');
+    if (listContainer && data.standings) {
+        const icons = ['🥇', '🥈', '🥉', '#4'];
+
+        // Remove winner (1st place) from list to avoid duplication if desired, 
+        // OR keep all but styled differently. Let's keep all for completeness but highlight top.
+        // Actually, usually recap shows 2nd, 3rd etc below champion.
+        // Let's show all for clarity.
+
+        listContainer.innerHTML = data.standings.map((s, i) => `
+            <div class="standing-row ${i === 0 ? 'is-winner' : ''}">
+                <span class="rank">${icons[i] || '#' + (i + 1)}</span>
+                <span class="sanctuary">${s.nama_sanctuary}</span>
+                <span class="points">${s.total_points} pts</span>
+            </div>
+        `).join('');
+    }
+}
+
+/**
  * Update war UI based on status
  */
 function updateWarUI(data) {
@@ -52,6 +133,9 @@ function updateWarUI(data) {
         activeEl.style.display = 'none';
 
         document.getElementById('next-war-date').textContent = data.next_war;
+
+        // Load Last War Recap
+        loadLastWarRecap();
         return;
     }
 

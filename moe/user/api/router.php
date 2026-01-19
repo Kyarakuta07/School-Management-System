@@ -150,6 +150,7 @@ $routes = [
     // Sanctuary War Controller
     'get_war_status' => ['SanctuaryWarController', 'getWarStatus'],
     'war_battle' => ['SanctuaryWarController', 'startBattle'],
+    'get_last_war_results' => ['SanctuaryWarController', 'getLastWarResults'],
 
     // Leaderboard Controller
     'get_pet_leaderboard' => ['LeaderboardController', 'getPetLeaderboard'],
