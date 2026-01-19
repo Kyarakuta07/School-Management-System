@@ -1,23 +1,66 @@
 /**
- * MOE Pet System - Leaderboard JavaScript
- * Handles leaderboard loading and display
+ * MOE Pet System - Premium Leaderboard JavaScript
+ * Enhanced with podium, tabs, and element pills
  */
 
 var ASSETS_BASE = '/moe/assets/pets/';
+var currentSort = 'level';
+var currentElement = 'all';
 
 /**
  * Initialize leaderboard tab
  */
 function initLeaderboard() {
+    setupTabListeners();
+    setupElementPillListeners();
     loadPetLeaderboard();
+}
+
+/**
+ * Setup tab click listeners
+ */
+function setupTabListeners() {
+    var tabs = document.querySelectorAll('.lb-tab');
+    tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+            tabs.forEach(function (t) { t.classList.remove('active'); });
+            tab.classList.add('active');
+            currentSort = tab.dataset.sort;
+
+            // Update hidden select for legacy support
+            var sortSelect = document.getElementById('lb-sort');
+            if (sortSelect) sortSelect.value = currentSort;
+
+            loadPetLeaderboard();
+        });
+    });
+}
+
+/**
+ * Setup element pill click listeners
+ */
+function setupElementPillListeners() {
+    document.addEventListener('click', function (e) {
+        if (e.target.classList.contains('element-pill')) {
+            var pills = document.querySelectorAll('.element-pill');
+            pills.forEach(function (p) { p.classList.remove('active'); });
+            e.target.classList.add('active');
+            currentElement = e.target.dataset.element;
+
+            // Update hidden select for legacy support
+            var elementSelect = document.getElementById('lb-element');
+            if (elementSelect) elementSelect.value = currentElement;
+
+            loadPetLeaderboard();
+        }
+    });
 }
 
 /**
  * Load pet leaderboard from API
  */
 function loadPetLeaderboard() {
-    var sortSelect = document.getElementById('lb-sort');
-    var elementSelect = document.getElementById('lb-element');
+    var podiumContainer = document.getElementById('podium-section');
     var listContainer = document.getElementById('leaderboard-list');
 
     if (!listContainer) {
@@ -25,25 +68,20 @@ function loadPetLeaderboard() {
         return;
     }
 
-    var sort = sortSelect ? sortSelect.value : 'level';
-    var element = elementSelect ? elementSelect.value : 'all';
+    // Show loading
+    if (podiumContainer) podiumContainer.innerHTML = '';
+    listContainer.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><span>Loading champions...</span></div>';
 
-    listContainer.innerHTML = '<div class="loading-spinner">Loading...</div>';
-
-    var url = 'api/router.php?action=get_pet_leaderboard&sort=' + sort + '&element=' + element + '&limit=15';
-    console.log('Fetching leaderboard:', url);
+    var url = 'api/router.php?action=get_pet_leaderboard&sort=' + currentSort + '&element=' + currentElement + '&limit=15';
 
     fetch(url)
-        .then(function (response) {
-            return response.json();
-        })
+        .then(function (response) { return response.json(); })
         .then(function (data) {
-            console.log('Leaderboard response:', data);
             if (data.success) {
-                renderLeaderboard(data);
-                populateElementFilter(data.available_elements);
+                renderPodium(data.leaderboard);
+                renderLeaderboard(data.leaderboard);
+                populateElementPills(data.available_elements);
             } else {
-                console.error('API error:', data.error);
                 listContainer.innerHTML = '<div class="empty-state">' + (data.error || 'Failed to load') + '</div>';
             }
         })
@@ -54,35 +92,81 @@ function loadPetLeaderboard() {
 }
 
 /**
- * Render leaderboard list
+ * Render top 3 podium
  */
-function renderLeaderboard(data) {
+function renderPodium(pets) {
+    var container = document.getElementById('podium-section');
+    if (!container || !pets || pets.length === 0) return;
+
+    var top3 = pets.slice(0, 3);
+    var html = '';
+
+    var crowns = ['👑', '🥈', '🥉'];
+    var statLabels = { level: 'Level', wins: 'Wins', power: 'Power' };
+
+    for (var i = 0; i < top3.length; i++) {
+        var pet = top3[i];
+        var rank = i + 1;
+        var displayName = pet.nickname || pet.species_name;
+        var imgPath = ASSETS_BASE + pet.current_image;
+
+        var mainStat = '';
+        if (currentSort === 'wins') {
+            mainStat = pet.battle_wins + ' wins';
+        } else if (currentSort === 'power') {
+            mainStat = pet.power_score + ' pwr';
+        } else {
+            mainStat = 'Lv.' + pet.level;
+        }
+
+        html += '<div class="podium-pet rank-' + rank + '">';
+        html += '<div class="podium-avatar">';
+        html += '<span class="podium-crown">' + crowns[i] + '</span>';
+        html += '<img class="podium-img" src="' + imgPath + '" onerror="this.src=\'../assets/placeholder.png\'" alt="' + displayName + '">';
+        html += '</div>';
+        html += '<div class="podium-name">' + displayName + '</div>';
+        html += '<div class="podium-stat">' + mainStat + '</div>';
+        html += '<div class="podium-stand">' + rank + '</div>';
+        html += '</div>';
+    }
+
+    container.innerHTML = html;
+}
+
+/**
+ * Render leaderboard list (rank 4+)
+ */
+function renderLeaderboard(pets) {
     var container = document.getElementById('leaderboard-list');
-    var pets = data.leaderboard;
 
     if (!pets || pets.length === 0) {
         container.innerHTML = '<div class="empty-state">No pets found</div>';
         return;
     }
 
+    // Skip top 3 (they're in podium)
+    var rest = pets.slice(3);
+
+    if (rest.length === 0) {
+        container.innerHTML = '<div class="empty-state" style="opacity: 0.5; font-size: 0.85rem;">Top 3 shown above</div>';
+        return;
+    }
+
     var html = '';
-    for (var i = 0; i < pets.length; i++) {
-        var pet = pets[i];
-        var rankClass = pet.rank <= 3 ? 'rank-' + pet.rank : '';
+    for (var i = 0; i < rest.length; i++) {
+        var pet = rest[i];
+        var rank = i + 4;
         var shinyClass = pet.is_shiny ? 'shiny' : '';
         var displayName = pet.nickname || pet.species_name;
         var imgPath = ASSETS_BASE + pet.current_image;
-        var shinyMark = pet.is_shiny ? ' *' : '';
+        var shinyMark = pet.is_shiny ? ' ✨' : '';
 
-        var sortSelect = document.getElementById('lb-sort');
-        var sortValue = sortSelect ? sortSelect.value : 'level';
         var mainStat = '';
         var statLabel = '';
-
-        if (sortValue === 'wins') {
+        if (currentSort === 'wins') {
             mainStat = pet.battle_wins;
             statLabel = 'Wins';
-        } else if (sortValue === 'power') {
+        } else if (currentSort === 'power') {
             mainStat = pet.power_score;
             statLabel = 'Power';
         } else {
@@ -92,8 +176,8 @@ function renderLeaderboard(data) {
 
         var elementClass = pet.element ? pet.element.toLowerCase() : '';
 
-        html += '<div class="lb-pet-card ' + rankClass + '">';
-        html += '<div class="rank">' + getRankIcon(pet.rank) + '</div>';
+        html += '<div class="lb-pet-card">';
+        html += '<div class="rank">#' + rank + '</div>';
         html += '<img class="pet-img" src="' + imgPath + '" onerror="this.src=\'../assets/placeholder.png\'" alt="' + displayName + '">';
         html += '<div class="pet-info">';
         html += '<div class="pet-name ' + shinyClass + '">' + displayName + shinyMark + '</div>';
@@ -113,35 +197,21 @@ function renderLeaderboard(data) {
 }
 
 /**
- * Get rank icon
+ * Populate element pills
  */
-function getRankIcon(rank) {
-    if (rank === 1) return '1st';
-    if (rank === 2) return '2nd';
-    if (rank === 3) return '3rd';
-    return '#' + rank;
-}
+function populateElementPills(elements) {
+    var container = document.getElementById('element-pills');
+    if (!container || !elements) return;
 
-/**
- * Populate element filter dropdown
- */
-function populateElementFilter(elements) {
-    var select = document.getElementById('lb-element');
-    if (!select || !elements) return;
-
-    var currentValue = select.value;
-
-    select.innerHTML = '<option value="all">All Elements</option>';
+    var html = '<button class="element-pill ' + (currentElement === 'all' ? 'active' : '') + '" data-element="all">All</button>';
 
     for (var i = 0; i < elements.length; i++) {
         var el = elements[i];
-        var option = document.createElement('option');
-        option.value = el;
-        option.textContent = el;
-        select.appendChild(option);
+        var isActive = currentElement === el ? 'active' : '';
+        html += '<button class="element-pill ' + isActive + '" data-element="' + el + '">' + el + '</button>';
     }
 
-    if (currentValue) select.value = currentValue;
+    container.innerHTML = html;
 }
 
 /**
@@ -153,12 +223,9 @@ function loadBattleHistoryTab() {
     var lossesEl = document.getElementById('total-losses');
     var streakEl = document.getElementById('win-streak');
 
-    if (!listContainer) {
-        console.error('History container not found');
-        return;
-    }
+    if (!listContainer) return;
 
-    listContainer.innerHTML = '<div class="loading-spinner">Loading...</div>';
+    listContainer.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><span>Loading...</span></div>';
 
     fetch('api/router.php?action=battle_history')
         .then(function (response) { return response.json(); })
@@ -168,15 +235,13 @@ function loadBattleHistoryTab() {
                 return;
             }
 
-            // Update stats
             if (winsEl) winsEl.textContent = data.stats.wins || 0;
             if (lossesEl) lossesEl.textContent = data.stats.losses || 0;
             if (streakEl) streakEl.textContent = data.stats.current_streak || 0;
 
-            // Render history
             var history = data.history || [];
             if (history.length === 0) {
-                listContainer.innerHTML = '<div class="empty-history">No battles yet. Challenge someone!</div>';
+                listContainer.innerHTML = '<div class="empty-history">No battles yet!</div>';
                 return;
             }
 
@@ -186,17 +251,13 @@ function loadBattleHistoryTab() {
 
                 return '<div class="history-item">' +
                     '<div class="history-pets">' +
-                    '<div class="history-pet">' +
-                    '<div class="history-pet-name">' + (battle.pet_name || 'Your Pet') + '</div>' +
-                    '</div>' +
+                    '<span class="history-pet-name">' + (battle.pet_name || 'Your Pet') + '</span>' +
                     '<span class="history-vs">VS</span>' +
-                    '<div class="history-pet">' +
-                    '<div class="history-pet-name">' + (battle.opponent_name || 'Enemy') + '</div>' +
+                    '<span class="history-pet-name">' + (battle.opponent_name || 'Enemy') + '</span>' +
                     '</div>' +
-                    '</div>' +
-                    '<div>' +
+                    '<div class="history-result-wrap">' +
                     '<span class="history-result ' + (won ? 'win' : 'lose') + '">' + (won ? '✓ WIN' : '✗ LOSE') + '</span>' +
-                    '<div class="history-date">' + date + '</div>' +
+                    '<span class="history-date">' + date + '</span>' +
                     '</div>' +
                     '</div>';
             }).join('');
@@ -204,8 +265,7 @@ function loadBattleHistoryTab() {
             listContainer.innerHTML = html;
         })
         .catch(function (error) {
-            console.error('Error loading history:', error);
-            listContainer.innerHTML = '<div class="empty-history">Failed to load history</div>';
+            listContainer.innerHTML = '<div class="empty-history">Network error</div>';
         });
 }
 
