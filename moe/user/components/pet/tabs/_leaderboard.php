@@ -303,6 +303,24 @@
         order: 3;
     }
 
+    .podium-owner {
+        font-size: 0.65rem;
+        color: rgba(255, 255, 255, 0.5);
+        margin-top: -2px;
+        margin-bottom: 2px;
+        max-width: 80px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .podium-pet.rank-1 .podium-owner {
+        font-size: 0.7rem;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
     .podium-avatar {
         position: relative;
         margin-bottom: 0.5rem;

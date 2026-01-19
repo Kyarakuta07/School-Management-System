@@ -143,6 +143,7 @@
             html +=     '<img class="podium-img" src="' + img + '" onerror="this.src=\'../assets/placeholder.png\'">';
             html +=   '</div>';
             html +=   '<div class="podium-name">' + name + '</div>';
+            html +=   '<div class="podium-owner">' + (pet.owner_name || 'Owner') + '</div>';
             html +=   '<div class="podium-stat">' + stat + '</div>';
             html +=   '<div class="podium-stand">' + rank + '</div>';
             html += '</div>';

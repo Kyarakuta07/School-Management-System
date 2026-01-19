@@ -150,6 +150,7 @@ function renderPodium(pets) {
         html += '<div class="podium-avatar"><span class="podium-crown">' + crowns[i] + '</span>';
         html += '<img class="podium-img" src="' + imgPath + '" onerror="this.src=\'../assets/placeholder.png\'"></div>';
         html += '<div class="podium-name">' + displayName + '</div>';
+        html += '<div class="podium-owner">' + (pet.owner_name || 'Owner') + '</div>';
         html += '<div class="podium-stat">' + mainStat + '</div>';
         html += '<div class="podium-stand">' + rank + '</div></div>';
     }
