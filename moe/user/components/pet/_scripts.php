@@ -19,14 +19,13 @@
     var ASSETS_BASE = '/moe/assets/pets/';
     var currentSort = 'level';
     var currentElement = 'all';
-
-    function initLeaderboard() {
+ function initLeaderboard() {
         setupLeaderboardTabs();
         setupElementPills();
         loadPetLeaderboard();
     }
 
-    function setupLeaderboardTabs() {
+   function setupLeaderboardTabs() {
         var tabs = document.querySelectorAll('.lb-tab');
         tabs.forEach(function (tab) {
             tab.onclick = function () {
@@ -56,45 +55,40 @@
     }
 
     function loadPetLeaderboard() {
+        console.log('[LB] loadPetLeaderboard called');
         var podiumContainer = document.getElementById('podium-section');
         var listContainer = document.getElementById('leaderboard-list');
-        if (!listContainer) { console.error('Leaderboard container not found'); return; }
+        
+        if (!listContainer) { 
+            console.error('[LB] Container not found'); 
+            return; 
+        }
 
         if (podiumContainer) podiumContainer.innerHTML = '';
         listContainer.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><span>Loading champions...</span></div>';
 
-        // Build URL - use absolute path
-        var baseUrl = window.location.pathname.includes('/moe/') ? '/moe/user/' : '';
-        var url = baseUrl + 'api/router.php?action=get_pet_leaderboard&sort=' + currentSort + '&element=' + currentElement + '&limit=15';
+        // Simple URL
+        var url = '/moe/user/api/router.php?action=get_pet_leaderboard&sort=' + currentSort + '&element=' + currentElement + '&limit=15';
+        console.log('[LB] Fetching:', url);
         
-        console.log('Fetching leaderboard:', url);
-        
-        // Add timeout
-        var controller = new AbortController();
-        var timeoutId = setTimeout(function() { controller.abort(); }, 10000);
-        
-        fetch(url, { signal: controller.signal })
+        fetch(url)
             .then(function(r) { 
-                clearTimeout(timeoutId);
-                console.log('Response status:', r.status);
-                if (!r.ok) throw new Error('HTTP ' + r.status);
+                console.log('[LB] Response:', r.status);
                 return r.json(); 
             })
             .then(function(data) {
-                console.log('Leaderboard data:', data);
+                console.log('[LB] Data:', data);
                 if (data.success) {
                     renderPodium(data.leaderboard);
                     renderLeaderboard(data.leaderboard);
                     populateElementPills(data.available_elements);
                 } else {
-                    listContainer.innerHTML = '<div class="empty-state">' + (data.error || 'Failed to load') + '</div>';
+                    listContainer.innerHTML = '<div class="empty-state">' + (data.error || 'Failed') + '</div>';
                 }
             })
             .catch(function(e) {
-                clearTimeout(timeoutId);
-                console.error('Leaderboard error:', e);
-                var msg = e.name === 'AbortError' ? 'Request timeout' : 'Failed to load: ' + e.message;
-                listContainer.innerHTML = '<div class="empty-state">' + msg + '<br><button onclick="loadPetLeaderboard()" style="margin-top:10px;padding:8px 16px;cursor:pointer;">Retry</button></div>';
+                console.error('[LB] Error:', e);
+                listContainer.innerHTML = '<div class="empty-state">Error: ' + e.message + '<br><button onclick="loadPetLeaderboard()" style="margin-top:10px;padding:8px 16px;cursor:pointer;">Retry</button></div>';
             });
     }
 
