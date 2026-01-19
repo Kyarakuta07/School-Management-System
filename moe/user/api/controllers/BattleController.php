@@ -965,10 +965,13 @@ class BattleController extends BaseController
         $this->success([
             'message' => 'Pet switched!',
             'new_skills' => $new_skills,
+            'logs' => $state['logs'] ?? [],
             'battle_state' => [
                 'current_turn' => $state['current_turn'],
                 'turn_count' => $state['turn_count'],
+                'status' => $state['status'] ?? 'active',
                 'active_player_index' => $state['active_player_index'],
+                'active_enemy_index' => $state['active_enemy_index'],
                 'player_pets' => $state['player_pets'],
                 'enemy_pets' => $state['enemy_pets']
             ]
