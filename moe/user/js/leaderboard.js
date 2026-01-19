@@ -68,7 +68,7 @@ function loadPetLeaderboard() {
     if (podiumContainer) podiumContainer.innerHTML = '';
     listContainer.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><span>Loading champions...</span></div>';
 
-    var url = '/moe/user/api/router.php?action=get_pet_leaderboard&sort=' + currentSort + '&element=' + currentElement + '&limit=15';
+    var url = '/user/api/router.php?action=get_pet_leaderboard&sort=' + currentSort + '&element=' + currentElement + '&limit=15';
     console.log('[LB] Fetch URL:', url);
 
     fetch(url)
