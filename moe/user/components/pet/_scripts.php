@@ -20,9 +20,16 @@
     var currentSort = 'level';
     var currentElement = 'all';
  function initLeaderboard() {
-        setupLeaderboardTabs();
-        setupElementPills();
-        loadPetLeaderboard();
+        console.log('[LB] initLeaderboard START');
+        try {
+            setupLeaderboardTabs();
+            console.log('[LB] Tabs setup done');
+            setupElementPills();
+            console.log('[LB] Pills setup done');
+            loadPetLeaderboard();
+        } catch(e) {
+            console.error('[LB] initLeaderboard error:', e);
+        }
     }
 
    function setupLeaderboardTabs() {
