@@ -1,82 +1,82 @@
 /**
- * MOE Pet System - Premium Leaderboard JavaScript
- * Enhanced with podium, tabs, and element pills
+ * MOE Pet System - Leaderboard V2 (Premium)
+ * Handles leaderboard pods, tabs, and element classification
  */
+
+console.log('[LB] leaderboard.js loaded');
 
 var ASSETS_BASE = '/moe/assets/pets/';
 var currentSort = 'level';
 var currentElement = 'all';
 
-/**
- * Initialize leaderboard tab
- */
 function initLeaderboard() {
-    setupTabListeners();
-    setupElementPillListeners();
-    loadPetLeaderboard();
+    console.log('[LB] initLeaderboard called');
+    try {
+        setupLeaderboardTabs();
+        setupElementPills();
+        loadPetLeaderboard();
+    } catch (e) {
+        console.error('[LB] initLeaderboard error:', e);
+    }
 }
 
-/**
- * Setup tab click listeners
- */
-function setupTabListeners() {
+function setupLeaderboardTabs() {
     var tabs = document.querySelectorAll('.lb-tab');
+    if (tabs.length === 0) console.warn('[LB] No tabs found');
+
     tabs.forEach(function (tab) {
-        tab.addEventListener('click', function () {
+        tab.onclick = function () {
+            console.log('[LB] Tab clicked:', tab.dataset.sort);
             tabs.forEach(function (t) { t.classList.remove('active'); });
             tab.classList.add('active');
             currentSort = tab.dataset.sort;
-
-            // Update hidden select for legacy support
             var sortSelect = document.getElementById('lb-sort');
             if (sortSelect) sortSelect.value = currentSort;
-
             loadPetLeaderboard();
-        });
+        };
     });
 }
 
-/**
- * Setup element pill click listeners
- */
-function setupElementPillListeners() {
-    document.addEventListener('click', function (e) {
+function setupElementPills() {
+    var container = document.getElementById('element-pills');
+    if (!container) return;
+
+    container.onclick = function (e) {
         if (e.target.classList.contains('element-pill')) {
-            var pills = document.querySelectorAll('.element-pill');
+            console.log('[LB] Pill clicked:', e.target.dataset.element);
+            var pills = container.querySelectorAll('.element-pill');
             pills.forEach(function (p) { p.classList.remove('active'); });
             e.target.classList.add('active');
             currentElement = e.target.dataset.element;
-
-            // Update hidden select for legacy support
-            var elementSelect = document.getElementById('lb-element');
-            if (elementSelect) elementSelect.value = currentElement;
-
             loadPetLeaderboard();
         }
-    });
+    };
 }
 
-/**
- * Load pet leaderboard from API
- */
 function loadPetLeaderboard() {
+    console.log('[LB] Loading leaderboard. Sort:', currentSort, 'Element:', currentElement);
     var podiumContainer = document.getElementById('podium-section');
     var listContainer = document.getElementById('leaderboard-list');
 
     if (!listContainer) {
-        console.error('Leaderboard container not found');
+        console.error('[LB] List container not found');
         return;
     }
 
-    // Show loading
     if (podiumContainer) podiumContainer.innerHTML = '';
     listContainer.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><span>Loading champions...</span></div>';
 
-    var url = 'api/router.php?action=get_pet_leaderboard&sort=' + currentSort + '&element=' + currentElement + '&limit=15';
+    var url = '/moe/user/api/router.php?action=get_pet_leaderboard&sort=' + currentSort + '&element=' + currentElement + '&limit=15';
+    console.log('[LB] Fetch URL:', url);
 
     fetch(url)
-        .then(function (response) { return response.json(); })
+        .then(function (r) {
+            console.log('[LB] Response:', r.status);
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return r.json();
+        })
         .then(function (data) {
+            console.log('[LB] Data success:', data.success);
             if (data.success) {
                 renderPodium(data.leaderboard);
                 renderLeaderboard(data.leaderboard);
@@ -85,70 +85,45 @@ function loadPetLeaderboard() {
                 listContainer.innerHTML = '<div class="empty-state">' + (data.error || 'Failed to load') + '</div>';
             }
         })
-        .catch(function (error) {
-            console.error('Leaderboard fetch error:', error);
-            listContainer.innerHTML = '<div class="empty-state">Network error</div>';
+        .catch(function (e) {
+            console.error('[LB] Fetch error:', e);
+            listContainer.innerHTML = '<div class="empty-state">Error: ' + e.message + '<br><button onclick="loadPetLeaderboard()" style="margin-top:10px;padding:8px 16px;cursor:pointer;">Retry</button></div>';
         });
 }
 
-/**
- * Render top 3 podium
- */
 function renderPodium(pets) {
     var container = document.getElementById('podium-section');
     if (!container || !pets || pets.length === 0) return;
 
     var top3 = pets.slice(0, 3);
-    var html = '';
-
     var crowns = ['👑', '🥈', '🥉'];
-    var statLabels = { level: 'Level', wins: 'Wins', power: 'Power' };
+    var html = '';
 
     for (var i = 0; i < top3.length; i++) {
         var pet = top3[i];
         var rank = i + 1;
         var displayName = pet.nickname || pet.species_name;
         var imgPath = ASSETS_BASE + pet.current_image;
-
-        var mainStat = '';
-        if (currentSort === 'wins') {
-            mainStat = pet.battle_wins + ' wins';
-        } else if (currentSort === 'power') {
-            mainStat = pet.power_score + ' pwr';
-        } else {
-            mainStat = 'Lv.' + pet.level;
-        }
+        var mainStat = getStatLabel(pet);
 
         html += '<div class="podium-pet rank-' + rank + '">';
-        html += '<div class="podium-avatar">';
-        html += '<span class="podium-crown">' + crowns[i] + '</span>';
-        html += '<img class="podium-img" src="' + imgPath + '" onerror="this.src=\'../assets/placeholder.png\'" alt="' + displayName + '">';
-        html += '</div>';
+        html += '<div class="podium-avatar"><span class="podium-crown">' + crowns[i] + '</span>';
+        html += '<img class="podium-img" src="' + imgPath + '" onerror="this.src=\'../assets/placeholder.png\'"></div>';
         html += '<div class="podium-name">' + displayName + '</div>';
         html += '<div class="podium-stat">' + mainStat + '</div>';
-        html += '<div class="podium-stand">' + rank + '</div>';
-        html += '</div>';
+        html += '<div class="podium-stand">' + rank + '</div></div>';
     }
 
     container.innerHTML = html;
 }
 
-/**
- * Render leaderboard list (rank 4+)
- */
 function renderLeaderboard(pets) {
     var container = document.getElementById('leaderboard-list');
+    if (!pets || pets.length === 0) { container.innerHTML = '<div class="empty-state">No pets found</div>'; return; }
 
-    if (!pets || pets.length === 0) {
-        container.innerHTML = '<div class="empty-state">No pets found</div>';
-        return;
-    }
-
-    // Skip top 3 (they're in podium)
     var rest = pets.slice(3);
-
     if (rest.length === 0) {
-        container.innerHTML = '<div class="empty-state" style="opacity: 0.5; font-size: 0.85rem;">Top 3 shown above</div>';
+        container.innerHTML = '<div class="empty-state" style="opacity:0.5; font-size: 0.85rem;">Top 3 shown above</div>';
         return;
     }
 
@@ -156,49 +131,45 @@ function renderLeaderboard(pets) {
     for (var i = 0; i < rest.length; i++) {
         var pet = rest[i];
         var rank = i + 4;
-        var shinyClass = pet.is_shiny ? 'shiny' : '';
+
         var displayName = pet.nickname || pet.species_name;
         var imgPath = ASSETS_BASE + pet.current_image;
+        var mainStat = getStatValue(pet);
+        var statLabel = getStatName();
+        var elClass = pet.element ? pet.element.toLowerCase() : '';
+        var shinyClass = pet.is_shiny ? 'shiny' : '';
         var shinyMark = pet.is_shiny ? ' ✨' : '';
-
-        var mainStat = '';
-        var statLabel = '';
-        if (currentSort === 'wins') {
-            mainStat = pet.battle_wins;
-            statLabel = 'Wins';
-        } else if (currentSort === 'power') {
-            mainStat = pet.power_score;
-            statLabel = 'Power';
-        } else {
-            mainStat = 'Lv.' + pet.level;
-            statLabel = 'Level';
-        }
-
-        var elementClass = pet.element ? pet.element.toLowerCase() : '';
 
         html += '<div class="lb-pet-card">';
         html += '<div class="rank">#' + rank + '</div>';
-        html += '<img class="pet-img" src="' + imgPath + '" onerror="this.src=\'../assets/placeholder.png\'" alt="' + displayName + '">';
-        html += '<div class="pet-info">';
-        html += '<div class="pet-name ' + shinyClass + '">' + displayName + shinyMark + '</div>';
-        html += '<div class="pet-meta">';
-        html += '<span class="element-badge ' + elementClass + '">' + (pet.element || '?') + '</span>';
-        html += '<span class="owner">' + pet.owner_name + '</span>';
-        html += '</div>';
-        html += '</div>';
-        html += '<div class="pet-stats">';
-        html += '<div class="stat-main">' + mainStat + '</div>';
-        html += '<div class="stat-label">' + statLabel + '</div>';
-        html += '</div>';
-        html += '</div>';
+        html += '<img class="pet-img" src="' + imgPath + '" onerror="this.src=\'../assets/placeholder.png\'">';
+        html += '<div class="pet-info"><div class="pet-name ' + shinyClass + '">' + displayName + shinyMark + '</div>';
+        html += '<div class="pet-meta"><span class="element-badge ' + elClass + '">' + (pet.element || '?') + '</span>';
+        html += '<span class="owner">' + pet.owner_name + '</span></div></div>';
+        html += '<div class="pet-stats"><div class="stat-main">' + mainStat + '</div><div class="stat-label">' + statLabel + '</div></div></div>';
     }
 
     container.innerHTML = html;
 }
 
-/**
- * Populate element pills
- */
+function getStatLabel(pet) {
+    if (currentSort === 'wins') return pet.battle_wins + ' wins';
+    if (currentSort === 'power') return pet.power_score + ' pwr';
+    return 'Lv.' + pet.level;
+}
+
+function getStatValue(pet) {
+    if (currentSort === 'wins') return pet.battle_wins;
+    if (currentSort === 'power') return pet.power_score;
+    return 'Lv.' + pet.level;
+}
+
+function getStatName() {
+    if (currentSort === 'wins') return 'Wins';
+    if (currentSort === 'power') return 'Power';
+    return 'Level';
+}
+
 function populateElementPills(elements) {
     var container = document.getElementById('element-pills');
     if (!container || !elements) return;
@@ -214,9 +185,7 @@ function populateElementPills(elements) {
     container.innerHTML = html;
 }
 
-/**
- * Load battle history tab
- */
+// BATTLE HISTORY TAB (Needed for History Tab)
 function loadBattleHistoryTab() {
     var listContainer = document.getElementById('history-list');
     var winsEl = document.getElementById('total-wins');
@@ -227,14 +196,14 @@ function loadBattleHistoryTab() {
 
     listContainer.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><span>Loading...</span></div>';
 
-    fetch('api/router.php?action=battle_history')
-        .then(function (response) { return response.json(); })
+    // Absolute path
+    fetch('/moe/user/api/router.php?action=battle_history')
+        .then(function (r) { return r.json(); })
         .then(function (data) {
             if (!data.success) {
                 listContainer.innerHTML = '<div class="empty-history">Failed to load history</div>';
                 return;
             }
-
             if (winsEl) winsEl.textContent = data.stats.wins || 0;
             if (lossesEl) lossesEl.textContent = data.stats.losses || 0;
             if (streakEl) streakEl.textContent = data.stats.current_streak || 0;
@@ -246,30 +215,21 @@ function loadBattleHistoryTab() {
             }
 
             var html = history.map(function (battle) {
-                var date = new Date(battle.created_at).toLocaleDateString('id-ID');
+                var date = new Date(battle.created_at).toLocaleDateString();
                 var won = battle.won ? true : false;
-
-                return '<div class="history-item">' +
-                    '<div class="history-pets">' +
-                    '<span class="history-pet-name">' + (battle.pet_name || 'Your Pet') + '</span>' +
-                    '<span class="history-vs">VS</span>' +
-                    '<span class="history-pet-name">' + (battle.opponent_name || 'Enemy') + '</span>' +
-                    '</div>' +
-                    '<div class="history-result-wrap">' +
-                    '<span class="history-result ' + (won ? 'win' : 'lose') + '">' + (won ? '✓ WIN' : '✗ LOSE') + '</span>' +
-                    '<span class="history-date">' + date + '</span>' +
-                    '</div>' +
-                    '</div>';
+                return '<div class="history-item"><div class="history-pets"><span class="history-pet-name">' + (battle.pet_name || 'Pet') + '</span><span class="history-vs">VS</span><span class="history-pet-name">' + (battle.opponent_name || 'Enemy') + '</span></div><div class="history-result-wrap"><span class="history-result ' + (won ? 'win' : 'lose') + '">' + (won ? '✓ WIN' : '✗ LOSE') + '</span><span class="history-date">' + date + '</span></div></div>';
             }).join('');
 
             listContainer.innerHTML = html;
         })
-        .catch(function (error) {
+        .catch(function (e) {
+            console.warn('[History] Load error:', e);
             listContainer.innerHTML = '<div class="empty-history">Network error</div>';
         });
 }
 
-// Expose to global scope
+// EXPOSE GLOBALS
 window.loadPetLeaderboard = loadPetLeaderboard;
 window.initLeaderboard = initLeaderboard;
 window.loadBattleHistoryTab = loadBattleHistoryTab;
+console.log('[LB] Globals exposed. type of initLeaderboard:', typeof window.initLeaderboard);
