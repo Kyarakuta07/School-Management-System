@@ -88,7 +88,7 @@ function renderLastWarRecap(data) {
             if (avatarPath && !avatarPath.startsWith('http')) {
                 avatarPath = '../uploads/profil/' + avatarPath;
             }
-            avatarEl.src = avatarPath || '../assets/img/defaults/profile_default.png';
+            avatarEl.src = avatarPath || '../assets/placeholder.png';
         }
     }
 

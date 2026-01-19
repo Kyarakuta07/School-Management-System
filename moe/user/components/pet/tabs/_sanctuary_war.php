@@ -39,7 +39,7 @@
                     <div class="section-title">🎖️ WAR MVP</div>
                     <div class="mvp-card">
                         <div class="mvp-avatar-container">
-                            <img src="" onerror="this.src='../assets/img/defaults/profile_default.png'"
+                            <img src="../assets/placeholder.png" onerror="this.src='../assets/placeholder.png'"
                                 class="mvp-avatar" id="recap-mvp-avatar">
                             <div class="mvp-badge">MVP</div>
                         </div>
