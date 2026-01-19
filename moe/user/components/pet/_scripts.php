@@ -198,7 +198,7 @@
         return 'Lv.' + pet.level;
     }
 
-    // BATTLE HISTORY TAB
+    // BATTLE HISTORY TAB (PREMIUM REDESIGN)
     function loadBattleHistoryTab() {
         console.log('📜 [History] Loading battle history...');
         var listContainer = document.getElementById('history-list');
@@ -206,19 +206,24 @@
         var lossesEl = document.getElementById('total-losses');
         var streakEl = document.getElementById('win-streak');
         
-        if (!listContainer) {
-            console.error('❌ [History] Container #history-list not found');
-            return;
+        // Inject Premium CSS if not present
+        if (!document.getElementById('history-css')) {
+            var link = document.createElement('link');
+            link.id = 'history-css';
+            link.rel = 'stylesheet';
+            link.href = '/moe/user/css/history_premium.css?v=' + Date.now();
+            document.head.appendChild(link);
         }
+
+        if (!listContainer) return;
         
-        listContainer.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><span>Loading history...</span></div>';
+        listContainer.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><span>Loading battle records...</span></div>';
         
-        // Use relative path matching leaderboard fix
-        fetch('api/router.php?action=battle_history&t=' + Date.now())
+        fetch('api/router.php?action=battle_history&limit=20&t=' + Date.now())
             .then(function(r) { return r.json(); })
             .then(function(data) {
                 if (!data.success) {
-                    listContainer.innerHTML = '<div class="empty-history">Failed to load history</div>';
+                    listContainer.innerHTML = '<div class="empty-state">Unable to load history</div>';
                     return;
                 }
                 
@@ -229,35 +234,66 @@
                 
                 var history = data.history || [];
                 if (history.length === 0) {
-                    listContainer.innerHTML = '<div class="empty-history">No battles yet!</div>';
+                    listContainer.innerHTML = '<div class="empty-state">No battles recorded yet.<br><small>Fight in the Arena!</small></div>';
                     return;
                 }
                 
                 var html = history.map(function(battle) {
                     var date = new Date(battle.created_at).toLocaleDateString();
                     var won = battle.won ? true : false;
-                    // Safely handle missing names
-                    var myPet = battle.pet_name || 'My Pet';
-                    var enemyPet = battle.opponent_name || 'Enemy';
                     
-                    return '<div class="history-item">' +
-                           '<div class="history-pets">' +
-                               '<span class="history-pet-name">' + myPet + '</span>' +
-                               '<span class="history-vs">VS</span>' +
-                               '<span class="history-pet-name">' + enemyPet + '</span>' +
-                           '</div>' +
-                           '<div class="history-result-wrap">' +
-                               '<span class="history-result ' + (won ? 'win' : 'lose') + '">' + (won ? '✓ WIN' : '✗ LOSE') + '</span>' +
-                               '<span class="history-date">' + date + '</span>' +
-                           '</div>' +
-                           '</div>';
+                    // My Pet Data
+                    var myName = battle.my_pet_name || 'My Pet';
+                    var myLvl = battle.my_pet_level || '?';
+                    var myImg = LB_ASSETS + (battle.my_pet_image || 'default.png');
+                    
+                    // Opponent Data
+                    var oppName = battle.opp_pet_name || 'Wild Pet';
+                    var oppLvl = battle.opp_pet_level || '?';
+                    var oppImg = LB_ASSETS + (battle.opp_pet_image || 'default.png');
+                    var oppOwner = battle.opp_username ? 'Trainer: ' + battle.opp_username : 'Wild Enzyme';
+
+                    return `
+                        <div class="history-card ${won ? 'win' : 'lose'}">
+                            <!-- My Pet -->
+                            <div class="h-pet player">
+                                <div class="h-pet-avatar">
+                                    <img class="h-pet-img" src="${myImg}" onerror="this.src='../assets/placeholder.png'">
+                                    <div class="h-lvl-badge">Lv.${myLvl}</div>
+                                </div>
+                                <div class="h-info">
+                                    <span class="h-pet-name">${myName}</span>
+                                    <span class="h-owner-name">You</span>
+                                </div>
+                            </div>
+
+                            <!-- VS / Result -->
+                            <div class="h-result">
+                                <span class="h-res-text ${won ? 'win' : 'lose'}">${won ? 'VICTORY' : 'DEFEAT'}</span>
+                                <span class="h-vs">VS</span>
+                                <span class="h-date">${date}</span>
+                            </div>
+
+                            <!-- Opponent -->
+                            <div class="h-pet enemy">
+                                <div class="h-pet-avatar">
+                                    <img class="h-pet-img" src="${oppImg}" onerror="this.src='../assets/placeholder.png'">
+                                    <div class="h-lvl-badge" style="background:linear-gradient(45deg, #333, #555)">Lv.${oppLvl}</div>
+                                </div>
+                                <div class="h-info">
+                                    <span class="h-pet-name">${oppName}</span>
+                                    <span class="h-owner-name">${oppOwner}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
                 }).join('');
                 
                 listContainer.innerHTML = html;
             })
             .catch(function(e) {
-                console.error('[History] Load error:', e);
-                listContainer.innerHTML = '<div class="empty-history">Network error<br><button onclick="loadBattleHistoryTab()">Retry</button></div>';
+                console.error('[History] Error:', e);
+                listContainer.innerHTML = '<div class="empty-state">Network Error</div>';
             });
     }
 

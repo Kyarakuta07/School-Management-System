@@ -341,20 +341,39 @@ class BattleController extends BaseController
         $this->requireGet();
 
         $limit = isset($_GET['limit']) ? min(50, max(1, (int) $_GET['limit'])) : 10;
-
         // Get battles where user's pet was the attacker
         $stmt = mysqli_prepare(
             $this->conn,
-            "SELECT pb.id, pb.attacker_pet_id, pb.defender_pet_id, pb.winner_pet_id, 
-                    pb.reward_gold, pb.reward_exp, pb.created_at,
-                    ps.name as pet_name, ps.element as pet_element,
-                    def_ps.name as opponent_name, def_ps.element as opponent_element,
+            "SELECT pb.created_at, pb.id,
+                    -- My Pet Params
+                    COALESCE(up.nickname, ps.name) as my_pet_name,
+                    up.level as my_pet_level,
+                    ps.element as my_pet_element,
+                    CASE 
+                        WHEN up.evolution_stage = 'adult' THEN ps.img_adult 
+                        ELSE ps.img_baby 
+                    END as my_pet_image,
+                    
+                    -- Opponent Pet Params
+                    COALESCE(def_up.nickname, def_ps.name) as opp_pet_name,
+                    def_up.level as opp_pet_level,
+                    def_ps.element as opp_pet_element,
+                    CASE 
+                        WHEN def_up.evolution_stage = 'adult' THEN def_ps.img_adult 
+                        ELSE def_ps.img_baby 
+                    END as opp_pet_image,
+                    
+                    -- Opponent Owner
+                    def_u.username as opp_username,
+                    
+                    -- Result
                     (pb.winner_pet_id = pb.attacker_pet_id) as won
              FROM pet_battles pb
              JOIN user_pets up ON pb.attacker_pet_id = up.id
              JOIN pet_species ps ON up.species_id = ps.id
              LEFT JOIN user_pets def_up ON pb.defender_pet_id = def_up.id
              LEFT JOIN pet_species def_ps ON def_up.species_id = def_ps.id
+             LEFT JOIN nethera def_u ON def_up.user_id = def_u.id_nethera
              WHERE up.user_id = ?
              ORDER BY pb.created_at DESC
              LIMIT ?"

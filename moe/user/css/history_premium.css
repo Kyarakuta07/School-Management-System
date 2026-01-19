@@ -1,0 +1,206 @@
+/* =========================================
+   Premium Battle History Styles
+   ========================================= */
+
+#history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 10px 5px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.history-card {
+    background: linear-gradient(135deg, rgba(20, 25, 40, 0.95), rgba(30, 35, 50, 0.9));
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.history-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Status Colors & Glows */
+.history-card.win {
+    border-left: 4px solid #ffd700;
+}
+
+.history-card.win::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, rgba(255, 215, 0, 0.05), transparent 70%);
+    pointer-events: none;
+}
+
+.history-card.lose {
+    border-left: 4px solid #ff5555;
+}
+
+.history-card.lose::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, rgba(255, 85, 85, 0.05), transparent 70%);
+    pointer-events: none;
+}
+
+/* Pet Column */
+.h-pet {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 32%;
+    z-index: 2;
+    position: relative;
+}
+
+.h-pet-avatar {
+    position: relative;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 8px;
+}
+
+.h-pet-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.h-pet.player .h-pet-img {
+    border-color: rgba(100, 200, 255, 0.3);
+}
+
+.h-pet.enemy .h-pet-img {
+    border-color: rgba(255, 100, 100, 0.3);
+}
+
+/* Level Badge */
+.h-lvl-badge {
+    position: absolute;
+    bottom: -6px;
+    right: -6px;
+    background: linear-gradient(45deg, #1e2530, #2c3545);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    font-size: 0.6rem;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    z-index: 5;
+}
+
+/* Names */
+.h-info {
+    text-align: center;
+    width: 100%;
+}
+
+.h-pet-name {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    margin-bottom: 2px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.h-owner-name {
+    font-size: 0.7rem;
+    color: #888;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Center Result */
+.h-result {
+    width: 36%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+}
+
+.h-res-text {
+    font-family: 'Cinzel', serif;
+    font-size: 1.2rem;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    line-height: 1;
+}
+
+.history-card.win .h-res-text {
+    color: #ffd700;
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+}
+
+.history-card.lose .h-res-text {
+    color: #ff5555;
+    text-shadow: 0 0 15px rgba(255, 85, 85, 0.6);
+}
+
+.h-vs {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #555;
+    margin: 2px 0;
+    opacity: 0.6;
+}
+
+.h-date {
+    font-size: 0.65rem;
+    color: #666;
+    margin-top: 5px;
+    font-weight: 500;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 400px) {
+    .h-pet-avatar {
+        width: 50px;
+        height: 50px;
+    }
+
+    .h-res-text {
+        font-size: 1rem;
+    }
+
+    .h-pet-name {
+        font-size: 0.75rem;
+    }
+
+    .history-card {
+        padding: 12px 8px;
+    }
+}
