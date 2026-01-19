@@ -93,6 +93,13 @@
         const battleOverlay = document.getElementById('battle-sheet-overlay');
         const indicatorThumb = document.getElementById('indicator-thumb');
 
+        // Read URL parameter and switch to that tab if specified
+        const urlParams = new URLSearchParams(window.location.search);
+        const tabFromUrl = urlParams.get('tab');
+        if (tabFromUrl && typeof switchToTab === 'function') {
+            setTimeout(() => switchToTab(tabFromUrl), 200);
+        }
+
         // Scroll indicator
         if (tabNav && indicatorThumb) {
             tabNav.addEventListener('scroll', function () {
@@ -211,6 +218,10 @@
             tabContent.classList.add('active');
             tabContent.style.display = 'block';
         }
+
+        // Update URL without page reload (for bookmarking and consistency)
+        const newUrl = window.location.pathname + '?tab=' + tabName;
+        history.pushState({ tab: tabName }, '', newUrl);
 
         // Trigger tab-specific load functions
         setTimeout(() => {
