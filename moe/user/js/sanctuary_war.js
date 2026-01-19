@@ -29,7 +29,7 @@ async function loadWarStatus() {
         const data = await response.json();
 
         if (data.success) {
-            updateWarUI(data.data);
+            updateWarUI(data);
         } else {
             console.error('Failed to load war status:', data.error);
         }
