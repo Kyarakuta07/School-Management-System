@@ -94,7 +94,21 @@ class BattleController extends BaseController
 
             // If player won, give rewards
             if ($player_won && $gold_reward > 0) {
-                $this->addGold($gold_reward);
+                // Calculate bonus rewards
+                $reward_info = $this->calculateBonusRewards($gold_reward);
+                $total_gold = $reward_info['total_gold'];
+                $this->addGold($total_gold);
+
+                // Check and unlock achievements
+                $unlocked_achievements = $this->checkBattleAchievements();
+            } else {
+                $reward_info = [
+                    'base_gold' => $gold_reward,
+                    'first_win_bonus' => 0,
+                    'streak_multiplier' => 1.0,
+                    'total_gold' => $gold_reward
+                ];
+                $unlocked_achievements = [];
             }
 
             // Add EXP to winning pet
@@ -156,8 +170,13 @@ class BattleController extends BaseController
             $this->success([
                 'recorded' => true,
                 'won' => $player_won,
-                'gold' => $gold_reward,
+                'gold' => $reward_info['total_gold'] ?? $gold_reward,
+                'base_gold' => $reward_info['base_gold'] ?? $gold_reward,
+                'first_win_bonus' => $reward_info['first_win_bonus'] ?? 0,
+                'streak_multiplier' => $reward_info['streak_multiplier'] ?? 1.0,
+                'current_streak' => $reward_info['current_streak'] ?? 0,
                 'exp' => $exp_reward,
+                'achievements_unlocked' => $unlocked_achievements ?? [],
                 'hardcore' => [
                     'hp_damage' => $shield_blocked ? 0 : $hp_damage,
                     'shield_blocked' => $shield_blocked,
@@ -170,24 +189,148 @@ class BattleController extends BaseController
     }
 
     /**
-     * Update user's arena stats (wins/losses)
+     * Update user's arena stats (wins/losses) and streak
      */
     private function updateArenaStats($won)
     {
+        $today = date('Y-m-d');
+
         if ($won) {
+            // Update wins and streak
             $stmt = mysqli_prepare(
                 $this->conn,
-                "UPDATE nethera SET arena_wins = COALESCE(arena_wins, 0) + 1 WHERE id_nethera = ?"
+                "UPDATE nethera SET 
+                    arena_wins = COALESCE(arena_wins, 0) + 1,
+                    current_win_streak = COALESCE(current_win_streak, 0) + 1,
+                    last_battle_win_date = ?
+                 WHERE id_nethera = ?"
             );
+            mysqli_stmt_bind_param($stmt, "si", $today, $this->user_id);
         } else {
+            // Update losses and reset streak
             $stmt = mysqli_prepare(
                 $this->conn,
-                "UPDATE nethera SET arena_losses = COALESCE(arena_losses, 0) + 1 WHERE id_nethera = ?"
+                "UPDATE nethera SET 
+                    arena_losses = COALESCE(arena_losses, 0) + 1,
+                    current_win_streak = 0
+                 WHERE id_nethera = ?"
             );
+            mysqli_stmt_bind_param($stmt, "i", $this->user_id);
         }
-        mysqli_stmt_bind_param($stmt, "i", $this->user_id);
         mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
+    }
+
+    /**
+     * Calculate bonus rewards based on first-win and streak
+     */
+    private function calculateBonusRewards($base_gold)
+    {
+        $today = date('Y-m-d');
+        $first_win_bonus = 0;
+        $streak_multiplier = 1.0;
+
+        // Get user's streak info
+        $stmt = mysqli_prepare(
+            $this->conn,
+            "SELECT last_battle_win_date, current_win_streak FROM nethera WHERE id_nethera = ?"
+        );
+        mysqli_stmt_bind_param($stmt, "i", $this->user_id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $user_data = mysqli_fetch_assoc($result);
+        mysqli_stmt_close($stmt);
+
+        $last_win_date = $user_data['last_battle_win_date'] ?? null;
+        $current_streak = (int) ($user_data['current_win_streak'] ?? 0);
+
+        // First win of the day bonus
+        if ($last_win_date !== $today) {
+            $first_win_bonus = 50; // +50 gold for first win
+        }
+
+        // Streak multiplier: 1.0 + min(streak, 10) * 0.1 = max 2.0x
+        $streak_multiplier = 1.0 + min($current_streak, 10) * 0.1;
+
+        // Calculate total
+        $total_gold = (int) (($base_gold * $streak_multiplier) + $first_win_bonus);
+
+        return [
+            'base_gold' => $base_gold,
+            'first_win_bonus' => $first_win_bonus,
+            'streak_multiplier' => $streak_multiplier,
+            'current_streak' => $current_streak + 1, // Will be after this win
+            'total_gold' => $total_gold
+        ];
+    }
+
+    /**
+     * Check and unlock battle achievements
+     */
+    private function checkBattleAchievements()
+    {
+        $unlocked = [];
+
+        // Get user's current stats
+        $stmt = mysqli_prepare(
+            $this->conn,
+            "SELECT arena_wins, current_win_streak FROM nethera WHERE id_nethera = ?"
+        );
+        mysqli_stmt_bind_param($stmt, "i", $this->user_id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $stats = mysqli_fetch_assoc($result);
+        mysqli_stmt_close($stmt);
+
+        $wins = (int) ($stats['arena_wins'] ?? 0);
+        $streak = (int) ($stats['current_win_streak'] ?? 0);
+
+        // Get all battle achievements user hasn't unlocked yet
+        $stmt = mysqli_prepare(
+            $this->conn,
+            "SELECT a.* FROM achievements a
+             LEFT JOIN user_achievements ua ON a.id = ua.achievement_id AND ua.user_id = ?
+             WHERE a.category = 'battle' AND ua.id IS NULL"
+        );
+        mysqli_stmt_bind_param($stmt, "i", $this->user_id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        while ($achievement = mysqli_fetch_assoc($result)) {
+            $should_unlock = false;
+
+            if ($achievement['requirement_type'] === 'battle_wins' && $wins >= $achievement['requirement_value']) {
+                $should_unlock = true;
+            } elseif ($achievement['requirement_type'] === 'win_streak' && $streak >= $achievement['requirement_value']) {
+                $should_unlock = true;
+            }
+
+            if ($should_unlock) {
+                // Unlock achievement
+                $unlock_stmt = mysqli_prepare(
+                    $this->conn,
+                    "INSERT IGNORE INTO user_achievements (user_id, achievement_id) VALUES (?, ?)"
+                );
+                mysqli_stmt_bind_param($unlock_stmt, "ii", $this->user_id, $achievement['id']);
+                mysqli_stmt_execute($unlock_stmt);
+                mysqli_stmt_close($unlock_stmt);
+
+                // Give gold reward
+                if ($achievement['reward_gold'] > 0) {
+                    $this->addGold($achievement['reward_gold']);
+                }
+
+                $unlocked[] = [
+                    'name' => $achievement['name'],
+                    'icon' => $achievement['icon'],
+                    'rarity' => $achievement['rarity'],
+                    'reward_gold' => $achievement['reward_gold']
+                ];
+            }
+        }
+        mysqli_stmt_close($stmt);
+
+        return $unlocked;
     }
 
     /**

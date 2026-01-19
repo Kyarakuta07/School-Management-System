@@ -581,7 +581,7 @@ function endBattle(playerWon) {
 
 async function submitBattleResult(playerWon, gold, exp) {
     try {
-        await fetch(`${API_BASE}?action=battle_result`, {
+        const response = await fetch(`${API_BASE}?action=battle_result`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -592,9 +592,68 @@ async function submitBattleResult(playerWon, gold, exp) {
                 exp_reward: exp
             })
         });
+
+        const data = await response.json();
+
+        if (data.success && playerWon) {
+            // Show bonus rewards info
+            if (data.first_win_bonus > 0) {
+                addBattleLog(`🎉 First Win Bonus: +${data.first_win_bonus} gold!`, 'bonus');
+            }
+            if (data.streak_multiplier > 1) {
+                addBattleLog(`🔥 Win Streak x${data.current_streak}! (${data.streak_multiplier.toFixed(1)}x gold)`, 'streak');
+            }
+
+            // Show achievement unlocks
+            if (data.achievements_unlocked && data.achievements_unlocked.length > 0) {
+                data.achievements_unlocked.forEach((ach, index) => {
+                    setTimeout(() => {
+                        showAchievementToast(ach);
+                    }, index * 1500);
+                });
+            }
+
+            // Update displayed gold total
+            const totalGold = data.gold || gold;
+            const resultGold = document.querySelector('.result-row .gold-amount');
+            if (resultGold) {
+                resultGold.textContent = `+${totalGold} 🪙`;
+            }
+        }
     } catch (error) {
         console.error('Error submitting battle result:', error);
     }
+}
+
+/**
+ * Show achievement unlock toast notification
+ */
+function showAchievementToast(achievement) {
+    const toast = document.createElement('div');
+    toast.className = 'achievement-toast';
+    toast.innerHTML = `
+        <div class="achievement-icon">${achievement.icon}</div>
+        <div class="achievement-info">
+            <div class="achievement-title">Achievement Unlocked!</div>
+            <div class="achievement-name">${achievement.name}</div>
+            <div class="achievement-reward">+${achievement.reward_gold} 🪙</div>
+        </div>
+    `;
+    document.body.appendChild(toast);
+
+    // Animate in
+    setTimeout(() => toast.classList.add('show'), 100);
+
+    // Remove after 4 seconds
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 500);
+    }, 4000);
+
+    // Play sound
+    SoundManager.victory();
+
+    addBattleLog(`🏆 Achievement: ${achievement.name} (+${achievement.reward_gold}g)`, 'achievement');
 }
 
 // ================================================
