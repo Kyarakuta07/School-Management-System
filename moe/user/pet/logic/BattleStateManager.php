@@ -14,6 +14,23 @@ require_once __DIR__ . '/constants.php';
 class BattleStateManager
 {
     /**
+     * Get evolution stage multiplier for battle stats
+     * Egg: 1.0, Baby: 1.3, Adult: 1.6
+     */
+    private function getEvolutionMultiplier(string $stage): float
+    {
+        switch ($stage) {
+            case 'adult':
+                return 1.6;
+            case 'baby':
+                return 1.3;
+            case 'egg':
+            default:
+                return 1.0;
+        }
+    }
+
+    /**
      * Initialize a new 3v3 battle
      * 
      * @param int $user_id Current user ID
@@ -31,25 +48,36 @@ class BattleStateManager
         // Generate unique battle ID
         $battle_id = uniqid('battle_', true);
 
-        // Calculate max HP for each pet (100 + level * 5)
+        // Calculate max HP for each pet with evolution multiplier
         $player_team = [];
         foreach ($player_pets as $index => $pet) {
-            $max_hp = 100 + ((int) ($pet['level'] ?? 1) * 5);
+            $evo_mult = $this->getEvolutionMultiplier($pet['evolution_stage'] ?? 'egg');
+            $level = (int) ($pet['level'] ?? 1);
+            $base_atk = (int) ($pet['base_attack'] ?? 50);
+            $base_def = (int) ($pet['base_defense'] ?? 40);
+
+            // Battle HP = (100 + Level × 10) × Evolution Multiplier
+            $max_hp = (int) round((100 + ($level * 10)) * $evo_mult);
+            // Battle Attack = Base Attack × (1 + Level × 0.1) × Evolution Multiplier
+            $battle_atk = (int) round($base_atk * (1 + $level * 0.1) * $evo_mult);
+            // Battle Defense = Base Defense × (1 + Level × 0.05) × Evolution Multiplier
+            $battle_def = (int) round($base_def * (1 + $level * 0.05) * $evo_mult);
+
             $player_team[] = [
                 'pet_id' => (int) $pet['id'],
                 'species_id' => (int) $pet['species_id'],
                 'species_name' => $pet['species_name'] ?? 'Unknown',
                 'nickname' => $pet['nickname'] ?? $pet['species_name'],
                 'element' => $pet['element'] ?? 'Fire',
-                'level' => (int) ($pet['level'] ?? 1),
-                'base_attack' => (int) ($pet['base_attack'] ?? 10),
-                'base_defense' => (int) ($pet['base_defense'] ?? 10),
-                'atk' => (int) ($pet['atk'] ?? $pet['base_attack'] ?? 10),
-                'def' => (int) ($pet['def'] ?? $pet['base_defense'] ?? 10),
+                'level' => $level,
+                'base_attack' => $base_atk,
+                'base_defense' => $base_def,
+                'atk' => $battle_atk,
+                'def' => $battle_def,
                 'img_egg' => $pet['img_egg'] ?? '',
                 'img_baby' => $pet['img_baby'] ?? '',
                 'img_adult' => $pet['img_adult'] ?? 'default.png',
-                'evolution_stage' => $pet['evolution_stage'] ?? 'adult',
+                'evolution_stage' => $pet['evolution_stage'] ?? 'egg',
                 'hp' => $max_hp,
                 'max_hp' => $max_hp,
                 'is_fainted' => false
@@ -58,22 +86,33 @@ class BattleStateManager
 
         $enemy_team = [];
         foreach ($enemy_pets as $index => $pet) {
-            $max_hp = 100 + ((int) ($pet['level'] ?? 1) * 5);
+            $evo_mult = $this->getEvolutionMultiplier($pet['evolution_stage'] ?? 'egg');
+            $level = (int) ($pet['level'] ?? 1);
+            $base_atk = (int) ($pet['base_attack'] ?? 50);
+            $base_def = (int) ($pet['base_defense'] ?? 40);
+
+            // Battle HP = (100 + Level × 10) × Evolution Multiplier
+            $max_hp = (int) round((100 + ($level * 10)) * $evo_mult);
+            // Battle Attack = Base Attack × (1 + Level × 0.1) × Evolution Multiplier
+            $battle_atk = (int) round($base_atk * (1 + $level * 0.1) * $evo_mult);
+            // Battle Defense = Base Defense × (1 + Level × 0.05) × Evolution Multiplier
+            $battle_def = (int) round($base_def * (1 + $level * 0.05) * $evo_mult);
+
             $enemy_team[] = [
                 'pet_id' => (int) $pet['id'],
                 'species_id' => (int) $pet['species_id'],
                 'species_name' => $pet['species_name'] ?? 'Unknown',
                 'nickname' => $pet['nickname'] ?? $pet['species_name'],
                 'element' => $pet['element'] ?? 'Fire',
-                'level' => (int) ($pet['level'] ?? 1),
-                'base_attack' => (int) ($pet['base_attack'] ?? 10),
-                'base_defense' => (int) ($pet['base_defense'] ?? 10),
-                'atk' => (int) ($pet['atk'] ?? $pet['base_attack'] ?? 10),
-                'def' => (int) ($pet['def'] ?? $pet['base_defense'] ?? 10),
+                'level' => $level,
+                'base_attack' => $base_atk,
+                'base_defense' => $base_def,
+                'atk' => $battle_atk,
+                'def' => $battle_def,
                 'img_egg' => $pet['img_egg'] ?? '',
                 'img_baby' => $pet['img_baby'] ?? '',
                 'img_adult' => $pet['img_adult'] ?? 'default.png',
-                'evolution_stage' => $pet['evolution_stage'] ?? 'adult',
+                'evolution_stage' => $pet['evolution_stage'] ?? 'egg',
                 'hp' => $max_hp,
                 'max_hp' => $max_hp,
                 'is_fainted' => false

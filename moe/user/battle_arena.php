@@ -45,6 +45,7 @@ if (!$defender_pet_id || !$attacker_pet_id) {
 $atk_query = mysqli_prepare(
     $conn,
     "SELECT up.*, ps.name as species_name, ps.element, ps.rarity, 
+            ps.base_attack, ps.base_defense,
             ps.img_egg, ps.img_baby, ps.img_adult
      FROM user_pets up 
      JOIN pet_species ps ON up.species_id = ps.id 
@@ -65,6 +66,7 @@ if (!$attacker) {
 $def_query = mysqli_prepare(
     $conn,
     "SELECT up.*, ps.name as species_name, ps.element, ps.rarity, 
+            ps.base_attack, ps.base_defense,
             ps.img_egg, ps.img_baby, ps.img_adult,
             n.nama_lengkap as owner_name
      FROM user_pets up 
@@ -111,9 +113,39 @@ while ($skill = mysqli_fetch_assoc($def_skills_result)) {
 }
 mysqli_stmt_close($def_skills_query);
 
-// Calculate effective HP based on level
-$attacker_max_hp = 100 + ($attacker['level'] * 5);
-$defender_max_hp = 100 + ($defender['level'] * 5);
+// Evolution stage multipliers for battle stats
+function getEvolutionMultiplier($stage)
+{
+    switch ($stage) {
+        case 'adult':
+            return 1.6;
+        case 'baby':
+            return 1.3;
+        case 'egg':
+        default:
+            return 1.0;
+    }
+}
+
+// Calculate effective HP and stats based on level AND evolution
+$atk_evo_mult = getEvolutionMultiplier($attacker['evolution_stage'] ?? 'egg');
+$def_evo_mult = getEvolutionMultiplier($defender['evolution_stage'] ?? 'egg');
+
+// Battle HP = Base(100) + (Level × 10) × Evolution Multiplier
+$attacker_max_hp = (int) round((100 + ($attacker['level'] * 10)) * $atk_evo_mult);
+$defender_max_hp = (int) round((100 + ($defender['level'] * 10)) * $def_evo_mult);
+
+// Battle Attack = Base Attack × (1 + Level × 0.1) × Evolution Multiplier
+$attacker_base_atk = (int) ($attacker['base_attack'] ?? 50);
+$defender_base_atk = (int) ($defender['base_attack'] ?? 50);
+$attacker_battle_atk = (int) round($attacker_base_atk * (1 + $attacker['level'] * 0.1) * $atk_evo_mult);
+$defender_battle_atk = (int) round($defender_base_atk * (1 + $defender['level'] * 0.1) * $def_evo_mult);
+
+// Battle Defense = Base Defense × (1 + Level × 0.05) × Evolution Multiplier
+$attacker_base_def = (int) ($attacker['base_defense'] ?? 40);
+$defender_base_def = (int) ($defender['base_defense'] ?? 40);
+$attacker_battle_def = (int) round($attacker_base_def * (1 + $attacker['level'] * 0.05) * $atk_evo_mult);
+$defender_battle_def = (int) round($defender_base_def * (1 + $defender['level'] * 0.05) * $def_evo_mult);
 
 // Helper function to get correct pet image based on evolution_stage from database
 function getPetImageByStage($pet)
@@ -311,10 +343,12 @@ $defender_img = getPetImageByStage($defender);
             defenderMaxHp: <?php echo $defender_max_hp; ?>,
             attackerLevel: <?php echo $attacker['level']; ?>,
             defenderLevel: <?php echo $defender['level']; ?>,
-            attackerBaseAtk: 10,
-            defenderBaseAtk: 10,
-            attackerBaseDef: 10,
-            defenderBaseDef: 10,
+            attackerBaseAtk: <?php echo $attacker_battle_atk; ?>,
+            defenderBaseAtk: <?php echo $defender_battle_atk; ?>,
+            attackerBaseDef: <?php echo $attacker_battle_def; ?>,
+            defenderBaseDef: <?php echo $defender_battle_def; ?>,
+            attackerEvolution: '<?php echo $attacker['evolution_stage'] ?? 'egg'; ?>',
+            defenderEvolution: '<?php echo $defender['evolution_stage'] ?? 'egg'; ?>',
             defenderSkills: <?php echo json_encode($defender_skills); ?>
         };
         const API_BASE = 'api/router.php';
