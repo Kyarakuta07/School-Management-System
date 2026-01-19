@@ -1,5 +1,5 @@
 /* ================================================
-   Pet Leaderboard Styles
+   Pet Leaderboard Styles (Premium Bright)
    ================================================ */
 
 .leaderboard-container {
@@ -12,18 +12,24 @@
 .leaderboard-header {
     text-align: center;
     margin-bottom: 1rem;
+    background: linear-gradient(180deg, rgba(218, 165, 32, 0.2) 0%, rgba(0, 0, 0, 0) 100%);
+    padding: 15px;
+    border-radius: 15px;
+    border: 1px solid rgba(218, 165, 32, 0.2);
 }
 
 .leaderboard-header .lb-icon {
     font-size: 2.5rem;
+    filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
 }
 
 .leaderboard-header h2 {
     font-family: 'Cinzel', serif;
-    color: var(--gold, #DAA520);
+    color: #ffd700;
     margin: 0.5rem 0;
     font-size: 1.3rem;
     letter-spacing: 2px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 /* Filters */
@@ -36,24 +42,31 @@
 .leaderboard-filters select {
     flex: 1;
     padding: 0.6rem;
-    background: rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(218, 165, 32, 0.3);
+    background: rgba(30, 40, 60, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 8px;
     color: #fff;
     font-size: 0.85rem;
     cursor: pointer;
+    transition: all 0.2s;
+}
+
+.leaderboard-filters select:hover {
+    background: rgba(50, 60, 80, 0.9);
+    border-color: rgba(255, 255, 255, 0.4);
 }
 
 .leaderboard-filters select:focus {
     outline: none;
     border-color: var(--gold, #DAA520);
+    box-shadow: 0 0 10px rgba(218, 165, 32, 0.2);
 }
 
 /* Leaderboard List */
 .leaderboard-list {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.6rem;
 }
 
 /* Pet Card */
@@ -61,66 +74,64 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.75rem;
-    background: rgba(0, 0, 0, 0.4);
-    border-radius: 10px;
+    padding: 0.85rem;
+    /* Lighter background: Dark Blue tint instead of pure black */
+    background: linear-gradient(90deg, rgba(40, 50, 70, 0.8) 0%, rgba(30, 40, 60, 0.8) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
     transition: all 0.2s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
 .lb-pet-card:hover {
-    background: rgba(0, 0, 0, 0.6);
+    background: linear-gradient(90deg, rgba(50, 60, 90, 0.9) 0%, rgba(40, 50, 70, 0.9) 100%);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
 /* Rank Styles */
 .lb-pet-card .rank {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 700;
+    font-weight: 800;
     font-size: 1rem;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.3);
+    color: #ccc;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.lb-pet-card.rank-1 {
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(0, 0, 0, 0.4));
-    border: 1px solid rgba(255, 215, 0, 0.3);
-}
-
+/* Top 3 coloring handled by Podium section usually, but if they appear in list: */
 .lb-pet-card.rank-1 .rank {
-    background: linear-gradient(135deg, #ffd700, #ffb347);
+    background: #ffd700;
     color: #000;
-}
-
-.lb-pet-card.rank-2 {
-    background: linear-gradient(135deg, rgba(192, 192, 192, 0.15), rgba(0, 0, 0, 0.4));
-    border: 1px solid rgba(192, 192, 192, 0.3);
+    box-shadow: 0 0 10px #ffd700;
 }
 
 .lb-pet-card.rank-2 .rank {
-    background: linear-gradient(135deg, #c0c0c0, #a0a0a0);
+    background: #e0e0e0;
     color: #000;
-}
-
-.lb-pet-card.rank-3 {
-    background: linear-gradient(135deg, rgba(205, 127, 50, 0.15), rgba(0, 0, 0, 0.4));
-    border: 1px solid rgba(205, 127, 50, 0.3);
+    box-shadow: 0 0 10px #e0e0e0;
 }
 
 .lb-pet-card.rank-3 .rank {
-    background: linear-gradient(135deg, #cd7f32, #a06025);
+    background: #cd7f32;
     color: #fff;
+    box-shadow: 0 0 10px #cd7f32;
 }
 
 /* Pet Image */
 .lb-pet-card .pet-img {
-    width: 48px;
-    height: 48px;
-    border-radius: 8px;
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
     object-fit: cover;
     background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Pet Info */
@@ -130,105 +141,124 @@
 }
 
 .lb-pet-card .pet-name {
-    font-weight: 600;
+    font-weight: 700;
     color: #fff;
-    font-size: 0.95rem;
+    font-size: 1rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    margin-bottom: 2px;
 }
 
 .lb-pet-card .pet-name.shiny {
     color: #ffd700;
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
 }
 
 .lb-pet-card .pet-meta {
-    font-size: 0.75rem;
-    color: #888;
+    font-size: 0.8rem;
+    color: #bbb;
+    /* Brighter grey */
     display: flex;
-    gap: 0.5rem;
+    gap: 0.6rem;
+    align-items: center;
 }
 
 .lb-pet-card .owner {
-    color: #aaa;
+    color: #999;
+    /* Brighter grey */
 }
 
 /* Stats */
 .lb-pet-card .pet-stats {
     text-align: right;
+    min-width: 60px;
 }
 
 .lb-pet-card .stat-main {
     font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--gold, #DAA520);
+    font-weight: 800;
+    color: #ffd700;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .lb-pet-card .stat-label {
     font-size: 0.7rem;
-    color: #666;
+    color: #aaa;
+    /* Brighter */
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 /* Element Badge */
 .element-badge {
     display: inline-block;
-    padding: 2px 6px;
-    border-radius: 10px;
+    padding: 2px 8px;
+    border-radius: 6px;
     font-size: 0.65rem;
     text-transform: uppercase;
-    font-weight: 600;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .element-badge.fire {
-    background: #ff6b35;
+    background: linear-gradient(135deg, #ff6b6b, #e03131);
     color: #fff;
 }
 
 .element-badge.water {
-    background: #4dabf7;
+    background: linear-gradient(135deg, #4dabf7, #1971c2);
     color: #fff;
 }
 
 .element-badge.earth {
-    background: #8b5a2b;
+    background: linear-gradient(135deg, #a96e2b, #7d4e1a);
     color: #fff;
 }
 
 .element-badge.air {
-    background: #74c0fc;
-    color: #000;
-}
-
-.element-badge.light {
-    background: #fff3bf;
-    color: #000;
-}
-
-.element-badge.dark {
-    background: #2c2c2c;
+    background: linear-gradient(135deg, #74c0fc, #339af0);
     color: #fff;
 }
 
+.element-badge.light {
+    background: linear-gradient(135deg, #ffec99, #fcc419);
+    color: #444;
+}
+
+.element-badge.dark {
+    background: linear-gradient(135deg, #343a40, #212529);
+    color: #fff;
+    border: 1px solid #555;
+}
+
 .element-badge.nature {
-    background: #51cf66;
+    background: linear-gradient(135deg, #69db7c, #2f9e44);
     color: #fff;
 }
 
 .element-badge.electric {
-    background: #fcc419;
+    background: linear-gradient(135deg, #ffd43b, #f08c00);
     color: #000;
 }
 
 /* Loading */
 .leaderboard-list .loading-spinner {
     text-align: center;
-    padding: 2rem;
-    color: #888;
+    padding: 3rem;
+    color: #ccc;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
 }
 
 /* Empty State */
 .leaderboard-list .empty-state {
     text-align: center;
-    padding: 2rem;
-    color: #666;
+    padding: 3rem;
+    color: #aaa;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    border: 2px dashed rgba(255, 255, 255, 0.1);
 }
