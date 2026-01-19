@@ -198,9 +198,18 @@
         return 'Lv.' + pet.level;
     }
 
-    // BATTLE HISTORY TAB (PREMIUM REDESIGN)
+    // BATTLE HISTORY TAB (PREMIUM REDESIGN + PAGINATION)
+    var historyOffset = 0;
+    var historyLimit = 20;
+    var isHistoryLoading = false;
+
     function loadBattleHistoryTab() {
-        console.log('📜 [History] Loading battle history...');
+        console.log('📜 [History] Initial load...');
+        historyOffset = 0; // Reset offset
+        fetchHistory(false); // Fetch first page
+    }
+
+    function fetchHistory(append) {
         var listContainer = document.getElementById('history-list');
         var winsEl = document.getElementById('total-wins');
         var lossesEl = document.getElementById('total-losses');
@@ -216,24 +225,49 @@
         }
 
         if (!listContainer) return;
+
+        if (isHistoryLoading) return;
+        isHistoryLoading = true;
         
-        listContainer.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><span>Loading battle records...</span></div>';
+        if (!append) {
+            listContainer.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><span>Loading battle records...</span></div>';
+        } else {
+            // Remove existing load more btn if any
+            var existingBtn = document.getElementById('load-more-btn-container');
+            if (existingBtn) existingBtn.remove();
+            
+            // Add mini spinner at bottom
+            var spinner = document.createElement('div');
+            spinner.id = 'history-spinner-bottom';
+            spinner.className = 'loading-spinner';
+            spinner.innerHTML = '<div class="spinner small"></div>';
+            listContainer.appendChild(spinner);
+        }
         
-        fetch('api/router.php?action=battle_history&limit=20&t=' + Date.now())
+        var url = 'api/router.php?action=battle_history&limit=' + historyLimit + '&offset=' + historyOffset + '&t=' + Date.now();
+        console.log('📜 [History] Fetching offset:', historyOffset);
+
+        fetch(url)
             .then(function(r) { return r.json(); })
             .then(function(data) {
+                isHistoryLoading = false;
+                // Remove bottom spinner
+                var bottomSpinner = document.getElementById('history-spinner-bottom');
+                if (bottomSpinner) bottomSpinner.remove();
+
                 if (!data.success) {
-                    listContainer.innerHTML = '<div class="empty-state">Unable to load history</div>';
+                    if (!append) listContainer.innerHTML = '<div class="empty-state">Unable to load history</div>';
                     return;
                 }
                 
-                // Update Stats
+                // Update Stats (only on first load usually, but nice to keep synced)
                 if (winsEl) winsEl.textContent = data.stats.wins || 0;
                 if (lossesEl) lossesEl.textContent = data.stats.losses || 0;
                 if (streakEl) streakEl.textContent = data.stats.current_streak || 0;
                 
                 var history = data.history || [];
-                if (history.length === 0) {
+                
+                if (!append && history.length === 0) {
                     listContainer.innerHTML = '<div class="empty-state">No battles recorded yet.<br><small>Fight in the Arena!</small></div>';
                     return;
                 }
@@ -242,12 +276,10 @@
                     var date = new Date(battle.created_at).toLocaleDateString();
                     var won = battle.won ? true : false;
                     
-                    // My Pet Data
                     var myName = battle.my_pet_name || 'My Pet';
                     var myLvl = battle.my_pet_level || '?';
                     var myImg = LB_ASSETS + (battle.my_pet_image || 'default.png');
                     
-                    // Opponent Data
                     var oppName = battle.opp_pet_name || 'Wild Pet';
                     var oppLvl = battle.opp_pet_level || '?';
                     var oppImg = LB_ASSETS + (battle.opp_pet_image || 'default.png');
@@ -255,45 +287,58 @@
 
                     return `
                         <div class="history-card ${won ? 'win' : 'lose'}">
-                            <!-- My Pet -->
                             <div class="h-pet player">
                                 <div class="h-pet-avatar">
                                     <img class="h-pet-img" src="${myImg}" onerror="this.src='../assets/placeholder.png'">
                                     <div class="h-lvl-badge">Lv.${myLvl}</div>
                                 </div>
-                                <div class="h-info">
-                                    <span class="h-pet-name">${myName}</span>
-                                    <span class="h-owner-name">You</span>
-                                </div>
+                                <div class="h-info"><span class="h-pet-name">${myName}</span><span class="h-owner-name">You</span></div>
                             </div>
-
-                            <!-- VS / Result -->
                             <div class="h-result">
                                 <span class="h-res-text ${won ? 'win' : 'lose'}">${won ? 'VICTORY' : 'DEFEAT'}</span>
                                 <span class="h-vs">VS</span>
                                 <span class="h-date">${date}</span>
                             </div>
-
-                            <!-- Opponent -->
                             <div class="h-pet enemy">
                                 <div class="h-pet-avatar">
                                     <img class="h-pet-img" src="${oppImg}" onerror="this.src='../assets/placeholder.png'">
                                     <div class="h-lvl-badge" style="background:linear-gradient(45deg, #333, #555)">Lv.${oppLvl}</div>
                                 </div>
-                                <div class="h-info">
-                                    <span class="h-pet-name">${oppName}</span>
-                                    <span class="h-owner-name">${oppOwner}</span>
-                                </div>
+                                <div class="h-info"><span class="h-pet-name">${oppName}</span><span class="h-owner-name">${oppOwner}</span></div>
                             </div>
                         </div>
                     `;
                 }).join('');
                 
-                listContainer.innerHTML = html;
+                if (!append) {
+                    listContainer.innerHTML = html;
+                } else {
+                    // Create temp container to parse HTML string
+                    var temp = document.createElement('div');
+                    temp.innerHTML = html;
+                    while (temp.firstChild) {
+                        listContainer.appendChild(temp.firstChild);
+                    }
+                }
+
+                // Load More Button Logic
+                if (history.length === historyLimit) {
+                    var btnContainer = document.createElement('div');
+                    btnContainer.id = 'load-more-btn-container';
+                    btnContainer.className = 'load-more-container';
+                    btnContainer.innerHTML = '<button class="load-more-btn">Load More Results</button>';
+                    listContainer.appendChild(btnContainer);
+                    
+                    btnContainer.querySelector('button').onclick = function() {
+                        historyOffset += historyLimit;
+                        fetchHistory(true);
+                    };
+                }
             })
             .catch(function(e) {
+                isHistoryLoading = false;
                 console.error('[History] Error:', e);
-                listContainer.innerHTML = '<div class="empty-state">Network Error</div>';
+                if (!append) listContainer.innerHTML = '<div class="empty-state">Network Error</div>';
             });
     }
 

@@ -341,6 +341,8 @@ class BattleController extends BaseController
         $this->requireGet();
 
         $limit = isset($_GET['limit']) ? min(50, max(1, (int) $_GET['limit'])) : 10;
+        $offset = isset($_GET['offset']) ? max(0, (int) $_GET['offset']) : 0;
+
         // Get battles where user's pet was the attacker
         $stmt = mysqli_prepare(
             $this->conn,
@@ -376,9 +378,9 @@ class BattleController extends BaseController
              LEFT JOIN nethera def_u ON def_up.user_id = def_u.id_nethera
              WHERE up.user_id = ?
              ORDER BY pb.created_at DESC
-             LIMIT ?"
+             LIMIT ?, ?"
         );
-        mysqli_stmt_bind_param($stmt, "ii", $this->user_id, $limit);
+        mysqli_stmt_bind_param($stmt, "iii", $this->user_id, $offset, $limit);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
 
