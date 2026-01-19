@@ -688,7 +688,7 @@ async function switchToPet(index) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 battle_id: BATTLE_ID,
-                pet_index: index
+                new_pet_index: index
             })
         });
 
