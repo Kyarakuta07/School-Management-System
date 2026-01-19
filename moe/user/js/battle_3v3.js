@@ -638,17 +638,33 @@ function disableControls(disabled) {
 }
 
 function openSwapModal() {
-    DOM.swapPets.innerHTML = BattleState.playerPets.map((pet, i) => `
-        <div class="swap-pet-option ${i === BattleState.activePlayerIndex ? 'current' : ''} ${pet.is_fainted ? 'fainted' : ''}"
+    // Safety check - if no pets data, reload battle state
+    if (!BattleState.playerPets || BattleState.playerPets.length === 0) {
+        console.error('No player pets data available');
+        alert('Battle data corrupted. Please start a new battle.');
+        return;
+    }
+
+    DOM.swapPets.innerHTML = BattleState.playerPets.map((pet, i) => {
+        if (!pet) return ''; // Skip undefined pets
+        const petName = pet.nickname || pet.species_name || 'Unknown';
+        const petHp = pet.hp || 0;
+        const petMaxHp = pet.max_hp || 100;
+        const petElement = pet.element || 'Fire';
+        const isFainted = pet.is_fainted || petHp <= 0;
+
+        return `
+        <div class="swap-pet-option ${i === BattleState.activePlayerIndex ? 'current' : ''} ${isFainted ? 'fainted' : ''}"
              onclick="switchToPet(${i})">
-            <img src="${getBattlePetImage(pet)}" alt="${pet.species_name}" class="swap-pet-img" onerror="this.src='../assets/placeholder.png'">
+            <img src="${getBattlePetImage(pet)}" alt="${petName}" class="swap-pet-img" onerror="this.src='../assets/placeholder.png'">
             <div class="swap-pet-info">
-                <div class="swap-pet-name">${pet.nickname || pet.species_name}</div>
-                <div class="swap-pet-hp">HP: ${pet.hp}/${pet.max_hp}</div>
+                <div class="swap-pet-name">${petName}</div>
+                <div class="swap-pet-hp">HP: ${petHp}/${petMaxHp}</div>
             </div>
-            <span class="element-badge ${pet.element.toLowerCase()}">${pet.element}</span>
+            <span class="element-badge ${petElement.toLowerCase()}">${petElement}</span>
         </div>
-    `).join('');
+    `;
+    }).join('');
 
     DOM.swapModal.classList.remove('hidden');
 }
