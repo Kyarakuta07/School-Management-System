@@ -87,4 +87,83 @@
     <div class="collection-premium-grid" id="collection-grid">
         <!-- Pet cards rendered by JS -->
     </div>
+
+    <!-- Pet Detail Modal -->
+    <div class="pet-detail-modal" id="pet-detail-modal">
+        <div class="pet-detail-backdrop" onclick="closePetDetail()"></div>
+        <div class="pet-detail-content">
+            <!-- Close Button -->
+            <button class="pet-detail-close" onclick="closePetDetail()">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <!-- Pet Header -->
+            <div class="pet-detail-header">
+                <div class="pet-detail-img-container">
+                    <img id="detail-pet-img" src="" alt="Pet" class="pet-detail-img">
+                    <div class="detail-shiny-indicator" id="detail-shiny-tag">✨ SHINY</div>
+                </div>
+                <div class="pet-detail-info">
+                    <h2 class="pet-detail-name" id="detail-pet-name">Pet Name</h2>
+                    <div class="pet-detail-badges">
+                        <span class="detail-badge element" id="detail-element">Fire</span>
+                        <span class="detail-badge rarity" id="detail-rarity">Rare</span>
+                        <span class="detail-badge level" id="detail-level">Lv.10</span>
+                    </div>
+                    <div class="pet-detail-stage" id="detail-stage">
+                        <i class="fas fa-egg"></i> <span>Egg Stage</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Battle Stats Section -->
+            <div class="pet-detail-section">
+                <h3 class="section-title">⚔️ Battle Stats</h3>
+                <p class="section-subtitle">Calculated combat statistics</p>
+                <div class="battle-stats-grid">
+                    <div class="battle-stat-card">
+                        <div class="stat-icon health">❤️</div>
+                        <div class="stat-value" id="detail-hp">0</div>
+                        <div class="stat-label">Health</div>
+                    </div>
+                    <div class="battle-stat-card">
+                        <div class="stat-icon attack">⚔️</div>
+                        <div class="stat-value" id="detail-atk">0</div>
+                        <div class="stat-label">Attack</div>
+                    </div>
+                    <div class="battle-stat-card">
+                        <div class="stat-icon power">💪</div>
+                        <div class="stat-value" id="detail-power">0</div>
+                        <div class="stat-label">Power</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Base Stats Section -->
+            <div class="pet-detail-section">
+                <h3 class="section-title">📊 Base Stats</h3>
+                <div class="base-stats-list">
+                    <div class="base-stat-row">
+                        <span class="base-label">Base HP</span>
+                        <span class="base-value" id="detail-base-hp">0</span>
+                    </div>
+                    <div class="base-stat-row">
+                        <span class="base-label">Base Attack</span>
+                        <span class="base-value" id="detail-base-atk">0</span>
+                    </div>
+                    <div class="base-stat-row">
+                        <span class="base-label">Base Defense</span>
+                        <span class="base-value" id="detail-base-def">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="pet-detail-actions">
+                <button class="detail-action-btn primary" id="detail-set-active-btn" onclick="setActiveFromDetail()">
+                    <i class="fas fa-star"></i> Set as Active
+                </button>
+            </div>
+        </div>
+    </div>
 </section>

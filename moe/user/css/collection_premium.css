@@ -1037,3 +1037,390 @@
         min-height: 44px;
     }
 }
+
+/* ================================================
+   PET DETAIL MODAL (NEW)
+   ================================================ */
+.pet-detail-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.pet-detail-modal.show {
+    display: flex;
+    animation: fadeIn 0.3s ease;
+}
+
+.pet-detail-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+}
+
+.pet-detail-content {
+    position: relative;
+    background: linear-gradient(135deg, #1a1a2e, #0f0f1a);
+    border-radius: 20px;
+    max-width: 420px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    border: 1px solid rgba(218, 165, 32, 0.3);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.pet-detail-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1rem;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s;
+}
+
+.pet-detail-close:hover {
+    background: rgba(231, 76, 60, 0.6);
+    color: white;
+}
+
+/* Pet Header */
+.pet-detail-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 24px;
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.1), transparent);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.pet-detail-img-container {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.pet-detail-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 16px;
+    object-fit: contain;
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(218, 165, 32, 0.4);
+}
+
+.detail-shiny-indicator {
+    display: none;
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #1a1a2e;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+}
+
+.pet-detail-info {
+    flex: 1;
+}
+
+.pet-detail-name {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: white;
+    margin: 0 0 8px;
+    font-family: 'Cinzel', serif;
+}
+
+.pet-detail-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.detail-badge {
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.detail-badge.element {
+    background: rgba(100, 100, 100, 0.3);
+    color: #fff;
+}
+
+.detail-badge.element.fire {
+    background: rgba(231, 76, 60, 0.3);
+    color: #E74C3C;
+}
+
+.detail-badge.element.water {
+    background: rgba(52, 152, 219, 0.3);
+    color: #3498DB;
+}
+
+.detail-badge.element.earth {
+    background: rgba(39, 174, 96, 0.3);
+    color: #27AE60;
+}
+
+.detail-badge.element.air {
+    background: rgba(189, 195, 199, 0.3);
+    color: #BDC3C7;
+}
+
+.detail-badge.rarity {
+    background: rgba(100, 100, 100, 0.3);
+    color: #AAA;
+}
+
+.detail-badge.rarity.common {
+    background: rgba(170, 170, 170, 0.2);
+    color: #AAA;
+}
+
+.detail-badge.rarity.rare {
+    background: rgba(52, 152, 219, 0.2);
+    color: #3498DB;
+}
+
+.detail-badge.rarity.epic {
+    background: rgba(155, 89, 182, 0.2);
+    color: #9B59B6;
+}
+
+.detail-badge.rarity.legendary {
+    background: rgba(255, 215, 0, 0.2);
+    color: #FFD700;
+}
+
+.detail-badge.level {
+    background: rgba(218, 165, 32, 0.2);
+    color: var(--gold);
+}
+
+.pet-detail-stage {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.pet-detail-stage i {
+    margin-right: 4px;
+}
+
+/* Sections */
+.pet-detail-section {
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.pet-detail-section .section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin: 0 0 4px;
+}
+
+.pet-detail-section .section-subtitle {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0 0 16px;
+}
+
+/* Battle Stats Grid */
+.battle-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.battle-stat-card {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    padding: 16px 12px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.battle-stat-card .stat-icon {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+}
+
+.battle-stat-card .stat-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 4px;
+}
+
+.battle-stat-card .stat-label {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+}
+
+/* Base Stats List */
+.base-stats-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.base-stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+}
+
+.base-stat-row .base-label {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.85rem;
+}
+
+.base-stat-row .base-value {
+    color: white;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+/* Action Buttons */
+.pet-detail-actions {
+    padding: 20px 24px;
+}
+
+.detail-action-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.detail-action-btn.primary {
+    background: linear-gradient(135deg, #DAA520, #b8860b);
+    color: #1a1a2e;
+}
+
+.detail-action-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(218, 165, 32, 0.4);
+}
+
+.detail-action-btn.secondary {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+}
+
+.detail-action-btn.success {
+    background: linear-gradient(135deg, #27ae60, #229954);
+    color: white;
+    cursor: default;
+}
+
+.detail-action-btn.disabled {
+    background: rgba(100, 100, 100, 0.3);
+    color: rgba(255, 255, 255, 0.4);
+    cursor: not-allowed;
+}
+
+/* Responsive - Pet Detail Modal */
+@media (max-width: 480px) {
+    .pet-detail-modal {
+        padding: 10px;
+    }
+
+    .pet-detail-content {
+        border-radius: 16px;
+    }
+
+    .pet-detail-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+        padding: 20px 16px;
+    }
+
+    .pet-detail-img {
+        width: 80px;
+        height: 80px;
+    }
+
+    .pet-detail-name {
+        font-size: 1.2rem;
+    }
+
+    .pet-detail-badges {
+        justify-content: center;
+    }
+
+    .pet-detail-section {
+        padding: 16px;
+    }
+
+    .battle-stats-grid {
+        gap: 8px;
+    }
+
+    .battle-stat-card {
+        padding: 12px 8px;
+    }
+
+    .battle-stat-card .stat-icon {
+        font-size: 1.2rem;
+    }
+
+    .battle-stat-card .stat-value {
+        font-size: 1.1rem;
+    }
+
+    .pet-detail-actions {
+        padding: 16px;
+    }
+}

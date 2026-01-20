@@ -217,10 +217,12 @@
         if (detailed) {
             // For list view: Value + Label
             if (lbCurrentSort === 'wins') return '<div class="stat-main">' + pet.battle_wins + '</div><div class="stat-label">Wins</div>';
+            if (lbCurrentSort === 'power') return '<div class="stat-main">' + pet.power_score + '</div><div class="stat-label">Power</div>';
             return '<div class="stat-main">Lv.' + pet.level + '</div><div class="stat-label">Level</div>';
         }
         // For podium: Single string
         if (lbCurrentSort === 'wins') return pet.battle_wins + ' wins';
+        if (lbCurrentSort === 'power') return pet.power_score + ' pwr';
         return 'Lv.' + pet.level;
     }
 
