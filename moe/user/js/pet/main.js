@@ -13,6 +13,7 @@ import { loadInventory, renderInventory, handleInventoryClick, adjustQty, setMax
 import { performGacha, showGachaResult, closeGachaModal } from './gacha.js';
 import { initShopTabs, loadShop, renderShopItems, buyItem, closeShopPurchaseModal, adjustShopQty, updateShopTotal, confirmShopPurchase } from './shop.js';
 import { initArenaTabs, loadOpponents, startBattle, showBattleResult, closeBattleModal, loadBattleHistory } from './arena.js';
+import { loadAchievements, claimAchievement, initAchievementsTabs } from './achievements.js';
 import { state } from './state.js';
 
 console.log('🐾 MOE Pet System - ES6 Modules Loaded');
@@ -28,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initActionButtons();
     initShopTabs();
     initArenaTabs();
+    initAchievementsTabs();
     initGoldToggle();
     loadPets();
     checkDailyReward();
@@ -64,6 +66,9 @@ document.addEventListener('tabChanged', (e) => {
         case 'arena':
             loadActivePet();
             loadOpponents();
+            break;
+        case 'achievements':
+            loadAchievements();
             break;
     }
 });
@@ -124,3 +129,7 @@ window.showBattleResult = showBattleResult;
 window.closeBattleModal = closeBattleModal;
 window.loadOpponents = loadOpponents;
 window.loadBattleHistory = loadBattleHistory;
+
+// Achievements Functions
+window.loadAchievements = loadAchievements;
+window.claimAchievement = claimAchievement;

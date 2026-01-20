@@ -156,120 +156,9 @@ window.startBattle = function (defenderPetId) {
 
 // ================================================
 // ACHIEVEMENTS / BADGES SYSTEM
+// NOTE: Achievements code has been migrated to ES6 module: js/pet/achievements.js
+// The functions loadAchievements() and claimAchievement() are now in that module.
 // ================================================
-
-// Load achievements/badges
-async function loadAchievements() {
-    const container = document.getElementById('achievements-grid');
-    if (!container) {
-        console.error('achievements-grid element not found');
-        return;
-    }
-
-    // Hide empty state while loading
-    const emptyState = document.getElementById('achievements-empty');
-    if (emptyState) emptyState.style.display = 'none';
-
-    container.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Loading achievements...</p></div>';
-
-    try {
-        const response = await fetch('api/router.php?action=get_achievements');
-        const data = await response.json();
-
-        if (data.success && data.achievements && data.achievements.length > 0) {
-            // Get progress data from API
-            const progressData = data.progress || {};
-
-            container.innerHTML = data.achievements.map(ach => {
-                // Map progress based on requirement_type
-                const reqType = ach.requirement_type;
-                const rawProgress = progressData[reqType] || 0;
-                const targetValue = parseInt(ach.requirement_value) || 1;
-                // Cap progress display to target value
-                const currentProgress = Math.min(rawProgress, targetValue);
-                const percentage = Math.min((rawProgress / targetValue) * 100, 100);
-                const isComplete = ach.unlocked || rawProgress >= targetValue;
-
-                // Determine status class
-                const statusClass = isComplete ? 'unlocked' : 'locked';
-
-                // Get icon - use emoji or font awesome
-                const iconDisplay = ach.icon && ach.icon.length <= 4
-                    ? `<span class="emoji-icon">${ach.icon}</span>`
-                    : `<i class="fas ${ach.icon || 'fa-trophy'}"></i>`;
-
-                return `
-                    <div class="achievement-card ${statusClass}">
-                        <div class="achievement-icon">
-                            ${iconDisplay}
-                        </div>
-                        <div class="achievement-info">
-                            <div class="achievement-name">${ach.name}</div>
-                            <div class="achievement-desc">${ach.description}</div>
-                            ${!isComplete ? `
-                            <div class="achievement-progress">
-                                <div class="achievement-progress-fill" style="width: ${percentage}%"></div>
-                            </div>
-                            <div class="achievement-progress-text">${currentProgress} / ${targetValue}</div>
-                            ` : ''}
-                            ${isComplete && !ach.claimed ? `<button class="ach-claim-btn" onclick="claimAchievement(${ach.id})"><i class="fas fa-gift"></i> Claim ${ach.reward_gold}g</button>` : ''}
-                            ${ach.claimed ? `<div class="achievement-reward claimed"><i class="fas fa-check"></i> Claimed</div>` : (!isComplete && ach.reward_gold ? `<div class="achievement-reward"><i class="fas fa-coins"></i> ${ach.reward_gold}</div>` : '')}
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        } else {
-            // Show empty state
-            container.innerHTML = '';
-            if (emptyState) emptyState.style.display = 'block';
-        }
-    } catch (error) {
-        console.error('Error loading achievements:', error);
-        container.innerHTML = `
-            <div class="achievements-empty" style="grid-column: 1/-1;">
-                <i class="fas fa-exclamation-triangle"></i>
-                <p>Failed to load achievements. Please try again.</p>
-            </div>
-        `;
-    }
-}
-
-// Claim achievement reward
-async function claimAchievement(achievementId) {
-    try {
-        const response = await fetch('api/router.php?action=claim_achievement', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ achievement_id: achievementId })
-        });
-        const data = await response.json();
-        if (data.success) {
-            if (typeof showToast === 'function') {
-                showToast(data.message || `Claimed ${data.gold_earned} gold!`, 'success');
-            }
-            // Refresh gold display if function exists
-            if (typeof updateGoldDisplay === 'function') {
-                updateGoldDisplay(data.new_balance);
-            }
-            // Reload achievements to update UI
-            loadAchievements();
-        } else {
-            if (typeof showToast === 'function') {
-                showToast(data.error || 'Failed to claim', 'error');
-            } else {
-                alert(data.error || 'Failed to claim');
-            }
-        }
-    } catch (error) {
-        console.error('Error claiming achievement:', error);
-        if (typeof showToast === 'function') {
-            showToast('Network error', 'error');
-        }
-    }
-}
-
-// Make claimAchievement globally accessible
-window.claimAchievement = claimAchievement;
 
 // ================================================
 // 3V3 TEAM BATTLE SYSTEM
@@ -649,20 +538,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadTeamSelection();
     }
 
-    // Load achievements when tab is clicked
-    const achievementsTab = document.querySelector('[data-tab="achievements"]');
-    if (achievementsTab) {
-        achievementsTab.addEventListener('click', () => {
-            setTimeout(loadAchievements, 100);
-        });
-    }
-
-    // Also load achievements if already on that tab
-    const achievementsContent = document.getElementById('achievements');
-    if (achievementsContent && achievementsContent.classList.contains('active')) {
-        loadAchievements();
-    }
-
+    // NOTE: Achievements tab listeners are now in ES6 module: js/pet/achievements.js
     //Reload stats whenever tab becomes visible (catches return from battle)
     document.addEventListener('visibilitychange', () => {
         if (!document.hidden) {
@@ -675,11 +551,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (arena3v3Content && arena3v3Content.classList.contains('active')) {
                 loadTeamSelection();
             }
-
-            const achievementsContent = document.getElementById('achievements');
-            if (achievementsContent && achievementsContent.classList.contains('active')) {
-                loadAchievements();
-            }
+            // NOTE: Achievements visibility handler is now in ES6 module
         }
     });
 });
