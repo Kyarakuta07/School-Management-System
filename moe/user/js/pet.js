@@ -529,53 +529,33 @@ function renderCollection() {
         const displayName = pet.nickname || pet.species_name;
         const activeClass = pet.is_active ? 'active' : '';
         const deadClass = pet.status === 'DEAD' ? 'dead' : '';
-        const shinyStyle = pet.is_shiny ? `filter: hue-rotate(${pet.shiny_hue}deg);` : '';
+        const shinyStyle = pet.is_shiny ? 'filter: hue-rotate(' + pet.shiny_hue + 'deg);' : '';
 
         // Element icon mapping
         const elementIcons = {
-            'Fire': 'ðŸ”¥',
-            'Water': 'ðŸ’§',
-            'Earth': 'ðŸŒ¿',
-            'Air': 'ðŸ’¨'
+            'Fire': '🔥',
+            'Water': '💧',
+            'Earth': '🌿',
+            'Air': '💨'
         };
-        const elementIcon = elementIcons[pet.element] || 'â­';
+        const elementIcon = elementIcons[pet.element] || '⭐';
 
         // Retrieve button for sheltered pets
         let actionButtonHTML = '';
         if (pet.status === 'SHELTER') {
-            actionButtonHTML = `
-                <button class="shop-buy-btn" onclick="event.stopPropagation(); selectPet(${pet.id})">
-                    <i class="fas fa-box-open"></i> Retrieve
-                </button>
-            `;
+            actionButtonHTML = '<button class="shop-buy-btn" onclick="event.stopPropagation(); setActivePet(' + pet.id + ')"><i class="fas fa-box-open"></i> Retrieve</button>';
         }
 
-        return `
-            <div class="pet-card ${activeClass} ${deadClass}" onclick="selectPet(${pet.id})">
-                <!-- Rarity Badge -->
-                <span class="rarity-badge ${pet.rarity.toLowerCase()}">${pet.rarity}</span>
-                
-                <!-- Element Badge -->
-                <div class="pet-card-element ${pet.element.toLowerCase()}" title="${pet.element}">
-                    ${elementIcon}
-                </div>
-                
-                <!-- Shiny Indicator -->
-                ${pet.is_shiny ? '<div class="pet-card-shiny">âœ¨</div>' : ''}
-                
-                <!-- Pet Image -->
-                <img src="${imgPath}" alt="${pet.species_name}" class="pet-card-img" 
-                     style="${shinyStyle}"
-                     onerror="this.src='../assets/placeholder.png'">
-                
-                <!-- Pet Info -->
-                <h3 class="pet-card-name">${displayName}</h3>
-                <span class="pet-card-level">Lv.${pet.level}</span>
-                
-                <!-- Retrieve Button (if applicable) -->
-                ${actionButtonHTML}
-            </div>
-        `;
+        return '<div class="pet-card ' + activeClass + ' ' + deadClass + '" onclick="setActivePet(' + pet.id + ')">' +
+            '<button class="pet-info-btn" onclick="event.stopPropagation(); openPetDetailById(' + pet.id + ')" title="View Details"><i class="fas fa-info"></i></button>' +
+            '<span class="rarity-badge ' + pet.rarity.toLowerCase() + '">' + pet.rarity + '</span>' +
+            '<div class="pet-card-element ' + pet.element.toLowerCase() + '" title="' + pet.element + '">' + elementIcon + '</div>' +
+            (pet.is_shiny ? '<div class="pet-card-shiny">✨</div>' : '') +
+            '<img src="' + imgPath + '" alt="' + pet.species_name + '" class="pet-card-img" style="' + shinyStyle + '" onerror="this.src=\'../assets/placeholder.png\'">' +
+            '<h3 class="pet-card-name">' + displayName + '</h3>' +
+            '<span class="pet-card-level">Lv.' + pet.level + '</span>' +
+            actionButtonHTML +
+            '</div>';
     }).join('');
 }
 
@@ -587,14 +567,67 @@ function renderCollection() {
 let currentDetailPetId = null;
 
 /**
- * Open Pet Detail Modal
+ * Set Active Pet (click on card)
  */
-function selectPet(petId) {
+async function setActivePet(petId) {
     const pet = window.userPets.find(p => p.id === petId);
     if (!pet) return;
 
+    if (pet.status === 'DEAD') {
+        showToast('This pet is dead! Use a revival item first.', 'warning');
+        return;
+    }
+
+    if (pet.status === 'SHELTER') {
+        showConfirm(
+            'Are you sure you want to retrieve ' + (pet.nickname || pet.species_name) + ' from the shelter?',
+            'Retrieve from Shelter',
+            'fa-box-open'
+        ).then(confirmed => {
+            if (confirmed) {
+                toggleShelter(petId);
+            }
+        });
+        return;
+    }
+
+    try {
+        const response = await fetch(API_BASE + '?action=set_active', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ pet_id: petId })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            showToast('Pet is now active!', 'success');
+            await loadPets();
+            switchTab('my-pet');
+        } else {
+            showToast(data.error || 'Failed to set active pet', 'error');
+        }
+    } catch (error) {
+        console.error('Error setting active pet:', error);
+        showToast('Network error', 'error');
+    }
+}
+
+/**
+ * Open Pet Detail by ID
+ */
+function openPetDetailById(petId) {
+    const pet = window.userPets.find(p => p.id === petId);
+    if (!pet) return;
     currentDetailPetId = petId;
     openPetDetail(pet);
+}
+
+/**
+ * Open Pet Detail Modal (legacy support)
+ */
+function selectPet(petId) {
+    openPetDetailById(petId);
 }
 
 /**
@@ -609,7 +642,7 @@ function openPetDetail(pet) {
 
     // Get image path
     const imgPath = getPetImagePath(pet);
-    const shinyStyle = pet.is_shiny ? `filter: hue-rotate(${pet.shiny_hue}deg);` : '';
+    const shinyStyle = pet.is_shiny ? 'filter: hue-rotate(' + pet.shiny_hue + 'deg);' : '';
 
     // Populate Header
     document.getElementById('detail-pet-img').src = imgPath;
@@ -619,13 +652,13 @@ function openPetDetail(pet) {
     // Badges
     const elementBadge = document.getElementById('detail-element');
     elementBadge.textContent = pet.element;
-    elementBadge.className = `detail-badge element ${pet.element.toLowerCase()}`;
+    elementBadge.className = 'detail-badge element ' + pet.element.toLowerCase();
 
     const rarityBadge = document.getElementById('detail-rarity');
     rarityBadge.textContent = pet.rarity;
-    rarityBadge.className = `detail-badge rarity ${pet.rarity.toLowerCase()}`;
+    rarityBadge.className = 'detail-badge rarity ' + pet.rarity.toLowerCase();
 
-    document.getElementById('detail-level').textContent = `Lv.${pet.level}`;
+    document.getElementById('detail-level').textContent = 'Lv.' + pet.level;
 
     // Shiny tag
     document.getElementById('detail-shiny-tag').style.display = pet.is_shiny ? 'block' : 'none';
@@ -635,7 +668,7 @@ function openPetDetail(pet) {
     const stageIcons = { egg: 'fa-egg', baby: 'fa-dragon', adult: 'fa-crown' };
     const stageNames = { egg: 'Egg Stage', baby: 'Baby Stage', adult: 'Adult Stage' };
     const stage = pet.evolution_stage || 'egg';
-    stageEl.innerHTML = `<i class="fas ${stageIcons[stage]}"></i> <span>${stageNames[stage]}</span>`;
+    stageEl.innerHTML = '<i class="fas ' + stageIcons[stage] + '"></i> <span>' + stageNames[stage] + '</span>';
 
     // Calculate Battle Stats
     const baseHp = parseInt(pet.base_health) || 100;
@@ -707,7 +740,7 @@ async function setActiveFromDetail() {
     if (pet.status === 'SHELTER') {
         closePetDetail();
         showConfirm(
-            `Are you sure you want to retrieve ${pet.nickname || pet.species_name} from the shelter?`,
+            `Are you sure you want to retrieve ${pet.nickname || pet.species_name} from the shelter ? `,
             'Retrieve from Shelter',
             'fa-box-open'
         ).then(confirmed => {
@@ -720,7 +753,7 @@ async function setActiveFromDetail() {
 
     // Set as active
     try {
-        const response = await fetch(`${API_BASE}?action=set_active`, {
+        const response = await fetch(`${API_BASE}?action = set_active`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ pet_id: currentDetailPetId })
@@ -763,7 +796,7 @@ async function playWithPet() {
     const petImg = getPetImagePath(window.activePet);
 
     // Redirect to rhythm game page
-    window.location.href = `rhythm_game.php?pet_id=${window.activePet.id}&pet_img=${encodeURIComponent(petImg)}`;
+    window.location.href = `rhythm_game.php ? pet_id = ${window.activePet.id}& pet_img=${encodeURIComponent(petImg)} `;
 }
 
 async function toggleShelter(targetPetId = null) {
@@ -771,7 +804,7 @@ async function toggleShelter(targetPetId = null) {
     if (!petId) return;
 
     try {
-        const response = await fetch(`${API_BASE}?action=shelter`, {
+        const response = await fetch(`${API_BASE}?action = shelter`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ pet_id: petId })
@@ -820,14 +853,15 @@ function renderInventory() {
         const isDepleted = item.quantity === 0;
 
         return `
-        <div class="inventory-item-card ${rarity} ${isDepleted ? 'depleted' : ''}" 
-             onclick="${!isDepleted ? `handleInventoryClick(
-                 ${item.item_id}, 
-                 '${item.effect_type}', 
-                 '${item.name.replace(/'/g, "\\'")}', 
-                 '${item.description ? item.description.replace(/'/g, "\\'") : ''}', 
-                 '${item.img_path}', 
-                 ${item.quantity}
+            < div class="inventory-item-card ${rarity} ${isDepleted ? 'depleted' : ''}"
+        onclick = "${!isDepleted ? `handleInventoryClick(
+                 ${item.item_id},
+        '${item.effect_type}',
+            '${item.name.replace(/' / g, "\\'")
+                } ', 
+'${item.description ? item.description.replace(/' / g, "\\'") : ''}', 
+'${item.img_path}',
+    ${item.quantity}
              )` : 'void(0)'}" 
              title="${item.name}${item.description ? ' - ' + item.description : ''}">
             <div class="inventory-item-img-wrapper">
