@@ -185,8 +185,11 @@ function switchTab(tab) {
     });
 
     // Update content - support both .tab-content and .tab-panel
+    // IMPORTANT: Also set display style to ensure visibility
     document.querySelectorAll('.tab-content, .tab-panel').forEach(content => {
-        content.classList.toggle('active', content.id === tab);
+        const isActive = content.id === tab;
+        content.classList.toggle('active', isActive);
+        content.style.display = isActive ? 'block' : 'none';
     });
 
     currentTab = tab;

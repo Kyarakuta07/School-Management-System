@@ -580,55 +580,56 @@ function renderCollectionWithButtons() {
         return;
     }
 
+    // Element icon mapping
+    const elementIcons = {
+        'Fire': '🔥',
+        'Water': '💧',
+        'Earth': '🌿',
+        'Air': '💨'
+    };
+
     grid.innerHTML = window.userPets.map(pet => {
         const imgPath = getPetImagePath(pet);
         const displayName = pet.nickname || pet.species_name;
         const activeClass = pet.is_active ? 'active' : '';
         const deadClass = pet.status === 'DEAD' ? 'dead' : '';
-        const shinyStyle = pet.is_shiny ? `filter: hue-rotate(${pet.shiny_hue}deg);` : '';
+        const shinyStyle = pet.is_shiny ? 'filter: hue-rotate(' + pet.shiny_hue + 'deg);' : '';
+        const elementIcon = elementIcons[pet.element] || '⭐';
 
         // Action buttons based on status
         let actionButtons = '';
 
         if (pet.status === 'SHELTER') {
-            actionButtons = `
-                <button class="pet-action-btn btn-retrieve" onclick="event.stopPropagation(); toggleShelter(${pet.id})">
-                    <i class="fas fa-box-open"></i> Retrieve
-                </button>
-            `;
+            actionButtons = '<button class="pet-action-btn btn-retrieve" onclick="event.stopPropagation(); toggleShelter(' + pet.id + ')"><i class="fas fa-box-open"></i> Retrieve</button>';
         } else if (pet.status === 'ALIVE') {
             // Determine if evolution is possible based on current stage and level
             const currentStage = pet.evolution_stage || 'egg';
             const canEvolve = (currentStage === 'egg' && pet.level >= 10) ||
                 (currentStage === 'baby' && pet.level >= 20);
 
-            actionButtons = `
-                <div class="pet-action-row">
-                    ${!pet.is_active ? `
-                        <button class="pet-action-btn btn-sell" onclick="event.stopPropagation(); sellPet(${pet.id})" title="Sell Pet">
-                            <i class="fas fa-coins"></i>
-                        </button>
-                    ` : ''}
-                    ${canEvolve ? `
-                        <button class="pet-action-btn btn-evolve" onclick="event.stopPropagation(); openEvolutionModal(${pet.id})" title="Evolve to ${currentStage === 'egg' ? 'Baby' : 'Adult'}">
-                            <i class="fas fa-star"></i> Evolve
-                        </button>
-                    ` : ''}
-                </div>
-            `;
+            let buttonsHtml = '';
+            if (!pet.is_active) {
+                buttonsHtml += '<button class="pet-action-btn btn-sell" onclick="event.stopPropagation(); sellPet(' + pet.id + ')" title="Sell Pet"><i class="fas fa-coins"></i></button>';
+            }
+            if (canEvolve) {
+                const nextStage = currentStage === 'egg' ? 'Baby' : 'Adult';
+                buttonsHtml += '<button class="pet-action-btn btn-evolve" onclick="event.stopPropagation(); openEvolutionModal(' + pet.id + ')" title="Evolve to ' + nextStage + '"><i class="fas fa-star"></i> Evolve</button>';
+            }
+            if (buttonsHtml) {
+                actionButtons = '<div class="pet-action-row">' + buttonsHtml + '</div>';
+            }
         }
 
-        return `
-            <div class="pet-card ${activeClass} ${deadClass}" onclick="selectPet(${pet.id})">
-                <span class="rarity-badge ${pet.rarity.toLowerCase()}">${pet.rarity.charAt(0)}</span>
-                <img src="${imgPath}" alt="${pet.species_name}" class="pet-card-img" 
-                     style="${shinyStyle}"
-                     onerror="this.src='../assets/placeholder.png'">
-                <h3 class="pet-card-name">${displayName}</h3>
-                <span class="pet-card-level">Lv.${pet.level} ${pet.is_shiny ? '✨' : ''}</span>
-                ${actionButtons}
-            </div>
-        `;
+        return '<div class="pet-card ' + activeClass + ' ' + deadClass + '" onclick="setActivePet(' + pet.id + ')">' +
+            '<button class="pet-info-btn" onclick="event.stopPropagation(); openPetDetailById(' + pet.id + ')" title="View Details"><i class="fas fa-info"></i></button>' +
+            '<span class="rarity-badge ' + pet.rarity.toLowerCase() + '">' + pet.rarity.charAt(0) + '</span>' +
+            '<div class="pet-card-element ' + pet.element.toLowerCase() + '" title="' + pet.element + '">' + elementIcon + '</div>' +
+            (pet.is_shiny ? '<div class="pet-card-shiny">✨</div>' : '') +
+            '<img src="' + imgPath + '" alt="' + pet.species_name + '" class="pet-card-img" style="' + shinyStyle + '" onerror="this.src=\'../assets/placeholder.png\'">' +
+            '<h3 class="pet-card-name">' + displayName + '</h3>' +
+            '<span class="pet-card-level">Lv.' + pet.level + '</span>' +
+            actionButtons +
+            '</div>';
     }).join('');
 }
 
@@ -705,4 +706,9 @@ window.confirmRename = confirmRename;
 window.openHelpModal = openHelpModal;
 window.closeHelpModal = closeHelpModal;
 window.switchHelpTab = switchHelpTab;
+
+// Expose pet detail modal functions
+window.setActivePet = setActivePet;
+window.openPetDetailById = openPetDetailById;
+window.closePetDetail = closePetDetail;
 
