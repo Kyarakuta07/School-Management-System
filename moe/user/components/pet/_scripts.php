@@ -4,6 +4,7 @@
 <script src="<?= asset('user/js/pixi_pet.js', '../') ?>"></script>
 <script src="<?= asset('user/js/pet_animations.js', '../') ?>"></script>
 <script src="<?= asset('user/js/pet_hardcore_update.js', '../') ?>"></script>
+<script src="<?= asset('user/js/pet/detail-modal.js', '../') ?>"></script>
 
 <!-- Arena & Achievements Module -->
 <script src="<?= asset('user/js/pet_arena.js', '../') ?>"></script>
