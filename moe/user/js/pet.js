@@ -861,26 +861,21 @@ function renderInventory() {
 
         const isDepleted = item.quantity === 0;
 
-        return `
-            < div class="inventory-item-card ${rarity} ${isDepleted ? 'depleted' : ''}"
-        onclick = "${!isDepleted ? `handleInventoryClick(
-                 ${item.item_id},
-        '${item.effect_type}',
-            '${item.name.replace(/' / g, "\\'")
-                } ', 
-'${item.description ? item.description.replace(/' / g, "\\'") : ''}', 
-'${item.img_path}',
-    ${item.quantity}
-             )` : 'void(0)'}" 
-             title="${item.name}${item.description ? ' - ' + item.description : ''}">
-            <div class="inventory-item-img-wrapper">
-                <img src="${ASSETS_BASE}${item.img_path}" alt="${item.name}"
-                     onerror="this.src='../assets/placeholder.png'">
-            </div>
-            <span class="inventory-qty-badge">${item.quantity}</span>
-            <p class="inventory-item-name">${item.name}</p>
-        </div>
-    `;
+        // Build onclick handler safely
+        let onclickHandler = 'void(0)';
+        if (!isDepleted) {
+            const safeName = item.name.replace(/'/g, "\\'");
+            const safeDesc = item.description ? item.description.replace(/'/g, "\\'") : '';
+            onclickHandler = "handleInventoryClick(" + item.item_id + ", '" + item.effect_type + "', '" + safeName + "', '" + safeDesc + "', '" + item.img_path + "', " + item.quantity + ")";
+        }
+
+        return '<div class="inventory-item-card ' + rarity + (isDepleted ? ' depleted' : '') + '" onclick="' + onclickHandler + '" title="' + item.name + (item.description ? ' - ' + item.description : '') + '">' +
+            '<div class="inventory-item-img-wrapper">' +
+            '<img src="' + ASSETS_BASE + item.img_path + '" alt="' + item.name + '" onerror="this.src=\'../assets/placeholder.png\'">' +
+            '</div>' +
+            '<span class="inventory-qty-badge">' + item.quantity + '</span>' +
+            '<p class="inventory-item-name">' + item.name + '</p>' +
+            '</div>';
     }).join('');
 }
 
@@ -2232,3 +2227,12 @@ async function revivePet(petId) {
     closeReviveModal();
 }
 
+// ================================================
+// GLOBAL EXPORTS FOR PET CARD ACTIONS
+// ================================================
+window.setActivePet = setActivePet;
+window.openPetDetailById = openPetDetailById;
+window.closePetDetail = closePetDetail;
+window.selectPet = selectPet;
+window.openPetDetail = openPetDetail;
+window.setActiveFromDetail = setActiveFromDetail;
