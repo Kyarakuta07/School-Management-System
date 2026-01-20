@@ -591,6 +591,12 @@ async function setActivePet(petId) {
         return;
     }
 
+    // If already active, just switch to my-pet tab
+    if (pet.is_active) {
+        switchTab('my-pet');
+        return;
+    }
+
     try {
         const response = await fetch(API_BASE + '?action=set_active', {
             method: 'POST',
