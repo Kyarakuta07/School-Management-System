@@ -41,6 +41,10 @@ export async function loadPets() {
 
             if (state.activePet) {
                 renderActivePet();
+                // Load pet into PixiJS if available
+                if (window.PixiPet && window.PixiPet.isReady()) {
+                    window.PixiPet.load(state.activePet);
+                }
             }
         }
     } catch (error) {

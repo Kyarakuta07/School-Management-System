@@ -54,8 +54,28 @@ const SPRITE_ANIMATIONS = {
  */
 function getSpriteConfig(speciesName) {
     if (!speciesName) return null;
-    const key = speciesName.toLowerCase().replace(/\s+/g, '');
-    return SPRITE_ANIMATIONS[key] || null;
+
+    // Normalize: lowercase, remove spaces, remove special chars
+    const key = speciesName.toLowerCase().replace(/[\s\-_]+/g, '');
+
+    console.log('🔎 [SpriteConfig] Looking up:', speciesName, '-> normalized key:', key);
+
+    // Direct match
+    if (SPRITE_ANIMATIONS[key]) {
+        console.log('✅ [SpriteConfig] Found direct match for:', key);
+        return SPRITE_ANIMATIONS[key];
+    }
+
+    // Try partial match (e.g., "Shadow Fox" might stored as "shadowfox")
+    for (const configKey of Object.keys(SPRITE_ANIMATIONS)) {
+        if (key.includes(configKey) || configKey.includes(key)) {
+            console.log('✅ [SpriteConfig] Found partial match:', key, '<->', configKey);
+            return SPRITE_ANIMATIONS[configKey];
+        }
+    }
+
+    console.log('❌ [SpriteConfig] No match found for:', key);
+    return null;
 }
 
 /**

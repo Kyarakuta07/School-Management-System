@@ -173,16 +173,32 @@ function loadPixiPet(petData) {
 
     currentPetData = petData;
 
+    // Debug info
+    console.log('🔍 [PixiPet] Loading pet:', {
+        species_name: petData.species_name,
+        evolution_stage: petData.evolution_stage,
+        nickname: petData.nickname
+    });
+
     // Check if this pet has animated sprites
     const spriteConfig = typeof getSpriteConfig === 'function' ? getSpriteConfig(petData.species_name) : null;
 
+    console.log('🔍 [PixiPet] Sprite config lookup:', {
+        functionExists: typeof getSpriteConfig === 'function',
+        speciesName: petData.species_name,
+        configFound: !!spriteConfig,
+        isAdult: petData.evolution_stage === 'adult'
+    });
+
     if (spriteConfig && petData.evolution_stage === 'adult') {
         // Use animated sprite for adult pets with animation data
+        console.log('🎬 [PixiPet] Using ANIMATED sprite!');
         loadAnimatedPet(petData, spriteConfig);
         return;
     }
 
     // Fall back to static sprite
+    console.log('📷 [PixiPet] Using STATIC sprite (no config or not adult)');
     loadStaticPet(petData);
 }
 
