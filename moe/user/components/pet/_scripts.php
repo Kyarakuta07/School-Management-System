@@ -1,6 +1,7 @@
 <!-- JavaScript (with cache busting) -->
 <script src="<?= asset('user/js/pixi_bg.js', '../') ?>"></script>
 <script type="module" src="<?= asset('user/js/pet/main.js', '../') ?>"></script>
+<script src="<?= asset('user/js/sprite_config.js', '../') ?>"></script>
 <script src="<?= asset('user/js/pixi_pet.js', '../') ?>"></script>
 <script src="<?= asset('user/js/pet_animations.js', '../') ?>"></script>
 <script src="<?= asset('user/js/pet_hardcore_update.js', '../') ?>"></script>

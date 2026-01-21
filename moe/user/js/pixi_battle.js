@@ -1,6 +1,6 @@
 /**
  * MOE Pet System - PixiJS Battle Effects
- * Premium visual effects for 3v3 battle arena
+ * Premium visual effects for battle arenas (1v1 and 3v3)
  * 
  * Features:
  * - Animated nebula background
@@ -8,6 +8,7 @@
  * - Damage spark effects
  * - Screen shake
  * - Victory/defeat effects
+ * - Animated Pet Sprites (idle, attack, summon)
  */
 
 // ================================================
@@ -16,6 +17,14 @@
 let pixiApp = null;
 let particles = [];
 let backgroundSprites = [];
+
+// Animated Pet Sprites for Battle
+let playerAnimatedSprite = null;
+let enemyAnimatedSprite = null;
+let playerSpriteConfig = null;
+let enemySpriteConfig = null;
+let playerAnimatedTextures = {};
+let enemyAnimatedTextures = {};
 
 const COLORS = {
     fire: 0xe74c3c,
@@ -434,9 +443,231 @@ function onResize() {
 }
 
 // ================================================
+// ANIMATED PET SPRITES FOR BATTLE
+// ================================================
+
+/**
+ * Load animated pet sprite for battle
+ * @param {string} side - 'player' or 'enemy'
+ * @param {Object} petData - Pet data with species_name, element, evolution_stage
+ */
+async function loadBattlePetSprite(side, petData) {
+    if (!pixiApp || !petData) return;
+
+    // Check if sprite config exists
+    const config = typeof getSpriteConfig === 'function' ? getSpriteConfig(petData.species_name) : null;
+    if (!config) {
+        console.log(`No animated sprite config for ${petData.species_name}`);
+        return;
+    }
+
+    // Only load animated sprites for adult pets
+    if (petData.evolution_stage !== 'adult') {
+        console.log(`Pet ${petData.species_name} is not adult, using static sprite`);
+        return;
+    }
+
+    const speciesKey = petData.species_name.toLowerCase().replace(/\s+/g, '');
+    const element = petData.element || config.element || 'dark';
+    const idlePath = `/moe/assets/pets/${element}/${speciesKey}/idle.png`;
+
+    console.log(`🎬 Loading battle sprite for ${side}: ${speciesKey}`);
+
+    try {
+        const baseTexture = await PIXI.Assets.load(idlePath);
+        const frames = extractBattleFrames(baseTexture, config);
+
+        if (frames.length === 0) {
+            console.warn('No frames extracted for battle sprite');
+            return;
+        }
+
+        // Get the target element position
+        const targetEl = side === 'player'
+            ? (document.getElementById('player-sprite') || document.querySelector('.player-sprite'))
+            : (document.getElementById('enemy-sprite') || document.querySelector('.enemy-sprite'));
+
+        if (!targetEl) return;
+
+        const rect = targetEl.getBoundingClientRect();
+
+        // Create AnimatedSprite
+        const sprite = new PIXI.AnimatedSprite(frames);
+        sprite.anchor.set(0.5);
+        sprite.x = rect.left + rect.width / 2;
+        sprite.y = rect.top + rect.height / 2;
+
+        // Scale to match element size
+        const maxSize = Math.max(rect.width, rect.height);
+        const scale = maxSize / config.frameWidth;
+        sprite.scale.set(scale);
+
+        sprite.animationSpeed = config.animations.idle.speed;
+        sprite.loop = true;
+        sprite.play();
+
+        // Store reference and config
+        if (side === 'player') {
+            if (playerAnimatedSprite) {
+                pixiApp.stage.removeChild(playerAnimatedSprite);
+                playerAnimatedSprite.destroy();
+            }
+            playerAnimatedSprite = sprite;
+            playerSpriteConfig = config;
+            playerAnimatedTextures.idle = frames;
+        } else {
+            if (enemyAnimatedSprite) {
+                pixiApp.stage.removeChild(enemyAnimatedSprite);
+                enemyAnimatedSprite.destroy();
+            }
+            enemyAnimatedSprite = sprite;
+            enemySpriteConfig = config;
+            enemyAnimatedTextures.idle = frames;
+        }
+
+        pixiApp.stage.addChild(sprite);
+
+        // Hide the static HTML image
+        const img = targetEl.querySelector('img');
+        if (img) img.style.opacity = '0';
+
+        console.log(`✅ Battle sprite loaded for ${side}: ${speciesKey}`);
+
+    } catch (error) {
+        console.error(`Failed to load battle sprite for ${side}:`, error);
+    }
+}
+
+/**
+ * Extract frames from grid spritesheet
+ */
+function extractBattleFrames(baseTexture, config) {
+    const frames = [];
+    const totalFrames = config.animations.idle.totalFrames;
+
+    for (let row = 0; row < config.rows && frames.length < totalFrames; row++) {
+        for (let col = 0; col < config.columns && frames.length < totalFrames; col++) {
+            const rect = new PIXI.Rectangle(
+                col * config.frameWidth,
+                row * config.frameHeight,
+                config.frameWidth,
+                config.frameHeight
+            );
+            const texture = new PIXI.Texture(baseTexture.baseTexture || baseTexture, rect);
+            frames.push(texture);
+        }
+    }
+
+    return frames;
+}
+
+/**
+ * Play attack animation for pet in battle
+ * @param {string} side - 'player' or 'enemy'
+ */
+async function playBattleAttackAnimation(side) {
+    const sprite = side === 'player' ? playerAnimatedSprite : enemyAnimatedSprite;
+    const config = side === 'player' ? playerSpriteConfig : enemySpriteConfig;
+    const textures = side === 'player' ? playerAnimatedTextures : enemyAnimatedTextures;
+
+    if (!sprite || !config || !config.animations.attack) return;
+
+    // Load attack animation if not cached
+    if (!textures.attack) {
+        const speciesKey = config.element ? Object.keys(SPRITE_ANIMATIONS).find(k =>
+            SPRITE_ANIMATIONS[k].element === config.element
+        ) : null;
+
+        if (!speciesKey) return;
+
+        const attackPath = `/moe/assets/pets/${config.element}/${speciesKey}/attack.png`;
+
+        try {
+            const baseTexture = await PIXI.Assets.load(attackPath);
+            const frames = [];
+            const totalFrames = config.animations.attack.totalFrames;
+
+            for (let row = 0; row < config.rows && frames.length < totalFrames; row++) {
+                for (let col = 0; col < config.columns && frames.length < totalFrames; col++) {
+                    const rect = new PIXI.Rectangle(
+                        col * config.frameWidth,
+                        row * config.frameHeight,
+                        config.frameWidth,
+                        config.frameHeight
+                    );
+                    frames.push(new PIXI.Texture(baseTexture.baseTexture || baseTexture, rect));
+                }
+            }
+
+            textures.attack = frames;
+        } catch (error) {
+            console.error('Failed to load attack animation:', error);
+            return;
+        }
+    }
+
+    // Play attack animation
+    sprite.textures = textures.attack;
+    sprite.animationSpeed = config.animations.attack.speed;
+    sprite.loop = false;
+    sprite.gotoAndPlay(0);
+
+    // Return to idle when done
+    sprite.onComplete = () => {
+        if (textures.idle) {
+            sprite.textures = textures.idle;
+            sprite.animationSpeed = config.animations.idle.speed;
+            sprite.loop = true;
+            sprite.play();
+        }
+    };
+}
+
+/**
+ * Update animated sprite positions (call on resize or scroll)
+ */
+function updateBattleSpritePositions() {
+    if (playerAnimatedSprite) {
+        const el = document.getElementById('player-sprite') || document.querySelector('.player-sprite');
+        if (el) {
+            const rect = el.getBoundingClientRect();
+            playerAnimatedSprite.x = rect.left + rect.width / 2;
+            playerAnimatedSprite.y = rect.top + rect.height / 2;
+        }
+    }
+
+    if (enemyAnimatedSprite) {
+        const el = document.getElementById('enemy-sprite') || document.querySelector('.enemy-sprite');
+        if (el) {
+            const rect = el.getBoundingClientRect();
+            enemyAnimatedSprite.x = rect.left + rect.width / 2;
+            enemyAnimatedSprite.y = rect.top + rect.height / 2;
+        }
+    }
+}
+
+// Export battle animation API
+window.BattleSprites = {
+    load: loadBattlePetSprite,
+    playAttack: playBattleAttackAnimation,
+    updatePositions: updateBattleSpritePositions
+};
+
+// ================================================
 // CLEANUP
 // ================================================
 function destroyPixiEffects() {
+    if (playerAnimatedSprite) {
+        playerAnimatedSprite.destroy();
+        playerAnimatedSprite = null;
+    }
+    if (enemyAnimatedSprite) {
+        enemyAnimatedSprite.destroy();
+        enemyAnimatedSprite = null;
+    }
+    playerAnimatedTextures = {};
+    enemyAnimatedTextures = {};
+
     if (pixiApp) {
         pixiApp.destroy(true, { children: true, texture: true });
         pixiApp = null;

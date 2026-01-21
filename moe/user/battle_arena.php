@@ -358,6 +358,7 @@ $defender_img = getPetImageByStage($defender);
 
     <!-- Battle JS -->
     <script src="js/sound_manager.js"></script>
+    <script src="js/sprite_config.js"></script>
     <script src="js/battle_arena.js"></script>
     <script src="js/pixi_battle.js"></script>
 </body>

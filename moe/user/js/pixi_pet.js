@@ -70,6 +70,11 @@ let floatPhase = 0;
 let particles = [];
 let currentPetData = null;
 
+// Animated Sprite State
+let isAnimatedSprite = false;
+let currentAnimation = 'idle';
+let animatedTextures = {};  // Cache for loaded animation textures
+
 // ================================================
 // INITIALIZATION
 // ================================================
@@ -168,7 +173,21 @@ function loadPixiPet(petData) {
 
     currentPetData = petData;
 
-    // Construct image path
+    // Check if this pet has animated sprites
+    const spriteConfig = typeof getSpriteConfig === 'function' ? getSpriteConfig(petData.species_name) : null;
+
+    if (spriteConfig && petData.evolution_stage === 'adult') {
+        // Use animated sprite for adult pets with animation data
+        loadAnimatedPet(petData, spriteConfig);
+        return;
+    }
+
+    // Fall back to static sprite
+    loadStaticPet(petData);
+}
+
+// Load static (non-animated) pet sprite
+function loadStaticPet(petData) {
     const imgPath = getPetImagePathForPixi(petData);
 
     try {
@@ -177,9 +196,12 @@ function loadPixiPet(petData) {
 
         // Remove old sprite
         if (petSprite) {
+            if (petSprite.stop) petSprite.stop();  // Stop animation if AnimatedSprite
             petContainer.removeChild(petSprite);
             petSprite.destroy();
         }
+
+        isAnimatedSprite = false;
 
         // Create new sprite
         petSprite = new PIXI.Sprite(texture);
@@ -225,7 +247,7 @@ function loadPixiPet(petData) {
             emitParticles('sparkle', 10);
         }
 
-        console.log('✅ Pet sprite loaded:', petData.nickname || petData.species_name);
+        console.log('✅ Pet static sprite loaded:', petData.nickname || petData.species_name);
 
     } catch (error) {
         console.error('Failed to load pet texture:', error);
@@ -234,6 +256,197 @@ function loadPixiPet(petData) {
         if (existingDisplay) {
             existingDisplay.style.display = 'block';
         }
+    }
+}
+
+// ================================================
+// ANIMATED SPRITE LOADER
+// ================================================
+async function loadAnimatedPet(petData, config) {
+    const speciesKey = petData.species_name.toLowerCase().replace(/\s+/g, '');
+    const element = petData.element || config.element || 'dark';
+
+    console.log(`🎬 Loading animated sprite for ${speciesKey}...`);
+
+    try {
+        // Build path to idle animation spritesheet
+        const idlePath = `/moe/assets/pets/${element}/${speciesKey}/idle.png`;
+
+        // Load the spritesheet image
+        const baseTexture = await PIXI.Assets.load(idlePath);
+
+        // Extract frames from grid spritesheet
+        const frames = extractFramesFromGrid(
+            baseTexture,
+            config.frameWidth,
+            config.frameHeight,
+            config.columns,
+            config.rows,
+            config.animations.idle.totalFrames
+        );
+
+        if (frames.length === 0) {
+            console.warn('No frames extracted, falling back to static');
+            loadStaticPet(petData);
+            return;
+        }
+
+        // Remove old sprite
+        if (petSprite) {
+            if (petSprite.stop) petSprite.stop();
+            petContainer.removeChild(petSprite);
+            petSprite.destroy();
+        }
+
+        // Create AnimatedSprite
+        petSprite = new PIXI.AnimatedSprite(frames);
+        petSprite.anchor.set(0.5);
+        petSprite.x = PIXI_CONFIG.stageWidth / 2;
+        petSprite.y = PIXI_CONFIG.stageHeight / 2;
+
+        // Scale to fit
+        const maxSize = 160;
+        const scale = Math.min(maxSize / config.frameWidth, maxSize / config.frameHeight);
+        petSprite.scale.set(scale);
+
+        // Animation settings
+        petSprite.animationSpeed = config.animations.idle.speed;
+        petSprite.loop = config.animations.idle.loop;
+        petSprite.play();
+
+        isAnimatedSprite = true;
+        currentAnimation = 'idle';
+
+        // Cache the idle textures
+        animatedTextures.idle = frames;
+
+        // Apply shiny effect if applicable
+        if (petData.is_shiny && petData.shiny_hue) {
+            try {
+                const hueFilter = new PIXI.filters.ColorMatrixFilter();
+                hueFilter.hue(petData.shiny_hue, false);
+                petSprite.filters = [hueFilter];
+            } catch (e) {
+                // ColorMatrixFilter may not be available
+            }
+        }
+
+        // Add glow effect for rare+ pets
+        applyRarityGlow(petData.rarity);
+
+        petContainer.addChild(petSprite);
+
+        // Mount canvas if not already
+        mountPixiCanvas();
+
+        // Initial sparkle effect
+        if (petData.is_shiny) {
+            emitParticles('sparkle', 10);
+        }
+
+        console.log(`✅ Animated pet loaded: ${speciesKey} (${frames.length} frames)`);
+
+    } catch (error) {
+        console.error('Failed to load animated sprite:', error);
+        // Fallback to static image
+        loadStaticPet(petData);
+    }
+}
+
+/**
+ * Extract individual frame textures from a grid-based spritesheet
+ * @param {PIXI.Texture} baseTexture - The loaded spritesheet texture
+ * @param {number} frameWidth - Width of each frame in pixels
+ * @param {number} frameHeight - Height of each frame in pixels
+ * @param {number} columns - Number of columns in the grid
+ * @param {number} rows - Number of rows in the grid
+ * @param {number} totalFrames - Total number of frames to extract
+ * @returns {PIXI.Texture[]} Array of frame textures
+ */
+function extractFramesFromGrid(baseTexture, frameWidth, frameHeight, columns, rows, totalFrames) {
+    const frames = [];
+    let frameCount = 0;
+
+    for (let row = 0; row < rows && frameCount < totalFrames; row++) {
+        for (let col = 0; col < columns && frameCount < totalFrames; col++) {
+            const rect = new PIXI.Rectangle(
+                col * frameWidth,
+                row * frameHeight,
+                frameWidth,
+                frameHeight
+            );
+
+            const frameTexture = new PIXI.Texture(baseTexture.baseTexture || baseTexture, rect);
+            frames.push(frameTexture);
+            frameCount++;
+        }
+    }
+
+    return frames;
+}
+
+/**
+ * Switch the current animation (for future use in battles)
+ * @param {string} animationName - Name of the animation ('idle', 'attack', 'summon')
+ */
+async function switchAnimation(animationName) {
+    if (!isAnimatedSprite || !petSprite || !currentPetData) return;
+
+    const config = getSpriteConfig(currentPetData.species_name);
+    if (!config || !config.animations[animationName]) return;
+
+    // Check if already cached
+    if (animatedTextures[animationName]) {
+        playAnimation(animationName, config.animations[animationName]);
+        return;
+    }
+
+    // Load the animation spritesheet
+    const speciesKey = currentPetData.species_name.toLowerCase().replace(/\s+/g, '');
+    const element = currentPetData.element || config.element;
+    const animPath = `/moe/assets/pets/${element}/${speciesKey}/${config.animations[animationName].file}`;
+
+    try {
+        const baseTexture = await PIXI.Assets.load(animPath);
+        const frames = extractFramesFromGrid(
+            baseTexture,
+            config.frameWidth,
+            config.frameHeight,
+            config.columns,
+            config.rows,
+            config.animations[animationName].totalFrames
+        );
+
+        animatedTextures[animationName] = frames;
+        playAnimation(animationName, config.animations[animationName]);
+
+    } catch (error) {
+        console.error(`Failed to load ${animationName} animation:`, error);
+    }
+}
+
+/**
+ * Play a cached animation
+ */
+function playAnimation(animationName, animConfig) {
+    if (!petSprite || !animatedTextures[animationName]) return;
+
+    petSprite.textures = animatedTextures[animationName];
+    petSprite.animationSpeed = animConfig.speed;
+    petSprite.loop = animConfig.loop;
+    petSprite.gotoAndPlay(0);
+
+    currentAnimation = animationName;
+
+    // If not looping, return to idle when done
+    if (!animConfig.loop) {
+        petSprite.onComplete = () => {
+            if (animatedTextures.idle) {
+                playAnimation('idle', { speed: 0.15, loop: true });
+            }
+        };
+    } else {
+        petSprite.onComplete = null;
     }
 }
 
@@ -530,8 +743,16 @@ window.PixiPet = {
     hearts: (count = 5) => emitParticles('heart', count),
     stars: (count = 8) => emitParticles('star', count),
 
+    // Animation control (for animated sprites)
+    switchAnimation: switchAnimation,
+    playAttack: () => switchAnimation('attack'),
+    playSummon: () => switchAnimation('summon'),
+    playIdle: () => switchAnimation('idle'),
+
     // State
     isReady: () => isPixiReady,
+    isAnimated: () => isAnimatedSprite,
+    getCurrentAnimation: () => currentAnimation,
     getApp: () => pixiApp
 };
 

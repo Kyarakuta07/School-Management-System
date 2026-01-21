@@ -206,6 +206,7 @@ if (empty($battle_id)) {
 
     <!-- Battle JS (with cache busting) -->
     <script src="<?= asset('user/js/sound_manager.js', '../') ?>"></script>
+    <script src="<?= asset('user/js/sprite_config.js', '../') ?>"></script>
     <script src="<?= asset('user/js/pixi_battle.js', '../') ?>"></script>
     <script src="<?= asset('user/js/battle_3v3.js', '../') ?>"></script>
 </body>
