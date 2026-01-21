@@ -280,16 +280,20 @@ function loadStaticPet(petData) {
 // ================================================
 async function loadAnimatedPet(petData, config) {
     const speciesKey = petData.species_name.toLowerCase().replace(/\s+/g, '');
-    const element = petData.element || config.element || 'dark';
+    // IMPORTANT: element MUST be lowercase to match folder name
+    const element = (petData.element || config.element || 'dark').toLowerCase();
 
     console.log(`🎬 Loading animated sprite for ${speciesKey}...`);
+    console.log(`📂 Element: ${element}, Species: ${speciesKey}`);
 
     try {
         // Build path to idle animation spritesheet
         const idlePath = `/moe/assets/pets/${element}/${speciesKey}/idle.png`;
+        console.log(`🔗 Attempting to load: ${idlePath}`);
 
         // Load the spritesheet image
         const baseTexture = await PIXI.Assets.load(idlePath);
+        console.log('✅ Spritesheet loaded successfully');
 
         // Extract frames from grid spritesheet
         const frames = extractFramesFromGrid(
@@ -300,6 +304,8 @@ async function loadAnimatedPet(petData, config) {
             config.rows,
             config.animations.idle.totalFrames
         );
+
+        console.log(`🎞️ Extracted ${frames.length} frames`);
 
         if (frames.length === 0) {
             console.warn('No frames extracted, falling back to static');
