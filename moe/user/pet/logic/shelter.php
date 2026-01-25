@@ -6,6 +6,9 @@
  * Handles shelter mode toggle and active pet selection.
  */
 
+// Shelter configuration
+define('SHELTER_MAX_PETS', 3); // Maximum pets allowed in shelter per user
+
 /**
  * Toggle shelter mode for a pet
  * In shelter: stats don't decay, but pet can't gain EXP or battle
@@ -33,6 +36,26 @@ function toggleShelter($conn, $user_id, $pet_id)
     }
 
     $new_status = ($pet['status'] === 'SHELTER') ? 'ALIVE' : 'SHELTER';
+
+    // Check shelter limit when trying to shelter a pet
+    if ($new_status === 'SHELTER') {
+        $count_stmt = mysqli_prepare($conn, "SELECT COUNT(*) as count FROM user_pets WHERE user_id = ? AND status = 'SHELTER'");
+        mysqli_stmt_bind_param($count_stmt, "i", $user_id);
+        mysqli_stmt_execute($count_stmt);
+        $count_result = mysqli_stmt_get_result($count_stmt);
+        $count_row = mysqli_fetch_assoc($count_result);
+        mysqli_stmt_close($count_stmt);
+
+        if ($count_row['count'] >= SHELTER_MAX_PETS) {
+            return [
+                'success' => false,
+                'error' => "Shelter is full! Maximum " . SHELTER_MAX_PETS . " pets allowed.",
+                'shelter_count' => $count_row['count'],
+                'shelter_limit' => SHELTER_MAX_PETS
+            ];
+        }
+    }
+
     $is_active = 0; // Sheltered pets can't be active
 
     $update = mysqli_prepare($conn, "UPDATE user_pets SET status = ?, is_active = ?, last_update_timestamp = ? WHERE id = ?");
