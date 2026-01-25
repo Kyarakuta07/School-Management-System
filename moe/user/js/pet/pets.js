@@ -337,6 +337,8 @@ export async function toggleShelter(targetPetId = null) {
             // so DOM elements exist when loadActivePet renders
             if (data.new_status === 'ALIVE') {
                 switchTab('my-pet');
+                // Wait for DOM to be ready after tab switch
+                await new Promise(resolve => setTimeout(resolve, 150));
             }
 
             await loadPets();
