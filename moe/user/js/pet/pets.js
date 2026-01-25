@@ -332,13 +332,15 @@ export async function toggleShelter(targetPetId = null) {
 
         if (data.success) {
             showToast(data.message, 'success');
-            await loadPets();
-            await loadActivePet();
 
-            // If pet was retrieved from shelter, switch to My Pet tab
+            // If pet was retrieved from shelter, switch to My Pet tab FIRST
+            // so DOM elements exist when loadActivePet renders
             if (data.new_status === 'ALIVE') {
                 switchTab('my-pet');
             }
+
+            await loadPets();
+            await loadActivePet();
         } else {
             showToast(data.error || 'Failed to toggle shelter', 'error');
         }
