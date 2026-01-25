@@ -707,8 +707,6 @@ window.openHelpModal = openHelpModal;
 window.closeHelpModal = closeHelpModal;
 window.switchHelpTab = switchHelpTab;
 
-// Expose pet detail modal functions
-window.setActivePet = setActivePet;
-window.openPetDetailById = openPetDetailById;
-window.closePetDetail = closePetDetail;
+// NOTE: setActivePet, openPetDetailById, closePetDetail are defined and exported in detail-modal.js
+// Do not re-export them here to avoid ReferenceError
 
