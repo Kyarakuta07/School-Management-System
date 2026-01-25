@@ -173,7 +173,12 @@ function define_base_path($relativePath = '')
  */
 function asset($path, $prefix = '')
 {
-    // Get moe root directory
+    // Use APP_VERSION if defined (set by GitHub Actions on deploy)
+    if (defined('APP_VERSION') && APP_VERSION !== 'dev') {
+        return $prefix . $path . '?v=' . APP_VERSION;
+    }
+
+    // Fallback: Get moe root directory
     $moeRoot = dirname(__DIR__);
 
     // Full path to the asset file

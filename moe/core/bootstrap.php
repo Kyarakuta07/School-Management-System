@@ -135,7 +135,15 @@ function load_activity_logger()
 // ==================================================
 define('APP_NAME', 'Mediterranean of Egypt');
 define('APP_SHORT_NAME', 'MOE');
-define('APP_VERSION', '1.0.0');
+
+// Load version from GitHub Actions deployment (if available)
+if (file_exists(__DIR__ . '/version.php')) {
+    require_once __DIR__ . '/version.php';
+}
+// Fallback to static version if not set by deployment
+if (!defined('APP_VERSION')) {
+    define('APP_VERSION', '1.0.0');
+}
 
 // Roles
 define('ROLE_NETHERA', 'Nethera');
