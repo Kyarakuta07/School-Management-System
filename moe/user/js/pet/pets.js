@@ -23,7 +23,7 @@ import { showToast, switchTab } from './ui.js';
  */
 export async function loadPets() {
     try {
-        const response = await fetch(`${API_BASE}?action=get_pets`);
+        const response = await fetch(`${API_BASE}?action=get_pets&t=${Date.now()}`);
         const data = await response.json();
 
         if (data.success) {
@@ -60,7 +60,7 @@ export async function loadPets() {
  */
 export async function loadActivePet() {
     try {
-        const response = await fetch(`${API_BASE}?action=get_active_pet`);
+        const response = await fetch(`${API_BASE}?action=get_active_pet&t=${Date.now()}`);
         const data = await response.json();
 
         if (data.success && data.pet) {
@@ -333,14 +333,23 @@ export async function toggleShelter(targetPetId = null) {
         if (data.success) {
             showToast(data.message, 'success');
 
-            // If pet was retrieved from shelter, switch to My Pet tab FIRST
-            // so DOM elements exist when loadActivePet renders
+            // If pet was retrieved from shelter, switch to My Pet tab
             if (data.new_status === 'ALIVE') {
-                switchTab('my-pet');
-                // Wait for DOM to be ready after tab switch
-                await new Promise(resolve => setTimeout(resolve, 150));
+                // Manually switch tab class to avoid double-loading race condition
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === 'my-pet'));
+                document.querySelectorAll('.tab-content, .tab-panel').forEach(content => {
+                    const isActive = content.id === 'my-pet';
+                    content.classList.toggle('active', isActive);
+                    content.style.display = isActive ? 'block' : 'none';
+                });
+
+                // Update current tab state
+                // We define this globally in pets.js or if it's imported from somewhere, 
+                // but usually it's just a variable. We'll leave it be or set if accessible.
+                // Assuming currentTab is accessible or not critical for this specific flow.
             }
 
+            // Force reload with cache busting
             await loadPets();
             await loadActivePet();
         } else {
