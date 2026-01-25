@@ -333,23 +333,14 @@ export async function toggleShelter(targetPetId = null) {
         if (data.success) {
             showToast(data.message, 'success');
 
-            // If pet was retrieved from shelter, switch to My Pet tab
+            // If pet was retrieved from shelter, redirect to my-pet tab with page refresh
+            // This is the most reliable way to ensure fresh data is loaded
             if (data.new_status === 'ALIVE') {
-                // Manually switch tab class to avoid double-loading race condition
-                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === 'my-pet'));
-                document.querySelectorAll('.tab-content, .tab-panel').forEach(content => {
-                    const isActive = content.id === 'my-pet';
-                    content.classList.toggle('active', isActive);
-                    content.style.display = isActive ? 'block' : 'none';
-                });
-
-                // Update current tab state
-                // We define this globally in pets.js or if it's imported from somewhere, 
-                // but usually it's just a variable. We'll leave it be or set if accessible.
-                // Assuming currentTab is accessible or not critical for this specific flow.
+                window.location.href = 'pet.php?tab=my-pet';
+                return; // Stop execution, page will reload
             }
 
-            // Force reload with cache busting
+            // For sheltering (not retrieve), just reload data normally
             await loadPets();
             await loadActivePet();
         } else {
