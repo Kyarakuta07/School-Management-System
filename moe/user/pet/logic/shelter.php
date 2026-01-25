@@ -56,7 +56,19 @@ function toggleShelter($conn, $user_id, $pet_id)
         }
     }
 
-    $is_active = 0; // Sheltered pets can't be active
+    // When sheltering: is_active = 0
+    // When retrieving: set as active pet (deactivate others first)
+    if ($new_status === 'SHELTER') {
+        $is_active = 0;
+    } else {
+        // Retrieving from shelter - deactivate all other pets first
+        $deactivate = mysqli_prepare($conn, "UPDATE user_pets SET is_active = 0 WHERE user_id = ?");
+        mysqli_stmt_bind_param($deactivate, "i", $user_id);
+        mysqli_stmt_execute($deactivate);
+        mysqli_stmt_close($deactivate);
+
+        $is_active = 1; // Set retrieved pet as active
+    }
 
     $update = mysqli_prepare($conn, "UPDATE user_pets SET status = ?, is_active = ?, last_update_timestamp = ? WHERE id = ?");
     $current_time = time();
