@@ -97,6 +97,12 @@ export function renderActivePet() {
     const expCard = document.getElementById('exp-card');
     const actions = document.getElementById('action-buttons');
 
+    // Check if required elements exist (they may not exist on collection/other tabs)
+    if (!noPetMsg || !petZone || !infoHeader || !statsContainer || !expCard || !actions) {
+        console.log('renderActivePet: Required DOM elements not found, skipping render');
+        return;
+    }
+
     if (!state.activePet) {
         showNoPetMessage();
         return;
@@ -188,6 +194,15 @@ export function updateCircularProgress(type, value) {
  */
 export function showNoPetMessage() {
     const stage = document.getElementById('pet-stage');
+    const petInfo = document.getElementById('pet-info');
+    const actionButtons = document.getElementById('action-buttons');
+
+    // Skip if required elements don't exist
+    if (!stage) {
+        console.log('showNoPetMessage: Required DOM elements not found, skipping');
+        return;
+    }
+
     stage.innerHTML = `
         <div class="no-pet-message">
             <i class="fas fa-egg fa-3x"></i>
@@ -198,8 +213,8 @@ export function showNoPetMessage() {
         </div>
     `;
 
-    document.getElementById('pet-info').style.display = 'none';
-    document.getElementById('action-buttons').style.display = 'none';
+    if (petInfo) petInfo.style.display = 'none';
+    if (actionButtons) actionButtons.style.display = 'none';
 }
 
 // ================================================
