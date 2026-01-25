@@ -51,8 +51,8 @@ async function setActivePet(petId) {
 
         if (data.success) {
             showToast('Pet is now active!', 'success');
-            await loadPets();
-            switchTab('my-pet');
+            // Redirect to my-pet tab with page refresh for consistent behavior
+            window.location.href = 'pet.php?tab=my-pet';
         } else {
             showToast(data.error || 'Failed to set active pet', 'error');
         }
@@ -216,8 +216,8 @@ async function setActiveFromDetail() {
         if (data.success) {
             showToast('Pet is now active!', 'success');
             closePetDetail();
-            await loadPets();
-            switchTab('my-pet');
+            // Redirect to my-pet tab with page refresh for consistent behavior
+            window.location.href = 'pet.php?tab=my-pet';
         } else {
             showToast(data.error || 'Failed to set active pet', 'error');
         }
