@@ -360,6 +360,13 @@ class QuizController
      */
     private function updateGradeFromQuiz($userId, $subject, $score)
     {
+        // SECURITY FIX: Whitelist validation to prevent SQL injection
+        $allowed_subjects = ['history', 'herbology', 'oceanology', 'astronomy'];
+        if (!in_array($subject, $allowed_subjects)) {
+            error_log("Invalid subject attempted in updateGradeFromQuiz: $subject");
+            return;
+        }
+
         // Check if grade record exists
         $existingGrade = DB::queryOne(
             "SELECT * FROM class_grades WHERE id_nethera = ?",
@@ -372,12 +379,13 @@ class QuizController
             $newScore = $currentSubjectScore + $score;
             $newTotal = $existingGrade['total_pp'] + $score;
 
+            // Now safe to use $subject in query after whitelist validation
             DB::execute(
                 "UPDATE class_grades SET $subject = ?, total_pp = ? WHERE id_nethera = ?",
                 [$newScore, $newTotal, $userId]
             );
         } else {
-            // Create new grade record
+            // Create new grade record - also safe after whitelist validation
             DB::execute(
                 "INSERT INTO class_grades (id_nethera, class_name, $subject, total_pp)
                  VALUES (?, 'Default Class', ?, ?)",

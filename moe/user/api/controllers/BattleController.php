@@ -61,8 +61,6 @@ class BattleController extends BaseController
         $attacker_pet_id = isset($input['attacker_pet_id']) ? (int) $input['attacker_pet_id'] : 0;
         $defender_pet_id = isset($input['defender_pet_id']) ? (int) $input['defender_pet_id'] : 0;
         $winner = isset($input['winner']) ? $input['winner'] : '';
-        $gold_reward = isset($input['gold_reward']) ? (int) $input['gold_reward'] : 0;
-        $exp_reward = isset($input['exp_reward']) ? (int) $input['exp_reward'] : 0;
 
         if (!$attacker_pet_id) {
             $this->error('Attacker pet ID required');
@@ -77,6 +75,55 @@ class BattleController extends BaseController
         }
 
         $player_won = ($winner === 'attacker');
+        
+        // SECURITY FIX: Calculate rewards SERVER-SIDE, not from client input
+        $gold_reward = 0;
+        $exp_reward = 0;
+        
+        if ($player_won) {
+            // Get defender pet data for reward calculation
+            $defender_pet = null;
+            if ($defender_pet_id > 0) {
+                // Real player pet
+                $stmt = mysqli_prepare($this->conn, "SELECT up.level, ps.rarity FROM user_pets up JOIN pet_species ps ON up.species_id = ps.id WHERE up.id = ?");
+                mysqli_stmt_bind_param($stmt, "i", $defender_pet_id);
+                mysqli_stmt_execute($stmt);
+                $result = mysqli_stmt_get_result($stmt);
+                $defender_pet = mysqli_fetch_assoc($result);
+                mysqli_stmt_close($stmt);
+            }
+            
+            // Calculate rewards based on opponent level and rarity
+            if ($defender_pet) {
+                $opponent_level = (int) $defender_pet['level'];
+                $rarity = strtolower($defender_pet['rarity']);
+                
+                // Base gold: 5 + (opponent_level * 1.5)
+                $base_gold = 5 + (int)($opponent_level * 1.5);
+                
+                // Rarity multiplier
+                $rarity_multipliers = [
+                    'common' => 1.0,
+                    'uncommon' => 1.2,
+                    'rare' => 1.5,
+                    'epic' => 2.0,
+                    'legendary' => 3.0
+                ];
+                $multiplier = $rarity_multipliers[$rarity] ?? 1.0;
+                
+                $gold_reward = (int)($base_gold * $multiplier);
+                $exp_reward = 10 + (int)($opponent_level * 2);
+                
+                // Cap rewards to prevent exploits
+                $gold_reward = min($gold_reward, 100);
+                $exp_reward = min($exp_reward, 150);
+            } else {
+                // AI opponent (negative ID) - fixed small rewards
+                $gold_reward = 15;
+                $exp_reward = 20;
+            }
+        }
+        
         $loser_pet_id = $player_won ? $defender_pet_id : $attacker_pet_id;
 
         // Record battle in pet_battles table
