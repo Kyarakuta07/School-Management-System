@@ -63,9 +63,11 @@ if ($stmt) {
         $_SESSION['status_login'] = "berhasil";
         $_SESSION['last_activity'] = time();
 
-        // Update last login time - use simple query (safer on shared hosting)
-        $user_id = (int) $data['id_nethera'];
-        mysqli_query($conn, "UPDATE nethera SET last_login = NOW() WHERE id_nethera = {$user_id}");
+        // Update last login time - use prepared statement for security
+        $stmt_update = mysqli_prepare($conn, "UPDATE nethera SET last_login = NOW() WHERE id_nethera = ?");
+        mysqli_stmt_bind_param($stmt_update, "i", $data['id_nethera']);
+        mysqli_stmt_execute($stmt_update);
+        mysqli_stmt_close($stmt_update);
 
         // Regenerate CSRF token
         regenerate_csrf_token();
