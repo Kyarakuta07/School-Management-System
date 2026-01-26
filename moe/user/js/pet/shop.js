@@ -188,7 +188,22 @@ export function buyItem(itemId) {
 
     state.currentShopItem = item;
 
-    document.getElementById('shop-modal-img').src = ASSETS_BASE + (item.img_path || 'placeholder.png');
+    // Set FontAwesome icon (XSS-safe: getItemIcon uses controlled mapping, no user input)
+    const icon = getItemIcon(item.name, item.effect_type);
+    const iconElement = document.getElementById('shop-modal-icon');
+    iconElement.className = `fas ${icon}`; // Safe: icon comes from controlled function
+
+    // Set rarity styling
+    let rarity = 'common';
+    if (item.price >= 1000) rarity = 'legendary';
+    else if (item.price >= 500) rarity = 'epic';
+    else if (item.price >= 200) rarity = 'rare';
+    else if (item.price >= 100) rarity = 'uncommon';
+
+    const wrapper = document.getElementById('shop-modal-icon-wrapper');
+    wrapper.className = `modal-icon-wrapper ${rarity}`; // Safe: rarity is controlled value
+
+    // Set text content (XSS-safe: textContent auto-escapes)
     document.getElementById('shop-modal-name').textContent = item.name;
     document.getElementById('shop-modal-desc').textContent = item.description;
     document.getElementById('shop-unit-price').textContent = item.price;

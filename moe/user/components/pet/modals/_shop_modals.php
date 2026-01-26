@@ -12,7 +12,10 @@
             </button>
         </div>
         <div class="modal-body">
-            <img id="shop-modal-img" src="" alt="Item">
+            <!-- FontAwesome Icon (XSS-safe, controlled by getItemIcon) -->
+            <div class="modal-icon-wrapper" id="shop-modal-icon-wrapper">
+                <i class="fas fa-star" id="shop-modal-icon"></i>
+            </div>
             <h4 id="shop-modal-name">Item Name</h4>
             <p id="shop-modal-desc">Item description</p>
 
@@ -87,8 +90,10 @@
             </button>
         </div>
         <div class="modal-body">
-            <img id="bulk-item-img" src="" alt="Item"
-                style="width: 100px; height: 100px; object-fit: contain; margin: 1rem auto; display: block;">
+            <!-- FontAwesome Icon (secure, no user input) -->
+            <div class="modal-icon-wrapper small" id="bulk-item-icon-wrapper">
+                <i class="fas fa-star" id="bulk-item-icon"></i>
+            </div>
             <p id="bulk-item-desc" style="text-align: center; color: rgba(255,255,255,0.7); margin-bottom: 1.5rem;">
             </p>
 

@@ -9,6 +9,7 @@ import { API_BASE, ASSETS_BASE } from './config.js';
 import { state } from './state.js';
 import { showToast, updateGoldDisplay } from './ui.js';
 import { loadPets, loadActivePet, getPetImagePath } from './pets.js';
+import { getItemIcon, getItemCategory } from './shop.js'; // Import icon mapping
 
 // ================================================
 // INVENTORY LOADING & DISPLAY
@@ -122,9 +123,18 @@ export async function handleInventoryClick(itemId, type, itemName, itemDesc, ite
         return;
     }
 
+    // Get item from inventory for effect_type
+    const inventoryItem = state.userInventory.find(i => i.item_id === itemId);
+    const effect_type = inventoryItem ? inventoryItem.effect_type : 'special';
+
+    // Set FontAwesome icon (XSS-safe: controlled function, no user input)
+    const icon = getItemIcon(itemName, effect_type);
+    const iconElement = document.getElementById('bulk-item-icon');
+    iconElement.className = `fas ${icon}`; // Safe: icon from controlled mapping
+
+    // Set text content (XSS-safe: textContent auto-escapes HTML)
     document.getElementById('bulk-modal-title').textContent = itemName;
     document.getElementById('bulk-item-desc').textContent = itemDesc;
-    document.getElementById('bulk-item-img').src = ASSETS_BASE + itemImg;
     document.getElementById('bulk-item-qty').max = maxQty;
     document.getElementById('bulk-item-qty').value = 1;
 
