@@ -98,6 +98,103 @@
         color: #888;
     }
 
+    /* Inventory Icon Wrapper (for inventory grid) */
+    .inventory-item-icon-wrapper {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 0.5rem;
+        background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+        border: 2px solid #d4af37;
+    }
+
+    .inventory-item-icon-wrapper i {
+        font-size: 24px;
+        color: #d4af37;
+    }
+
+    /* Rarity variants for inventory icons */
+    .inventory-item-icon-wrapper.common {
+        border-color: #9ca3af;
+    }
+
+    .inventory-item-icon-wrapper.common i {
+        color: #9ca3af;
+    }
+
+    .inventory-item-icon-wrapper.uncommon {
+        border-color: #10b981;
+    }
+
+    .inventory-item-icon-wrapper.uncommon i {
+        color: #10b981;
+    }
+
+    .inventory-item-icon-wrapper.rare {
+        border-color: #3b82f6;
+    }
+
+    .inventory-item-icon-wrapper.rare i {
+        color: #3b82f6;
+    }
+
+    .inventory-item-icon-wrapper.epic {
+        border-color: #a855f7;
+    }
+
+    .inventory-item-icon-wrapper.epic i {
+        color: #a855f7;
+    }
+
+    .inventory-item-icon-wrapper.legendary {
+        border-color: #f59e0b;
+    }
+
+    .inventory-item-icon-wrapper.legendary i {
+        color: #f59e0b;
+    }
+
+    /* Item Option Icon Wrapper (for feed/heal modal) */
+    .item-option-icon-wrapper {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+        border: 2px solid #d4af37;
+        flex-shrink: 0;
+    }
+
+    .item-option-icon-wrapper i {
+        font-size: 20px;
+        color: #d4af37;
+    }
+
+    @media (max-width: 480px) {
+        .inventory-item-icon-wrapper {
+            width: 40px;
+            height: 40px;
+        }
+
+        .inventory-item-icon-wrapper i {
+            font-size: 20px;
+        }
+
+        .item-option-icon-wrapper {
+            width: 36px;
+            height: 36px;
+        }
+
+        .item-option-icon-wrapper i {
+            font-size: 18px;
+        }
+    }
+
     .inventory-section {
         margin-top: 24px;
         padding-top: 24px;

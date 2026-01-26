@@ -51,6 +51,9 @@ export function renderInventory() {
 
         const isDepleted = item.quantity === 0;
 
+        // Get FA icon (XSS-safe: controlled mapping)
+        const icon = getItemIcon(item.name, item.effect_type);
+
         return `
         <div class="inventory-item-card ${rarity} ${isDepleted ? 'depleted' : ''}" 
              onclick="${!isDepleted ? `handleInventoryClick(
@@ -62,9 +65,8 @@ export function renderInventory() {
                  ${item.quantity}
              )` : 'void(0)'}" 
              title="${item.name}${item.description ? ' - ' + item.description : ''}">
-            <div class="inventory-item-img-wrapper">
-                <img src="${ASSETS_BASE}${item.img_path}" alt="${item.name}"
-                     onerror="this.src='../assets/placeholder.png'">
+            <div class="inventory-item-icon-wrapper ${rarity}">
+                <i class="fas ${icon}"></i>
             </div>
             <span class="inventory-qty-badge">${item.quantity}</span>
             <p class="inventory-item-name">${item.name}</p>
@@ -260,11 +262,13 @@ export async function openItemModal(type) {
         list.innerHTML = `<div class="empty-message">No items! Visit shop.</div>`;
     } else {
         list.innerHTML = items.map(item => {
-            // Use correct path for item images
-            const imgPath = item.img_path ? `../assets/items/${item.img_path}` : '../assets/placeholder.png';
+            // Get FA icon (XSS-safe: controlled mapping)
+            const icon = getItemIcon(item.name, item.effect_type);
             return `
             <div class="item-option" onclick="useItem(${item.item_id}, ${state.activePet.id}, 1)">
-                <img src="${imgPath}" onerror="this.src='../assets/placeholder.png'">
+                <div class="item-option-icon-wrapper">
+                    <i class="fas ${icon}"></i>
+                </div>
                 <div class="item-option-name">${item.name}</div>
                 <div class="item-option-qty">x${item.quantity}</div>
             </div>
