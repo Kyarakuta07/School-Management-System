@@ -4,4 +4,43 @@
 <IfModule mod_headers.c>
     # Content Security Policy - allow inline scripts and CDNs
     Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com data:; img-src 'self' data: https: blob:; connect-src 'self' https:; worker-src 'self' blob:;"
+    
+    # ========================================
+    # CACHE CONTROL - Force Mobile to Revalidate
+    # ========================================
+    
+    # HTML/PHP: Never cache (always fresh)
+    <FilesMatch "\.(html|php)$">
+        Header set Cache-Control "no-cache, no-store, must-revalidate, max-age=0"
+        Header set Pragma "no-cache"
+        Header set Expires "0"
+    </FilesMatch>
+
+    # CSS & JS: Cache but MUST revalidate with server
+    # This forces mobile browsers to check for updates
+    <FilesMatch "\.(css|js)$">
+        # Cache for 1 hour BUT must revalidate every request
+        Header set Cache-Control "public, max-age=3600, must-revalidate, stale-while-revalidate=0"
+        
+        # Enable ETag for validation
+        FileETag MTime Size
+    </FilesMatch>
+
+    # Images: Cache longer (rarely change)
+    <FilesMatch "\.(jpg|jpeg|png|gif|webp|svg|ico)$">
+        Header set Cache-Control "public, max-age=86400, must-revalidate"
+    </FilesMatch>
+
+    # API JSON: Never cache
+    <FilesMatch "\.json$">
+        Header set Cache-Control "no-cache, no-store, must-revalidate"
+        Header set Pragma "no-cache"
+    </FilesMatch>
+</IfModule>
+
+# ========================================
+# COMPRESSION (Faster downloads)
+# ========================================
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json
 </IfModule>
