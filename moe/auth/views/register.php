@@ -123,9 +123,18 @@ if (isset($_GET['error'])) {
 
             <div class="input-group">
                 <label for="password">Password</label>
-                <input type="password" name="password" class="form-control" placeholder="Password yang aman" required
-                    autocomplete="new-password">
+                <input type="password" id="password" name="password" class="form-control"
+                    placeholder="Password yang aman" required autocomplete="new-password">
                 <i class="fa-solid fa-lock input-icon"></i>
+                <!-- Password Strength Indicator -->
+                <div id="password-strength" style="margin-top: 0.5rem; display: none;">
+                    <div
+                        style="height: 4px; background: #2a2a2a; border-radius: 2px; overflow: hidden; margin-bottom: 0.3rem;">
+                        <div id="strength-bar"
+                            style="height: 100%; width: 0%; transition: all 0.3s; background: #ff4444;"></div>
+                    </div>
+                    <small id="strength-text" style="color: #ff4444; font-size: 0.85rem;">Weak</small>
+                </div>
             </div>
 
             <div class="input-group">
@@ -150,6 +159,55 @@ if (isset($_GET['error'])) {
             <i class="fa-solid fa-arrow-left"></i> Kembali ke Login
         </a>
     </div>
+
+    <script>
+        // Password Strength Indicator
+        const passwordInput = document.getElementById('password');
+        const strengthIndicator = document.getElementById('password-strength');
+        const strengthBar = document.getElementById('strength-bar');
+        const strengthText = document.getElementById('strength-text');
+
+        passwordInput.addEventListener('input', function () {
+            const password = this.value;
+
+            if (password.length === 0) {
+                strengthIndicator.style.display = 'none';
+                return;
+            }
+
+            strengthIndicator.style.display = 'block';
+
+            let strength = 0;
+            const checks = {
+                length8: password.length >= 8,
+                length12: password.length >= 12,
+                mixed: /[a-z]/.test(password) && /[A-Z]/.test(password),
+                number: /\d/.test(password),
+                special: /[^a-zA-Z\d]/.test(password)
+            };
+
+            if (checks.length8) strength++;
+            if (checks.length12) strength++;
+            if (checks.mixed) strength++;
+            if (checks.number) strength++;
+            if (checks.special) strength++;
+
+            const levels = [
+                { label: 'Very Weak', color: '#ff4444', width: '20%' },
+                { label: 'Weak', color: '#ff8800', width: '40%' },
+                { label: 'Fair', color: '#ffbb33', width: '60%' },
+                { label: 'Good', color: '#00c851', width: '80%' },
+                { label: 'Strong', color: '#00c851', width: '90%' },
+                { label: 'Very Strong', color: '#007e33', width: '100%' }
+            ];
+
+            const level = levels[strength] || levels[0];
+            strengthBar.style.width = level.width;
+            strengthBar.style.background = level.color;
+            strengthText.textContent = level.label;
+            strengthText.style.color = level.color;
+        });
+    </script>
 </body>
 
 </html>
