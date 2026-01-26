@@ -418,6 +418,9 @@ async function start3v3Battle() {
 // Make function globally accessible
 window.start3v3Battle = start3v3Battle;
 
+// Make functions globally accessible
+window.loadArenaStats = loadArenaStats;
+
 // Initialize arena module
 console.log('✓ Arena module loaded');
 

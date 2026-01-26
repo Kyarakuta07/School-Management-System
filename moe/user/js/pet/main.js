@@ -66,6 +66,10 @@ document.addEventListener('tabChanged', (e) => {
         case 'arena':
             loadActivePet();
             loadOpponents();
+            // FIX: Auto-load arena stats on tab open (prevents zero state after battle)
+            if (typeof window.loadArenaStats === 'function') {
+                window.loadArenaStats();
+            }
             break;
         case 'achievements':
             loadAchievements();
