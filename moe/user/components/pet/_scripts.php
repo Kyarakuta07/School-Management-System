@@ -26,7 +26,7 @@
         LB_ASSETS = '/assets/pets/';
     }
 
-    var lbCurrentSort = 'level';
+    var lbCurrentSort = 'rank';
     var lbCurrentElement = 'all';
     var lbCurrentPeriod = 'monthly';
     var lbSearchQuery = '';

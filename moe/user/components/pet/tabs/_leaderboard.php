@@ -16,9 +16,9 @@
 
         <!-- Filter Tabs -->
         <div class="leaderboard-tabs">
-            <button class="lb-tab active" data-sort="level">
+            <button class="lb-tab active" data-sort="rank">
                 <span class="tab-icon-css icon-medal"></span>
-                <span class="tab-label">Level</span>
+                <span class="tab-label">Rank Points</span>
             </button>
             <button class="lb-tab" data-sort="wins">
                 <span class="tab-icon-css icon-sword"></span>
@@ -27,6 +27,10 @@
             <button class="lb-tab" data-sort="power">
                 <span class="tab-icon-css icon-power"></span>
                 <span class="tab-label">Power</span>
+            </button>
+            <button class="lb-tab" data-sort="level">
+                <span class="tab-icon-css icon-medal"></span>
+                <span class="tab-label">Level</span>
             </button>
         </div>
 
@@ -1110,6 +1114,200 @@
     }
 
     @media (min-width: 1440px) {
+        50% {
+            box-shadow: 0 0 25px #FF1493, 0 0 35px #9400D3;
+        }
+    }
+
+    /* ================================
+       HALL OF FAME
+       ================================ */
+    .hall-of-fame {
+        background: var(--lb-bg-glass);
+        backdrop-filter: blur(15px);
+        border-radius: clamp(14px, 3vw, 18px);
+        padding: clamp(0.85rem, 2vw, 1.25rem);
+        margin-top: clamp(1.5rem, 3vw, 2rem);
+        border: 1px solid var(--lb-border);
+    }
+
+    .hof-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: clamp(0.8rem, 2vw, 0.95rem);
+        font-weight: 600;
+    }
+
+    .hof-icon {
+        width: 18px;
+        height: 18px;
+        background: currentColor;
+        mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 3L4 9v12h16V9l-8-6zm0 2.5L18 10v9H6v-9l6-4.5z'/%3E%3C/svg%3E") center/contain no-repeat;
+        -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 3L4 9v12h16V9l-8-6zm0 2.5L18 10v9H6v-9l6-4.5z'/%3E%3C/svg%3E") center/contain no-repeat;
+    }
+
+    .hof-list {
+        display: flex;
+        gap: clamp(0.5rem, 1.5vw, 0.75rem);
+        overflow-x: auto;
+        padding: 0.5rem 0;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(212, 175, 55, 0.3) transparent;
+    }
+
+    .hof-list::-webkit-scrollbar {
+        height: 4px;
+    }
+
+    .hof-list::-webkit-scrollbar-thumb {
+        background: rgba(212, 175, 55, 0.3);
+        border-radius: 4px;
+    }
+
+    .hof-item {
+        flex-shrink: 0;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.04);
+        border-radius: 14px;
+        padding: clamp(0.6rem, 1.5vw, 0.85rem);
+        min-width: clamp(85px, 22vw, 105px);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        transition: all 0.3s ease;
+    }
+
+    .hof-item:hover {
+        background: rgba(255, 255, 255, 0.07);
+        border-color: rgba(212, 175, 55, 0.25);
+    }
+
+    .hof-item img {
+        width: clamp(45px, 12vw, 58px);
+        height: clamp(45px, 12vw, 58px);
+        border-radius: 50%;
+        object-fit: contain;
+        background: rgba(0, 0, 0, 0.25);
+        margin-bottom: 0.35rem;
+        border: 2px solid rgba(212, 175, 55, 0.35);
+    }
+
+    .hof-month {
+        font-size: clamp(0.6rem, 1.6vw, 0.7rem);
+        color: var(--lb-gold);
+        margin-bottom: 0.2rem;
+        font-weight: 600;
+    }
+
+    .hof-name {
+        font-size: clamp(0.65rem, 1.8vw, 0.8rem);
+        font-weight: 700;
+        color: #fff;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* ================================
+       LOADING & EMPTY STATES
+       ================================ */
+    .loading-spinner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 2.5rem;
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .spinner {
+        width: clamp(32px, 8vw, 42px);
+        height: clamp(32px, 8vw, 42px);
+        border: 3px solid rgba(212, 175, 55, 0.15);
+        border-top-color: var(--lb-gold);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+
+    .spinner.small {
+        width: 20px;
+        height: 20px;
+        border-width: 2px;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 2.5rem;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: clamp(0.9rem, 2.2vw, 1rem);
+    }
+
+    /* ================================
+       LOAD MORE BUTTON
+       ================================ */
+    .load-more-container {
+        text-align: center;
+        padding: 1.5rem 0;
+    }
+
+    .load-more-btn {
+        background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(212, 175, 55, 0.05));
+        border: 1px solid rgba(212, 175, 55, 0.35);
+        color: var(--lb-gold);
+        padding: clamp(0.65rem, 1.5vw, 0.8rem) clamp(1.6rem, 4vw, 2.2rem);
+        border-radius: 25px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: clamp(0.85rem, 2vw, 0.95rem);
+    }
+
+    .load-more-btn:hover {
+        background: linear-gradient(135deg, rgba(212, 175, 55, 0.25), rgba(212, 175, 55, 0.1));
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(212, 175, 55, 0.2);
+    }
+
+    /* ================================
+       DESKTOP ENHANCEMENTS (1024px+)
+       ================================ */
+    @media (min-width: 1024px) {
+        .leaderboard-container {
+            padding: 2.5rem;
+        }
+
+        .podium-section {
+            gap: 1.5rem;
+            min-height: 340px;
+        }
+
+        .podium-pet {
+            padding: 1.5rem;
+        }
+
+        .podium-pet.rank-1 .podium-img {
+            width: 130px;
+            height: 130px;
+        }
+
+        .lb-pet-card {
+            padding: 1.25rem;
+        }
+
+        .lb-pet-card:hover {
+            transform: translateX(10px);
+        }
+    }
+
+    @media (min-width: 1440px) {
         .leaderboard-container {
             max-width: 1000px;
         }
@@ -1124,6 +1322,12 @@
         object-fit: contain;
         vertical-align: middle;
         filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.4));
+        transition: transform 0.2s ease, filter 0.2s ease;
+    }
+
+    .tier-icon:hover {
+        transform: scale(1.1);
+        filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
     }
 
     .tier-icon-small {
@@ -1133,6 +1337,11 @@
         vertical-align: middle;
         margin-left: 6px;
         filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.3));
+        transition: transform 0.2s ease;
+    }
+
+    .tier-icon-small:hover {
+        transform: scale(1.15);
     }
 
     .podium-rp {
@@ -1140,6 +1349,7 @@
         color: var(--lb-gold);
         font-weight: 700;
         margin-top: 0.3rem;
+        text-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
     }
 
     .podium-stand {
@@ -1155,6 +1365,11 @@
         text-transform: uppercase;
         background: rgba(0, 0, 0, 0.3);
         border: 1px solid var(--lb-border);
+        transition: all 0.3s ease;
+    }
+
+    .podium-pet:hover .podium-stand {
+        transform: translateY(-2px);
     }
 
     .podium-pet.rank-1 .podium-stand {
