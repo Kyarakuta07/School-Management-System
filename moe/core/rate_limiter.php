@@ -55,13 +55,16 @@ class RateLimiter
     public function checkLimit($identifier, $action, $max_attempts, $time_window_minutes)
     {
         // Clean old records that are no longer locked and outside time window
+        // IMPORTANT: Only clean records for THIS SPECIFIC action to prevent
+        // shorter time windows from deleting records with longer time windows
         $cleanup_stmt = mysqli_prepare(
             $this->conn,
             "DELETE FROM rate_limits 
-             WHERE last_attempt < DATE_SUB(NOW(), INTERVAL ? MINUTE) 
+             WHERE action = ?
+             AND last_attempt < DATE_SUB(NOW(), INTERVAL ? MINUTE) 
              AND (locked_until IS NULL OR locked_until < NOW())"
         );
-        mysqli_stmt_bind_param($cleanup_stmt, "i", $time_window_minutes);
+        mysqli_stmt_bind_param($cleanup_stmt, "si", $action, $time_window_minutes);
         mysqli_stmt_execute($cleanup_stmt);
         mysqli_stmt_close($cleanup_stmt);
 
