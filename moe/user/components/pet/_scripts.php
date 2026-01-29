@@ -222,7 +222,6 @@
         }
 
         const top3 = pets.slice(0, 3);
-        const crowns = ['👑', '🥈', '🥉'];
 
         container.innerHTML = top3.map((pet, i) => {
             const rank = i + 1;
@@ -232,16 +231,13 @@
             return `
                 <div class="podium-pet rank-${rank}" onclick="openLeaderboardPetDetail(${pet.pet_id})">
                     <div class="podium-avatar">
-                        <span class="podium-crown">${crowns[i]}</span>
+                        <div class="podium-crown"></div>
                         <img class="podium-img" src="${img}" onerror="this.src='/moe/assets/placeholder.png'">
                     </div>
                     <div class="podium-name">${name}</div>
                     <div class="podium-owner">${pet.owner_name}</div>
                     <div class="podium-stat">${getLBStat(pet)}</div>
-                    <div class="podium-stand">
-                        <span style="font-size:0.5em; display:block; margin-top:-10px; opacity:0.7">Tier</span>
-                        ${pet.tier}
-                    </div>
+                    <div class="podium-stand">${pet.tier || 'Tier ' + rank}</div>
                 </div>
             `;
         }).join('');
