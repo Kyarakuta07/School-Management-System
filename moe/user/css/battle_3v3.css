@@ -24,6 +24,28 @@ body {
 }
 
 /* ================================================
+   Z-INDEX HIERARCHY & SAFE AREAS
+   ================================================ */
+:root {
+    /* Z-Index Layer System */
+    --z-background: 1;
+    --z-particles: 2;
+    --z-sprites: 10;
+    --z-hud-cards: 20;
+    --z-fct: 50;
+    --z-header: 80;
+    --z-controls: 100;
+    --z-log-toast: 150;
+    --z-modal: 500;
+
+    /* Safe Area Padding (Mobile notch/rounded corners) */
+    --safe-top: max(12px, env(safe-area-inset-top, 12px));
+    --safe-bottom: max(12px, env(safe-area-inset-bottom, 12px));
+    --safe-left: env(safe-area-inset-left, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
+}
+
+/* ================================================
    PIXI CONTAINER (Behind everything)
    ================================================ */
 #pixi-container {
@@ -42,7 +64,21 @@ body {
     pointer-events: none;
     overflow: hidden;
     z-index: 2;
-    background: radial-gradient(ellipse at center, rgba(30, 20, 50, 0.3) 0%, transparent 70%);
+    /* New Background Battle Asset */
+    background: url('../../assets/pets/background battle.png') no-repeat center bottom;
+    background-size: cover;
+}
+
+/* Dark Overlay for UI Contrast without hiding the art */
+.battle-mystical-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom,
+            rgba(0, 0, 0, 0.3) 0%,
+            rgba(0, 0, 0, 0) 40%,
+            rgba(0, 0, 0, 0.2) 100%);
+    z-index: 1;
 }
 
 .battle-mystical-bg .mystical-particle {
@@ -54,6 +90,8 @@ body {
     opacity: 0;
     animation: battle-float-particle 12s infinite ease-in-out;
     box-shadow: 0 0 10px rgba(218, 165, 32, 0.5);
+    z-index: 2;
+    /* Particles above overlay */
 }
 
 .battle-mystical-bg .mystical-particle:nth-child(1) {
@@ -224,11 +262,14 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 20px;
-    background: rgba(10, 10, 20, 0.7);
+    padding: 8px 16px;
+    padding-top: calc(8px + var(--safe-top));
+    padding-left: calc(16px + var(--safe-left));
+    padding-right: calc(16px + var(--safe-right));
+    background: rgba(10, 10, 20, 0.85);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(218, 165, 32, 0.2);
-    z-index: 100;
+    z-index: var(--z-header);
 }
 
 .back-btn,
@@ -306,21 +347,27 @@ body {
 }
 
 /* ================================================
-   BATTLE STAGE - 3D Perspective
+   BATTLE STAGE - 3D Perspective (FIXED SPACING)
    ================================================ */
 .battle-stage {
     display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    grid-template-columns: 1fr 80px 1fr;
+    /* Wider VS divider gap */
     align-items: center;
-    padding: 20px 40px;
+    padding: 15px 20px;
+    gap: 20px;
+    /* Add gap between grid items */
     position: relative;
     perspective: 1000px;
+    z-index: var(--z-sprites);
+    overflow: visible;
 }
 
 .team-area {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
+    z-index: var(--z-hud-cards);
 }
 
 .enemy-area {
@@ -1590,5 +1637,703 @@ body {
 
     .skill-btn i {
         font-size: 0.85rem;
+    }
+}
+
+/* ================================================
+   ADAPTIVE LAYOUT SYSTEM
+   Mobile: Vertical | Tablet: Modified | Desktop: Horizontal
+   ================================================ */
+
+/* === BATTLE MAIN CONTAINER === */
+.battle-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+}
+
+/* === SIDE PANELS (Hidden on Mobile) === */
+.side-panel {
+    display: none;
+    /* Hidden by default (mobile) */
+}
+
+.panel-section {
+    background: rgba(15, 12, 25, 0.9);
+    border: 1px solid rgba(218, 165, 32, 0.2);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 12px;
+}
+
+.panel-section h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    color: #DAA520;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.panel-pet-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.panel-pet-name {
+    font-weight: 600;
+    color: #fff;
+}
+
+.panel-hp-container {
+    width: 100%;
+    height: 20px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.panel-hp-bar {
+    height: 100%;
+    background: linear-gradient(180deg, #ff6b6b 0%, #e74c3c 50%, #c0392b 100%);
+    border-radius: 10px;
+    transition: width 0.3s;
+}
+
+.panel-hp-bar.player-hp {
+    background: linear-gradient(180deg, #5dade2 0%, #3498db 50%, #2980b9 100%);
+}
+
+.panel-hp-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.panel-bench {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+/* Desktop Battle Log in Side Panel */
+.desktop-log {
+    position: static !important;
+    transform: none !important;
+    max-height: 150px;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    padding: 8px;
+    font-size: 0.75rem;
+}
+
+/* === STAGE COMBATANT === */
+.stage-combatant {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+/* === MOBILE HUD (Visible on Mobile) === */
+.mobile-hud {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    max-width: 200px;
+}
+
+.mobile-hud .hp-bar-container {
+    width: 100%;
+}
+
+.mobile-hud .pet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+/* === MOBILE BENCH === */
+.mobile-bench {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-top: 4px;
+}
+
+/* === SKILLS CONTAINER (Centered with Max Width) === */
+.skills-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.control-panel {
+    padding: 12px 15px;
+    padding-bottom: calc(12px + var(--safe-bottom, 0px));
+    background: linear-gradient(180deg, rgba(15, 12, 25, 0.95), rgba(10, 10, 20, 0.98));
+    border-top: 1px solid rgba(218, 165, 32, 0.2);
+}
+
+/* === MOBILE BATTLE LOG - DISABLED (was covering enemy health) === */
+.mobile-log {
+    display: none !important;
+    /* Removed - use FCT instead */
+}
+
+/* ================================================
+   📱 MOBILE LAYOUT (< 768px) - Vertical Stacking
+   ================================================ */
+@media (max-width: 767px) {
+    .battle-container {
+        display: flex;
+        flex-direction: column;
+        height: 100dvh;
+    }
+
+    .battle-main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .battle-stage {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 10px 15px;
+        gap: 0;
+    }
+
+    /* Enemy at TOP */
+    .enemy-stage {
+        order: 1;
+        align-items: center;
+    }
+
+    /* Player at BOTTOM */
+    .player-stage {
+        order: 2;
+        align-items: center;
+    }
+
+    /* Hide VS divider on mobile */
+    .vs-divider {
+        display: none;
+    }
+
+    /* Hide desktop panels */
+    .side-panel {
+        display: none !important;
+    }
+
+    /* Hide desktop log */
+    .desktop-log {
+        display: none !important;
+    }
+
+    /* Show mobile HUD */
+    .mobile-hud {
+        display: flex;
+    }
+
+    /* Skills grid: compact 2x2 */
+    .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        flex: 1;
+    }
+
+    .skill-btn {
+        padding: 10px 8px;
+        font-size: 0.75rem;
+    }
+
+    /* Pet sprites mobile size - LARGE */
+    .pet-sprite {
+        width: 200px !important;
+        height: 200px !important;
+    }
+
+    .pet-sprite img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+}
+
+/* iPhone SE / Small phones */
+@media (max-width: 375px) {
+    .pet-sprite {
+        width: 160px !important;
+        height: 160px !important;
+    }
+
+    .mobile-hud {
+        max-width: 160px;
+    }
+
+    .skills-container {
+        max-width: 280px;
+    }
+
+    .skill-btn {
+        padding: 8px 6px;
+        font-size: 0.7rem;
+    }
+
+    .mobile-log {
+        max-width: 280px;
+        font-size: 0.7rem;
+    }
+}
+
+/* ================================================
+   📱💻 TABLET LAYOUT (768px - 1023px)
+   ================================================ */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .battle-container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .battle-stage {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        padding: 20px;
+    }
+
+    .enemy-stage {
+        order: 2;
+    }
+
+    .player-stage {
+        order: 1;
+    }
+
+    .vs-divider {
+        display: block;
+        order: unset;
+    }
+
+    .side-panel {
+        display: none;
+    }
+
+    .mobile-hud {
+        display: flex;
+    }
+
+    .pet-sprite {
+        width: 130px !important;
+        height: 130px !important;
+    }
+
+    .skills-container {
+        max-width: 450px;
+    }
+
+    .skills-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* ================================================
+   💻 DESKTOP LAYOUT (>= 1024px) - Horizontal 3-Column
+   ================================================ */
+@media (min-width: 1024px) {
+    .battle-container {
+        display: grid;
+        grid-template-areas:
+            "header header header"
+            "main main main"
+            "controls controls controls";
+        grid-template-rows: auto 1fr auto;
+        height: 100dvh;
+    }
+
+    .battle-header {
+        grid-area: header;
+    }
+
+    .battle-main {
+        grid-area: main;
+        display: grid;
+        grid-template-columns: 240px 1fr 240px;
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .control-panel {
+        grid-area: controls;
+    }
+
+    /* Show side panels */
+    .side-panel {
+        display: flex !important;
+        flex-direction: column;
+    }
+
+    .left-panel {
+        order: 1;
+    }
+
+    .battle-stage {
+        order: 2;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 60px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 16px;
+    }
+
+    .right-panel {
+        order: 3;
+    }
+
+    /* Hide mobile HUD on desktop */
+    .mobile-hud {
+        display: none !important;
+    }
+
+    /* Hide mobile log */
+    .mobile-log {
+        display: none !important;
+    }
+
+    /* Hide mobile bench */
+    .mobile-bench {
+        display: none !important;
+    }
+
+    /* Show VS divider */
+    .vs-divider {
+        display: flex;
+        font-size: 2rem;
+    }
+
+    /* Large sprites on desktop */
+    .pet-sprite {
+        width: 180px !important;
+        height: 180px !important;
+    }
+
+    /* Skills: 4-column, max-width 600px */
+    .skills-container {
+        max-width: 600px;
+    }
+
+    .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+    }
+
+    .skill-btn {
+        padding: 15px 10px;
+    }
+}
+
+/* Large Desktop (1440p+) */
+@media (min-width: 1440px) {
+    .battle-main {
+        grid-template-columns: 280px 1fr 280px;
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .pet-sprite {
+        width: 220px !important;
+        height: 220px !important;
+    }
+
+    .battle-stage {
+        gap: 100px;
+    }
+}
+
+/* ================================================
+   FCT (FLOATING COMBAT TEXT) SYSTEM
+   ================================================ */
+.fct {
+    position: fixed;
+    font-family: 'Cinzel', serif;
+    font-weight: 900;
+    font-size: 1.8rem;
+    pointer-events: none;
+    z-index: var(--z-fct, 50);
+    text-align: center;
+    transform: translateX(-50%);
+    animation: fctFloat 1.2s ease-out forwards;
+}
+
+.fct.damage {
+    color: #ff4444;
+    text-shadow:
+        0 0 10px rgba(255, 0, 0, 0.8),
+        0 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+.fct.heal {
+    color: #44ff44;
+    text-shadow:
+        0 0 10px rgba(0, 255, 0, 0.8),
+        0 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+.fct.miss {
+    color: #888888;
+    font-style: italic;
+    font-size: 1.4rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+.fct.crit {
+    font-size: 2.5rem;
+    color: #ffd700;
+    text-shadow:
+        0 0 20px rgba(255, 215, 0, 0.9),
+        0 0 40px rgba(255, 165, 0, 0.6),
+        0 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+.fct.effective {
+    color: #27ae60;
+    font-size: 2rem;
+}
+
+.fct.weak {
+    color: #7f8c8d;
+    font-size: 1.4rem;
+}
+
+@keyframes fctFloat {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(0) scale(0.5);
+    }
+
+    15% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-15px) scale(1.2);
+    }
+
+    30% {
+        transform: translateX(-50%) translateY(-25px) scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-60px) scale(0.8);
+    }
+}
+
+/* ================================================
+   TARGET GLOW EFFECT (Replace static popup)
+   ================================================ */
+.pet-sprite.targeted img {
+    animation: targetGlow 0.6s ease-in-out infinite alternate !important;
+}
+
+@keyframes targetGlow {
+    from {
+        filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
+    }
+
+    to {
+        filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.9)) drop-shadow(0 0 40px rgba(255, 165, 0, 0.5));
+    }
+}
+
+/* ================================================
+   SCREEN SHAKE (Critical Hit Effect)
+   ================================================ */
+.battle-stage.screen-shake {
+    animation: screenShake 0.4s ease-out;
+}
+
+@keyframes screenShake {
+
+    0%,
+    100% {
+        transform: translateX(0) translateY(0);
+    }
+
+    10% {
+        transform: translateX(-8px) translateY(-2px);
+    }
+
+    30% {
+        transform: translateX(8px) translateY(2px);
+    }
+
+    50% {
+        transform: translateX(-6px) translateY(-1px);
+    }
+
+    70% {
+        transform: translateX(6px) translateY(1px);
+    }
+
+    90% {
+        transform: translateX(-3px);
+    }
+}
+
+/* ================================================
+   COMPACT BATTLE LOG (Toast Style)
+   ================================================ */
+.battle-log {
+    position: fixed !important;
+    top: calc(var(--safe-top, 12px) + 60px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    max-width: min(400px, 90vw);
+    height: auto;
+    max-height: 50px;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(218, 165, 32, 0.3);
+    border-radius: 12px;
+    padding: 6px 16px;
+    font-size: 0.8rem;
+    z-index: var(--z-log-toast, 150);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.battle-log .log-entry {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    animation: logSlideIn 0.3s ease-out;
+}
+
+/* Only show last 2 entries */
+.battle-log .log-entry:not(:last-child):not(:nth-last-child(2)) {
+    display: none;
+}
+
+@keyframes logSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ================================================
+   ACTIVE PET CARD - Reduced Bulk
+   ================================================ */
+.active-pet {
+    padding: 12px !important;
+    max-width: 190px;
+    background: linear-gradient(135deg, rgba(20, 15, 35, 0.85), rgba(10, 10, 25, 0.75)) !important;
+}
+
+.pet-sprite {
+    width: 110px !important;
+    height: 110px !important;
+}
+
+/* ================================================
+   MOBILE RESPONSIVE FIXES
+   ================================================ */
+@media (max-width: 768px) {
+    .battle-stage {
+        grid-template-columns: 1fr 50px 1fr;
+        padding: 10px 12px;
+        gap: 10px;
+    }
+
+    .active-pet {
+        padding: 8px !important;
+        max-width: 150px;
+    }
+
+    .pet-sprite {
+        width: 85px !important;
+        height: 85px !important;
+    }
+
+    .pet-name {
+        font-size: 0.75rem;
+    }
+
+    .hp-bar-container {
+        width: 130px;
+        height: 18px;
+    }
+
+    .vs-divider {
+        font-size: 1rem;
+        padding: 0 8px;
+    }
+
+    .fct {
+        font-size: 1.4rem;
+    }
+
+    .fct.crit {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .battle-stage {
+        grid-template-columns: 1fr 30px 1fr;
+        padding: 8px;
+        gap: 5px;
+    }
+
+    .active-pet {
+        padding: 6px !important;
+        max-width: 120px;
+    }
+
+    .pet-sprite {
+        width: 65px !important;
+        height: 65px !important;
+    }
+
+    .hp-bar-container {
+        width: 100px;
+        height: 16px;
+    }
+
+    .battle-log {
+        max-width: 95vw;
+        font-size: 0.7rem;
     }
 }

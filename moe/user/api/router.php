@@ -92,6 +92,7 @@ $routes = [
     'battle_history' => ['BattleController', 'battleHistory'],
     'get_buff' => ['BattleController', 'getBuff'],
     'play_finish' => ['BattleController', 'playFinish'],
+    'petting' => ['BattleController', 'petting'],
     'get_leaderboard' => ['BattleController', 'getLeaderboard'],
     'battle_wins' => ['BattleController', 'battleWins'],
     'streak' => ['BattleController', 'streak'],

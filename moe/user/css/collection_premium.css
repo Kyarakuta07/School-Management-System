@@ -157,6 +157,7 @@
 .pet-card .rarity-badge {
     position: absolute;
     top: 8px;
+    left: auto;
     right: 8px;
     padding: 4px 10px;
     border-radius: 10px;

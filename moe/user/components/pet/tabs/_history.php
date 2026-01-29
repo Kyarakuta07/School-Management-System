@@ -10,15 +10,26 @@
 
         <!-- Stats Summary -->
         <div class="history-stats" id="history-stats">
-            <div class="stat-box">
+            <div class="stat-box attack">
+                <span class="stat-icon">⚔️</span>
                 <span class="stat-value" id="total-wins">0</span>
-                <span class="stat-label">Wins</span>
+                <span class="stat-label">Attack Wins</span>
             </div>
-            <div class="stat-box">
+            <div class="stat-box attack">
                 <span class="stat-value" id="total-losses">0</span>
-                <span class="stat-label">Losses</span>
+                <span class="stat-label">Attack Losses</span>
             </div>
-            <div class="stat-box">
+            <div class="stat-box defense">
+                <span class="stat-icon">🛡️</span>
+                <span class="stat-value" id="defense-wins">0</span>
+                <span class="stat-label">Defense Wins</span>
+            </div>
+            <div class="stat-box defense">
+                <span class="stat-value" id="defense-losses">0</span>
+                <span class="stat-label">Defense Losses</span>
+            </div>
+            <div class="stat-box streak">
+                <span class="stat-icon">🔥</span>
                 <span class="stat-value" id="win-streak">0</span>
                 <span class="stat-label">Streak</span>
             </div>

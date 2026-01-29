@@ -39,6 +39,10 @@ abstract class BaseController
      */
     protected function success($data = [], $message = null)
     {
+        // Clear any previous output (whitespace, warnings)
+        if (ob_get_length())
+            ob_clean();
+
         $response = array_merge(['success' => true], $data);
         if ($message) {
             $response['message'] = $message;
@@ -54,6 +58,10 @@ abstract class BaseController
      */
     protected function error($error, $code = 400)
     {
+        // Clear any previous output
+        if (ob_get_length())
+            ob_clean();
+
         http_response_code($code);
         echo json_encode([
             'success' => false,

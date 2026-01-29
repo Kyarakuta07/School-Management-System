@@ -188,6 +188,7 @@ export function closeBattleModal() {
 
 /**
  * Load the user's battle history
+ * Now includes both attacker and defender perspectives
  * @async
  * @returns {Promise<void>}
  */
@@ -198,18 +199,38 @@ export async function loadBattleHistory() {
         const response = await fetch(`${API_BASE}?action=battle_history`);
         const data = await response.json();
 
-        if (data.success && data.battles.length > 0) {
-            container.innerHTML = data.battles.map(battle => {
+        if (data.success && data.history && data.history.length > 0) {
+            container.innerHTML = data.history.map(battle => {
                 const date = new Date(battle.created_at).toLocaleDateString();
+                const time = new Date(battle.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const isDefender = battle.battle_role === 'defender';
+                const roleLabel = isDefender ? '🛡️ Defended' : '⚔️ Attacked';
+                const roleClass = isDefender ? 'role-defender' : 'role-attacker';
+                const resultClass = battle.won ? 'result-win' : 'result-loss';
+                const resultLabel = battle.won ? '🏆 Won' : '💀 Lost';
+
                 return `
-                    <div class="battle-history-item">
+                    <div class="battle-history-item ${roleClass} ${resultClass}">
                         <div class="battle-header">
-                            <span class="battle-date">${date}</span>
+                            <span class="battle-role ${roleClass}">${roleLabel}</span>
+                            <span class="battle-date">${date} ${time}</span>
+                            <span class="battle-result ${resultClass}">${resultLabel}</span>
                         </div>
                         <div class="battle-participants">
-                            <span>${battle.atk_display}</span>
+                            <div class="battle-pet my-pet">
+                                <img src="../assets/pets/${battle.my_pet_image}" alt="${battle.my_pet_name}" 
+                                     onerror="this.src='../assets/placeholder.png'">
+                                <span class="pet-name">${battle.my_pet_name}</span>
+                                <span class="pet-level">Lv.${battle.my_pet_level}</span>
+                            </div>
                             <span class="battle-vs">VS</span>
-                            <span>${battle.def_display}</span>
+                            <div class="battle-pet opp-pet">
+                                <img src="../assets/pets/${battle.opp_pet_image}" alt="${battle.opp_pet_name}"
+                                     onerror="this.src='../assets/placeholder.png'">
+                                <span class="pet-name">${battle.opp_pet_name}</span>
+                                <span class="pet-level">Lv.${battle.opp_pet_level}</span>
+                                <span class="opp-owner">by ${battle.opp_username}</span>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -217,7 +238,23 @@ export async function loadBattleHistory() {
         } else {
             container.innerHTML = '<div class="empty-message">No battles yet. Challenge someone!</div>';
         }
+
+        // Update stats display if exists
+        if (data.stats) {
+            const statsEl = document.getElementById('arena-stats');
+            if (statsEl) {
+                statsEl.innerHTML = `
+                    <div class="stat-item"><span class="stat-label">Attack Wins</span><span class="stat-value">${data.stats.wins}</span></div>
+                    <div class="stat-item"><span class="stat-label">Attack Losses</span><span class="stat-value">${data.stats.losses}</span></div>
+                    <div class="stat-item"><span class="stat-label">Defense Wins</span><span class="stat-value">${data.stats.defense_wins || 0}</span></div>
+                    <div class="stat-item"><span class="stat-label">Defense Losses</span><span class="stat-value">${data.stats.defense_losses || 0}</span></div>
+                    <div class="stat-item"><span class="stat-label">Win Streak</span><span class="stat-value">${data.stats.current_streak} 🔥</span></div>
+                    <div class="stat-item"><span class="stat-label">Battles Today</span><span class="stat-value">${data.stats.battles_remaining}/3</span></div>
+                `;
+            }
+        }
     } catch (error) {
         console.error('Error loading battle history:', error);
+        container.innerHTML = '<div class="empty-message">Failed to load battle history</div>';
     }
 }

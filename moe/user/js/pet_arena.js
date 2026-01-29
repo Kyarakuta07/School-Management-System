@@ -203,41 +203,58 @@ async function loadTeamSelection() {
             return;
         }
 
-        // Filter alive pets only
-        const alivePets = userPets.filter(pet => pet.status !== 'DEAD');
+        // Filter alive pets OR sheltered (so we can show them as disabled)
+        // We still exclude DEAD pets from appearing at all usually, or maybe show them as dead
+        // Requirement: "Status Sheltered berbeda dengan Dead. Pet itu ada, hanya sedang tidak aktif"
+        // Let's keep showing only ALIVE and SHELTER.
+        const eligiblePets = userPets.filter(pet => pet.status !== 'DEAD');
 
-        if (alivePets.length < 3) {
+        if (eligiblePets.length < 3) {
             container.innerHTML = `
                 <div class="no-pets-message">
                     <i class="fas fa-heart-broken"></i>
-                    <p>You need at least 3 alive pets for team battles!</p>
-                    <p class="text-small">You have ${alivePets.length} alive pet(s). Heal or get more pets.</p>
+                    <p>You need at least 3 eligible pets for team battles!</p>
+                    <p class="text-small">You have ${eligiblePets.length} pet(s). Heal or get more pets.</p>
                 </div>
             `;
             return;
         }
 
         // Render selectable pet cards
-        container.innerHTML = alivePets.map(pet => {
+        container.innerHTML = eligiblePets.map(pet => {
             const imgPath = getArenaPetImage(pet);
             const displayName = pet.nickname || pet.species_name;
             const rarity = (pet.rarity || 'common').toLowerCase();
 
+            // Check shelter status
+            const isSheltered = pet.status === 'SHELTER';
+            const cardClass = isSheltered ? 'selectable-pet-card sheltered' : 'selectable-pet-card';
+            const clickAction = isSheltered ? '' : `onclick="toggle3v3Selection(this, ${pet.id})"`;
+
+            // Overlay for shelter
+            const shelterOverlay = isSheltered ? `
+                <div class="shelter-overlay">
+                    <i class="fas fa-home"></i>
+                    <span>IN SHELTER</span>
+                </div>
+            ` : '';
+
             return `
-                <div class="selectable-pet-card" 
+                <div class="${cardClass}" 
                      data-pet-id="${pet.id}"
-                     onclick="toggle3v3Selection(this, ${pet.id})">
+                     ${clickAction}>
                     <div class="rarity-indicator ${rarity}"></div>
                     <img src="${imgPath}" alt="${displayName}"
                          onerror="this.src='../assets/placeholder.png'">
                     <div class="pet-name-mini">${displayName}</div>
                     <div class="pet-level-mini">Lv. ${pet.level}</div>
                     <span class="element-mini">${pet.element || 'Normal'}</span>
+                    ${shelterOverlay}
                 </div>
             `;
         }).join('');
 
-        console.log('✅ Rendered', alivePets.length, 'pets for 3v3 selection');
+        console.log('✅ Rendered', eligiblePets.length, 'pets for 3v3 selection');
 
     } catch (error) {
         console.error('Error loading team selection:', error);
@@ -349,9 +366,10 @@ async function start3v3Battle() {
         if (selected3v3Pets.length !== 3) {
             // Fallback: use top 3 pets by power
             const userPets = window.userPets || [];
-            const alivePets = userPets.filter(pet => pet.status !== 'DEAD');
+            // FIX: Exclude SHELTER pets from auto-selection
+            const validPets = userPets.filter(pet => pet.status !== 'DEAD' && pet.status !== 'SHELTER');
 
-            if (alivePets.length < 3) {
+            if (validPets.length < 3) {
                 if (typeof showToast === 'function') {
                     showToast('You need at least 3 alive pets for 3v3 battle!', 'warning');
                 } else {

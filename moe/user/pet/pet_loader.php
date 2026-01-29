@@ -24,3 +24,4 @@ require_once $pet_logic_path . 'battle.php';     // Depends on evolution.php
 require_once $pet_logic_path . 'shelter.php';    // Independent
 require_once $pet_logic_path . 'buffs.php';      // Independent
 require_once $pet_logic_path . 'rewards.php';    // Daily login rewards
+require_once $pet_logic_path . 'play.php';       // Play sessions & petting

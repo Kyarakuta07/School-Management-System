@@ -64,7 +64,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize DOM references
     DOM.turnIndicator = document.getElementById('turn-indicator');
     DOM.turnCount = document.getElementById('turn-count');
-    DOM.opponentName = document.getElementById('opponent-name');
     DOM.playerIndicators = document.getElementById('player-indicators');
     DOM.enemyIndicators = document.getElementById('enemy-indicators');
     DOM.playerName = document.getElementById('player-name');
@@ -85,6 +84,19 @@ document.addEventListener('DOMContentLoaded', () => {
     DOM.swapModal = document.getElementById('swap-modal');
     DOM.swapPets = document.getElementById('swap-pets');
     DOM.resultOverlay = document.getElementById('result-overlay');
+
+    // Desktop panel elements (for sync)
+    DOM.panelPlayerName = document.getElementById('panel-player-name');
+    DOM.panelPlayerElement = document.getElementById('panel-player-element');
+    DOM.panelPlayerHp = document.getElementById('panel-player-hp');
+    DOM.panelPlayerHpText = document.getElementById('panel-player-hp-text');
+    DOM.panelPlayerBench = document.getElementById('panel-player-bench');
+    DOM.panelEnemyName = document.getElementById('panel-enemy-name');
+    DOM.panelEnemyElement = document.getElementById('panel-enemy-element');
+    DOM.panelEnemyHp = document.getElementById('panel-enemy-hp');
+    DOM.panelEnemyHpText = document.getElementById('panel-enemy-hp-text');
+    DOM.panelEnemyBench = document.getElementById('panel-enemy-bench');
+    DOM.desktopBattleLog = document.getElementById('desktop-battle-log');
 
     // Load battle state
     loadBattleState();
@@ -484,10 +496,16 @@ function updatePlayerHp(hp, isFainted) {
     DOM.playerHpBar.style.width = percent + '%';
     DOM.playerHpText.textContent = `${Math.max(0, hp)}/${pet.max_hp}`;
 
+    // Sync desktop panel
+    if (DOM.panelPlayerHp) DOM.panelPlayerHp.style.width = percent + '%';
+    if (DOM.panelPlayerHpText) DOM.panelPlayerHpText.textContent = `${Math.max(0, hp)}/${pet.max_hp}`;
+
     if (percent < 30) {
         DOM.playerHpBar.classList.add('low');
+        if (DOM.panelPlayerHp) DOM.panelPlayerHp.classList.add('low');
     } else {
         DOM.playerHpBar.classList.remove('low');
+        if (DOM.panelPlayerHp) DOM.panelPlayerHp.classList.remove('low');
     }
 }
 
@@ -497,10 +515,16 @@ function updateEnemyHp(hp, isFainted) {
     DOM.enemyHpBar.style.width = percent + '%';
     DOM.enemyHpText.textContent = `${Math.max(0, hp)}/${pet.max_hp}`;
 
+    // Sync desktop panel
+    if (DOM.panelEnemyHp) DOM.panelEnemyHp.style.width = percent + '%';
+    if (DOM.panelEnemyHpText) DOM.panelEnemyHpText.textContent = `${Math.max(0, hp)}/${pet.max_hp}`;
+
     if (percent < 30) {
         DOM.enemyHpBar.classList.add('low');
+        if (DOM.panelEnemyHp) DOM.panelEnemyHp.classList.add('low');
     } else {
         DOM.enemyHpBar.classList.remove('low');
+        if (DOM.panelEnemyHp) DOM.panelEnemyHp.classList.remove('low');
     }
 }
 
@@ -509,18 +533,20 @@ function updateTurnDisplay() {
     DOM.turnIndicator.classList.toggle('enemy-turn', BattleState.currentTurn === 'enemy');
     DOM.turnCount.textContent = `Turn ${BattleState.turnCount}`;
 
-    // Update turn glow effects
-    const playerActive = document.getElementById('player-active');
-    const enemyActive = document.getElementById('enemy-active');
+    // Update turn glow effects (use stage combatants instead of removed elements)
+    const playerStage = document.querySelector('.player-stage');
+    const enemyStage = document.querySelector('.enemy-stage');
 
-    if (BattleState.currentTurn === 'player') {
-        playerActive.classList.add('your-turn');
-        playerActive.classList.remove('enemy-turn-glow');
-        enemyActive.classList.remove('enemy-turn-glow');
-        enemyActive.classList.remove('your-turn');
-    } else {
-        playerActive.classList.remove('your-turn');
-        enemyActive.classList.add('enemy-turn-glow');
+    if (playerStage && enemyStage) {
+        if (BattleState.currentTurn === 'player') {
+            playerStage.classList.add('your-turn');
+            playerStage.classList.remove('enemy-turn-glow');
+            enemyStage.classList.remove('enemy-turn-glow');
+            enemyStage.classList.remove('your-turn');
+        } else {
+            playerStage.classList.remove('your-turn');
+            enemyStage.classList.add('enemy-turn-glow');
+        }
     }
 }
 
@@ -571,36 +597,82 @@ function showProjectile(fromEl, toEl, element = 'fire') {
 }
 
 function showFloatingDamage(targetElement, damage, isCritical, advantage) {
-    const popup = document.createElement('div');
-    popup.className = 'damage-popup';
+    // Use new FCT (Floating Combat Text) system
+    const fct = document.createElement('div');
+    fct.className = 'fct damage';
 
     if (isCritical) {
-        popup.classList.add('critical');
-        popup.textContent = `CRITICAL! -${damage}`;
+        fct.classList.add('crit');
+        fct.textContent = `CRIT! ${damage}`;
+        // Trigger screen shake for critical hits
+        triggerScreenShake();
     } else if (advantage === 'super_effective') {
-        popup.classList.add('effective');
-        popup.textContent = `-${damage}`;
+        fct.classList.add('effective');
+        fct.textContent = `${damage}!`;
     } else if (advantage === 'not_effective') {
-        popup.classList.add('weak');
-        popup.textContent = `-${damage}`;
+        fct.classList.add('weak');
+        fct.textContent = `${damage}`;
+    } else if (damage === 0 || damage === 'MISS') {
+        fct.classList.remove('damage');
+        fct.classList.add('miss');
+        fct.textContent = 'MISS';
     } else {
-        popup.textContent = `-${damage}`;
+        fct.textContent = `-${damage}`;
     }
 
+    // Position above sprite head
     const rect = targetElement.getBoundingClientRect();
-    popup.style.left = (rect.left + rect.width / 2) + 'px';
-    popup.style.top = (rect.top + 20) + 'px';
+    fct.style.left = (rect.left + rect.width / 2) + 'px';
+    fct.style.top = (rect.top) + 'px';
 
-    document.body.appendChild(popup);
-    setTimeout(() => popup.remove(), 1000);
+    document.body.appendChild(fct);
+    setTimeout(() => fct.remove(), 1200);
+}
+
+/**
+ * Trigger screen shake effect for critical hits
+ */
+function triggerScreenShake() {
+    const stage = document.querySelector('.battle-stage');
+    if (!stage) return;
+
+    stage.classList.add('screen-shake');
+    setTimeout(() => {
+        stage.classList.remove('screen-shake');
+    }, 400);
+}
+
+/**
+ * Show target glow effect on sprite
+ * @param {string} target - 'player' or 'enemy'
+ * @param {boolean} show - true to show, false to hide
+ */
+function setTargetGlow(target, show) {
+    const spriteEl = document.getElementById(target + '-sprite');
+    if (!spriteEl) return;
+
+    if (show) {
+        spriteEl.classList.add('targeted');
+    } else {
+        spriteEl.classList.remove('targeted');
+    }
 }
 
 function addBattleLog(message, className = '') {
     const entry = document.createElement('div');
     entry.className = 'log-entry ' + className;
     entry.textContent = message;
+
+    // Add to mobile log
     DOM.battleLog.appendChild(entry);
     DOM.battleLog.scrollTop = DOM.battleLog.scrollHeight;
+
+    // Sync to desktop log
+    if (DOM.desktopBattleLog) {
+        const desktopEntry = entry.cloneNode(true);
+        DOM.desktopBattleLog.appendChild(desktopEntry);
+        DOM.desktopBattleLog.scrollTop = DOM.desktopBattleLog.scrollHeight;
+    }
 }
 
 function disableControls(disabled) {

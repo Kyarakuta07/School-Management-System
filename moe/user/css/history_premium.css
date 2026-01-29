@@ -232,3 +232,93 @@
     border-color: rgba(255, 215, 0, 0.3);
     color: #ffd700;
 }
+
+/* =========================================
+   Battle Role Badge (Attacker/Defender)
+   ========================================= */
+
+.h-role-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 10px;
+    z-index: 10;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.h-role-badge.attacker {
+    background: linear-gradient(135deg, rgba(231, 76, 60, 0.8), rgba(192, 57, 43, 0.8));
+    color: #fff;
+    border: 1px solid rgba(231, 76, 60, 0.5);
+}
+
+.h-role-badge.defender {
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.8), rgba(41, 128, 185, 0.8));
+    color: #fff;
+    border: 1px solid rgba(52, 152, 219, 0.5);
+}
+
+/* Role-Specific Card Borders */
+.history-card.defender {
+    border-right: 3px solid rgba(52, 152, 219, 0.5);
+}
+
+.history-card.attacker {
+    border-right: 3px solid rgba(231, 76, 60, 0.5);
+}
+
+/* =========================================
+   Stats Box Enhancements for Defense Stats
+   ========================================= */
+
+.history-stats {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.stat-box {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 12px 16px;
+    text-align: center;
+    min-width: 70px;
+    flex: 0 0 auto;
+}
+
+.stat-box.attack .stat-value {
+    color: #e74c3c;
+}
+
+.stat-box.defense .stat-value {
+    color: #3498db;
+}
+
+.stat-box.streak .stat-value {
+    color: #f39c12;
+}
+
+.stat-icon {
+    display: block;
+    font-size: 1.2rem;
+    margin-bottom: 4px;
+}
+
+.stat-value {
+    display: block;
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+.stat-label {
+    font-size: 0.65rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}

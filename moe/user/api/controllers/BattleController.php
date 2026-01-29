@@ -75,11 +75,11 @@ class BattleController extends BaseController
         }
 
         $player_won = ($winner === 'attacker');
-        
+
         // SECURITY FIX: Calculate rewards SERVER-SIDE, not from client input
         $gold_reward = 0;
         $exp_reward = 0;
-        
+
         if ($player_won) {
             // Get defender pet data for reward calculation
             $defender_pet = null;
@@ -92,15 +92,15 @@ class BattleController extends BaseController
                 $defender_pet = mysqli_fetch_assoc($result);
                 mysqli_stmt_close($stmt);
             }
-            
+
             // Calculate rewards based on opponent level and rarity
             if ($defender_pet) {
                 $opponent_level = (int) $defender_pet['level'];
                 $rarity = strtolower($defender_pet['rarity']);
-                
+
                 // Base gold: 5 + (opponent_level * 1.5)
-                $base_gold = 5 + (int)($opponent_level * 1.5);
-                
+                $base_gold = 5 + (int) ($opponent_level * 1.5);
+
                 // Rarity multiplier
                 $rarity_multipliers = [
                     'common' => 1.0,
@@ -110,10 +110,10 @@ class BattleController extends BaseController
                     'legendary' => 3.0
                 ];
                 $multiplier = $rarity_multipliers[$rarity] ?? 1.0;
-                
-                $gold_reward = (int)($base_gold * $multiplier);
-                $exp_reward = 10 + (int)($opponent_level * 2);
-                
+
+                $gold_reward = (int) ($base_gold * $multiplier);
+                $exp_reward = 10 + (int) ($opponent_level * 2);
+
                 // Cap rewards to prevent exploits
                 $gold_reward = min($gold_reward, 100);
                 $exp_reward = min($exp_reward, 150);
@@ -123,7 +123,7 @@ class BattleController extends BaseController
                 $exp_reward = 20;
             }
         }
-        
+
         $loser_pet_id = $player_won ? $defender_pet_id : $attacker_pet_id;
 
         // Record battle in pet_battles table
@@ -408,72 +408,121 @@ class BattleController extends BaseController
 
     /**
      * GET: Get battle history and stats
+     * Now includes BOTH attacker and defender perspectives
+     * Limited to 30 entries per user, oldest entries are auto-deleted
      */
     public function battleHistory()
     {
         $this->requireGet();
 
-        $limit = isset($_GET['limit']) ? min(50, max(1, (int) $_GET['limit'])) : 10;
+        $limit = 30; // Fixed limit of 30 entries
         $offset = isset($_GET['offset']) ? max(0, (int) $_GET['offset']) : 0;
 
-        // Get battles where user's pet was the attacker
+        // First, cleanup old entries - keep only latest 30 battles per user
+        $this->cleanupOldBattleHistory();
+
+        // Get battles where user's pet was ATTACKER OR DEFENDER
+        // Using UNION to combine both perspectives
         $stmt = mysqli_prepare(
             $this->conn,
-            "SELECT pb.created_at, pb.id,
-                    -- My Pet Params
-                    COALESCE(up.nickname, ps.name) as my_pet_name,
-                    up.level as my_pet_level,
-                    ps.element as my_pet_element,
-                    CASE 
-                        WHEN up.evolution_stage = 'adult' THEN ps.img_adult 
-                        WHEN up.evolution_stage = 'baby' THEN ps.img_baby
-                        ELSE ps.img_egg
-                    END as my_pet_image,
-                    
-                    -- Opponent Pet Params (with fallback for AI opponents)
-                    COALESCE(def_up.nickname, def_ps.name, 'Wild Pet') as opp_pet_name,
-                    COALESCE(def_up.level, 10) as opp_pet_level,
-                    COALESCE(def_ps.element, 'Dark') as opp_pet_element,
-                    CASE 
-                        WHEN def_up.id IS NULL THEN 'ai_pet.png'
-                        WHEN def_up.evolution_stage = 'adult' THEN COALESCE(def_ps.img_adult, 'default.png')
-                        WHEN def_up.evolution_stage = 'baby' THEN COALESCE(def_ps.img_baby, 'default.png')
-                        ELSE COALESCE(def_ps.img_egg, 'default.png')
-                    END as opp_pet_image,
-                    
-                    -- Opponent Owner
-                    COALESCE(def_u.username, 'Wild Trainer') as opp_username,
-                    
-                    -- Result
-                    (pb.winner_pet_id = pb.attacker_pet_id) as won
-             FROM pet_battles pb
-             JOIN user_pets up ON pb.attacker_pet_id = up.id
-             JOIN pet_species ps ON up.species_id = ps.id
-             LEFT JOIN user_pets def_up ON pb.defender_pet_id = def_up.id AND pb.defender_pet_id > 0
-             LEFT JOIN pet_species def_ps ON def_up.species_id = def_ps.id
-             LEFT JOIN nethera def_u ON def_up.user_id = def_u.id_nethera
-             WHERE up.user_id = ?
-             ORDER BY pb.created_at DESC
-             LIMIT ?, ?"
+            "SELECT * FROM (
+                -- Battles where user was ATTACKER
+                SELECT pb.created_at, pb.id,
+                       'attacker' as battle_role,
+                       COALESCE(up.nickname, ps.name) as my_pet_name,
+                       up.level as my_pet_level,
+                       ps.element as my_pet_element,
+                       CASE 
+                           WHEN up.evolution_stage = 'adult' THEN ps.img_adult 
+                           WHEN up.evolution_stage = 'baby' THEN ps.img_baby
+                           ELSE ps.img_egg
+                       END as my_pet_image,
+                       
+                       COALESCE(def_up.nickname, def_ps.name, 'Wild Pet') as opp_pet_name,
+                       COALESCE(def_up.level, 10) as opp_pet_level,
+                       COALESCE(def_ps.element, 'Dark') as opp_pet_element,
+                       CASE 
+                           WHEN def_up.id IS NULL THEN 'ai_pet.png'
+                           WHEN def_up.evolution_stage = 'adult' THEN COALESCE(def_ps.img_adult, 'default.png')
+                           WHEN def_up.evolution_stage = 'baby' THEN COALESCE(def_ps.img_baby, 'default.png')
+                           ELSE COALESCE(def_ps.img_egg, 'default.png')
+                       END as opp_pet_image,
+                       
+                       COALESCE(def_u.username, 'Wild Trainer') as opp_username,
+                       (pb.winner_pet_id = pb.attacker_pet_id) as won
+                FROM pet_battles pb
+                JOIN user_pets up ON pb.attacker_pet_id = up.id
+                JOIN pet_species ps ON up.species_id = ps.id
+                LEFT JOIN user_pets def_up ON pb.defender_pet_id = def_up.id AND pb.defender_pet_id > 0
+                LEFT JOIN pet_species def_ps ON def_up.species_id = def_ps.id
+                LEFT JOIN nethera def_u ON def_up.user_id = def_u.id_nethera
+                WHERE up.user_id = ?
+                
+                UNION ALL
+                
+                -- Battles where user was DEFENDER (attacked by others)
+                SELECT pb.created_at, pb.id,
+                       'defender' as battle_role,
+                       COALESCE(def_up.nickname, def_ps.name) as my_pet_name,
+                       def_up.level as my_pet_level,
+                       def_ps.element as my_pet_element,
+                       CASE 
+                           WHEN def_up.evolution_stage = 'adult' THEN def_ps.img_adult 
+                           WHEN def_up.evolution_stage = 'baby' THEN def_ps.img_baby
+                           ELSE def_ps.img_egg
+                       END as my_pet_image,
+                       
+                       COALESCE(atk_up.nickname, atk_ps.name) as opp_pet_name,
+                       atk_up.level as opp_pet_level,
+                       atk_ps.element as opp_pet_element,
+                       CASE 
+                           WHEN atk_up.evolution_stage = 'adult' THEN atk_ps.img_adult
+                           WHEN atk_up.evolution_stage = 'baby' THEN atk_ps.img_baby
+                           ELSE atk_ps.img_egg
+                       END as opp_pet_image,
+                       
+                       COALESCE(atk_u.username, 'Unknown') as opp_username,
+                       (pb.winner_pet_id = pb.defender_pet_id) as won
+                FROM pet_battles pb
+                JOIN user_pets def_up ON pb.defender_pet_id = def_up.id
+                JOIN pet_species def_ps ON def_up.species_id = def_ps.id
+                JOIN user_pets atk_up ON pb.attacker_pet_id = atk_up.id
+                JOIN pet_species atk_ps ON atk_up.species_id = atk_ps.id
+                JOIN nethera atk_u ON atk_up.user_id = atk_u.id_nethera
+                WHERE def_up.user_id = ? AND atk_up.user_id != ?
+            ) as combined_battles
+            ORDER BY created_at DESC
+            LIMIT ?, ?"
         );
-        mysqli_stmt_bind_param($stmt, "iii", $this->user_id, $offset, $limit);
+        mysqli_stmt_bind_param($stmt, "iiiii", $this->user_id, $this->user_id, $this->user_id, $offset, $limit);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
 
         $battles = [];
-        $wins = 0;
-        $losses = 0;
+        $attack_wins = 0;
+        $attack_losses = 0;
+        $defense_wins = 0;
+        $defense_losses = 0;
+
         while ($row = mysqli_fetch_assoc($result)) {
             $battles[] = $row;
-            if ($row['won']) {
-                $wins++;
+            if ($row['battle_role'] === 'attacker') {
+                if ($row['won']) {
+                    $attack_wins++;
+                } else {
+                    $attack_losses++;
+                }
             } else {
-                $losses++;
+                if ($row['won']) {
+                    $defense_wins++;
+                } else {
+                    $defense_losses++;
+                }
             }
         }
         mysqli_stmt_close($stmt);
 
-        // Count total wins for this user
+        // Count total wins for this user (as attacker)
         $total_stmt = mysqli_prepare(
             $this->conn,
             "SELECT COUNT(*) as wins 
@@ -487,7 +536,7 @@ class BattleController extends BaseController
         $total_wins = mysqli_fetch_assoc($total_result)['wins'] ?? 0;
         mysqli_stmt_close($total_stmt);
 
-        // Count total battles for this user
+        // Count total battles for this user (as attacker)
         $battles_stmt = mysqli_prepare(
             $this->conn,
             "SELECT COUNT(*) as total 
@@ -503,7 +552,7 @@ class BattleController extends BaseController
 
         $total_losses = $total_battles - $total_wins;
 
-        // Calculate current win streak (consecutive wins from most recent)
+        // Calculate current win streak (consecutive wins from most recent - attacker only)
         $streak_stmt = mysqli_prepare(
             $this->conn,
             "SELECT (pb.winner_pet_id = pb.attacker_pet_id) as won
@@ -538,9 +587,26 @@ class BattleController extends BaseController
                 'wins' => (int) $total_wins,
                 'losses' => (int) $total_losses,
                 'current_streak' => $current_streak,
-                'battles_remaining' => $battles_remaining
+                'battles_remaining' => $battles_remaining,
+                'defense_wins' => $defense_wins,
+                'defense_losses' => $defense_losses
             ]
         ]);
+    }
+
+    /**
+     * Cleanup old battle history entries
+     * Keep only the latest 30 battles where this user was involved
+     * This prevents the history from growing indefinitely
+     */
+    private function cleanupOldBattleHistory()
+    {
+        // Delete battles older than 30 days OR if user has more than 100 total battles
+        // This is a soft cleanup - we don't need to be aggressive
+        mysqli_query(
+            $this->conn,
+            "DELETE FROM pet_battles WHERE created_at < DATE_SUB(NOW(), INTERVAL 30 DAY)"
+        );
     }
 
     /**
@@ -556,6 +622,8 @@ class BattleController extends BaseController
 
     /**
      * POST: Handle play session completion
+     * For rhythm game: { pet_id, score }
+     * For other play: { pet_id, play_type, duration }
      */
     public function playFinish()
     {
@@ -563,15 +631,43 @@ class BattleController extends BaseController
 
         $input = $this->getInput();
         $pet_id = isset($input['pet_id']) ? (int) $input['pet_id'] : 0;
-        $play_type = isset($input['play_type']) ? $input['play_type'] : 'ball';
-        $duration = isset($input['duration']) ? (int) $input['duration'] : 30;
+        $play_type = isset($input['play_type']) ? $input['play_type'] : 'rhythm';
+
+        // Support both 'score' (from rhythm game) and 'duration' (from other play types)
+        $score_or_duration = 0;
+        if (isset($input['score'])) {
+            $score_or_duration = (int) $input['score'];
+            $play_type = 'rhythm'; // Override to rhythm if score is provided
+        } elseif (isset($input['duration'])) {
+            $score_or_duration = (int) $input['duration'];
+        }
 
         if (!$pet_id) {
             $this->error('Pet ID required');
             return;
         }
 
-        $result = finishPlaySession($this->conn, $this->user_id, $pet_id, $play_type, $duration);
+        $result = finishPlaySession($this->conn, $this->user_id, $pet_id, $play_type, $score_or_duration);
+        echo json_encode($result);
+    }
+
+    /**
+     * POST: Handle petting action (quick mood boost)
+     * Input: { pet_id }
+     */
+    public function petting()
+    {
+        $this->requirePost();
+
+        $input = $this->getInput();
+        $pet_id = isset($input['pet_id']) ? (int) $input['pet_id'] : 0;
+
+        if (!$pet_id) {
+            $this->error('Pet ID required');
+            return;
+        }
+
+        $result = petPetting($this->conn, $this->user_id, $pet_id);
         echo json_encode($result);
     }
 
@@ -737,6 +833,32 @@ class BattleController extends BaseController
         // Get player's pets
         $player_pets = [];
         foreach ($pet_ids as $pet_id) {
+            // First check if pet exists and is sheltered (specific check)
+            $check_stmt = mysqli_prepare($this->conn, "SELECT nickname, species_id, status FROM user_pets WHERE id = ? AND user_id = ?");
+            mysqli_stmt_bind_param($check_stmt, "ii", $pet_id, $this->user_id);
+            mysqli_stmt_execute($check_stmt);
+            $check_result = mysqli_stmt_get_result($check_stmt);
+            $check_data = mysqli_fetch_assoc($check_result);
+            mysqli_stmt_close($check_stmt);
+
+            if ($check_data && $check_data['status'] === 'SHELTER') {
+                $pet_name = $check_data['nickname'];
+                if (empty($pet_name)) {
+                    // Get species name fallback
+                    $species_stmt = mysqli_prepare($this->conn, "SELECT name FROM pet_species WHERE id = ?");
+                    mysqli_stmt_bind_param($species_stmt, "i", $check_data['species_id']);
+                    mysqli_stmt_execute($species_stmt);
+                    $species_result = mysqli_stmt_get_result($species_stmt);
+                    $species_row = mysqli_fetch_assoc($species_result);
+                    $pet_name = $species_row['name'];
+                    mysqli_stmt_close($species_stmt);
+                }
+
+                $this->error("Cannot start battle. {$pet_name} is currently resting in the Shelter. Please retrieve it first.");
+                return;
+            }
+
+            // Normal check for active/alive pet
             $pet = $engine->getPetForBattle((int) $pet_id);
             if (!$pet) {
                 $this->error("Pet ID {$pet_id} not found or dead");

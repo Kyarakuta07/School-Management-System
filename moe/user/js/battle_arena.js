@@ -268,76 +268,95 @@ async function useSkill(skillId, baseDamage, skillElement) {
         }
 
         setTimeout(() => {
-            DOM.playerSprite.classList.remove('attacking');
+            try {
+                DOM.playerSprite.classList.remove('attacking');
 
-            // Handle DODGE
-            if (isDodge) {
-                DOM.enemySprite.classList.add('dodge');
-                addBattleLog('💨 Enemy dodged the attack!', 'dodge');
+                // Handle DODGE
+                if (isDodge) {
+                    DOM.enemySprite.classList.add('dodge-anim');
+                    addBattleLog('💨 Enemy dodged the attack!', 'dodge');
+
+                    setTimeout(() => {
+                        DOM.enemySprite.classList.remove('dodge-anim');
+                        enemyTurn();
+                    }, 600);
+                    return;
+                }
+
+                // Apply damage
+                DOM.enemySprite.classList.add('hit-flash');
+                BattleState.enemyHp = Math.max(0, BattleState.enemyHp - damage);
+                updateHpDisplay();
+
+                // Remove hit flash
+                setTimeout(() => DOM.enemySprite.classList.remove('hit-flash'), 350);
+
+                // Calculate elemMultiplier
+                const elemMultiplier = elemAdvantage === 'super_effective' ? 1.5 :
+                    elemAdvantage === 'not_effective' ? 0.5 : 1.0;
+
+                // Show damage popup
+                showDamagePopup(DOM.enemySprite, damage, elemMultiplier, isCritical);
+                showDamageSparks(DOM.enemySprite, isCritical || isLucky);
+
+                if (isCritical) {
+                    SoundManager.critical();
+                } else {
+                    SoundManager.damage();
+                }
+
+                // Build log
+                let logClass = 'player-action';
+                let logText = `You dealt ${damage} damage!`;
+
+                if (isGlancing) {
+                    logClass += ' glancing';
+                    logText = `⚡ Glancing blow! ${logText}`;
+                } else if (isLucky) {
+                    logClass += ' lucky';
+                    logText = `🍀 Lucky hit! ${logText}`;
+                }
+
+                if (elemAdvantage === 'super_effective') {
+                    logClass += ' effective';
+                    logText += ' Super effective!';
+                } else if (elemAdvantage === 'not_effective') {
+                    logClass += ' weak';
+                    logText += ' Not very effective...';
+                }
+
+                if (isCritical) {
+                    logClass += ' critical';
+                    logText = `CRITICAL HIT! ${logText}`;
+                }
+                addBattleLog(logText, logClass);
 
                 setTimeout(() => {
-                    DOM.enemySprite.classList.remove('dodge');
+                    DOM.enemySprite.classList.remove('hit');
+
+                    // Check if enemy defeated
+                    if (BattleState.enemyHp <= 0) {
+                        endBattle(true);
+                    } else {
+                        // Enemy turn
+                        enemyTurn();
+                    }
+                }, 400);
+
+            } catch (innerError) {
+                console.error("Error in attack animation sequence:", innerError);
+                // Recovery: Try to pass turn to enemy or unlock
+                // Safest to just proceed to enemy turn if damage might have happened, 
+                // but if it failed early, enemy might not be ready.
+                // Let's just unlock and let player try again or manual refresh
+                addBattleLog("Visual error occurred, but battle continues...", 'error');
+                if (BattleState.enemyHp > 0) {
                     enemyTurn();
-                }, 600);
-                return;
-            }
-
-            // Apply damage
-            DOM.enemySprite.classList.add('hit');
-            BattleState.enemyHp = Math.max(0, BattleState.enemyHp - damage);
-            updateHpDisplay();
-
-            // Calculate elemMultiplier for visual effects
-            const elemMultiplier = elemAdvantage === 'super_effective' ? 1.5 :
-                elemAdvantage === 'not_effective' ? 0.5 : 1.0;
-
-            // Show damage popup and sparks
-            showDamagePopup(DOM.enemySprite, damage, elemMultiplier, isCritical);
-            showDamageSparks(DOM.enemySprite, isCritical || isLucky);
-
-            if (isCritical) {
-                SoundManager.critical();
-            } else {
-                SoundManager.damage();
-            }
-
-            // Build log message with variance info
-            let logClass = 'player-action';
-            let logText = `You dealt ${damage} damage!`;
-
-            if (isGlancing) {
-                logClass += ' glancing';
-                logText = `⚡ Glancing blow! ${logText}`;
-            } else if (isLucky) {
-                logClass += ' lucky';
-                logText = `🍀 Lucky hit! ${logText}`;
-            }
-
-            if (elemAdvantage === 'super_effective') {
-                logClass += ' effective';
-                logText += ' Super effective!';
-            } else if (elemAdvantage === 'not_effective') {
-                logClass += ' weak';
-                logText += ' Not very effective...';
-            }
-
-            if (isCritical) {
-                logClass += ' critical';
-                logText = `CRITICAL HIT! ${logText}`;
-            }
-            addBattleLog(logText, logClass);
-
-            setTimeout(() => {
-                DOM.enemySprite.classList.remove('hit');
-
-                // Check if enemy defeated
-                if (BattleState.enemyHp <= 0) {
-                    endBattle(true);
                 } else {
-                    // Enemy turn
-                    enemyTurn();
+                    disableSkills(false);
+                    BattleState.isPlayerTurn = true;
                 }
-            }, 400);
+            }
         }, 300);
 
     } catch (error) {
@@ -358,9 +377,14 @@ async function enemyTurn() {
 
     DOM.turnIndicator.textContent = "ENEMY TURN";
     DOM.turnIndicator.classList.add('enemy-turn');
+    DOM.turnIndicator.classList.add('turn-active'); // Pulse effect
 
     // Add delay for better UX
     await new Promise(resolve => setTimeout(resolve, 800));
+
+    // Create abort controller for timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
 
     try {
         // Call server-side API for enemy's attack
@@ -372,8 +396,15 @@ async function enemyTurn() {
                 defender_pet_id: BATTLE_CONFIG.defenderPetId,
                 defender_hp: BattleState.enemyHp,
                 defender_max_hp: BATTLE_CONFIG.defenderMaxHp
-            })
+            }),
+            signal: controller.signal
         });
+
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
         const data = await response.json();
 
@@ -381,10 +412,7 @@ async function enemyTurn() {
             console.error('Enemy turn failed:', data.error);
             addBattleLog('Enemy turn failed: ' + (data.error || 'Unknown error'), 'error');
             // Give player turn back
-            BattleState.isPlayerTurn = true;
-            DOM.turnIndicator.textContent = "YOUR TURN";
-            DOM.turnIndicator.classList.remove('enemy-turn');
-            disableSkills(false);
+            restorePlayerTurn();
             return;
         }
 
@@ -404,79 +432,107 @@ async function enemyTurn() {
         showProjectile(DOM.enemySprite, DOM.playerSprite, skillElement);
 
         setTimeout(() => {
-            DOM.enemySprite.classList.remove('attacking');
+            try {
+                DOM.enemySprite.classList.remove('attacking');
 
-            // Handle DODGE
-            if (isDodge) {
-                DOM.playerSprite.classList.add('dodge');
-                addBattleLog('💨 You dodged the enemy attack!', 'player-dodge');
+                // Handle DODGE
+                if (isDodge) {
+                    DOM.playerSprite.classList.add('dodge-anim');
+                    addBattleLog('💨 You dodged the enemy attack!', 'player-dodge');
+
+                    setTimeout(() => {
+                        try {
+                            DOM.playerSprite.classList.remove('dodge-anim');
+                            restorePlayerTurn();
+                        } catch (e) {
+                            console.error('Error after dodge:', e);
+                            restorePlayerTurn();
+                        }
+                    }, 600);
+                    return;
+                }
+
+                // Apply damage
+                DOM.playerSprite.classList.add('hit-flash');
+                BattleState.playerHp = Math.max(0, BattleState.playerHp - damage);
+                updateHpDisplay();
+
+                // Remove hit flash
+                setTimeout(() => DOM.playerSprite.classList.remove('hit-flash'), 350);
+
+                // Calculate elemMultiplier for visual effects
+                const elemMultiplier = elemAdvantage === 'super_effective' ? 1.5 :
+                    elemAdvantage === 'not_effective' ? 0.5 : 1.0;
+
+                // Show damage popup and sparks
+                showDamagePopup(DOM.playerSprite, damage, elemMultiplier, isCritical);
+                showDamageSparks(DOM.playerSprite, isCritical || isLucky);
+
+                if (isCritical) {
+                    SoundManager.critical();
+                } else {
+                    SoundManager.damage();
+                }
+
+                // Build log message with variance info
+                let logClass = 'enemy-action';
+                let logText = `Enemy used ${skillName}! ${damage} damage!`;
+
+                if (isGlancing) logText = `⚡ Glancing! ${logText}`;
+                else if (isLucky) logText = `🍀 Lucky! ${logText}`;
+
+                if (elemAdvantage === 'super_effective') logText += ' Super effective!';
+                if (isCritical) logText = `CRITICAL! ${logText}`;
+                addBattleLog(logText, logClass);
 
                 setTimeout(() => {
-                    DOM.playerSprite.classList.remove('dodge');
-                    // Player turn
-                    BattleState.isPlayerTurn = true;
-                    DOM.turnIndicator.textContent = "YOUR TURN";
-                    DOM.turnIndicator.classList.remove('enemy-turn');
-                    disableSkills(false);
-                }, 600);
-                return;
+                    try {
+                        DOM.playerSprite.classList.remove('hit');
+
+                        // Check if player defeated
+                        if (BattleState.playerHp <= 0) {
+                            endBattle(false);
+                        } else {
+                            restorePlayerTurn();
+                        }
+                    } catch (e) {
+                        console.error('Error in post-damage sequence:', e);
+                        restorePlayerTurn();
+                    }
+                }, 400);
+            } catch (animError) {
+                console.error('Error in enemy attack animation:', animError);
+                addBattleLog('Animation error, restoring turn...', 'error');
+                restorePlayerTurn();
             }
-
-            // Apply damage
-            DOM.playerSprite.classList.add('hit');
-            BattleState.playerHp = Math.max(0, BattleState.playerHp - damage);
-            updateHpDisplay();
-
-            // Calculate elemMultiplier for visual effects
-            const elemMultiplier = elemAdvantage === 'super_effective' ? 1.5 :
-                elemAdvantage === 'not_effective' ? 0.5 : 1.0;
-
-            // Show damage popup and sparks
-            showDamagePopup(DOM.playerSprite, damage, elemMultiplier, isCritical);
-            showDamageSparks(DOM.playerSprite, isCritical || isLucky);
-
-            if (isCritical) {
-                SoundManager.critical();
-            } else {
-                SoundManager.damage();
-            }
-
-            // Build log message with variance info
-            let logClass = 'enemy-action';
-            let logText = `Enemy used ${skillName}! ${damage} damage!`;
-
-            if (isGlancing) logText = `⚡ Glancing! ${logText}`;
-            else if (isLucky) logText = `🍀 Lucky! ${logText}`;
-
-            if (elemAdvantage === 'super_effective') logText += ' Super effective!';
-            if (isCritical) logText = `CRITICAL! ${logText}`;
-            addBattleLog(logText, logClass);
-
-            setTimeout(() => {
-                DOM.playerSprite.classList.remove('hit');
-
-                // Check if player defeated
-                if (BattleState.playerHp <= 0) {
-                    endBattle(false);
-                } else {
-                    // Player turn
-                    BattleState.isPlayerTurn = true;
-                    DOM.turnIndicator.textContent = "YOUR TURN";
-                    DOM.turnIndicator.classList.remove('enemy-turn');
-                    disableSkills(false);
-                }
-            }, 400);
         }, 300);
 
     } catch (error) {
-        console.error('Enemy turn error:', error);
-        addBattleLog('Network error during enemy turn', 'error');
+        clearTimeout(timeoutId);
+
+        if (error.name === 'AbortError') {
+            console.error('Enemy turn timed out');
+            addBattleLog('⏱️ Request timed out. Your turn!', 'error');
+        } else {
+            console.error('Enemy turn error:', error);
+            addBattleLog('Network error during enemy turn', 'error');
+        }
+
         // Give player turn back
-        BattleState.isPlayerTurn = true;
-        DOM.turnIndicator.textContent = "YOUR TURN";
-        DOM.turnIndicator.classList.remove('enemy-turn');
-        disableSkills(false);
+        restorePlayerTurn();
     }
+}
+
+/**
+ * Helper function to restore player turn state
+ * Centralizes the logic to prevent freeze
+ */
+function restorePlayerTurn() {
+    BattleState.isPlayerTurn = true;
+    DOM.turnIndicator.textContent = "YOUR TURN";
+    DOM.turnIndicator.classList.remove('enemy-turn');
+    DOM.turnIndicator.classList.add('turn-active');
+    disableSkills(false);
 }
 
 // ================================================
@@ -503,39 +559,83 @@ function updateHpDisplay() {
 }
 
 function showDamagePopup(targetElement, damage, multiplier, isCrit) {
-    const popup = document.createElement('div');
-    popup.className = 'damage-popup';
+    // Use new FCT (Floating Combat Text) system
+    const fct = document.createElement('div');
+    fct.className = 'fct damage';
 
     if (isCrit) {
-        popup.classList.add('critical');
+        fct.classList.add('crit');
+        fct.textContent = `CRIT! ${damage}`;
+        // Trigger screen shake for critical hits
+        triggerScreenShake();
     } else if (multiplier > 1) {
-        popup.classList.add('effective');
+        fct.classList.add('effective');
+        fct.textContent = `${damage}!`;
     } else if (multiplier < 1) {
-        popup.classList.add('weak');
+        fct.classList.add('weak');
+        fct.textContent = `${damage}`;
+    } else {
+        fct.textContent = `-${damage}`;
     }
 
-    popup.textContent = `-${damage}`;
-
+    // Position above sprite head
     const rect = targetElement.getBoundingClientRect();
-    popup.style.left = (rect.left + rect.width / 2) + 'px';
-    popup.style.top = (rect.top + 20) + 'px';
+    fct.style.left = (rect.left + rect.width / 2) + 'px';
+    fct.style.top = (rect.top) + 'px';
 
-    document.body.appendChild(popup);
+    document.body.appendChild(fct);
 
-    setTimeout(() => popup.remove(), 1000);
+    // CSS animation handles the motion and fadeout
+    fct.addEventListener('animationend', () => {
+        fct.remove();
+    });
+
+    // Fallback cleanup
+    setTimeout(() => {
+        if (fct.parentNode) fct.remove();
+    }, 1200);
 }
 
-function addBattleLog(message, className = '') {
-    const entry = document.createElement('div');
-    entry.className = 'log-entry ' + className;
-    entry.textContent = message;
-    DOM.battleLog.appendChild(entry);
-    DOM.battleLog.scrollTop = DOM.battleLog.scrollHeight;
+/**
+ * Trigger screen shake effect for critical hits
+ */
+function triggerScreenShake() {
+    const stage = document.querySelector('.battle-stage');
+    if (!stage) return;
+
+    stage.classList.add('screen-shake');
+    setTimeout(() => {
+        stage.classList.remove('screen-shake');
+    }, 400);
 }
+
 
 function disableSkills(disabled) {
     const buttons = DOM.skillsPanel.querySelectorAll('.skill-btn');
     buttons.forEach(btn => btn.disabled = disabled);
+}
+
+/**
+ * Add message to battle log with optional styling class
+ * @param {string} message - Log message to display
+ * @param {string} className - CSS class for styling (e.g., 'error', 'player-action', 'enemy-action')
+ */
+function addBattleLog(message, className = '') {
+    if (!DOM.battleLog) return;
+
+    const entry = document.createElement('div');
+    entry.className = 'log-entry ' + className;
+    entry.textContent = message;
+    DOM.battleLog.appendChild(entry);
+
+    // Auto-scroll to bottom
+    DOM.battleLog.scrollTop = DOM.battleLog.scrollHeight;
+
+    // Keep only last 20 entries to prevent memory issues
+    const entries = DOM.battleLog.querySelectorAll('.log-entry');
+    if (entries.length > 20) {
+        entries[0].remove();
+    }
 }
 
 // ================================================
@@ -671,7 +771,8 @@ function forfeitBattle() {
 }
 
 function returnToArena() {
-    window.location.href = 'pet.php?tab=arena';
+    console.log('Returning to Arena...');
+    window.location.assign('pet.php?tab=arena');
 }
 
 // ================================================
@@ -722,30 +823,19 @@ function showProjectile(fromEl, toEl, element = 'fire') {
 // ================================================
 // SCREEN SHAKE EFFECT
 // ================================================
-function screenShake(intensity = 10, duration = 200) {
+function screenShake(intensity = 10, duration = 500) {
     const container = document.querySelector('.battle-container');
     if (!container) return;
 
-    const startTime = Date.now();
-    const originalTransform = container.style.transform || '';
+    // Use CSS animation
+    container.classList.remove('shake-effect');
+    void container.offsetWidth; // Trigger reflow
+    container.classList.add('shake-effect');
 
-    function shake() {
-        const elapsed = Date.now() - startTime;
-        if (elapsed > duration) {
-            container.style.transform = originalTransform;
-            return;
-        }
-
-        const progress = elapsed / duration;
-        const currentIntensity = intensity * (1 - progress);
-        const x = (Math.random() - 0.5) * currentIntensity * 2;
-        const y = (Math.random() - 0.5) * currentIntensity * 2;
-
-        container.style.transform = `translate(${x}px, ${y}px)`;
-        requestAnimationFrame(shake);
-    }
-
-    shake();
+    // Remove class after animation
+    setTimeout(() => {
+        container.classList.remove('shake-effect');
+    }, duration);
 }
 
 // ================================================
@@ -793,12 +883,8 @@ function showDamageSparks(targetEl, isCritical = false) {
         setTimeout(() => spark.remove(), 350);
     }
 
-    // Screen shake
-    if (isCritical) {
-        screenShake(12, 250);
-    } else {
-        screenShake(5, 150);
-    }
+    // Screen shake moved to dedicated function for CSSanim separation
+    // But we still trigger it here if needed, or let screenShake handle it.
 }
 
 // ================================================

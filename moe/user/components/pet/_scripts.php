@@ -295,6 +295,12 @@
                 if (lossesEl) lossesEl.textContent = data.stats.losses || 0;
                 if (streakEl) streakEl.textContent = data.stats.current_streak || 0;
 
+                // Update Defense Stats
+                var defWinsEl = document.getElementById('defense-wins');
+                var defLossesEl = document.getElementById('defense-losses');
+                if (defWinsEl) defWinsEl.textContent = data.stats.defense_wins || 0;
+                if (defLossesEl) defLossesEl.textContent = data.stats.defense_losses || 0;
+
                 var history = data.history || [];
 
                 if (!append && history.length === 0) {
@@ -305,6 +311,9 @@
                 var html = history.map(function (battle) {
                     var date = new Date(battle.created_at).toLocaleDateString();
                     var won = battle.won ? true : false;
+                    var isDefender = battle.battle_role === 'defender';
+                    var roleLabel = isDefender ? '🛡️ DEFENDED' : '⚔️ ATTACKED';
+                    var roleClass = isDefender ? 'defender' : 'attacker';
 
                     var myName = battle.my_pet_name || 'My Pet';
                     var myLvl = battle.my_pet_level || '?';
@@ -316,7 +325,8 @@
                     var oppOwner = battle.opp_username ? 'Trainer: ' + battle.opp_username : 'Wild Enzyme';
 
                     return `
-                        <div class="history-card ${won ? 'win' : 'lose'}">
+                        <div class="history-card ${won ? 'win' : 'lose'} ${roleClass}">
+                            <div class="h-role-badge ${roleClass}">${roleLabel}</div>
                             <div class="h-pet player">
                                 <div class="h-pet-avatar">
                                     <img class="h-pet-img" src="${myImg}" onerror="this.src='../assets/placeholder.png'">

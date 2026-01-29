@@ -88,6 +88,9 @@ export function renderCollection() {
 
         return `
             <div class="pet-card ${activeClass} ${deadClass}" onclick="selectPet(${pet.id})">
+                <button class="pet-info-btn" onclick="event.stopPropagation(); openPetDetailById(${pet.id})" title="View Details">
+                    <i class="fas fa-info"></i>
+                </button>
                 <span class="rarity-badge ${pet.rarity.toLowerCase()}">${pet.rarity}</span>
                 <div class="pet-card-element ${pet.element.toLowerCase()}" title="${pet.element}">
                     ${elementIcon}

@@ -97,7 +97,9 @@
         const urlParams = new URLSearchParams(window.location.search);
         const tabFromUrl = urlParams.get('tab');
         if (tabFromUrl && typeof switchToTab === 'function') {
-            setTimeout(() => switchToTab(tabFromUrl), 200);
+            // Increased delay slightly to defeat race conditions with ui.js
+            console.log('Force switching to tab:', tabFromUrl);
+            setTimeout(() => switchToTab(tabFromUrl), 300);
         }
 
         // Scroll indicator
