@@ -150,13 +150,21 @@
             });
     }
 
-    // Helper: Simple Tier Logic
-    function getTier(level) {
-        if (level >= 90) return 'Master';
-        if (level >= 70) return 'Diamond';
-        if (level >= 50) return 'Gold';
-        if (level >= 30) return 'Silver';
+    // Helper: Tier Logic based on Rank Points (ELO)
+    function getTier(rankPoints) {
+        const rp = rankPoints || 1000;
+        if (rp >= 5000) return 'Master';
+        if (rp >= 4000) return 'Diamond';
+        if (rp >= 3000) return 'Platinum';
+        if (rp >= 2000) return 'Gold';
+        if (rp >= 1000) return 'Silver';
         return 'Bronze';
+    }
+
+    // Helper: Get tier image path
+    function getTierImage(rankPoints) {
+        const tier = getTier(rankPoints).toLowerCase();
+        return '/moe/assets/Tier/' + tier + '.png';
     }
 
     function filterAndRender(data) {
@@ -227,6 +235,9 @@
             const rank = i + 1;
             const name = pet.nickname || pet.species_name;
             const img = LB_ASSETS + (pet.current_image || 'egg.png');
+            const rp = pet.rank_points || 1000;
+            const tier = getTier(rp);
+            const tierImg = getTierImage(rp);
 
             return `
                 <div class="podium-pet rank-${rank}" onclick="openLeaderboardPetDetail(${pet.pet_id})">
@@ -236,8 +247,11 @@
                     </div>
                     <div class="podium-name">${name}</div>
                     <div class="podium-owner">${pet.owner_name}</div>
-                    <div class="podium-stat">${getLBStat(pet)}</div>
-                    <div class="podium-stand">${pet.tier || 'Tier ' + rank}</div>
+                    <div class="podium-rp">${rp} RP</div>
+                    <div class="podium-stand">
+                        <img src="${tierImg}" alt="${tier}" class="tier-icon">
+                        <span>${tier}</span>
+                    </div>
                 </div>
             `;
         }).join('');
@@ -259,6 +273,9 @@
             const name = pet.nickname || pet.species_name;
             const img = LB_ASSETS + (pet.current_image || 'egg.png');
             const elClass = (pet.element || '').toLowerCase();
+            const rp = pet.rank_points || 1000;
+            const tier = getTier(rp);
+            const tierImg = getTierImage(rp);
 
             return `
                 <div class="lb-pet-card" onclick="openLeaderboardPetDetail(${pet.pet_id})">
@@ -267,7 +284,8 @@
                     
                     <div class="pet-info">
                         <div class="pet-name ${pet.is_shiny ? 'shiny' : ''}">
-                            ${name} <span class="tier-badge ${getTierClass(pet.tier)}">${pet.tier}</span>
+                            ${name}
+                            <img src="${tierImg}" alt="${tier}" class="tier-icon-small">
                         </div>
                         <div class="pet-meta">
                             <span class="element-badge ${elClass}">${pet.element}</span>
@@ -275,18 +293,9 @@
                         </div>
                     </div>
                     
-                    <div class="pet-stats-row" style="display:flex; gap:15px; text-align:center">
-                        <div class="stat-group">
-                            <div class="stat-val" style="color:#ddd; font-size:0.8rem">${pet.win_rate}%</div>
-                            <div class="stat-lbl" style="font-size:0.6rem; color:#666">WR</div>
-                        </div>
-                         <div class="stat-group">
-                            <div class="stat-val" style="color:#ddd; font-size:0.8rem">${pet.streak}</div>
-                            <div class="stat-lbl" style="font-size:0.6rem; color:#666">Streak</div>
-                        </div>
-                        <div class="stat-main-group">
-                             ${getLBStat(pet, true)}
-                        </div>
+                    <div class="pet-stats">
+                        <div class="stat-main">${rp}</div>
+                        <div class="stat-label">RP</div>
                     </div>
                 </div>
             `;
@@ -294,14 +303,15 @@
     }
 
     function getLBStat(pet, detailed) {
+        const rp = pet.rank_points || 1000;
         if (detailed) {
             if (lbCurrentSort === 'wins') return `<div class="stat-main">${pet.battle_wins}</div><div class="stat-label">Wins</div>`;
             if (lbCurrentSort === 'power') return `<div class="stat-main">${pet.power_score}</div><div class="stat-label">Power</div>`;
-            return `<div class="stat-main">${pet.level}</div><div class="stat-label">Lvl</div>`;
+            return `<div class="stat-main">${rp}</div><div class="stat-label">RP</div>`;
         }
         if (lbCurrentSort === 'wins') return `${pet.battle_wins} Wins`;
         if (lbCurrentSort === 'power') return `${pet.power_score} Power`;
-        return `Lv.${pet.level}`;
+        return `${rp} RP`;
     }
 
     // Hall of Fame - Load from API with fallback

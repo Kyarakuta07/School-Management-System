@@ -545,6 +545,8 @@
         border-radius: clamp(14px, 3vw, 20px);
         padding: clamp(0.75rem, 2.5vw, 1.25rem);
         border: 1px solid var(--lb-border);
+        touch-action: pan-y;
+        -webkit-tap-highlight-color: transparent;
     }
 
     .podium-pet:hover {
@@ -714,6 +716,8 @@
         border-radius: clamp(12px, 3vw, 16px);
         cursor: pointer;
         transition: all 0.3s ease;
+        touch-action: pan-y;
+        -webkit-tap-highlight-color: transparent;
     }
 
     .lb-pet-card:hover {
@@ -1109,5 +1113,62 @@
         .leaderboard-container {
             max-width: 1000px;
         }
+    }
+
+    /* ================================
+       TIER ICON STYLES
+       ================================ */
+    .tier-icon {
+        width: 28px;
+        height: 28px;
+        object-fit: contain;
+        vertical-align: middle;
+        filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.4));
+    }
+
+    .tier-icon-small {
+        width: 20px;
+        height: 20px;
+        object-fit: contain;
+        vertical-align: middle;
+        margin-left: 6px;
+        filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.3));
+    }
+
+    .podium-rp {
+        font-size: clamp(0.7rem, 2vw, 0.9rem);
+        color: var(--lb-gold);
+        font-weight: 700;
+        margin-top: 0.3rem;
+    }
+
+    .podium-stand {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        margin-top: 0.6rem;
+        border-radius: 10px;
+        padding: clamp(0.5rem, 1.5vw, 0.7rem);
+        font-size: clamp(0.6rem, 1.6vw, 0.75rem);
+        font-weight: 700;
+        text-transform: uppercase;
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid var(--lb-border);
+    }
+
+    .podium-pet.rank-1 .podium-stand {
+        background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.05));
+        border-color: var(--lb-gold);
+    }
+
+    .podium-pet.rank-2 .podium-stand {
+        background: linear-gradient(135deg, rgba(192, 192, 192, 0.15), rgba(192, 192, 192, 0.05));
+        border-color: var(--lb-silver);
+    }
+
+    .podium-pet.rank-3 .podium-stand {
+        background: linear-gradient(135deg, rgba(205, 127, 50, 0.15), rgba(205, 127, 50, 0.05));
+        border-color: var(--lb-bronze);
     }
 </style>

@@ -218,6 +218,47 @@ class BattleController extends BaseController
             // Update arena stats
             $this->updateArenaStats($player_won);
 
+            // ========================================
+            // ELO RANKED POINTS CALCULATION
+            // ========================================
+            $attacker_rp_change = 0;
+            $defender_rp_change = 0;
+            $new_attacker_rp = 0;
+            $new_defender_rp = 0;
+
+            // Get current RP for both pets
+            $attacker_rp = $this->getPetRankPoints($attacker_pet_id);
+            $defender_rp = ($defender_pet_id > 0) ? $this->getPetRankPoints($defender_pet_id) : 1000; // AI defaults to 1000
+
+            // Calculate ELO change
+            $k_factor = 25; // Base volatility
+            $diff_factor = ($defender_rp - $attacker_rp) / 400;
+            $expected_score = 1 / (1 + pow(10, $diff_factor));
+            $actual_score = $player_won ? 1 : 0;
+            $rp_change = (int) round($k_factor * ($actual_score - $expected_score));
+
+            // Apply changes
+            if ($player_won) {
+                $attacker_rp_change = max(10, $rp_change); // Minimum +10 for winning
+                $defender_rp_change = -1 * min(15, abs($rp_change)); // Max -15 for losing
+            } else {
+                $attacker_rp_change = -1 * min(20, abs($rp_change)); // Max -20 for losing
+                $defender_rp_change = max(5, abs($rp_change)); // +5 to +15 for defend win
+            }
+
+            // Update attacker RP
+            $new_attacker_rp = max(0, $attacker_rp + $attacker_rp_change);
+            $this->updatePetRankPoints($attacker_pet_id, $new_attacker_rp);
+
+            // Update defender RP (only if real pet)
+            if ($defender_pet_id > 0) {
+                $new_defender_rp = max(0, $defender_rp + $defender_rp_change);
+                $this->updatePetRankPoints($defender_pet_id, $new_defender_rp);
+            }
+
+            // Record RP changes in pet_battles
+            $this->recordRpChange($attacker_pet_id, $defender_pet_id, $attacker_rp_change, $defender_rp_change);
+
             // Increment rate limit for daily battles
             $user_id_str = 'user_' . $this->user_id;
             $this->rate_limiter->checkLimit($user_id_str, 'pet_battle', 3, 1440); // 1440 minutes = 24 hours
@@ -260,6 +301,64 @@ class BattleController extends BaseController
             "DELETE FROM pet_battles WHERE created_at < DATE_SUB(NOW(), INTERVAL 60 DAY)"
         );
     }
+
+    /**
+     * Get pet's current rank points
+     */
+    private function getPetRankPoints($pet_id)
+    {
+        if ($pet_id <= 0)
+            return 1000; // AI pets default to 1000
+
+        $stmt = mysqli_prepare($this->conn, "SELECT rank_points FROM user_pets WHERE id = ?");
+        mysqli_stmt_bind_param($stmt, "i", $pet_id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $row = mysqli_fetch_assoc($result);
+        mysqli_stmt_close($stmt);
+
+        return (int) ($row['rank_points'] ?? 1000);
+    }
+
+    /**
+     * Update pet's rank points and track highest rank
+     */
+    private function updatePetRankPoints($pet_id, $new_rp)
+    {
+        if ($pet_id <= 0)
+            return; // Skip AI pets
+
+        $stmt = mysqli_prepare(
+            $this->conn,
+            "UPDATE user_pets SET 
+                rank_points = ?,
+                highest_rank = GREATEST(COALESCE(highest_rank, 0), ?)
+             WHERE id = ?"
+        );
+        mysqli_stmt_bind_param($stmt, "iii", $new_rp, $new_rp, $pet_id);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+    }
+
+    /**
+     * Record RP changes in the most recent pet_battle entry
+     */
+    private function recordRpChange($attacker_pet_id, $defender_pet_id, $attacker_rp_change, $defender_rp_change)
+    {
+        // Update the most recent battle with RP changes
+        $stmt = mysqli_prepare(
+            $this->conn,
+            "UPDATE pet_battles SET 
+                attacker_rp_change = ?,
+                defender_rp_change = ?
+             WHERE attacker_pet_id = ? AND defender_pet_id = ?
+             ORDER BY id DESC LIMIT 1"
+        );
+        mysqli_stmt_bind_param($stmt, "iiii", $attacker_rp_change, $defender_rp_change, $attacker_pet_id, $defender_pet_id);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+    }
+
 
     /**
      * Update user's arena stats (wins/losses) and streak

@@ -38,8 +38,14 @@ class LeaderboardController extends BaseController
                 case 'power':
                     $orderBy = 'power_score DESC';
                     break;
+                case 'rank':
+                case 'points':
+                    // ELO Ranked Points (new default)
+                    $orderBy = 'up.rank_points DESC, up.level DESC';
+                    break;
                 default:
-                    $orderBy = 'up.level DESC, up.exp DESC';
+                    // Default to rank_points for competitive focus
+                    $orderBy = 'up.rank_points DESC, up.level DESC';
             }
 
             $elementFilter = '';
@@ -80,6 +86,8 @@ class LeaderboardController extends BaseController
                         up.evolution_stage,
                         COALESCE(up.total_wins, 0) as total_wins,
                         COALESCE(up.total_losses, 0) as total_losses,
+                        COALESCE(up.rank_points, 1000) as rank_points,
+                        COALESCE(up.highest_rank, 1000) as highest_rank,
                         ps.name as species_name,
                         ps.element,
                         ps.rarity,
@@ -95,7 +103,8 @@ class LeaderboardController extends BaseController
                     FROM user_pets up
                     JOIN pet_species ps ON ps.id = up.species_id
                     JOIN nethera n ON n.id_nethera = up.user_id
-                    WHERE up.status = 'ALIVE'
+                    WHERE up.status = 'ALIVE' 
+                    AND COALESCE(up.is_sheltered, 0) = 0
                     $elementFilter
                     ORDER BY $orderBy
                     LIMIT ?";
