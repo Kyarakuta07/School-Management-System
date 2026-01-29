@@ -1,1043 +1,1015 @@
-<!-- Pet Leaderboard Tab - Premium Design -->
+﻿<!-- Pet Leaderboard Tab - Premium Design -->
+
 <div class="tab-content" id="tab-leaderboard" style="display: none;">
+
     <div class="leaderboard-container">
 
+
+
         <!-- Header with animated trophy -->
+
         <div class="leaderboard-header">
-            <div class="lb-trophy">🏆</div>
+
+            <div class="lb-trophy">ðŸ†</div>
+
             <div class="lb-title">
+
                 <h2>PET CHAMPIONS</h2>
+
                 <div class="season-info">
+
                     <span class="season-label">Season Ends in:</span>
+
                     <span class="season-countdown" id="season-countdown">--d --h --m</span>
+
                 </div>
+
             </div>
+
         </div>
+
+
 
         <!-- Filter Tabs -->
+
         <div class="leaderboard-tabs">
+
             <button class="lb-tab active" data-sort="level">
-                <span class="tab-icon">🏅</span>
+
+                <span class="tab-icon">ðŸ…</span>
+
                 <span class="tab-label">Level</span>
+
             </button>
+
             <button class="lb-tab" data-sort="wins">
-                <span class="tab-icon">⚔️</span>
+
+                <span class="tab-icon">âš”ï¸</span>
+
                 <span class="tab-label">Wins</span>
+
             </button>
+
             <button class="lb-tab" data-sort="power">
-                <span class="tab-icon">💪</span>
+
+                <span class="tab-icon">ðŸ’ª</span>
+
                 <span class="tab-label">Power</span>
+
             </button>
+
         </div>
+
+
 
         <!-- Element Filter Pills -->
+
         <div class="element-pills" id="element-pills">
+
             <button class="element-pill active" data-element="all">All</button>
+
             <!-- Populated by JS -->
+
         </div>
+
+
 
         <!-- Search Bar -->
+
         <div class="lb-search-wrapper">
+
             <div class="lb-search-box">
-                <span class="search-icon">🔍</span>
+
+                <span class="search-icon">ðŸ”</span>
+
                 <input type="text" id="lb-search" placeholder="Find Tamer or Pet...">
+
             </div>
+
         </div>
+
+
 
         <!-- Period Toggle (Monthly / All Time) -->
+
         <div class="period-toggle-container">
+
             <span class="period-toggle-label">Leaderboard Period <span id="period-label">(Resets Monthly)</span></span>
+
             <div class="period-toggle" id="period-toggle">
-                <button type="button" class="period-btn active" data-period="monthly">🌙 Monthly</button>
-                <button type="button" class="period-btn" data-period="alltime">⭐ All Time</button>
+
+                <button type="button" class="period-btn active" data-period="monthly">ðŸŒ™ Monthly</button>
+
+                <button type="button" class="period-btn" data-period="alltime">â­ All Time</button>
+
             </div>
+
         </div>
+
+
 
         <!-- Rewards Preview Banner -->
+
         <div class="rewards-banner" id="rewards-banner">
-            <h4>🏆 Season Rewards</h4>
+
+            <h4>ðŸ† Season Rewards</h4>
+
             <div class="rewards-list">
-                <div class="reward-item"><span class="rank-icon">🥇</span> 500 Coins + Exclusive Title</div>
-                <div class="reward-item"><span class="rank-icon">🥈</span> 300 Coins</div>
-                <div class="reward-item"><span class="rank-icon">🥉</span> 150 Coins</div>
+
+                <div class="reward-item"><span class="rank-icon">ðŸ¥‡</span> 500 Coins + Exclusive Title</div>
+
+                <div class="reward-item"><span class="rank-icon">ðŸ¥ˆ</span> 300 Coins</div>
+
+                <div class="reward-item"><span class="rank-icon">ðŸ¥‰</span> 150 Coins</div>
+
             </div>
+
         </div>
+
+
 
         <!-- Top 3 Podium -->
+
         <div class="podium-section" id="podium-section">
+
             <!-- Will be populated by JS -->
+
         </div>
+
+
 
         <!-- Rest of Leaderboard -->
+
         <div class="leaderboard-list" id="leaderboard-list">
+
             <div class="loading-spinner">
+
                 <div class="spinner"></div>
+
                 <span>Loading champions...</span>
+
             </div>
+
         </div>
+
+
 
         <!-- Hall of Fame (Past Winners) -->
+
         <div class="hall-of-fame" id="hall-of-fame">
+
             <div class="hof-header">
-                <span>🏛️</span>
+
+                <span>ðŸ›ï¸</span>
+
                 <span>Hall of Fame</span>
+
             </div>
+
             <div class="hof-list" id="hof-list">
+
                 <!-- Populated by JS -->
+
             </div>
+
         </div>
 
+
+
         <!-- Hidden selects for legacy support -->
+
         <select id="lb-sort" style="display:none;">
+
             <option value="level">Level</option>
+
         </select>
+
         <select id="lb-element" style="display:none;">
+
             <option value="all">All</option>
+
         </select>
+
+
 
     </div>
+
 </div>
 
+
+
 <style>
-    /* ================================================
-   PET LEADERBOARD - PREMIUM RESPONSIVE DESIGN
-   ================================================ */
-    .leaderboard-container {
-        padding: 1rem;
-        max-width: 800px;
-        margin: 0 auto;
+    :root {
+
+        --lb-gold: #D4AF37;
+
+        --lb-gold-light: #FFD700;
+
+        --lb-silver: #C0C0C0;
+
+        --lb-bronze: #CD7F32;
+
+        --lb-bg-glass: rgba(15, 15, 35, 0.6);
+
+        --lb-border: rgba(255, 255, 255, 0.08);
+
     }
 
-    /* Header */
-    .leaderboard-header {
-        text-align: center;
-        padding: 1.5rem 1rem;
-        background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(255, 215, 0, 0.05));
-        border-radius: 20px;
-        margin-bottom: 1.5rem;
-        border: 1px solid rgba(212, 175, 55, 0.3);
+
+
+    .leaderboard-container {
+
+        padding: clamp(0.75rem, 3vw, 2rem);
+
+        max-width: 900px;
+
+        margin: 0 auto;
+
     }
+
+
+
+    .leaderboard-container::before {
+
+        content: '';
+
+        position: absolute;
+
+        top: 0;
+
+        left: 50%;
+
+        transform: translateX(-50%);
+
+        width: 150%;
+
+        height: 300px;
+
+        background: radial-gradient(ellipse at center top, rgba(212, 175, 55, 0.12) 0%, transparent 70%);
+
+        pointer-events: none;
+
+        z-index: -1;
+
+    }
+
+
+
+    .leaderboard-header {
+
+        text-align: center;
+
+        padding: clamp(1rem, 4vw, 2rem);
+
+        background: linear-gradient(135deg, var(--lb-bg-glass), rgba(30, 30, 60, 0.4));
+
+        backdrop-filter: blur(20px);
+
+        border-radius: clamp(16px, 4vw, 28px);
+
+        margin-bottom: clamp(1rem, 3vw, 1.5rem);
+
+        border: 1px solid var(--lb-border);
+
+        position: relative;
+
+        overflow: hidden;
+
+    }
+
+
 
     .lb-trophy {
-        font-size: 3rem;
-        animation: trophyBounce 2s ease-in-out infinite;
-        filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6));
+
+        font-size: clamp(2.5rem, 8vw, 4rem);
+
+        animation: trophyFloat 3s ease-in-out infinite;
+
+        filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.5));
+
     }
 
-    @keyframes trophyBounce {
+
+
+    @keyframes trophyFloat {
+
+
 
         0%,
+
         100% {
-            transform: translateY(0) scale(1);
+
+            transform: translateY(0) rotate(-3deg);
+
         }
 
+
+
         50% {
-            transform: translateY(-8px) scale(1.05);
+
+            transform: translateY(-12px) rotate(3deg);
+
         }
+
     }
+
+
 
     .lb-title h2 {
+
         font-family: 'Cinzel', serif;
-        font-size: clamp(1.4rem, 5vw, 2rem);
-        background: linear-gradient(135deg, #D4AF37, #FFD700);
+
+        font-size: clamp(1.3rem, 5vw, 2.2rem);
+
+        background: linear-gradient(135deg, var(--lb-gold) 0%, var(--lb-gold-light) 50%, var(--lb-gold) 100%);
+
+        background-size: 200% auto;
+
         -webkit-background-clip: text;
+
         -webkit-text-fill-color: transparent;
+
         background-clip: text;
-        margin: 0.5rem 0 0.25rem;
-        letter-spacing: 2px;
-    }
-
-    .lb-subtitle {
-        color: rgba(255, 255, 255, 0.6);
-        font-size: 0.85rem;
-        margin: 0;
-    }
-
-    /* Filter Tabs */
-    .leaderboard-tabs {
-        display: flex;
-        gap: 0.5rem;
-        justify-content: center;
-        margin-bottom: 1rem;
-        flex-wrap: wrap;
-    }
-
-    .lb-tab {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
-        padding: 0.6rem 1rem;
-        color: rgba(255, 255, 255, 0.7);
-        cursor: pointer;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        gap: 0.4rem;
-        font-size: 0.85rem;
-        font-weight: 600;
-    }
-
-    .lb-tab:hover {
-        background: rgba(212, 175, 55, 0.1);
-        border-color: rgba(212, 175, 55, 0.3);
-    }
-
-    .lb-tab.active {
-        background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(255, 215, 0, 0.1));
-        border-color: #D4AF37;
-        color: #D4AF37;
-    }
-
-    .tab-icon {
-        font-size: 1rem;
-    }
-
-    /* Element Pills */
-    .element-pills {
-        display: flex;
-        gap: 0.4rem;
-        justify-content: center;
-        flex-wrap: wrap;
-        margin-bottom: 1.5rem;
-        padding: 0 0.5rem;
-    }
-
-    .element-pill {
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 20px;
-        padding: 0.35rem 0.75rem;
-        color: rgba(255, 255, 255, 0.7);
-        font-size: 0.75rem;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-
-    .element-pill:hover {
-        background: rgba(255, 255, 255, 0.15);
-    }
-
-    .element-pill.active {
-        background: rgba(212, 175, 55, 0.2);
-        border-color: #D4AF37;
-        color: #D4AF37;
-    }
-
-    /* Element colors */
-    .element-pill[data-element="Fire"] {
-        border-color: #FF5722;
-        color: #FF8A65;
-    }
-
-    .element-pill[data-element="Water"] {
-        border-color: #2196F3;
-        color: #64B5F6;
-    }
-
-    .element-pill[data-element="Earth"] {
-        border-color: #8BC34A;
-        color: #AED581;
-    }
-
-    .element-pill[data-element="Air"] {
-        border-color: #03A9F4;
-        color: #4FC3F7;
-    }
-
-    .element-pill[data-element="Light"] {
-        border-color: #FFC107;
-        color: #FFD54F;
-    }
-
-    .element-pill[data-element="Dark"] {
-        border-color: #9C27B0;
-        color: #BA68C8;
-    }
-
-    /* Period Toggle */
-    .period-toggle-container {
-        text-align: center;
-        margin-bottom: 1.5rem;
-    }
-
-    .period-toggle-label {
-        display: block;
-        font-size: 0.75rem;
-        color: rgba(255, 255, 255, 0.5);
-        margin-bottom: 0.5rem;
-    }
-
-    #period-label {
-        color: #D4AF37;
-    }
-
-    .period-toggle {
-        display: inline-flex;
-        gap: 0.5rem;
-        background: rgba(0, 0, 0, 0.3);
-        padding: 4px;
-        border-radius: 12px;
-    }
-
-    .period-btn {
-        background: transparent;
-        border: none;
-        padding: 0.5rem 1rem;
-        color: rgba(255, 255, 255, 0.6);
-        font-size: 0.8rem;
-        font-weight: 600;
-        border-radius: 10px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-
-    .period-btn:hover {
-        color: #fff;
-        background: rgba(255, 255, 255, 0.1);
-    }
-
-    .period-btn.active {
-        background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%);
-        color: #1a1a2e;
-    }
-
-    /* ================================================
-   TOP 3 PODIUM
-   ================================================ */
-    .podium-section {
-        display: flex;
-        justify-content: center;
-        align-items: flex-end;
-        gap: 0.5rem;
-        margin-bottom: 1.5rem;
-        padding: 0 0.5rem;
-        min-height: 180px;
-    }
-
-    .podium-pet {
-        text-align: center;
-        transition: transform 0.3s ease;
-    }
-
-    .podium-pet:hover {
-        transform: translateY(-5px);
-    }
-
-    .podium-pet.rank-1 {
-        order: 2;
-    }
-
-    .podium-pet.rank-2 {
-        order: 1;
-    }
 
-    .podium-pet.rank-3 {
-        order: 3;
-    }
-
-    .podium-owner {
-        font-size: 0.65rem;
-        color: rgba(255, 255, 255, 0.5);
-        margin-top: -2px;
-        margin-bottom: 2px;
-        max-width: 80px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .podium-pet.rank-1 .podium-owner {
-        font-size: 0.7rem;
-        color: rgba(255, 255, 255, 0.7);
-    }
-
-    .podium-avatar {
-        position: relative;
-        margin-bottom: 0.5rem;
-    }
-
-    .podium-img {
-        width: 70px;
-        height: 70px;
-        object-fit: contain;
-        border-radius: 50%;
-        border: 3px solid rgba(255, 255, 255, 0.2);
-        background: rgba(0, 0, 0, 0.3);
-        padding: 5px;
-    }
-
-    .podium-pet.rank-1 .podium-img {
-        width: 90px;
-        height: 90px;
-        border-color: #FFD700;
-        box-shadow: 0 0 25px rgba(255, 215, 0, 0.5);
-    }
-
-    .podium-pet.rank-2 .podium-img {
-        border-color: #C0C0C0;
-        box-shadow: 0 0 15px rgba(192, 192, 192, 0.4);
-    }
-
-    .podium-pet.rank-3 .podium-img {
-        border-color: #CD7F32;
-        box-shadow: 0 0 15px rgba(205, 127, 50, 0.4);
-    }
-
-    .podium-crown {
-        position: absolute;
-        top: -20px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 1.5rem;
-        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
-    }
-
-    .podium-pet.rank-1 .podium-crown {
-        font-size: 2rem;
-        top: -25px;
-    }
-
-    .podium-name {
-        font-weight: 700;
-        font-size: 0.8rem;
-        color: #fff;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 80px;
-    }
-
-    .podium-pet.rank-1 .podium-name {
-        color: #FFD700;
-        font-size: 0.9rem;
-        max-width: 100px;
-    }
-
-    .podium-stat {
-        font-size: 0.75rem;
-        color: rgba(255, 255, 255, 0.6);
-        margin-top: 0.2rem;
-    }
-
-    .podium-stand {
-        width: 70px;
-        border-radius: 8px 8px 0 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        font-weight: 900;
-        margin-top: 0.5rem;
-    }
-
-    .podium-pet.rank-1 .podium-stand {
-        height: 60px;
-        width: 90px;
-        background: linear-gradient(180deg, #FFD700 0%, #B8860B 100%);
-        color: #fff;
-    }
+        margin: 0.5rem 0 0.3rem;
 
-    .podium-pet.rank-2 .podium-stand {
-        height: 45px;
-        background: linear-gradient(180deg, #C0C0C0 0%, #808080 100%);
-        color: #fff;
-    }
-
-    .podium-pet.rank-3 .podium-stand {
-        height: 35px;
-        background: linear-gradient(180deg, #CD7F32 0%, #8B4513 100%);
-        color: #fff;
-    }
-
-    /* ================================================
-   LEADERBOARD LIST (Rank 4+)
-   ================================================ */
-    .leaderboard-list {
-        display: flex;
-        flex-direction: column;
-        gap: 0.6rem;
-    }
-
-    .lb-pet-card {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        padding: 0.75rem;
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 14px;
-        transition: all 0.2s ease;
-    }
-
-    .lb-pet-card:hover {
-        background: rgba(255, 255, 255, 0.06);
-        border-color: rgba(212, 175, 55, 0.3);
-        transform: translateX(5px);
-    }
-
-    .lb-pet-card .rank {
-        min-width: 32px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 800;
-        font-size: 0.85rem;
-        color: rgba(255, 255, 255, 0.5);
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 8px;
-    }
-
-    .lb-pet-card .pet-img {
-        width: 48px;
-        height: 48px;
-        object-fit: contain;
-        border-radius: 10px;
-        background: rgba(0, 0, 0, 0.2);
-        padding: 4px;
-    }
-
-    .lb-pet-card .pet-info {
-        flex: 1;
-        min-width: 0;
-    }
-
-    .lb-pet-card .pet-name {
-        font-weight: 700;
-        font-size: 0.9rem;
-        color: #fff;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .lb-pet-card .pet-name.shiny {
-        color: #FFD700;
-    }
-
-    .lb-pet-card .pet-meta {
-        display: flex;
-        gap: 0.5rem;
-        align-items: center;
-        margin-top: 0.2rem;
-        flex-wrap: wrap;
-    }
+        letter-spacing: clamp(1px, 0.5vw, 3px);
 
-    .lb-pet-card .element-badge {
-        font-size: 0.65rem;
-        padding: 0.15rem 0.4rem;
-        border-radius: 6px;
-        font-weight: 600;
-    }
+        animation: goldShimmer 3s ease-in-out infinite;
 
-    .lb-pet-card .owner {
-        font-size: 0.7rem;
-        color: rgba(255, 255, 255, 0.5);
     }
 
-    .lb-pet-card .pet-stats {
-        text-align: right;
-        min-width: 50px;
-    }
 
-    .lb-pet-card .stat-main {
-        font-weight: 800;
-        font-size: 1rem;
-        color: #D4AF37;
-    }
 
-    .lb-pet-card .stat-label {
-        font-size: 0.65rem;
-        color: rgba(255, 255, 255, 0.4);
-        text-transform: uppercase;
-    }
+    @keyframes goldShimmer {
 
-    /* Loading Spinner */
-    .loading-spinner {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.75rem;
-        padding: 2rem;
-        color: rgba(255, 255, 255, 0.5);
-    }
 
-    .spinner {
-        width: 32px;
-        height: 32px;
-        border: 3px solid rgba(212, 175, 55, 0.2);
-        border-top-color: #D4AF37;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-    }
 
-    @keyframes spin {
-        to {
-            transform: rotate(360deg);
-        }
-    }
+        0%,
 
-    .empty-state {
-        text-align: center;
-        padding: 2rem;
-        color: rgba(255, 255, 255, 0.5);
-    }
+        100% {
 
-    /* ================================================
-   RESPONSIVE - MOBILE FIRST
-   ================================================ */
+            background-position: 0% center;
 
-    /* Extra Small (320px - phones) */
-    @media (max-width: 359px) {
-        .leaderboard-container {
-            padding: 0.5rem;
         }
 
-        .lb-trophy {
-            font-size: 2rem;
+
+
+        50% {
+
+            background-position: 200% center;
+
         }
 
-        .lb-title h2 {
-            font-size: 1.2rem;
-        }
-
-        .leaderboard-tabs {
-            gap: 0.3rem;
-        }
-
-        .lb-tab {
-            padding: 0.4rem 0.6rem;
-            font-size: 0.75rem;
-        }
-
-        .tab-label {
-            display: none;
-        }
-
-        .tab-icon {
-            font-size: 1.1rem;
-        }
-
-        .element-pills {
-            gap: 0.25rem;
-        }
-
-        .element-pill {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.65rem;
-        }
-
-        .podium-section {
-            gap: 0.3rem;
-            min-height: 150px;
-        }
-
-        .podium-img {
-            width: 50px;
-            height: 50px;
-        }
-
-        .podium-pet.rank-1 .podium-img {
-            width: 65px;
-            height: 65px;
-        }
-
-        .podium-name {
-            font-size: 0.65rem;
-            max-width: 55px;
-        }
-
-        .podium-pet.rank-1 .podium-name {
-            font-size: 0.75rem;
-            max-width: 70px;
-        }
-
-        .podium-stand {
-            width: 55px;
-        }
-
-        .podium-pet.rank-1 .podium-stand {
-            width: 70px;
-            height: 50px;
-        }
-
-        .podium-pet.rank-2 .podium-stand {
-            height: 35px;
-        }
-
-        .podium-pet.rank-3 .podium-stand {
-            height: 28px;
-        }
-
-        .podium-crown {
-            font-size: 1rem;
-            top: -12px;
-        }
-
-        .podium-pet.rank-1 .podium-crown {
-            font-size: 1.3rem;
-            top: -15px;
-        }
-
-        .lb-pet-card {
-            padding: 0.5rem;
-            gap: 0.5rem;
-        }
-
-        .lb-pet-card .rank {
-            min-width: 26px;
-            height: 26px;
-            font-size: 0.7rem;
-        }
-
-        .lb-pet-card .pet-img {
-            width: 40px;
-            height: 40px;
-        }
-
-        .lb-pet-card .pet-name {
-            font-size: 0.8rem;
-        }
-
-        .lb-pet-card .stat-main {
-            font-size: 0.85rem;
-        }
     }
 
-    /* Small (360px - 479px) */
-    @media (min-width: 360px) and (max-width: 479px) {
-        .leaderboard-container {
-            padding: 0.75rem;
-        }
 
-        .tab-label {
-            display: none;
-        }
 
-        .tab-icon {
-            font-size: 1.2rem;
-        }
-
-        .podium-img {
-            width: 60px;
-            height: 60px;
-        }
-
-        .podium-pet.rank-1 .podium-img {
-            width: 75px;
-            height: 75px;
-        }
-
-        .podium-name {
-            max-width: 65px;
-        }
-
-        .podium-pet.rank-1 .podium-name {
-            max-width: 85px;
-        }
-    }
-
-    /* Medium (480px - 639px) */
-    @media (min-width: 480px) and (max-width: 639px) {
-        .tab-label {
-            display: inline;
-        }
-
-        .lb-tab {
-            padding: 0.5rem 0.9rem;
-        }
-    }
-
-    /* Large (640px+) */
-    @media (min-width: 640px) {
-        .leaderboard-container {
-            padding: 1.5rem;
-        }
-
-        .leaderboard-header {
-            padding: 2rem;
-        }
-
-        .lb-trophy {
-            font-size: 4rem;
-        }
-
-        .podium-img {
-            width: 80px;
-            height: 80px;
-        }
-
-        .podium-pet.rank-1 .podium-img {
-            width: 100px;
-            height: 100px;
-        }
-
-        .podium-name {
-            max-width: 100px;
-            font-size: 0.9rem;
-        }
-
-        .podium-pet.rank-1 .podium-name {
-            max-width: 120px;
-            font-size: 1rem;
-        }
-
-        .podium-stand {
-            width: 80px;
-        }
-
-        .podium-pet.rank-1 .podium-stand {
-            width: 100px;
-            height: 70px;
-        }
-
-        .lb-pet-card {
-            padding: 1rem;
-            gap: 1rem;
-        }
-
-        .lb-pet-card .pet-img {
-            width: 56px;
-            height: 56px;
-        }
-    }
-
-    /* Season Info */
     .season-info {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-        margin-top: 0.5rem;
-        font-size: 0.9rem;
-        color: rgba(255, 255, 255, 0.7);
-        background: rgba(0, 0, 0, 0.2);
-        padding: 0.3rem 0.8rem;
-        border-radius: 20px;
+
         display: inline-flex;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+
+        align-items: center;
+
+        gap: clamp(0.3rem, 1vw, 0.6rem);
+
+        margin-top: 0.5rem;
+
+        padding: clamp(0.3rem, 1vw, 0.5rem) clamp(0.6rem, 2vw, 1rem);
+
+        background: rgba(0, 0, 0, 0.4);
+
+        border-radius: 30px;
+
+        border: 1px solid rgba(255, 215, 0, 0.2);
+
+        font-size: clamp(0.7rem, 2vw, 0.85rem);
+
     }
+
+
+
+    .season-label {
+
+        color: rgba(255, 255, 255, 0.6);
+
+    }
+
+
 
     .season-countdown {
-        color: #FFD700;
+
+        color: var(--lb-gold-light);
+
         font-weight: 700;
+
         font-family: 'Courier New', monospace;
-        letter-spacing: 1px;
+
+        text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+
     }
 
-    /* Search Bar */
-    .lb-search-wrapper {
-        margin-bottom: 1.5rem;
-        padding: 0 1rem;
+
+
+    .leaderboard-tabs {
+
         display: flex;
+
+        gap: clamp(0.3rem, 1vw, 0.5rem);
+
         justify-content: center;
+
+        margin-bottom: clamp(0.75rem, 2vw, 1.25rem);
+
+        flex-wrap: wrap;
+
     }
+
+
+
+    .lb-tab {
+
+        background: var(--lb-bg-glass);
+
+        backdrop-filter: blur(10px);
+
+        border: 1px solid var(--lb-border);
+
+        border-radius: 30px;
+
+        padding: clamp(0.5rem, 1.5vw, 0.7rem) clamp(0.8rem, 2vw, 1.2rem);
+
+        color: rgba(255, 255, 255, 0.6);
+
+        cursor: pointer;
+
+        transition: all 0.3s ease;
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 0.3rem;
+
+        font-size: clamp(0.7rem, 2vw, 0.85rem);
+
+        font-weight: 600;
+
+    }
+
+
+
+    .lb-tab:hover {
+
+        background: rgba(212, 175, 55, 0.1);
+
+        transform: translateY(-2px);
+
+    }
+
+
+
+    .lb-tab.active {
+
+        background: linear-gradient(135deg, rgba(212, 175, 55, 0.25), rgba(255, 215, 0, 0.1));
+
+        border-color: var(--lb-gold);
+
+        color: var(--lb-gold);
+
+        box-shadow: 0 4px 20px rgba(212, 175, 55, 0.2);
+
+    }
+
+
+
+    .tab-icon {
+
+        font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+
+    }
+
+
+
+    .tab-label {
+
+        display: none;
+
+    }
+
+
+
+    @media (min-width: 480px) {
+
+        .tab-label {
+
+            display: inline;
+
+        }
+
+    }
+
+
+
+    .element-pills {
+
+        display: flex;
+
+        gap: clamp(0.25rem, 1vw, 0.4rem);
+
+        justify-content: center;
+
+        flex-wrap: wrap;
+
+        margin-bottom: clamp(1rem, 2vw, 1.5rem);
+
+    }
+
+
+
+    .element-pill {
+
+        background: rgba(255, 255, 255, 0.05);
+
+        border: 1px solid rgba(255, 255, 255, 0.12);
+
+        border-radius: 20px;
+
+        padding: clamp(0.25rem, 0.8vw, 0.4rem) clamp(0.5rem, 1.5vw, 0.8rem);
+
+        color: rgba(255, 255, 255, 0.6);
+
+        font-size: clamp(0.6rem, 1.8vw, 0.75rem);
+
+        cursor: pointer;
+
+        transition: all 0.2s ease;
+
+    }
+
+
+
+    .element-pill:hover {
+
+        background: rgba(255, 255, 255, 0.1);
+
+    }
+
+
+
+    .element-pill.active {
+
+        background: rgba(212, 175, 55, 0.15);
+
+        border-color: var(--lb-gold);
+
+        color: var(--lb-gold);
+
+    }
+
+
+
+    .element-pill[data-element="Fire"] {
+
+        border-color: #FF5722;
+
+        color: #FF8A65;
+
+    }
+
+
+
+    .element-pill[data-element="Water"] {
+
+        border-color: #2196F3;
+
+        color: #64B5F6;
+
+    }
+
+
+
+    .element-pill[data-element="Earth"] {
+
+        border-color: #8BC34A;
+
+        color: #AED581;
+
+    }
+
+
+
+    .element-pill[data-element="Air"] {
+
+        border-color: #03A9F4;
+
+        color: #4FC3F7;
+
+    }
+
+
+
+    .element-pill[data-element="Light"] {
+
+        border-color: #FFC107;
+
+        color: #FFD54F;
+
+    }
+
+
+
+    .element-pill[data-element="Dark"] {
+
+        border-color: #9C27B0;
+
+        color: #BA68C8;
+
+    }
+
+
+
+    .lb-search-wrapper {
+
+        margin-bottom: clamp(1rem, 2vw, 1.5rem);
+
+        padding: 0 0.5rem;
+
+    }
+
+
 
     .lb-search-box {
+
         position: relative;
-        width: 100%;
-        max-width: 400px;
+
+        max-width: 450px;
+
+        margin: 0 auto;
+
     }
+
+
 
     .lb-search-box input {
+
         width: 100%;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
-        padding: 0.8rem 1rem 0.8rem 2.8rem;
+
+        background: var(--lb-bg-glass);
+
+        backdrop-filter: blur(10px);
+
+        border: 1px solid var(--lb-border);
+
+        border-radius: 16px;
+
+        padding: clamp(0.7rem, 2vw, 0.9rem) 1rem clamp(0.7rem, 2vw, 0.9rem) 2.8rem;
+
         color: #fff;
-        font-family: inherit;
-        font-size: 0.9rem;
+
+        font-size: clamp(0.8rem, 2vw, 0.95rem);
+
         transition: all 0.3s ease;
+
     }
+
+
+
+    .lb-search-box input::placeholder {
+
+        color: rgba(255, 255, 255, 0.35);
+
+    }
+
+
 
     .lb-search-box input:focus {
-        background: rgba(255, 255, 255, 0.1);
-        border-color: #D4AF37;
+
+        border-color: var(--lb-gold);
+
+        box-shadow: 0 0 25px rgba(212, 175, 55, 0.15);
+
         outline: none;
-        box-shadow: 0 0 15px rgba(212, 175, 55, 0.15);
+
     }
+
+
 
     .lb-search-box .search-icon {
+
         position: absolute;
+
         left: 1rem;
+
         top: 50%;
+
         transform: translateY(-50%);
-        color: rgba(255, 255, 255, 0.4);
-        font-size: 1.1rem;
-        pointer-events: none;
+
+        color: rgba(255, 255, 255, 0.35);
+
+        font-size: 1rem;
+
     }
 
-    /* Tiers Badge Update (Generic) */
-    .tier-badge {
-        font-size: 0.7rem;
-        padding: 2px 6px;
-        border-radius: 4px;
-        background: rgba(255, 255, 255, 0.1);
+
+
+    .period-toggle-container {
+
+        text-align: center;
+
+        margin-bottom: clamp(1rem, 2vw, 1.5rem);
+
+    }
+
+
+
+    .period-toggle-label {
+
+        display: block;
+
+        font-size: clamp(0.65rem, 1.8vw, 0.75rem);
+
+        color: rgba(255, 255, 255, 0.45);
+
+        margin-bottom: 0.5rem;
+
+    }
+
+
+
+    #period-label {
+
+        color: var(--lb-gold);
+
+    }
+
+
+
+    .period-toggle {
+
+        display: inline-flex;
+
+        background: rgba(0, 0, 0, 0.4);
+
+        border-radius: 14px;
+
+        padding: 4px;
+
+        gap: 4px;
+
+    }
+
+
+
+    .period-btn {
+
+        background: transparent;
+
+        border: none;
+
+        padding: clamp(0.4rem, 1.2vw, 0.55rem) clamp(0.8rem, 2vw, 1.1rem);
+
+        color: rgba(255, 255, 255, 0.5);
+
+        font-size: clamp(0.7rem, 1.8vw, 0.8rem);
+
+        font-weight: 600;
+
+        border-radius: 11px;
+
+        cursor: pointer;
+
+        transition: all 0.25s ease;
+
+    }
+
+
+
+    .period-btn:hover {
+
         color: #fff;
-        margin-left: 5px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
+
+        background: rgba(255, 255, 255, 0.08);
+
     }
 
-    /* Tier Badge Colors */
-    .tier-badge.bronze {
-        background: linear-gradient(135deg, #CD7F32, #8B4513);
-        border-color: #CD7F32;
-    }
 
-    .tier-badge.silver {
-        background: linear-gradient(135deg, #C0C0C0, #808080);
-        border-color: #C0C0C0;
-    }
 
-    .tier-badge.gold {
-        background: linear-gradient(135deg, #FFD700, #B8860B);
-        border-color: #FFD700;
+    .period-btn.active {
+
+        background: linear-gradient(135deg, var(--lb-gold) 0%, #B8860B 100%);
+
         color: #1a1a2e;
+
+        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.35);
+
     }
 
-    .tier-badge.diamond {
-        background: linear-gradient(135deg, #00CED1, #4169E1);
-        border-color: #00CED1;
+
+
+    .rewards-banner {
+
+        background: linear-gradient(135deg, rgba(212, 175, 55, 0.08), rgba(255, 215, 0, 0.03));
+
+        border: 1px solid rgba(212, 175, 55, 0.25);
+
+        border-radius: clamp(12px, 3vw, 18px);
+
+        padding: clamp(0.75rem, 2vw, 1rem);
+
+        margin-bottom: clamp(1rem, 2vw, 1.5rem);
+
+        text-align: center;
+
     }
 
-    .tier-badge.master {
-        background: linear-gradient(135deg, #9400D3, #FF1493);
-        border-color: #9400D3;
-        animation: masterGlow 2s infinite;
+
+
+    .rewards-banner h4 {
+
+        color: var(--lb-gold);
+
+        font-size: clamp(0.8rem, 2vw, 0.95rem);
+
+        margin: 0 0 0.5rem;
+
+        font-weight: 700;
+
     }
 
-    @keyframes masterGlow {
+
+
+    .rewards-list {
+
+        display: flex;
+
+        justify-content: center;
+
+        gap: clamp(0.5rem, 2vw, 1rem);
+
+        flex-wrap: wrap;
+
+    }
+
+
+
+    .reward-item {
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 0.25rem;
+
+        font-size: clamp(0.65rem, 1.8vw, 0.8rem);
+
+        color: rgba(255, 255, 255, 0.65);
+
+    }
+
+
+
+    .reward-item .rank-icon {
+
+        font-size: clamp(0.9rem, 2.5vw, 1.15rem);
+
+    }
+
+
+
+    .podium-section {
+
+        display: grid;
+
+        grid-template-columns: 1fr 1.2fr 1fr;
+
+        gap: clamp(0.5rem, 2vw, 1rem);
+
+        align-items: end;
+
+        margin-bottom: clamp(1.5rem, 3vw, 2rem);
+
+        min-height: clamp(180px, 40vw, 280px);
+
+    }
+
+
+
+    .podium-pet {
+
+        text-align: center;
+
+        cursor: pointer;
+
+        transition: all 0.4s ease;
+
+        background: var(--lb-bg-glass);
+
+        backdrop-filter: blur(15px);
+
+        border-radius: clamp(14px, 3vw, 20px);
+
+        padding: clamp(0.5rem, 2vw, 1rem);
+
+        border: 1px solid var(--lb-border);
+
+    }
+
+
+
+    .podium-pet:hover {
+
+        transform: translateY(-8px) scale(1.02);
+
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+
+    }
+
+
+
+    .podium-pet.rank-1 {
+
+        order: 2;
+
+        border-color: rgba(255, 215, 0, 0.4);
+
+        background: linear-gradient(180deg, rgba(255, 215, 0, 0.1), var(--lb-bg-glass));
+
+        box-shadow: 0 0 30px rgba(255, 215, 0, 0.15);
+
+    }
+
+
+
+    .podium-pet.rank-2 {
+
+        order: 1;
+
+        border-color: rgba(192, 192, 192, 0.3);
+
+    }
+
+
+
+    .podium-pet.rank-3 {
+
+        order: 3;
+
+        border-color: rgba(205, 127, 50, 0.3);
+
+    }
+
+
+
+    .podium-avatar {
+
+        position: relative;
+
+        margin-bottom: 0.4rem;
+
+    }
+
+
+
+    .podium-crown {
+
+        position: absolute;
+
+        top: clamp(-18px, -4vw, -25px);
+
+        left: 50%;
+
+        transform: translateX(-50%);
+
+        font-size: clamp(1.2rem, 4vw, 1.8rem);
+
+        filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
+
+        z-index: 2;
+
+    }
+
+
+
+    .podium-pet.rank-1 .podium-crown {
+
+        font-size: clamp(1.5rem, 5vw, 2.2rem);
+
+        animation: crownBounce 2s ease-in-out infinite;
+
+    }
+
+
+
+    @keyframes crownBounce {
 
         0%,
         100% {
-            box-shadow: 0 0 5px #9400D3;
+            transform: translateX(-50%) translateY(0);
         }
 
         50% {
-            box-shadow: 0 0 15px #FF1493, 0 0 25px #9400D3;
+            transform: translateX(-50%) translateY(-5px);
         }
-    }
-
-    /* Rewards Preview Banner */
-    .rewards-banner {
-        background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(255, 215, 0, 0.05));
-        border: 1px solid rgba(212, 175, 55, 0.3);
-        border-radius: 16px;
-        padding: 1rem;
-        margin-bottom: 1.5rem;
-        text-align: center;
-    }
-
-    .rewards-banner h4 {
-        color: #D4AF37;
-        font-size: 0.9rem;
-        margin: 0 0 0.5rem;
-        font-weight: 600;
-    }
-
-    .rewards-list {
-        display: flex;
-        justify-content: center;
-        gap: 1rem;
-        flex-wrap: wrap;
-    }
-
-    .reward-item {
-        display: flex;
-        align-items: center;
-        gap: 0.3rem;
-        font-size: 0.8rem;
-        color: rgba(255, 255, 255, 0.7);
-    }
-
-    .reward-item .rank-icon {
-        font-size: 1.2rem;
-    }
-
-    /* Hall of Fame Section */
-    .hall-of-fame {
-        background: rgba(0, 0, 0, 0.2);
-        border-radius: 16px;
-        padding: 1rem;
-        margin-top: 2rem;
-        border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .hof-header {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-        margin-bottom: 1rem;
-        color: rgba(255, 255, 255, 0.6);
-        font-size: 0.85rem;
-    }
-
-    .hof-list {
-        display: flex;
-        gap: 0.75rem;
-        overflow-x: auto;
-        padding: 0.5rem 0;
-        scrollbar-width: thin;
-    }
-
-    .hof-item {
-        flex-shrink: 0;
-        text-align: center;
-        background: rgba(255, 255, 255, 0.03);
-        border-radius: 12px;
-        padding: 0.75rem;
-        min-width: 100px;
-        border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .hof-item img {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        object-fit: contain;
-        background: rgba(0, 0, 0, 0.2);
-        margin-bottom: 0.3rem;
-    }
-
-    .hof-month {
-        font-size: 0.65rem;
-        color: #D4AF37;
-        margin-bottom: 0.2rem;
-    }
-
-    .hof-name {
-        font-size: 0.75rem;
-        font-weight: 600;
-        color: #fff;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 90px;
-    }
-
-    /* Load More Button */
-    .load-more-container {
-        text-align: center;
-        padding: 1rem 0;
-    }
-
-    .load-more-btn {
-        background: rgba(212, 175, 55, 0.1);
-        border: 1px solid rgba(212, 175, 55, 0.3);
-        color: #D4AF37;
-        padding: 0.6rem 1.5rem;
-        border-radius: 20px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-    .load-more-btn:hover {
-        background: rgba(212, 175, 55, 0.2);
-        transform: scale(1.02);
     }
 </style>
