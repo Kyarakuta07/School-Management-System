@@ -30,7 +30,7 @@ require_once '../pet/pet_loader.php'; // Load pet logic functions
 require_once '../../core/api_response.php';
 
 // Public endpoints that don't require authentication
-$public_actions = ['get_pet_leaderboard', 'get_war_leaderboard'];
+$public_actions = ['get_pet_leaderboard', 'get_war_leaderboard', 'get_hall_of_fame'];
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 
 // Skip auth for public endpoints
@@ -156,6 +156,7 @@ $routes = [
     // Leaderboard Controller
     'get_pet_leaderboard' => ['LeaderboardController', 'getPetLeaderboard'],
     'get_war_leaderboard' => ['LeaderboardController', 'getWarLeaderboard'],
+    'get_hall_of_fame' => ['LeaderboardController', 'getHallOfFame'],
 ];
 
 // ==================================================

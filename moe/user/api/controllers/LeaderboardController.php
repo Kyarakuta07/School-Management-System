@@ -63,23 +63,35 @@ class LeaderboardController extends BaseController
                 $winsSubquery = "COALESCE(up.total_wins, 0) as battle_wins";
             }
 
+            // Subquery for total battles (for win rate calculation)
+            $totalBattlesSubquery = "(SELECT COUNT(*) FROM pet_battles pb2 
+                                      WHERE pb2.attacker_pet_id = up.id OR pb2.defender_pet_id = up.id)";
+
+            // Subquery for current streak
+            $streakSubquery = "COALESCE(up.current_streak, 0) as streak";
+
             $sql = "SELECT 
                         up.id as pet_id,
                         up.nickname,
                         up.level,
                         up.exp,
                         up.is_shiny,
+                        up.shiny_hue,
                         up.evolution_stage,
                         COALESCE(up.total_wins, 0) as total_wins,
+                        COALESCE(up.total_losses, 0) as total_losses,
                         ps.name as species_name,
                         ps.element,
                         ps.rarity,
                         ps.base_attack,
                         ps.base_defense,
+                        ps.base_health,
                         ps.img_egg, ps.img_baby, ps.img_adult,
                         n.nama_lengkap as owner_name,
                         (ps.base_attack + ps.base_defense + up.level * 3) as power_score,
-                        $winsSubquery
+                        $winsSubquery,
+                        $streakSubquery,
+                        $totalBattlesSubquery as total_battles
                     FROM user_pets up
                     JOIN pet_species ps ON ps.id = up.species_id
                     JOIN nethera n ON n.id_nethera = up.user_id
@@ -114,6 +126,15 @@ class LeaderboardController extends BaseController
             while ($row = mysqli_fetch_assoc($result)) {
                 $row['rank'] = $rank++;
                 $row['current_image'] = $this->getPetImage($row);
+
+                // Calculate win rate
+                $totalBattles = (int) ($row['total_battles'] ?? 0);
+                $totalWins = (int) ($row['total_wins'] ?? 0);
+                $row['win_rate'] = $totalBattles > 0 ? round(($totalWins / $totalBattles) * 100) : 0;
+
+                // Calculate tier based on level
+                $row['tier'] = $this->calculateTier($row['level']);
+
                 $leaderboard[] = $row;
             }
             mysqli_stmt_close($stmt);
@@ -220,5 +241,72 @@ class LeaderboardController extends BaseController
             $elements[] = $row['element'];
         }
         return $elements;
+    }
+
+    // Helper: Calculate tier based on level
+    private function calculateTier($level)
+    {
+        $level = (int) $level;
+        if ($level >= 90)
+            return 'Master';
+        if ($level >= 70)
+            return 'Diamond';
+        if ($level >= 50)
+            return 'Gold';
+        if ($level >= 30)
+            return 'Silver';
+        return 'Bronze';
+    }
+
+    /**
+     * GET: Get Hall of Fame (past monthly winners)
+     */
+    public function getHallOfFame()
+    {
+        $this->requireGet();
+
+        try {
+            $limit = min(12, max(3, (int) ($_GET['limit'] ?? 6)));
+
+            // Query past winners from leaderboard_history table (if exists)
+            // Fallback: Generate mock data if table doesn't exist
+            $sql = "SELECT 
+                        lh.month_year,
+                        lh.pet_id,
+                        up.nickname,
+                        ps.name as species_name,
+                        ps.img_adult, ps.img_baby, ps.img_egg,
+                        up.evolution_stage,
+                        n.nama_lengkap as owner_name
+                    FROM leaderboard_history lh
+                    JOIN user_pets up ON up.id = lh.pet_id
+                    JOIN pet_species ps ON ps.id = up.species_id
+                    JOIN nethera n ON n.id_nethera = up.user_id
+                    WHERE lh.rank = 1
+                    ORDER BY lh.month_year DESC
+                    LIMIT ?";
+
+            $stmt = mysqli_prepare($this->conn, $sql);
+
+            if ($stmt) {
+                mysqli_stmt_bind_param($stmt, 'i', $limit);
+                mysqli_stmt_execute($stmt);
+                $result = mysqli_stmt_get_result($stmt);
+
+                $hallOfFame = [];
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $row['current_image'] = $this->getPetImage($row);
+                    $hallOfFame[] = $row;
+                }
+                mysqli_stmt_close($stmt);
+
+                $this->success(['hall_of_fame' => $hallOfFame]);
+            } else {
+                // Table might not exist, return empty array
+                $this->success(['hall_of_fame' => [], 'message' => 'Hall of Fame not yet available']);
+            }
+        } catch (Exception $e) {
+            $this->success(['hall_of_fame' => [], 'message' => 'Hall of Fame coming soon']);
+        }
     }
 }

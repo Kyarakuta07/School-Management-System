@@ -7,7 +7,10 @@
             <div class="lb-trophy">🏆</div>
             <div class="lb-title">
                 <h2>PET CHAMPIONS</h2>
-                <p class="lb-subtitle">Top trainers across all realms</p>
+                <div class="season-info">
+                    <span class="season-label">Season Ends in:</span>
+                    <span class="season-countdown" id="season-countdown">--d --h --m</span>
+                </div>
             </div>
         </div>
 
@@ -33,12 +36,30 @@
             <!-- Populated by JS -->
         </div>
 
+        <!-- Search Bar -->
+        <div class="lb-search-wrapper">
+            <div class="lb-search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="lb-search" placeholder="Find Tamer or Pet...">
+            </div>
+        </div>
+
         <!-- Period Toggle (Monthly / All Time) -->
         <div class="period-toggle-container">
             <span class="period-toggle-label">Leaderboard Period <span id="period-label">(Resets Monthly)</span></span>
             <div class="period-toggle" id="period-toggle">
                 <button type="button" class="period-btn active" data-period="monthly">🌙 Monthly</button>
                 <button type="button" class="period-btn" data-period="alltime">⭐ All Time</button>
+            </div>
+        </div>
+
+        <!-- Rewards Preview Banner -->
+        <div class="rewards-banner" id="rewards-banner">
+            <h4>🏆 Season Rewards</h4>
+            <div class="rewards-list">
+                <div class="reward-item"><span class="rank-icon">🥇</span> 500 Coins + Exclusive Title</div>
+                <div class="reward-item"><span class="rank-icon">🥈</span> 300 Coins</div>
+                <div class="reward-item"><span class="rank-icon">🥉</span> 150 Coins</div>
             </div>
         </div>
 
@@ -52,6 +73,17 @@
             <div class="loading-spinner">
                 <div class="spinner"></div>
                 <span>Loading champions...</span>
+            </div>
+        </div>
+
+        <!-- Hall of Fame (Past Winners) -->
+        <div class="hall-of-fame" id="hall-of-fame">
+            <div class="hof-header">
+                <span>🏛️</span>
+                <span>Hall of Fame</span>
+            </div>
+            <div class="hof-list" id="hof-list">
+                <!-- Populated by JS -->
             </div>
         </div>
 
@@ -770,5 +802,242 @@
             width: 56px;
             height: 56px;
         }
+    }
+
+    /* Season Info */
+    .season-info {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.7);
+        background: rgba(0, 0, 0, 0.2);
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        display: inline-flex;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .season-countdown {
+        color: #FFD700;
+        font-weight: 700;
+        font-family: 'Courier New', monospace;
+        letter-spacing: 1px;
+    }
+
+    /* Search Bar */
+    .lb-search-wrapper {
+        margin-bottom: 1.5rem;
+        padding: 0 1rem;
+        display: flex;
+        justify-content: center;
+    }
+
+    .lb-search-box {
+        position: relative;
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .lb-search-box input {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 0.8rem 1rem 0.8rem 2.8rem;
+        color: #fff;
+        font-family: inherit;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+
+    .lb-search-box input:focus {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: #D4AF37;
+        outline: none;
+        box-shadow: 0 0 15px rgba(212, 175, 55, 0.15);
+    }
+
+    .lb-search-box .search-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 1.1rem;
+        pointer-events: none;
+    }
+
+    /* Tiers Badge Update (Generic) */
+    .tier-badge {
+        font-size: 0.7rem;
+        padding: 2px 6px;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        margin-left: 5px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* Tier Badge Colors */
+    .tier-badge.bronze {
+        background: linear-gradient(135deg, #CD7F32, #8B4513);
+        border-color: #CD7F32;
+    }
+
+    .tier-badge.silver {
+        background: linear-gradient(135deg, #C0C0C0, #808080);
+        border-color: #C0C0C0;
+    }
+
+    .tier-badge.gold {
+        background: linear-gradient(135deg, #FFD700, #B8860B);
+        border-color: #FFD700;
+        color: #1a1a2e;
+    }
+
+    .tier-badge.diamond {
+        background: linear-gradient(135deg, #00CED1, #4169E1);
+        border-color: #00CED1;
+    }
+
+    .tier-badge.master {
+        background: linear-gradient(135deg, #9400D3, #FF1493);
+        border-color: #9400D3;
+        animation: masterGlow 2s infinite;
+    }
+
+    @keyframes masterGlow {
+
+        0%,
+        100% {
+            box-shadow: 0 0 5px #9400D3;
+        }
+
+        50% {
+            box-shadow: 0 0 15px #FF1493, 0 0 25px #9400D3;
+        }
+    }
+
+    /* Rewards Preview Banner */
+    .rewards-banner {
+        background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(255, 215, 0, 0.05));
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        border-radius: 16px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+
+    .rewards-banner h4 {
+        color: #D4AF37;
+        font-size: 0.9rem;
+        margin: 0 0 0.5rem;
+        font-weight: 600;
+    }
+
+    .rewards-list {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .reward-item {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .reward-item .rank-icon {
+        font-size: 1.2rem;
+    }
+
+    /* Hall of Fame Section */
+    .hall-of-fame {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 16px;
+        padding: 1rem;
+        margin-top: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .hof-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.85rem;
+    }
+
+    .hof-list {
+        display: flex;
+        gap: 0.75rem;
+        overflow-x: auto;
+        padding: 0.5rem 0;
+        scrollbar-width: thin;
+    }
+
+    .hof-item {
+        flex-shrink: 0;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 12px;
+        padding: 0.75rem;
+        min-width: 100px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .hof-item img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: contain;
+        background: rgba(0, 0, 0, 0.2);
+        margin-bottom: 0.3rem;
+    }
+
+    .hof-month {
+        font-size: 0.65rem;
+        color: #D4AF37;
+        margin-bottom: 0.2rem;
+    }
+
+    .hof-name {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #fff;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 90px;
+    }
+
+    /* Load More Button */
+    .load-more-container {
+        text-align: center;
+        padding: 1rem 0;
+    }
+
+    .load-more-btn {
+        background: rgba(212, 175, 55, 0.1);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        color: #D4AF37;
+        padding: 0.6rem 1.5rem;
+        border-radius: 20px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .load-more-btn:hover {
+        background: rgba(212, 175, 55, 0.2);
+        transform: scale(1.02);
     }
 </style>
