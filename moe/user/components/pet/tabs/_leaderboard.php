@@ -528,18 +528,12 @@
     }
 
     /* ================================
-       TOP 3 PODIUM - PRESTIGE HIERARCHY
+       TOP 3 PODIUM - MOBILE FIRST RESPONSIVE
        ================================ */
     .podium-section {
         position: relative;
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: clamp(0.25rem, 0.8vw, 0.5rem);
-        align-items: end;
-        justify-items: center;
         margin-bottom: clamp(1.5rem, 3vw, 2rem);
-        min-height: clamp(200px, 45vw, 280px);
-        padding: clamp(0.5rem, 1.5vw, 1rem);
+        padding: clamp(0.75rem, 2vw, 1.25rem);
         border-radius: clamp(16px, 3vw, 24px);
 
         /* Hero Background */
@@ -550,6 +544,12 @@
 
         /* Keep cards inside */
         overflow: hidden;
+
+        /* MOBILE FIRST: Vertical stack for small screens */
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: center;
     }
 
     .podium-section::before {
@@ -569,46 +569,111 @@
     .podium-pet {
         text-align: center;
         cursor: pointer;
-        transition: all 0.4s ease;
+        transition: all 0.3s ease;
         background: var(--lb-bg-glass);
         backdrop-filter: blur(15px);
-        border-radius: clamp(12px, 2.5vw, 18px);
-        padding: clamp(0.5rem, 1.5vw, 1rem);
+        border-radius: 14px;
+        padding: 0.75rem;
         border: 1px solid var(--lb-border);
         touch-action: pan-y;
         -webkit-tap-highlight-color: transparent;
-        width: 100%;
-        max-width: 100%;
         box-sizing: border-box;
 
-        /* Consistent sizing with flexbox */
+        /* Flexbox layout */
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: flex-start;
-        min-height: clamp(160px, 40vw, 220px);
+
+        /* Mobile: Full width, fixed height */
+        width: 100%;
+        max-width: 280px;
+        min-height: auto;
     }
 
-    .podium-pet:hover {
-        transform: translateY(-6px) scale(1.02);
-        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
-    }
-
+    /* Mobile: Natural order (1, 2, 3 vertically) */
     .podium-pet.rank-1 {
-        order: 2;
-        border-color: rgba(255, 215, 0, 0.4);
-        background: linear-gradient(180deg, rgba(255, 215, 0, 0.12), var(--lb-bg-glass));
-        box-shadow: 0 0 30px rgba(255, 215, 0, 0.15);
+        order: 1;
     }
 
     .podium-pet.rank-2 {
-        order: 1;
-        border-color: rgba(192, 192, 192, 0.3);
+        order: 2;
     }
 
     .podium-pet.rank-3 {
         order: 3;
+    }
+
+    .podium-pet:active {
+        transform: scale(0.98);
+    }
+
+    .podium-pet.rank-1 {
+        border-color: rgba(255, 215, 0, 0.4);
+        background: linear-gradient(180deg, rgba(255, 215, 0, 0.15), var(--lb-bg-glass));
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+    }
+
+    .podium-pet.rank-2 {
+        border-color: rgba(192, 192, 192, 0.3);
+    }
+
+    .podium-pet.rank-3 {
         border-color: rgba(205, 127, 50, 0.3);
+    }
+
+    /* ================================
+       TABLET/DESKTOP: Horizontal Grid (min-width: 480px)
+       ================================ */
+    @media (min-width: 480px) {
+        .podium-section {
+            display: grid;
+            grid-template-columns: 1fr 1.15fr 1fr;
+            gap: 0.5rem;
+            align-items: end;
+            justify-items: center;
+            min-height: 240px;
+        }
+
+        .podium-pet {
+            max-width: 100%;
+            min-height: 180px;
+        }
+
+        /* Reorder for podium effect: 2nd - 1st - 3rd */
+        .podium-pet.rank-1 {
+            order: 2;
+        }
+
+        .podium-pet.rank-2 {
+            order: 1;
+        }
+
+        .podium-pet.rank-3 {
+            order: 3;
+        }
+
+        .podium-pet:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+        }
+    }
+
+    /* ================================
+       LARGER SCREENS (min-width: 600px)
+       ================================ */
+    @media (min-width: 600px) {
+        .podium-section {
+            gap: 0.75rem;
+            padding: 1.25rem;
+            min-height: 280px;
+        }
+
+        .podium-pet {
+            padding: 1rem;
+            min-height: 200px;
+            border-radius: 18px;
+        }
     }
 
     .podium-avatar {
