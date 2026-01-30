@@ -534,11 +534,12 @@
         position: relative;
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
-        gap: clamp(0.4rem, 1.5vw, 0.8rem);
+        gap: clamp(0.3rem, 1vw, 0.6rem);
         align-items: end;
+        justify-items: center;
         margin-bottom: clamp(1.5rem, 3vw, 2rem);
-        min-height: clamp(220px, 50vw, 320px);
-        padding: clamp(1rem, 3vw, 1.5rem);
+        min-height: clamp(200px, 45vw, 280px);
+        padding: clamp(0.8rem, 2vw, 1.2rem);
         border-radius: clamp(16px, 3vw, 24px);
 
         /* Hero Background */
@@ -547,8 +548,8 @@
         background-position: center;
         background-repeat: no-repeat;
 
-        /* Overlay for text readability */
-        overflow: hidden;
+        /* Allow overflow for visibility */
+        overflow: visible;
     }
 
     .podium-section::before {
