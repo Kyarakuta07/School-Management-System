@@ -534,12 +534,12 @@
         position: relative;
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
-        gap: clamp(0.3rem, 1vw, 0.6rem);
+        gap: clamp(0.25rem, 0.8vw, 0.5rem);
         align-items: end;
         justify-items: center;
         margin-bottom: clamp(1.5rem, 3vw, 2rem);
         min-height: clamp(200px, 45vw, 280px);
-        padding: clamp(0.8rem, 2vw, 1.2rem);
+        padding: clamp(0.5rem, 1.5vw, 1rem);
         border-radius: clamp(16px, 3vw, 24px);
 
         /* Hero Background */
@@ -548,8 +548,8 @@
         background-position: center;
         background-repeat: no-repeat;
 
-        /* Allow overflow for visibility */
-        overflow: visible;
+        /* Keep cards inside */
+        overflow: hidden;
     }
 
     .podium-section::before {
@@ -572,11 +572,14 @@
         transition: all 0.4s ease;
         background: var(--lb-bg-glass);
         backdrop-filter: blur(15px);
-        border-radius: clamp(14px, 3vw, 20px);
-        padding: clamp(0.75rem, 2.5vw, 1.25rem);
+        border-radius: clamp(12px, 2.5vw, 18px);
+        padding: clamp(0.5rem, 1.5vw, 1rem);
         border: 1px solid var(--lb-border);
         touch-action: pan-y;
         -webkit-tap-highlight-color: transparent;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 
     .podium-pet:hover {
