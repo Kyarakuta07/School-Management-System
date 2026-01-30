@@ -242,6 +242,7 @@
             return `
                 <div class="podium-pet rank-${rank}" onclick="openLeaderboardPetDetail(${pet.pet_id})">
                     <div class="podium-avatar">
+                        <img src="${tierImg}" alt="${tier}" class="tier-halo">
                         <div class="podium-crown"></div>
                         <img class="podium-img" src="${img}" onerror="this.src='/moe/assets/placeholder.png'">
                     </div>
@@ -276,17 +277,18 @@
             const rp = pet.rank_points || 1000;
             const tier = getTier(rp);
             const tierImg = getTierImage(rp);
+            const tierClass = 'tier-' + tier.toLowerCase();
 
             return `
-                <div class="lb-pet-card" onclick="openLeaderboardPetDetail(${pet.pet_id})">
-                    <div class="rank">#${rank}</div>
+                <div class="lb-pet-card ${tierClass}" onclick="openLeaderboardPetDetail(${pet.pet_id})">
+                    <div class="rank-section">
+                        <img src="${tierImg}" alt="${tier}" class="tier-icon-medium">
+                        <div class="rank">#${rank}</div>
+                    </div>
                     <img class="pet-img" src="${img}" onerror="this.src='/moe/assets/placeholder.png'">
                     
                     <div class="pet-info">
-                        <div class="pet-name ${pet.is_shiny ? 'shiny' : ''}">
-                            ${name}
-                            <img src="${tierImg}" alt="${tier}" class="tier-icon-small">
-                        </div>
+                        <div class="pet-name ${pet.is_shiny ? 'shiny' : ''}">${name}</div>
                         <div class="pet-meta">
                             <span class="element-badge ${elClass}">${pet.element}</span>
                             <span class="owner">${pet.owner_name}</span>

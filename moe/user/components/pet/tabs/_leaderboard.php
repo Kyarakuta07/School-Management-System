@@ -528,16 +528,41 @@
     }
 
     /* ================================
-       TOP 3 PODIUM
+       TOP 3 PODIUM - PRESTIGE HIERARCHY
        ================================ */
     .podium-section {
+        position: relative;
         display: grid;
-        grid-template-columns: 1fr 1.2fr 1fr;
-        gap: clamp(0.5rem, 2vw, 1rem);
+        grid-template-columns: 1fr 1.3fr 1fr;
+        gap: clamp(0.4rem, 1.5vw, 0.8rem);
         align-items: end;
         margin-bottom: clamp(1.5rem, 3vw, 2rem);
-        min-height: clamp(200px, 45vw, 300px);
-        padding: 0 0.25rem;
+        min-height: clamp(220px, 50vw, 320px);
+        padding: clamp(1rem, 3vw, 1.5rem);
+        border-radius: clamp(16px, 3vw, 24px);
+
+        /* Hero Background */
+        background-image: url('/moe/assets/Tier/leaderboard background.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+
+        /* Overlay for text readability */
+        overflow: hidden;
+    }
+
+    .podium-section::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.6));
+        z-index: 0;
+        border-radius: inherit;
+    }
+
+    .podium-section>* {
+        position: relative;
+        z-index: 1;
     }
 
     .podium-pet {
@@ -578,6 +603,44 @@
     .podium-avatar {
         position: relative;
         margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Tier Halo - Large glowing tier badge behind avatar */
+    .tier-halo {
+        position: absolute;
+        width: clamp(80px, 22vw, 120px);
+        height: clamp(80px, 22vw, 120px);
+        z-index: 0;
+        opacity: 0.6;
+        filter: blur(2px);
+        animation: haloGlow 3s ease-in-out infinite alternate;
+    }
+
+    .podium-pet.rank-1 .tier-halo {
+        filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.8)) blur(1px);
+    }
+
+    .podium-pet.rank-2 .tier-halo {
+        filter: drop-shadow(0 0 12px rgba(192, 192, 192, 0.7)) blur(1px);
+    }
+
+    .podium-pet.rank-3 .tier-halo {
+        filter: drop-shadow(0 0 10px rgba(205, 127, 50, 0.7)) blur(1px);
+    }
+
+    @keyframes haloGlow {
+        0% {
+            opacity: 0.5;
+            transform: scale(1);
+        }
+
+        100% {
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
     }
 
     .podium-crown {
@@ -714,14 +777,41 @@
         align-items: center;
         gap: clamp(0.6rem, 2vw, 1rem);
         padding: clamp(0.7rem, 2vw, 1rem);
+        padding-left: clamp(0.5rem, 1.5vw, 0.8rem);
         background: var(--lb-bg-glass);
         backdrop-filter: blur(12px);
         border: 1px solid var(--lb-border);
+        border-left: 4px solid var(--lb-border);
         border-radius: clamp(12px, 3vw, 16px);
         cursor: pointer;
         transition: all 0.3s ease;
         touch-action: pan-y;
         -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Tier-Colored Left Borders */
+    .lb-pet-card.tier-master {
+        border-left-color: #9400D3;
+    }
+
+    .lb-pet-card.tier-diamond {
+        border-left-color: #00BFFF;
+    }
+
+    .lb-pet-card.tier-platinum {
+        border-left-color: #00CED1;
+    }
+
+    .lb-pet-card.tier-gold {
+        border-left-color: var(--lb-gold);
+    }
+
+    .lb-pet-card.tier-silver {
+        border-left-color: var(--lb-silver);
+    }
+
+    .lb-pet-card.tier-bronze {
+        border-left-color: var(--lb-bronze);
     }
 
     .lb-pet-card:hover {
@@ -731,18 +821,26 @@
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
     }
 
-    .lb-pet-card .rank {
-        min-width: clamp(30px, 7vw, 40px);
-        height: clamp(30px, 7vw, 40px);
+    /* Rank Section (Icon + Number) */
+    .lb-pet-card .rank-section {
         display: flex;
+        flex-direction: column;
         align-items: center;
-        justify-content: center;
+        gap: 0.2rem;
+        min-width: clamp(36px, 9vw, 48px);
+    }
+
+    .lb-pet-card .tier-icon-medium {
+        width: clamp(28px, 7vw, 36px);
+        height: clamp(28px, 7vw, 36px);
+        object-fit: contain;
+        filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.4));
+    }
+
+    .lb-pet-card .rank {
         font-weight: 800;
-        font-size: clamp(0.8rem, 2vw, 0.95rem);
-        color: rgba(255, 255, 255, 0.5);
-        background: rgba(255, 255, 255, 0.06);
-        border-radius: 10px;
-        flex-shrink: 0;
+        font-size: clamp(0.7rem, 1.8vw, 0.85rem);
+        color: rgba(255, 255, 255, 0.6);
     }
 
     .lb-pet-card .pet-img {
