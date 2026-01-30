@@ -106,12 +106,12 @@ class RateLimiter
             mysqli_stmt_close($check_stmt);
 
             if ($attempts >= $max_attempts) {
-                // Lock the identifier
+                // Already at or over limit - set/update lock and reject
                 $lock_stmt = mysqli_prepare(
                     $this->conn,
                     "UPDATE rate_limits 
                      SET locked_until = DATE_ADD(NOW(), INTERVAL ? MINUTE) 
-                     WHERE id = ?"
+                     WHERE id = ? AND (locked_until IS NULL OR locked_until < NOW())"
                 );
                 mysqli_stmt_bind_param($lock_stmt, "ii", $time_window_minutes, $record_id);
                 mysqli_stmt_execute($lock_stmt);
@@ -126,6 +126,7 @@ class RateLimiter
             }
 
             // Increment attempts
+            $new_attempts = $attempts + 1;
             $update_stmt = mysqli_prepare(
                 $this->conn,
                 "UPDATE rate_limits 
@@ -136,10 +137,23 @@ class RateLimiter
             mysqli_stmt_execute($update_stmt);
             mysqli_stmt_close($update_stmt);
 
+            // If this attempt reaches the limit, set locked_until
+            if ($new_attempts >= $max_attempts) {
+                $lock_stmt = mysqli_prepare(
+                    $this->conn,
+                    "UPDATE rate_limits 
+                     SET locked_until = DATE_ADD(NOW(), INTERVAL ? MINUTE) 
+                     WHERE id = ?"
+                );
+                mysqli_stmt_bind_param($lock_stmt, "ii", $time_window_minutes, $record_id);
+                mysqli_stmt_execute($lock_stmt);
+                mysqli_stmt_close($lock_stmt);
+            }
+
             return [
                 'allowed' => true,
-                'attempts' => $attempts + 1,
-                'remaining' => $max_attempts - $attempts - 1,
+                'attempts' => $new_attempts,
+                'remaining' => $max_attempts - $new_attempts,
                 'locked_until' => null
             ];
         } else {
