@@ -239,16 +239,31 @@
             const tier = getTier(rp);
             const tierImg = getTierImage(rp);
 
+            // Dynamic stat based on current sort
+            let statValue, statLabel;
+            if (lbCurrentSort === 'wins') {
+                statValue = pet.battle_wins || 0;
+                statLabel = 'Wins';
+            } else if (lbCurrentSort === 'power') {
+                statValue = pet.power_score || 0;
+                statLabel = 'Power';
+            } else if (lbCurrentSort === 'level') {
+                statValue = 'Lv.' + (pet.level || 1);
+                statLabel = '';
+            } else {
+                statValue = rp;
+                statLabel = 'RP';
+            }
+
             return `
                 <div class="podium-pet rank-${rank}" onclick="openLeaderboardPetDetail(${pet.pet_id})">
                     <div class="podium-avatar">
-                        <img src="${tierImg}" alt="${tier}" class="tier-halo">
                         <div class="podium-crown"></div>
                         <img class="podium-img" src="${img}" onerror="this.src='/moe/assets/placeholder.png'">
                     </div>
                     <div class="podium-name">${name}</div>
                     <div class="podium-owner">${pet.owner_name}</div>
-                    <div class="podium-rp">${rp} RP</div>
+                    <div class="podium-stat">${statValue} ${statLabel}</div>
                     <div class="podium-stand">
                         <img src="${tierImg}" alt="${tier}" class="tier-icon">
                         <span>${tier}</span>
@@ -279,6 +294,22 @@
             const tierImg = getTierImage(rp);
             const tierClass = 'tier-' + tier.toLowerCase();
 
+            // Dynamic stat based on current sort
+            let statValue, statLabel;
+            if (lbCurrentSort === 'wins') {
+                statValue = pet.battle_wins || 0;
+                statLabel = 'Wins';
+            } else if (lbCurrentSort === 'power') {
+                statValue = pet.power_score || 0;
+                statLabel = 'Power';
+            } else if (lbCurrentSort === 'level') {
+                statValue = pet.level || 1;
+                statLabel = 'Lv';
+            } else {
+                statValue = rp;
+                statLabel = 'RP';
+            }
+
             return `
                 <div class="lb-pet-card ${tierClass}" onclick="openLeaderboardPetDetail(${pet.pet_id})">
                     <div class="rank-section">
@@ -296,8 +327,8 @@
                     </div>
                     
                     <div class="pet-stats">
-                        <div class="stat-main">${rp}</div>
-                        <div class="stat-label">RP</div>
+                        <div class="stat-main">${statValue}</div>
+                        <div class="stat-label">${statLabel}</div>
                     </div>
                 </div>
             `;

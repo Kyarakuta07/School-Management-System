@@ -533,7 +533,7 @@
     .podium-section {
         position: relative;
         display: grid;
-        grid-template-columns: 1fr 1.3fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr;
         gap: clamp(0.4rem, 1.5vw, 0.8rem);
         align-items: end;
         margin-bottom: clamp(1.5rem, 3vw, 2rem);
@@ -704,9 +704,11 @@
     }
 
     .podium-stat {
-        font-size: clamp(0.65rem, 1.8vw, 0.8rem);
-        color: rgba(255, 255, 255, 0.6);
+        font-size: clamp(0.75rem, 2vw, 0.9rem);
+        color: var(--lb-gold);
+        font-weight: 700;
         margin-top: 0.3rem;
+        text-shadow: 0 0 6px rgba(255, 215, 0, 0.3);
     }
 
     .podium-stand {
