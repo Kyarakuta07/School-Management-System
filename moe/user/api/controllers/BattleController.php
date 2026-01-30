@@ -43,8 +43,8 @@ class BattleController extends BaseController
             return;
         }
 
-        // Rate limit - 20 battles per hour
-        $this->checkRateLimit('battle', 20, 60);
+        // Rate limit - 3 battles per day
+        $this->checkRateLimit('battle', 3, 1440);
 
         $result = initiateBattle($this->conn, $this->user_id, $opponent_id);
         echo json_encode($result);
@@ -879,8 +879,8 @@ class BattleController extends BaseController
     {
         $this->requirePost();
 
-        // Rate limit - 5 battles per hour
-        $this->checkRateLimit('battle_3v3', 5, 60);
+        // Rate limit - 3 battles per day
+        $this->checkRateLimit('battle_3v3', 3, 1440);
 
         $input = $this->getInput();
         $pet_ids = isset($input['pet_ids']) ? $input['pet_ids'] : [];
