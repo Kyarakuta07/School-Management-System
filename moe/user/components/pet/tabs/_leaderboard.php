@@ -580,11 +580,18 @@
         width: 100%;
         max-width: 100%;
         box-sizing: border-box;
+
+        /* Consistent sizing with flexbox */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        min-height: clamp(160px, 40vw, 220px);
     }
 
     .podium-pet:hover {
-        transform: translateY(-8px) scale(1.02);
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        transform: translateY(-6px) scale(1.02);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
     }
 
     .podium-pet.rank-1 {
