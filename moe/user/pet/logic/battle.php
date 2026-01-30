@@ -306,6 +306,51 @@ function getOpponents($conn, $user_id)
 }
 
 /**
+ * Initiate a battle between current user's active pet and an opponent
+ *
+ * @param mysqli $conn Database connection
+ * @param int $user_id Current user's ID
+ * @param int $opponent_pet_id Opponent pet's ID
+ * @return array Battle result
+ */
+function initiateBattle($conn, $user_id, $opponent_pet_id)
+{
+    // Get user's active pet
+    $stmt = mysqli_prepare($conn, "SELECT id FROM user_pets WHERE user_id = ? AND is_active = 1 AND status = 'ALIVE' LIMIT 1");
+    mysqli_stmt_bind_param($stmt, "i", $user_id);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $user_pet = mysqli_fetch_assoc($result);
+    mysqli_stmt_close($stmt);
+
+    if (!$user_pet) {
+        return ['success' => false, 'error' => 'No active pet found'];
+    }
+
+    $attacker_pet_id = (int) $user_pet['id'];
+
+    // For AI opponents (negative ID), just return opponent info for client-side battle
+    if ($opponent_pet_id < 0) {
+        return [
+            'success' => true,
+            'mode' => 'client_battle',
+            'attacker_pet_id' => $attacker_pet_id,
+            'opponent_pet_id' => $opponent_pet_id,
+            'message' => 'Battle initiated, proceed with client-side arena'
+        ];
+    }
+
+    // For real opponents, can optionally do server-side battle
+    return [
+        'success' => true,
+        'mode' => 'client_battle',
+        'attacker_pet_id' => $attacker_pet_id,
+        'opponent_pet_id' => $opponent_pet_id,
+        'message' => 'Battle initiated, proceed with client-side arena'
+    ];
+}
+
+/**
  * Generate AI opponents for 1v1 when no real players available
  */
 function generateAIOpponents1v1($conn, $user_id)

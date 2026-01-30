@@ -174,7 +174,7 @@ class BattleController extends BaseController
             // HARDCORE: Apply HP damage to loser pet
             $pet_died = false;
             $shield_blocked = false;
-            $hp_damage = 20;
+            $hp_damage = 5;
 
             if ($loser_pet_id > 0) { // Only for real pets (not AI with negative IDs)
                 // Check for shield
@@ -1607,7 +1607,7 @@ class BattleController extends BaseController
         }
 
         $player_won = ($state['status'] === 'victory');
-        $hp_damage_per_faint = 20;
+        $hp_damage_per_faint = 5;
         $pets_damaged = [];
         $pets_died = [];
 

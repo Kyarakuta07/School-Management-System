@@ -14,7 +14,7 @@
  * @param string $activity_type Type of school activity (sports, study, art, music)
  * @return array Buff info or empty if no buff
  */
-function getActivePetBuff($conn, $user_id, $activity_type)
+function getActivePetBuff($conn, $user_id, $activity_type = 'all')
 {
     $query = "SELECT up.*, ps.passive_buff_type, ps.passive_buff_value, ps.name as species_name
               FROM user_pets up
