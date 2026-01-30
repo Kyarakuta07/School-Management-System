@@ -555,7 +555,7 @@
         content: '';
         position: absolute;
         inset: 0;
-        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.6));
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.75));
         z-index: 0;
         border-radius: inherit;
     }
@@ -608,40 +608,11 @@
         justify-content: center;
     }
 
-    /* Tier Halo - Large glowing tier badge behind avatar */
+    /* Tier Halo - Hidden for cleaner look */
     .tier-halo {
-        position: absolute;
-        width: clamp(80px, 22vw, 120px);
-        height: clamp(80px, 22vw, 120px);
-        z-index: 0;
-        opacity: 0.6;
-        filter: blur(2px);
-        animation: haloGlow 3s ease-in-out infinite alternate;
+        display: none;
     }
 
-    .podium-pet.rank-1 .tier-halo {
-        filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.8)) blur(1px);
-    }
-
-    .podium-pet.rank-2 .tier-halo {
-        filter: drop-shadow(0 0 12px rgba(192, 192, 192, 0.7)) blur(1px);
-    }
-
-    .podium-pet.rank-3 .tier-halo {
-        filter: drop-shadow(0 0 10px rgba(205, 127, 50, 0.7)) blur(1px);
-    }
-
-    @keyframes haloGlow {
-        0% {
-            opacity: 0.5;
-            transform: scale(1);
-        }
-
-        100% {
-            opacity: 0.8;
-            transform: scale(1.05);
-        }
-    }
 
     .podium-crown {
         position: absolute;

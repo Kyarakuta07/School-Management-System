@@ -38,9 +38,13 @@ class LeaderboardController extends BaseController
                 case 'power':
                     $orderBy = 'power_score DESC';
                     break;
+                case 'level':
+                    // Explicit level sorting
+                    $orderBy = 'up.level DESC, up.exp DESC';
+                    break;
                 case 'rank':
                 case 'points':
-                    // ELO Ranked Points (new default)
+                    // ELO Ranked Points
                     $orderBy = 'up.rank_points DESC, up.level DESC';
                     break;
                 default:
