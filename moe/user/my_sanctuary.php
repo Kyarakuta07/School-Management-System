@@ -430,6 +430,19 @@ $csrf_token = generate_csrf_token();
                 /* Ensure card doesn't overflow */
                 width: 100%;
                 box-sizing: border-box;
+                padding: 12px;
+                /* Denser padding */
+                gap: 12px;
+            }
+
+            .member-name {
+                font-size: 0.95rem;
+                /* Smaller text */
+            }
+
+            .card-header h3 {
+                font-size: 1rem;
+                /* Prevent header wrapping/overflow */
             }
         }
 
@@ -832,14 +845,14 @@ $csrf_token = generate_csrf_token();
         .member-pp {
             font-family: 'Cinzel', serif;
             color: var(--gold);
-            font-weight: bold;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--gold);
-            font-size: 0.8rem;
             font-weight: 700;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            /* Prevent wrapping */
+            flex-shrink: 0;
+            /* Prevent shrinking */
+            margin-left: auto;
+            /* Push to right */
         }
 
         /* Full Width Card */
