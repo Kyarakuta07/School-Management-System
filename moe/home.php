@@ -180,7 +180,7 @@
     <div class="page-wrapper">
 
         <!-- NAVBAR -->
-        <?php include 'navbar.html'; ?>
+        <?php include 'navbar.php'; ?>
 
         <!-- HOME SECTION -->
         <section id="home-section" class="hero-section with-spline">

@@ -52,7 +52,7 @@
     <div class="page-wrapper">
 
         <!-- NAVBAR -->
-        <?php include 'navbar.html'; ?>
+        <?php include 'navbar.php'; ?>
 
         <!-- STAFF SECTION -->
         <section class="content-section staff-section">

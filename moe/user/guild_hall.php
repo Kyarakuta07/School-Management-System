@@ -663,7 +663,7 @@ $bg_image = "../assets/map/sanctuary_{$faction_slug}_bg.jpg";
 <body>
 
     <!-- NAVBAR -->
-    <?php include '../navbar.html'; ?>
+    <?php include '../navbar.php'; ?>
 
     <!-- HEADER -->
     <header class="guild-header">

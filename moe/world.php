@@ -269,7 +269,7 @@
     <div class="page-wrapper">
 
         <!-- NAVBAR -->
-        <?php include 'navbar.html'; ?>
+        <?php include 'navbar.php'; ?>
 
         <!-- WORLD MAP SECTION -->
         <section class="world-container">

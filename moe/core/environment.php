@@ -85,8 +85,8 @@ $env_config = [
         'cache_enabled' => false,
         'minify_assets' => false,
         'db_host' => 'localhost',
-        'site_url' => 'http://localhost',
-        'api_url' => 'http://localhost/moe/user/api',
+        'site_url' => 'http://localhost/School-Management-System/moe',
+        'api_url' => 'http://localhost/School-Management-System/moe/user/api',
     ],
 ];
 

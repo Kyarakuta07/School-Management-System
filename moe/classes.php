@@ -31,7 +31,7 @@
     <div class="page-wrapper">
 
         <!-- NAVBAR -->
-        <?php include 'navbar.html'; ?>
+        <?php include 'navbar.php'; ?>
 
     </div>
 
