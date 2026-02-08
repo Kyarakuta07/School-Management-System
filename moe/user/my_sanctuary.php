@@ -330,17 +330,51 @@ $csrf_token = generate_csrf_token();
             --gold: #DAA520;
             --gold-glow: rgba(218, 165, 32, 0.5);
             --dark-bg: #0a0a0a;
-            --panel-bg: rgba(15, 15, 18, 0.95);
-            --card-bg: rgba(25, 25, 30, 0.9);
+            /* Glassmorphism Variables */
+            --panel-bg: rgba(20, 20, 25, 0.65);
+            /* More transparent */
+            --card-bg: rgba(30, 30, 35, 0.6);
+            /* More transparent */
+            --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+            --glass-blur: blur(12px);
+
+            /* Dynamic Backgrounds */
+            --bg-desktop: url('../assets/sanctuhall/halldesktop_<?= e($faction_slug) ?>.jpeg');
+            --bg-mobile: url('../assets/sanctuhall/hallmobile_<?= e($faction_slug) ?>.jpeg');
         }
 
         body {
             background-color: var(--dark-bg);
+            background-image: var(--bg-desktop);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
             color: #fff;
             font-family: 'Lato', sans-serif;
             min-height: 100vh;
             margin: 0;
             padding: 0;
+            position: relative;
+        }
+
+        /* Dark Overlay to ensure text readability */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.85));
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                background-image: var(--bg-mobile);
+            }
         }
 
         /* Main Layout */
@@ -352,8 +386,12 @@ $csrf_token = generate_csrf_token();
 
         /* Header */
         .sanctuary-header {
-            background: linear-gradient(135deg, var(--panel-bg), rgba(30, 30, 35, 0.9));
-            border: 2px solid rgba(218, 165, 32, 0.3);
+            background: var(--panel-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+
             border-radius: 16px;
             padding: 30px;
             margin-bottom: 30px;
@@ -393,12 +431,16 @@ $csrf_token = generate_csrf_token();
             margin: 0 0 8px 0;
             text-transform: uppercase;
             letter-spacing: 2px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+            /* Added text shadow for readability */
         }
 
         .header-subtitle {
-            color: #aaa;
+            color: #ddd;
+            /* Lightened for better contrast */
             font-size: 1rem;
             margin: 0;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
         }
 
         .header-stats {
@@ -409,9 +451,11 @@ $csrf_token = generate_csrf_token();
         .stat-box {
             text-align: center;
             padding: 15px 25px;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.4);
+            /* Slightly darker for contrast */
             border-radius: 10px;
             border: 1px solid rgba(218, 165, 32, 0.2);
+            backdrop-filter: blur(4px);
         }
 
         .stat-value {
@@ -419,11 +463,12 @@ $csrf_token = generate_csrf_token();
             font-size: 1.8rem;
             color: var(--gold);
             display: block;
+            text-shadow: 0 0 10px rgba(218, 165, 32, 0.5);
         }
 
         .stat-label {
             font-size: 0.8rem;
-            color: #888;
+            color: #ccc;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
@@ -438,7 +483,11 @@ $csrf_token = generate_csrf_token();
         /* Cards */
         .control-card {
             background: var(--card-bg);
-            border: 1px solid rgba(218, 165, 32, 0.2);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+
             border-radius: 12px;
             overflow: hidden;
             transition: all 0.3s ease;
@@ -446,7 +495,8 @@ $csrf_token = generate_csrf_token();
 
         .control-card:hover {
             border-color: rgba(218, 165, 32, 0.5);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            transform: translateY(-5px);
         }
 
         .card-header {
@@ -1103,6 +1153,40 @@ $csrf_token = generate_csrf_token();
     <!-- CSRF Token -->
     <input type="hidden" id="csrfToken" value="<?= $csrf_token ?>">
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Timer Logic
+            const timerDisplay = document.getElementById('daily-timer');
+            if (timerDisplay) {
+                // Get remaining seconds from PHP (calculated server-side)
+                let remaining = <?= max(0, $next_claim_time - time()) ?>;
+
+                function updateTimer() {
+                    if (remaining <= 0) {
+                        timerDisplay.innerHTML = "Ready!";
+                        // Optional: Auto-reload to show claim button
+                        setTimeout(() => window.location.reload(), 1000);
+                        return;
+                    }
+
+                    remaining--;
+
+                    const hours = Math.floor(remaining / 3600);
+                    const minutes = Math.floor((remaining % 3600) / 60);
+                    const seconds = remaining % 60;
+
+                    timerDisplay.textContent =
+                        String(hours).padStart(2, '0') + ':' +
+                        String(minutes).padStart(2, '0') + ':' +
+                        String(seconds).padStart(2, '0');
+                }
+
+                // Initial call and interval
+                // updateTimer(); // Don't call immediately to avoid skipping a second visually vs PHP
+                setInterval(updateTimer, 1000);
+            }
+        });
+    </script>
 </body>
 
 </html>
