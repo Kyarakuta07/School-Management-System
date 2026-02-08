@@ -132,8 +132,8 @@ function get_safe_avatar_url($photo_filename)
         return '';
     }
 
-    // Return the path - let the browser handle 404 gracefully if file doesn't exist
-    return '../uploads/profile/' . $safe_filename;
+    // Return the path - matches update_profile.php upload directory
+    return '../assets/uploads/profiles/' . $safe_filename;
 }
 
 // Background Image Mapping (Placeholder for now)
