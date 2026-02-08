@@ -117,8 +117,27 @@ createTable('sanctuary_daily_claims', $sql_claims);
 
 // Update Potions
 echo "\n--- Updating Items ---\n";
-mysqli_query($conn, "UPDATE items SET effect_value = 200 WHERE item_name LIKE '%Potion%'");
-echo "✅ Updated Potion values\n";
+// Check if 'items' table exists, if not try 'shop_items'
+$checkItems = mysqli_query($conn, "SHOW TABLES LIKE 'items'");
+if (mysqli_num_rows($checkItems) > 0) {
+    mysqli_query($conn, "UPDATE items SET effect_value = 200 WHERE item_name LIKE '%Potion%'");
+    echo "✅ Updated Potion values in `items` table\n";
+} else {
+    // Try shop_items
+    $checkShopItems = mysqli_query($conn, "SHOW TABLES LIKE 'shop_items'");
+    if (mysqli_num_rows($checkShopItems) > 0) {
+        // Check if effect_value column exists in shop_items
+        $checkCol = mysqli_query($conn, "SHOW COLUMNS FROM `shop_items` LIKE 'effect_value'");
+        if (mysqli_num_rows($checkCol) > 0) {
+            mysqli_query($conn, "UPDATE shop_items SET effect_value = 200 WHERE name LIKE '%Potion%'");
+            echo "✅ Updated Potion values in `shop_items` table\n";
+        } else {
+            echo "ℹ️ Column `effect_value` not found in `shop_items` (Skipped)\n";
+        }
+    } else {
+        echo "ℹ️ Neither `items` nor `shop_items` table found (Skipped)\n";
+    }
+}
 
 // 4. Leaderboard Rank Points
 echo "\n--- 4. Leaderboard Rank Points ---\n";
