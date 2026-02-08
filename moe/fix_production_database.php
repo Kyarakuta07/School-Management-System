@@ -161,6 +161,11 @@ if (mysqli_query($conn, $sql_update_pp)) {
 }
 
 
+// 6. Nethera Roles Update (sanctuary_role)
+echo "\n--- 6. Nethera Roles Update ---\n";
+addColumn('nethera', 'sanctuary_role', "ENUM('member', 'vizier', 'hosa') DEFAULT 'member'");
+addIndex('nethera', 'idx_sanctuary_role', 'sanctuary_role');
+
 echo "\n\n=== UPDATE COMPLETE ===\n";
 echo "You can now delete this file from your server.";
 echo "</pre>";
