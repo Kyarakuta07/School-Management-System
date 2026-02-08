@@ -107,8 +107,9 @@ $members = DB::query(
             COALESCE(cg.total_pp, 0) as total_pp
      FROM nethera n
      LEFT JOIN class_grades cg ON n.id_nethera = cg.id_nethera
-     WHERE n.id_sanctuary = ? AND n.role = 'Nethera' AND n.status_akun = 'Aktif'
-     ORDER BY n.sanctuary_role DESC, cg.total_pp DESC
+     WHERE n.id_sanctuary = ? AND n.role = 'Nethera' AND n.status_akun = 'Aktif' 
+           AND n.sanctuary_role NOT IN ('hosa', 'vizier')
+     ORDER BY cg.total_pp DESC
      LIMIT 50",
     [$sanctuary_id]
 );
