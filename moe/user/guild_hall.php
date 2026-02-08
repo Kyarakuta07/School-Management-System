@@ -278,9 +278,14 @@ $bg_image = "../assets/map/sanctuary_{$faction_slug}_bg.jpg";
             color: var(--gold);
             margin-bottom: 3.5rem;
             position: relative;
-            display: table;
-            margin-left: auto;
-            margin-right: auto;
+
+            /* Royal Flex Layout */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            width: 100%;
+
             text-transform: uppercase;
             letter-spacing: 2px;
             text-shadow: 0 0 10px rgba(218, 165, 32, 0.5);
@@ -290,22 +295,23 @@ $bg_image = "../assets/map/sanctuary_{$faction_slug}_bg.jpg";
         .section-title::before,
         .section-title::after {
             content: '';
-            position: absolute;
-            top: 50%;
-            width: 60px;
+            position: relative;
+            /* Becomes a flex item */
+            flex: 1;
+            /* Elastic width */
+            max-width: 60px;
+            /* Max length */
+            min-width: 20px;
+            /* Min length for mobile */
             height: 2px;
-            background: linear-gradient(90deg, transparent, var(--gold));
+            border-radius: 2px;
         }
 
         .section-title::before {
-            right: 100%;
-            margin-right: 20px;
             background: linear-gradient(90deg, transparent, var(--gold));
         }
 
         .section-title::after {
-            left: 100%;
-            margin-left: 20px;
             background: linear-gradient(90deg, var(--gold), transparent);
         }
 
