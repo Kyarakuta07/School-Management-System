@@ -71,8 +71,17 @@ function performGacha($conn, $user_id, $gacha_type = 1)
         return ['success' => false, 'error' => 'No species found for rarity: ' . $rarity];
     }
 
-    // Determine if shiny (1% chance)
-    $is_shiny = (rand(1, 100) === 1) ? 1 : 0;
+    // Determine if shiny (Base 1% chance)
+    require_once __DIR__ . '/stats.php';
+    $shiny_chance = 1;
+
+    // Check for Beastiary Library upgrade (+5% chance)
+    $user_upgrades = getUserSanctuaryUpgrades($conn, $user_id);
+    if (in_array('beastiary', $user_upgrades)) {
+        $shiny_chance += 5; // Total 6%
+    }
+
+    $is_shiny = (rand(1, 100) <= $shiny_chance) ? 1 : 0;
     $shiny_hue = $is_shiny ? rand(30, 330) : 0;
 
     // Create the new pet

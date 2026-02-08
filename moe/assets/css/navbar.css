@@ -30,7 +30,8 @@
     position: relative;
     padding: 0 5%;
     z-index: 100;
-    background: transparent; /* Or rgba(0,0,0,0.8) if needed */
+    background: transparent;
+    /* Or rgba(0,0,0,0.8) if needed */
 }
 
 /* Logo */
@@ -43,7 +44,7 @@
     height: 80px;
     border-radius: 50%;
     object-fit: cover;
-    box-shadow: 0 0 15px rgba(218,165,32,0.3);
+    box-shadow: 0 0 15px rgba(218, 165, 32, 0.3);
     border: 2px solid var(--color-gold);
 }
 
@@ -165,9 +166,9 @@
     .main-header {
         padding: 0 1.5rem;
         height: 80px;
-        
+
         /* Seamless gradient connection */
-        background: linear-gradient(180deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.85) 70%, rgba(0,0,0,0.75) 100%);
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.85) 70%, rgba(0, 0, 0, 0.75) 100%);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         border-bottom: none;
@@ -207,13 +208,15 @@
     }
 
     /* Transform Hamburger to X when Checked */
-    .nav-toggle:checked + .nav-toggle-label span:nth-child(1) {
+    .nav-toggle:checked+.nav-toggle-label span:nth-child(1) {
         transform: rotate(45deg) translate(5px, 6px);
     }
-    .nav-toggle:checked + .nav-toggle-label span:nth-child(2) {
+
+    .nav-toggle:checked+.nav-toggle-label span:nth-child(2) {
         opacity: 0;
     }
-    .nav-toggle:checked + .nav-toggle-label span:nth-child(3) {
+
+    .nav-toggle:checked+.nav-toggle-label span:nth-child(3) {
         transform: rotate(-45deg) translate(5px, -6px);
     }
 
@@ -225,10 +228,10 @@
         width: 100%;
 
         /* PERFECT MATCH with header gradient ending */
-        background: linear-gradient(180deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.85) 30%, rgba(0,0,0,0.9) 100%);
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.85) 30%, rgba(0, 0, 0, 0.9) 100%);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
-        
+
         border-top: none;
         border-bottom: 1px solid rgba(218, 165, 32, 0.2);
 
@@ -240,7 +243,7 @@
     }
 
     /* Show Nav when toggled */
-    .nav-toggle:checked ~ .main-nav {
+    .nav-toggle:checked~.main-nav {
         max-height: 500px;
     }
 
@@ -258,7 +261,8 @@
         display: block;
         width: 100%;
         text-align: center;
-        min-height: 44px; /* Touch-friendly */
+        min-height: 44px;
+        /* Touch-friendly */
     }
 
     /* Mobile Buttons inside Nav */
@@ -278,7 +282,8 @@
         max-width: 300px;
         text-align: center;
         padding: 0.8rem 1.5rem;
-        min-height: 44px; /* Touch-friendly */
+        min-height: 44px;
+        /* Touch-friendly */
         display: flex;
         align-items: center;
         justify-content: center;
@@ -328,7 +333,8 @@
         gap: 0.8rem;
     }
 
-    .login-btn, .signup-btn {
+    .login-btn,
+    .signup-btn {
         font-size: 0.85rem;
         padding: 0.5rem 1rem;
     }

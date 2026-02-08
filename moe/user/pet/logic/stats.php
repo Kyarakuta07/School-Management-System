@@ -147,3 +147,31 @@ function getUserPetsWithStats($conn, $user_id)
 
     return $pets;
 }
+
+/**
+ * Get active sanctuary upgrades for a user
+ * 
+ * @param mysqli $conn Database connection
+ * @param int $user_id User ID
+ * @return array List of active upgrade types (e.g. ['training_dummy', 'beastiary'])
+ */
+function getUserSanctuaryUpgrades($conn, $user_id)
+{
+    $query = "SELECT su.upgrade_type 
+              FROM sanctuary_upgrades su
+              JOIN nethera n ON su.sanctuary_id = n.id_sanctuary
+              WHERE n.id_nethera = ?";
+
+    $stmt = mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt, "i", $user_id);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    $upgrades = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+        $upgrades[] = $row['upgrade_type'];
+    }
+    mysqli_stmt_close($stmt);
+
+    return $upgrades;
+}

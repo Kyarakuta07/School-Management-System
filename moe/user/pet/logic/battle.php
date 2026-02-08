@@ -118,6 +118,23 @@ function performBattle($conn, $attacker_pet_id, $defender_pet_id)
     if ($winner_pet_id) {
         $reward_gold = rand(BATTLE_WIN_GOLD_MIN, BATTLE_WIN_GOLD_MAX);
         $reward_exp = rand(BATTLE_WIN_EXP_MIN, BATTLE_WIN_EXP_MAX);
+
+        // Check for Training Dummy upgrade (+5% Battle EXP)
+        $owner_query = mysqli_prepare($conn, "SELECT user_id FROM user_pets WHERE id = ?");
+        mysqli_stmt_bind_param($owner_query, "i", $winner_pet_id);
+        mysqli_stmt_execute($owner_query);
+        $owner_res = mysqli_stmt_get_result($owner_query);
+        $owner_data = mysqli_fetch_assoc($owner_res);
+        mysqli_stmt_close($owner_query);
+
+        if ($owner_data) {
+            require_once __DIR__ . '/stats.php';
+            $winner_upgrades = getUserSanctuaryUpgrades($conn, $owner_data['user_id']);
+            if (in_array('training_dummy', $winner_upgrades)) {
+                $reward_exp = ceil($reward_exp * 1.05); // +5%
+            }
+        }
+
         addExpToPet($conn, $winner_pet_id, $reward_exp);
     }
 
