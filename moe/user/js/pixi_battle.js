@@ -425,6 +425,20 @@ function updateEffects(delta) {
             }
         }
     }
+
+    // Update Procedural Animations (Squash & Stretch)
+    [playerAnimatedSprite, enemyAnimatedSprite].forEach(sprite => {
+        if (sprite && sprite._isProcedural) {
+            sprite._animPhase += 0.08; // Breathing speed
+
+            // Squash and Stretch Logic
+            // When scale Y goes DOWN (squash), scale X goes UP (stretch) to maintain volume
+            const stretch = Math.sin(sprite._animPhase) * 0.05;
+
+            sprite.scale.y = sprite._baseScaleY * (1 + stretch);
+            sprite.scale.x = sprite._baseScaleX * (1 - stretch * 0.5); // X stretches half as much
+        }
+    });
 }
 
 // ================================================

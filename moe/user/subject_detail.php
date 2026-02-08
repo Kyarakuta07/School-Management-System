@@ -3,7 +3,7 @@
  * Subject Detail Page
  * Mediterranean of Egypt - School Management System
  * 
- * View materials for a specific subject (History, Herbology, Oceanology, Astronomy)
+ * View materials for a specific subject
  */
 
 require_once '../core/bootstrap.php';
@@ -20,18 +20,19 @@ $can_manage = Auth::canManageGrades(); // Hakaes or Vasiki
 
 // Get subject from URL
 $subject = $_GET['subject'] ?? '';
-$valid_subjects = ['history', 'herbology', 'oceanology', 'astronomy'];
+$valid_subjects = ['pop_culture', 'mythology', 'history_of_egypt', 'oceanology', 'astronomy'];
 
 if (!in_array($subject, $valid_subjects)) {
     redirect('class.php');
 }
 
-// Subject metadata
+// Subject metadata (unique colors for each)
 $subjects = [
-    'history' => ['icon' => 'fa-landmark', 'color' => '#4a90d9', 'name' => 'History', 'desc' => 'Explore the chronicles of ancient Egypt, pharaohs, and the rise of civilizations.'],
-    'herbology' => ['icon' => 'fa-leaf', 'color' => '#27ae60', 'name' => 'Herbology', 'desc' => 'Master the ancient art of healing, poisons, and magical flora of Egypt.'],
+    'pop_culture' => ['icon' => 'fa-film', 'color' => '#e74c3c', 'name' => 'Pop Culture', 'desc' => 'Explore modern Egyptian influence in movies, games, music, and global media.'],
+    'mythology' => ['icon' => 'fa-ankh', 'color' => '#9b59b6', 'name' => 'Mythology', 'desc' => 'Discover the stories of Ra, Osiris, Isis, and the ancient Egyptian pantheon.'],
+    'history_of_egypt' => ['icon' => 'fa-landmark', 'color' => '#f39c12', 'name' => 'History of Egypt', 'desc' => 'Journey through the ages of Pharaohs, pyramids, and the rise of civilization.'],
     'oceanology' => ['icon' => 'fa-water', 'color' => '#00bcd4', 'name' => 'Oceanology', 'desc' => 'Study the secrets of the Nile and the mystic depths of the Mediterranean Sea.'],
-    'astronomy' => ['icon' => 'fa-star', 'color' => '#9b59b6', 'name' => 'Astronomy', 'desc' => 'Read the stars, navigate the desert sands, and predict the empire\'s fate.'],
+    'astronomy' => ['icon' => 'fa-star', 'color' => '#2ecc71', 'name' => 'Astronomy', 'desc' => 'Read the stars, navigate the desert sands, and predict the empire\'s fate.'],
 ];
 
 $current_subject = $subjects[$subject];

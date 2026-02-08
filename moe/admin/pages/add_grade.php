@@ -86,8 +86,19 @@ $extraCss = ['css/edit_schedule.css'];
                             </div>
 
                             <div class="form-group">
-                                <label for="herbology">Herbology</label>
-                                <input type="number" id="herbology" name="herbology" min="0" max="100" required>
+                                <label for="pop_culture">Pop Culture</label>
+                                <input type="number" id="pop_culture" name="pop_culture" min="0" max="100" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="mythology">Mythology</label>
+                                <input type="number" id="mythology" name="mythology" min="0" max="100" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="history_of_egypt">History of Egypt</label>
+                                <input type="number" id="history_of_egypt" name="history_of_egypt" min="0" max="100"
+                                    required>
                             </div>
 
                             <div class="form-group">

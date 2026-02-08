@@ -51,11 +51,27 @@
                 <a href="#" class="class-btn">View Syllabus</a>
             </div>
 
-            <!-- Herbology -->
-            <div class="class-card herb">
-                <div class="card-icon"><i class="fa-solid fa-leaf"></i></div>
-                <h3>Herbology</h3>
-                <p>Master the ancient art of healing, poisons, and magical flora of Egypt.</p>
+            <!-- Pop Culture -->
+            <div class="class-card popculture">
+                <div class="card-icon"><i class="fa-solid fa-film"></i></div>
+                <h3>Pop Culture</h3>
+                <p>Explore modern Egyptian influence in movies, games, music, and global media.</p>
+                <a href="#" class="class-btn">View Syllabus</a>
+            </div>
+
+            <!-- Mythology -->
+            <div class="class-card mythology">
+                <div class="card-icon"><i class="fa-solid fa-ankh"></i></div>
+                <h3>Mythology</h3>
+                <p>Discover the stories of Ra, Osiris, Isis, and the ancient Egyptian pantheon.</p>
+                <a href="#" class="class-btn">View Syllabus</a>
+            </div>
+
+            <!-- History of Egypt -->
+            <div class="class-card egypthistory">
+                <div class="card-icon"><i class="fa-solid fa-landmark"></i></div>
+                <h3>History of Egypt</h3>
+                <p>Journey through the ages of Pharaohs, pyramids, and the rise of civilization.</p>
                 <a href="#" class="class-btn">View Syllabus</a>
             </div>
 

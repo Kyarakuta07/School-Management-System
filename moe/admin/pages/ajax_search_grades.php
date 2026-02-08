@@ -48,7 +48,9 @@ if ($stmt) {
                 $output .= '<td>' . htmlspecialchars($grade['nama_sanctuary']) . '</td>';
                 $output .= '<td>' . htmlspecialchars($grade['class_name']) . '</td>';
                 $output .= '<td>' . htmlspecialchars($grade['history']) . '</td>';
-                $output .= '<td>' . htmlspecialchars($grade['herbology']) . '</td>';
+                $output .= '<td>' . htmlspecialchars($grade['pop_culture'] ?? 0) . '</td>';
+                $output .= '<td>' . htmlspecialchars($grade['mythology'] ?? 0) . '</td>';
+                $output .= '<td>' . htmlspecialchars($grade['history_of_egypt'] ?? 0) . '</td>';
                 $output .= '<td>' . htmlspecialchars($grade['oceanology']) . '</td>';
                 $output .= '<td>' . htmlspecialchars($grade['astronomy']) . '</td>';
                 $output .= '<td><strong>' . htmlspecialchars($grade['total_pp']) . '</strong></td>';
@@ -63,7 +65,7 @@ if ($stmt) {
                 $output .= '</tr>';
             }
         } else {
-            $output = '<tr><td colspan="9" style="text-align: center; padding: 20px;">Tidak ada data nilai yang cocok dengan pencarian.</td></tr>';
+            $output = '<tr><td colspan="12" style="text-align: center; padding: 20px;">Tidak ada data nilai yang cocok dengan pencarian.</td></tr>';
         }
     } else {
         error_log("Grade search execute failed: " . mysqli_stmt_error($stmt));

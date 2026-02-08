@@ -99,10 +99,24 @@ $extraCss = ['css/edit_schedule.css'];
                             </div>
 
                             <div class="form-group">
-                                <label for="herbology">Nilai Herbology</label>
-                                <input type="number" id="herbology" name="herbology"
-                                    value="<?php echo htmlspecialchars($grade_data['herbology']); ?>" min="0" max="100"
-                                    required>
+                                <label for="pop_culture">Nilai Pop Culture</label>
+                                <input type="number" id="pop_culture" name="pop_culture"
+                                    value="<?php echo htmlspecialchars($grade_data['pop_culture'] ?? 0); ?>" min="0"
+                                    max="100" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="mythology">Nilai Mythology</label>
+                                <input type="number" id="mythology" name="mythology"
+                                    value="<?php echo htmlspecialchars($grade_data['mythology'] ?? 0); ?>" min="0"
+                                    max="100" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="history_of_egypt">Nilai History of Egypt</label>
+                                <input type="number" id="history_of_egypt" name="history_of_egypt"
+                                    value="<?php echo htmlspecialchars($grade_data['history_of_egypt'] ?? 0); ?>"
+                                    min="0" max="100" required>
                             </div>
 
                             <div class="form-group">

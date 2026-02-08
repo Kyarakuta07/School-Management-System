@@ -232,6 +232,19 @@ document.addEventListener('DOMContentLoaded', () => {
 // MANUAL EVOLUTION SYSTEM
 // ================================================
 
+// UI Stage Name Mapping (database -> display)
+const STAGE_NAMES = {
+    'egg': 'Baby',
+    'baby': 'Adult',
+    'adult': 'King'
+};
+
+// Level requirements for each evolution
+const EVOLUTION_LEVELS = {
+    'egg': 30,    // Egg (Baby) -> Adult at Lv 30
+    'baby': 70    // Adult -> King at Lv 70
+};
+
 let evolutionState = {
     mainPetId: null,
     selectedFodder: [],
@@ -252,16 +265,17 @@ async function openEvolutionModal(mainPetId) {
 
     // Check if already max evolved
     if (currentStage === 'adult') {
-        showToast('Pet is already at Adult stage (max evolution)!', 'warning');
+        showToast('Pet is already at King stage (max evolution)!', 'warning');
         return;
     }
 
     // Check level requirement based on current stage
-    const requiredLevel = (currentStage === 'egg') ? 10 : 20;
-    const nextStage = (currentStage === 'egg') ? 'Baby' : 'Adult';
+    const requiredLevel = EVOLUTION_LEVELS[currentStage] || 30;
+    const currentStageName = STAGE_NAMES[currentStage] || 'Baby';
+    const nextStage = currentStage === 'egg' ? 'Adult' : 'King';
 
     if (mainPet.level < requiredLevel) {
-        showToast(`Pet must be level ${requiredLevel}+ to evolve to ${nextStage}!`, 'warning');
+        showToast(`Pet must be level ${requiredLevel}+ to evolve from ${currentStageName} to ${nextStage}!`, 'warning');
         return;
     }
 
@@ -270,7 +284,7 @@ async function openEvolutionModal(mainPetId) {
 
     // Update modal info
     document.getElementById('evo-title').textContent = `Evolve to ${nextStage}`;
-    document.getElementById('evo-current-stage').textContent = currentStage.charAt(0).toUpperCase() + currentStage.slice(1);
+    document.getElementById('evo-current-stage').textContent = currentStageName;
     document.getElementById('evo-next-stage').textContent = nextStage;
     document.getElementById('evo-required-level').textContent = requiredLevel;
 
@@ -604,15 +618,16 @@ function renderCollectionWithButtons() {
         } else if (pet.status === 'ALIVE') {
             // Determine if evolution is possible based on current stage and level
             const currentStage = pet.evolution_stage || 'egg';
-            const canEvolve = (currentStage === 'egg' && pet.level >= 10) ||
-                (currentStage === 'baby' && pet.level >= 20);
+            const reqLevel = currentStage === 'egg' ? 30 : 70;
+            const canEvolve = (currentStage === 'egg' && pet.level >= 30) ||
+                (currentStage === 'baby' && pet.level >= 70);
 
             let buttonsHtml = '';
             if (!pet.is_active) {
                 buttonsHtml += '<button class="pet-action-btn btn-sell" onclick="event.stopPropagation(); sellPet(' + pet.id + ')" title="Sell Pet"><i class="fas fa-coins"></i></button>';
             }
             if (canEvolve) {
-                const nextStage = currentStage === 'egg' ? 'Baby' : 'Adult';
+                const nextStage = currentStage === 'egg' ? 'Adult' : 'King';
                 buttonsHtml += '<button class="pet-action-btn btn-evolve" onclick="event.stopPropagation(); openEvolutionModal(' + pet.id + ')" title="Evolve to ' + nextStage + '"><i class="fas fa-star"></i> Evolve</button>';
             }
             if (buttonsHtml) {

@@ -96,12 +96,13 @@ if ($user_grades) {
     $user_rank = (int) $rank_result;
 }
 
-// Subject icons and colors
+// Subject icons and colors (unique colors for each)
 $subjects = [
-    'history' => ['icon' => 'fa-landmark', 'color' => '#4a90d9', 'name' => 'History'],
-    'herbology' => ['icon' => 'fa-leaf', 'color' => '#27ae60', 'name' => 'Herbology'],
+    'pop_culture' => ['icon' => 'fa-film', 'color' => '#e74c3c', 'name' => 'Pop Culture'],
+    'mythology' => ['icon' => 'fa-ankh', 'color' => '#9b59b6', 'name' => 'Mythology'],
+    'history_of_egypt' => ['icon' => 'fa-landmark', 'color' => '#f39c12', 'name' => 'History of Egypt'],
     'oceanology' => ['icon' => 'fa-water', 'color' => '#00bcd4', 'name' => 'Oceanology'],
-    'astronomy' => ['icon' => 'fa-star', 'color' => '#9b59b6', 'name' => 'Astronomy'],
+    'astronomy' => ['icon' => 'fa-star', 'color' => '#2ecc71', 'name' => 'Astronomy'],
 ];
 
 // Student Progress Tracking (for Nethera users)
@@ -181,8 +182,9 @@ $all_grades = [];
 if ($can_manage_grades) {
     $all_grades = DB::query(
         "SELECT n.id_nethera, n.nama_lengkap, n.username, s.nama_sanctuary,
-                COALESCE(cg.history, 0) as history,
-                COALESCE(cg.herbology, 0) as herbology,
+                COALESCE(cg.pop_culture, 0) as pop_culture,
+                COALESCE(cg.mythology, 0) as mythology,
+                COALESCE(cg.history_of_egypt, 0) as history_of_egypt,
                 COALESCE(cg.oceanology, 0) as oceanology,
                 COALESCE(cg.astronomy, 0) as astronomy,
                 COALESCE(cg.total_pp, 0) as total_pp,
@@ -539,11 +541,14 @@ $csrf_token = generate_csrf_token();
                                     <tr>
                                         <th>Nama</th>
                                         <th>Sanctuary</th>
-                                        <?php if ($is_vasiki || $hakaes_subject === 'history'): ?>
-                                            <th>History</th>
+                                        <?php if ($is_vasiki || $hakaes_subject === 'pop_culture'): ?>
+                                            <th>Pop Culture</th>
                                         <?php endif; ?>
-                                        <?php if ($is_vasiki || $hakaes_subject === 'herbology'): ?>
-                                            <th>Herbology</th>
+                                        <?php if ($is_vasiki || $hakaes_subject === 'mythology'): ?>
+                                            <th>Mythology</th>
+                                        <?php endif; ?>
+                                        <?php if ($is_vasiki || $hakaes_subject === 'history_of_egypt'): ?>
+                                            <th>History of Egypt</th>
                                         <?php endif; ?>
                                         <?php if ($is_vasiki || $hakaes_subject === 'oceanology'): ?>
                                             <th>Oceanology</th>
@@ -559,11 +564,14 @@ $csrf_token = generate_csrf_token();
                                         <tr>
                                             <td data-label="Nama"><?= e($grade['nama_lengkap']) ?></td>
                                             <td data-label="Sanctuary"><?= e($grade['nama_sanctuary'] ?? '-') ?></td>
-                                            <?php if ($is_vasiki || $hakaes_subject === 'history'): ?>
-                                                <td data-label="History"><?= $grade['history'] ?></td>
+                                            <?php if ($is_vasiki || $hakaes_subject === 'pop_culture'): ?>
+                                                <td data-label="Pop Culture"><?= $grade['pop_culture'] ?></td>
                                             <?php endif; ?>
-                                            <?php if ($is_vasiki || $hakaes_subject === 'herbology'): ?>
-                                                <td data-label="Herbology"><?= $grade['herbology'] ?></td>
+                                            <?php if ($is_vasiki || $hakaes_subject === 'mythology'): ?>
+                                                <td data-label="Mythology"><?= $grade['mythology'] ?></td>
+                                            <?php endif; ?>
+                                            <?php if ($is_vasiki || $hakaes_subject === 'history_of_egypt'): ?>
+                                                <td data-label="History of Egypt"><?= $grade['history_of_egypt'] ?></td>
                                             <?php endif; ?>
                                             <?php if ($is_vasiki || $hakaes_subject === 'oceanology'): ?>
                                                 <td data-label="Oceanology"><?= $grade['oceanology'] ?></td>
@@ -739,18 +747,25 @@ $csrf_token = generate_csrf_token();
 
                     <div class="subjects-grid">
 
-                        <!-- History -->
-                        <a href="subject_detail.php?subject=history" class="subject-card history">
-                            <div class="subject-icon"><i class="fa-solid fa-landmark"></i></div>
-                            <h4>History</h4>
-                            <p>Explore the chronicles of ancient Egypt, pharaohs, and the rise of civilizations.</p>
+                        <!-- Pop Culture -->
+                        <a href="subject_detail.php?subject=pop_culture" class="subject-card pop_culture">
+                            <div class="subject-icon"><i class="fa-solid fa-film"></i></div>
+                            <h4>Pop Culture</h4>
+                            <p>Explore modern Egyptian influence in movies, games, music, and global media.</p>
                         </a>
 
-                        <!-- Herbology -->
-                        <a href="subject_detail.php?subject=herbology" class="subject-card herbology">
-                            <div class="subject-icon"><i class="fa-solid fa-leaf"></i></div>
-                            <h4>Herbology</h4>
-                            <p>Master the ancient art of healing, poisons, and magical flora of Egypt.</p>
+                        <!-- Mythology -->
+                        <a href="subject_detail.php?subject=mythology" class="subject-card mythology">
+                            <div class="subject-icon"><i class="fa-solid fa-ankh"></i></div>
+                            <h4>Mythology</h4>
+                            <p>Discover the stories of Ra, Osiris, Isis, and the ancient Egyptian pantheon.</p>
+                        </a>
+
+                        <!-- History of Egypt -->
+                        <a href="subject_detail.php?subject=history_of_egypt" class="subject-card history_of_egypt">
+                            <div class="subject-icon"><i class="fa-solid fa-landmark"></i></div>
+                            <h4>History of Egypt</h4>
+                            <p>Journey through the ages of Pharaohs, pyramids, and the rise of civilization.</p>
                         </a>
 
                         <!-- Oceanology -->
@@ -1008,7 +1023,9 @@ $csrf_token = generate_csrf_token();
 
                     if (data.success && data.grades) {
                         document.getElementById('grade-history').value = data.grades.history || 0;
-                        document.getElementById('grade-herbology').value = data.grades.herbology || 0;
+                        document.getElementById('grade-pop_culture').value = data.grades.pop_culture || 0;
+                        document.getElementById('grade-mythology').value = data.grades.mythology || 0;
+                        document.getElementById('grade-history_of_egypt').value = data.grades.history_of_egypt || 0;
                         document.getElementById('grade-oceanology').value = data.grades.oceanology || 0;
                         document.getElementById('grade-astronomy').value = data.grades.astronomy || 0;
                     } else {
@@ -1034,7 +1051,9 @@ $csrf_token = generate_csrf_token();
 
                 const grades = {
                     history: parseInt(document.getElementById('grade-history').value) || 0,
-                    herbology: parseInt(document.getElementById('grade-herbology').value) || 0,
+                    pop_culture: parseInt(document.getElementById('grade-pop_culture').value) || 0,
+                    mythology: parseInt(document.getElementById('grade-mythology').value) || 0,
+                    history_of_egypt: parseInt(document.getElementById('grade-history_of_egypt').value) || 0,
                     oceanology: parseInt(document.getElementById('grade-oceanology').value) || 0,
                     astronomy: parseInt(document.getElementById('grade-astronomy').value) || 0
                 };

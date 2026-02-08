@@ -150,7 +150,9 @@ $jsPath = '../';
                             <th>Sanctuary</th>
                             <th>Nama Kelas</th>
                             <th>History</th>
-                            <th>Herbology</th>
+                            <th>Pop Culture</th>
+                            <th>Mythology</th>
+                            <th>Egypt History</th>
                             <th>Oceanology</th>
                             <th>Astronomy</th>
                             <th>Total PP</th>
@@ -165,7 +167,9 @@ $jsPath = '../';
                                     <td><?php echo htmlspecialchars($grade['nama_sanctuary']); ?></td>
                                     <td><?php echo htmlspecialchars($grade['class_name']); ?></td>
                                     <td><?php echo htmlspecialchars($grade['history']); ?></td>
-                                    <td><?php echo htmlspecialchars($grade['herbology']); ?></td>
+                                    <td><?php echo htmlspecialchars($grade['pop_culture'] ?? 0); ?></td>
+                                    <td><?php echo htmlspecialchars($grade['mythology'] ?? 0); ?></td>
+                                    <td><?php echo htmlspecialchars($grade['history_of_egypt'] ?? 0); ?></td>
                                     <td><?php echo htmlspecialchars($grade['oceanology']); ?></td>
                                     <td><?php echo htmlspecialchars($grade['astronomy']); ?></td>
                                     <td><strong><?php echo htmlspecialchars($grade['total_pp']); ?></strong></td>
@@ -190,7 +194,7 @@ $jsPath = '../';
                             <?php endwhile; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="9" style="text-align: center; padding: 20px;">Tidak ada data nilai kelas.</td>
+                                <td colspan="12" style="text-align: center; padding: 20px;">Tidak ada data nilai kelas.</td>
                             </tr>
                         <?php endif; ?>
                     </tbody>

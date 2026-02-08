@@ -14,23 +14,15 @@
             </div>
         </div>
 
-        <!-- Filter Tabs -->
+        <!-- Filter Tabs (Simplified) -->
         <div class="leaderboard-tabs">
             <button class="lb-tab active" data-sort="rank">
                 <span class="tab-icon-css icon-medal"></span>
-                <span class="tab-label">Rank Points</span>
-            </button>
-            <button class="lb-tab" data-sort="wins">
-                <span class="tab-icon-css icon-sword"></span>
-                <span class="tab-label">Wins</span>
+                <span class="tab-label">Season Rank</span>
             </button>
             <button class="lb-tab" data-sort="power">
                 <span class="tab-icon-css icon-power"></span>
-                <span class="tab-label">Power</span>
-            </button>
-            <button class="lb-tab" data-sort="level">
-                <span class="tab-icon-css icon-medal"></span>
-                <span class="tab-label">Level</span>
+                <span class="tab-label">Power Level</span>
             </button>
         </div>
 
@@ -48,22 +40,19 @@
             </div>
         </div>
 
-        <!-- Period Toggle -->
+        <!-- Season Info Note (Period Toggle Removed) -->
         <div class="period-toggle-container">
-            <span class="period-toggle-label">Leaderboard Period <span id="period-label">(Resets Monthly)</span></span>
-            <div class="period-toggle" id="period-toggle">
-                <button type="button" class="period-btn active" data-period="monthly">Monthly</button>
-                <button type="button" class="period-btn" data-period="alltime">All Time</button>
-            </div>
+            <span class="period-toggle-label">Season Rank resets on the <strong>1st of each month</strong></span>
         </div>
 
         <!-- Rewards Preview Banner -->
         <div class="rewards-banner" id="rewards-banner">
             <h4>Season Rewards</h4>
             <div class="rewards-list">
-                <div class="reward-item"><span class="rank-badge gold">1st</span> 500 Coins + Title</div>
-                <div class="reward-item"><span class="rank-badge silver">2nd</span> 300 Coins</div>
-                <div class="reward-item"><span class="rank-badge bronze">3rd</span> 150 Coins</div>
+                <div class="reward-item"><span class="rank-badge gold">1st</span> 500 Gold</div>
+                <div class="reward-item"><span class="rank-badge silver">2nd</span> 300 Gold</div>
+                <div class="reward-item"><span class="rank-badge bronze">3rd</span> 150 Gold</div>
+                <div class="reward-item"><span class="rank-badge participation">All</span> 50 Gold</div>
             </div>
         </div>
 
@@ -525,6 +514,12 @@
     .rank-badge.bronze {
         background: linear-gradient(135deg, #CD7F32, #8B4513);
         color: #fff;
+    }
+
+    .rank-badge.participation {
+        background: linear-gradient(135deg, #4CAF50, #2E7D32);
+        color: #fff;
+        font-size: 0.55rem;
     }
 
     /* ================================

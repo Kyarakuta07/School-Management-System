@@ -36,7 +36,9 @@ $can_access_admin = in_array($user_role, ['Vasiki', 'Anubis', 'Hakaes']);
 
 // Get user info with sanctuary (using DB wrapper)
 $user_info = DB::queryOne(
-    "SELECT n.status_akun, n.profile_photo, n.fun_fact, s.nama_sanctuary, s.deskripsi
+    "SELECT n.status_akun, n.profile_photo, n.fun_fact, 
+            s.nama_sanctuary, s.deskripsi,
+            LOWER(s.nama_sanctuary) as faction_slug
      FROM nethera n
      JOIN sanctuary s ON n.id_sanctuary = s.id_sanctuary
      WHERE n.id_nethera = ?",
@@ -54,6 +56,7 @@ $sanctuary_name = $user_info['nama_sanctuary'];
 $sanctuary_desc = $user_info['deskripsi'] ?? '';
 $profile_photo = $user_info['profile_photo'];
 $fun_fact = $user_info['fun_fact'] ?? 'Belum ada funfact.';
+$faction_slug = strtolower(str_replace(' ', '', $user_info['faction_slug'] ?? 'ammit'));
 
 // ==================================================
 // ACTIVE PET DATA
@@ -273,30 +276,28 @@ if ($hour >= 5 && $hour < 12) {
                     </a>
                 <?php endif; ?>
 
-                <!-- ABOUT MY SANCTUARY -->
-                <div class="dashboard-card sanctuary-card">
+                <!-- ABOUT MY SANCTUARY (PREMIUM VERSION) -->
+                <a href="my_sanctuary.php" class="dashboard-card sanctuary-card">
                     <div class="card-header">
-                        <h3><i class="fas fa-ankh"></i> About My Sanctuary</h3>
+                        <h3><i class="fas fa-ankh"></i> My Sanctuary</h3>
+                        <span class="card-link">Enter Control Room →</span>
                     </div>
-                    <div class="card-body sanctuary-body">
-                        <div class="sanctuary-icon-wrapper">
-                            <i class="fas fa-ankh"></i>
+                    <div class="card-body sanctuary-body-premium">
+                        <div class="sanctuary-emblem-wrapper">
+                            <img src="../assets/faction emblem/faction_<?= e($faction_slug) ?>.png"
+                                alt="<?= e($sanctuary_name) ?>" class="sanctuary-emblem-img"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="sanctuary-emblem-fallback" style="display: none;">
+                                <i class="fas fa-ankh"></i>
+                            </div>
                         </div>
-                        <h4 class="sanctuary-name"><?= e($sanctuary_name) ?> Sanctuary</h4>
-                        <div class="sanctuary-lore">
-                            <?php if (!empty($sanctuary_desc)): ?>
-                                <p><?= e($sanctuary_desc) ?></p>
-                            <?php else: ?>
-                                <p>Sanctuary Ammit, the fourth sanctuary "Sanctu #4" was forged for Nethara, bearer of
-                                    Ammit's divine blood. It shelters children chosen for their sense of justice, clarity of
-                                    judgment, iron strong hearts, and wandering spirits destined for greater paths.</p>
-                                <p>In the myths of ancient Kemet, Ammit is the Devourer of Death: a fearsome being with the
-                                    crocodile's jaws, the lion's strength, and the hippopotamus's unyielding might. No
-                                    wicked soul escapes her shadow.</p>
-                            <?php endif; ?>
+                        <h4 class="sanctuary-name-premium"><?= e($sanctuary_name) ?> Sanctuary</h4>
+                        <p class="sanctuary-tagline">Blessed by the Ancient Gods</p>
+                        <div class="sanctuary-cta-btn">
+                            <i class="fas fa-door-open"></i> Manage Sanctuary
                         </div>
                     </div>
-                </div>
+                </a>
 
             </section>
 

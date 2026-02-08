@@ -62,12 +62,13 @@ if (!$can_manage) {
 
 $csrf_token = generate_csrf_token();
 
-// Subject metadata for header
+// Subject metadata for header (unique colors)
 $subjects = [
-    'history' => ['icon' => 'fa-landmark', 'color' => '#4a90d9', 'name' => 'History'],
-    'herbology' => ['icon' => 'fa-leaf', 'color' => '#27ae60', 'name' => 'Herbology'],
+    'pop_culture' => ['icon' => 'fa-film', 'color' => '#e74c3c', 'name' => 'Pop Culture'],
+    'mythology' => ['icon' => 'fa-ankh', 'color' => '#9b59b6', 'name' => 'Mythology'],
+    'history_of_egypt' => ['icon' => 'fa-landmark', 'color' => '#f39c12', 'name' => 'History of Egypt'],
     'oceanology' => ['icon' => 'fa-water', 'color' => '#00bcd4', 'name' => 'Oceanology'],
-    'astronomy' => ['icon' => 'fa-star', 'color' => '#9b59b6', 'name' => 'Astronomy'],
+    'astronomy' => ['icon' => 'fa-star', 'color' => '#2ecc71', 'name' => 'Astronomy'],
 ];
 $current_subject = $subjects[$quiz['subject']] ?? ['icon' => 'fa-book', 'color' => '#d4af37', 'name' => 'Quiz'];
 ?>

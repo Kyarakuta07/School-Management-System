@@ -22,16 +22,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $class_name = trim($_POST['class_name']);
 
     $history = (int) $_POST['history'];
-    $herbology = (int) $_POST['herbology'];
+    $pop_culture = (int) $_POST['pop_culture'];
+    $mythology = (int) $_POST['mythology'];
+    $history_of_egypt = (int) $_POST['history_of_egypt'];
     $oceanology = (int) $_POST['oceanology'];
     $astronomy = (int) $_POST['astronomy'];
 
-    $new_total_pp = $history + $herbology + $oceanology + $astronomy;
+    $new_total_pp = $history + $pop_culture + $mythology + $history_of_egypt + $oceanology + $astronomy;
 
     $sql = "UPDATE class_grades SET 
                 class_name = ?, 
                 history = ?, 
-                herbology = ?, 
+                pop_culture = ?,
+                mythology = ?,
+                history_of_egypt = ?,
                 oceanology = ?, 
                 astronomy = ?, 
                 total_pp = ? 
@@ -43,10 +47,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($stmt) {
         mysqli_stmt_bind_param(
             $stmt,
-            "siiiiii",
+            "siiiiiiii",
             $class_name,
             $history,
-            $herbology,
+            $pop_culture,
+            $mythology,
+            $history_of_egypt,
             $oceanology,
             $astronomy,
             $new_total_pp,
