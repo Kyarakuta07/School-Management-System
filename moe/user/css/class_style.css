@@ -371,30 +371,43 @@
 }
 
 /* Subject-specific colors */
-.subject-card.history {
-    background: linear-gradient(145deg, rgba(74, 144, 217, 0.2), rgba(74, 144, 217, 0.05));
-    border: 1px solid rgba(74, 144, 217, 0.3);
+.subject-card.pop_culture {
+    background: linear-gradient(145deg, rgba(231, 76, 60, 0.2), rgba(231, 76, 60, 0.05));
+    border: 1px solid rgba(231, 76, 60, 0.3);
 }
 
-.subject-card.history:hover {
-    border-color: rgba(74, 144, 217, 0.5);
+.subject-card.pop_culture:hover {
+    border-color: rgba(231, 76, 60, 0.5);
 }
 
-.subject-card.history .subject-icon {
-    color: #4a90d9;
+.subject-card.pop_culture .subject-icon {
+    color: #e74c3c;
 }
 
-.subject-card.herbology {
-    background: linear-gradient(145deg, rgba(39, 174, 96, 0.2), rgba(39, 174, 96, 0.05));
-    border: 1px solid rgba(39, 174, 96, 0.3);
+.subject-card.mythology {
+    background: linear-gradient(145deg, rgba(155, 89, 182, 0.2), rgba(155, 89, 182, 0.05));
+    border: 1px solid rgba(155, 89, 182, 0.3);
 }
 
-.subject-card.herbology:hover {
-    border-color: rgba(39, 174, 96, 0.5);
+.subject-card.mythology:hover {
+    border-color: rgba(155, 89, 182, 0.5);
 }
 
-.subject-card.herbology .subject-icon {
-    color: #27ae60;
+.subject-card.mythology .subject-icon {
+    color: #9b59b6;
+}
+
+.subject-card.history_of_egypt {
+    background: linear-gradient(145deg, rgba(243, 156, 18, 0.2), rgba(243, 156, 18, 0.05));
+    border: 1px solid rgba(243, 156, 18, 0.3);
+}
+
+.subject-card.history_of_egypt:hover {
+    border-color: rgba(243, 156, 18, 0.5);
+}
+
+.subject-card.history_of_egypt .subject-icon {
+    color: #f39c12;
 }
 
 .subject-card.oceanology {
@@ -411,16 +424,16 @@
 }
 
 .subject-card.astronomy {
-    background: linear-gradient(145deg, rgba(155, 89, 182, 0.2), rgba(155, 89, 182, 0.05));
-    border: 1px solid rgba(155, 89, 182, 0.3);
+    background: linear-gradient(145deg, rgba(46, 204, 113, 0.2), rgba(46, 204, 113, 0.05));
+    border: 1px solid rgba(46, 204, 113, 0.3);
 }
 
 .subject-card.astronomy:hover {
-    border-color: rgba(155, 89, 182, 0.5);
+    border-color: rgba(46, 204, 113, 0.5);
 }
 
 .subject-card.astronomy .subject-icon {
-    color: #9b59b6;
+    color: #2ecc71;
 }
 
 .subject-icon {

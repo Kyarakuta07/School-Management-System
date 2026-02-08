@@ -1,8 +1,10 @@
 /* =========================================
    1. GLOBAL & NAVBAR FIX (Wajib Ada)
    ========================================= */
-html, body {
-    overflow-y: auto !important; /* Unlock Scroll */
+html,
+body {
+    overflow-y: auto !important;
+    /* Unlock Scroll */
     overflow-x: hidden;
     height: auto !important;
     min-height: 100vh;
@@ -20,9 +22,11 @@ html, body {
    ========================================= */
 .class-section {
     position: relative;
-    padding-top: 8rem; /* Jarak dari navbar */
-    padding-bottom: 8rem; /* Jarak dari footer */
-    padding-left: 2rem; 
+    padding-top: 8rem;
+    /* Jarak dari navbar */
+    padding-bottom: 8rem;
+    /* Jarak dari footer */
+    padding-left: 2rem;
     padding-right: 2rem;
     max-width: 1400px;
     margin: 0 auto;
@@ -61,22 +65,25 @@ html, body {
 .class-card {
     position: relative;
     width: 350px;
-    min-height: 480px; /* Kartu tinggi agar elegan */
-    
+    min-height: 480px;
+    /* Kartu tinggi agar elegan */
+
     /* Background: Kaca Gelap Hitam */
     background: rgba(10, 10, 10, 0.6);
-    backdrop-filter: blur(12px); /* Blur background belakangnya */
+    backdrop-filter: blur(12px);
+    /* Blur background belakangnya */
     -webkit-backdrop-filter: blur(12px);
-    
-    border: 1px solid rgba(255, 255, 255, 0.1); /* Border halus */
+
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    /* Border halus */
     border-radius: 20px;
     padding: 3rem 2rem;
-    
+
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    
+
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     overflow: hidden;
 }
@@ -92,7 +99,8 @@ html, body {
     justify-content: center;
     align-items: center;
     font-size: 2.5rem;
-    color: #666; /* Warna mati sebelum hover */
+    color: #666;
+    /* Warna mati sebelum hover */
     margin-bottom: 2rem;
     transition: all 0.4s ease;
     z-index: 2;
@@ -140,7 +148,8 @@ html, body {
 
 /* --- BUTTON (Ghost Style) --- */
 .class-btn {
-    margin-top: auto; /* Dorong ke paling bawah */
+    margin-top: auto;
+    /* Dorong ke paling bawah */
     padding: 12px 30px;
     border: 1px solid rgba(255, 255, 255, 0.3);
     color: #fff;
@@ -160,70 +169,122 @@ html, body {
    ========================================= */
 
 /* A. OCEANOLOGY (Blue) */
-.class-card.ocean:hover { 
-    border-color: #00BFFF; 
-    transform: translateY(-15px); 
+.class-card.ocean:hover {
+    border-color: #00BFFF;
+    transform: translateY(-15px);
     box-shadow: 0 20px 40px rgba(0, 191, 255, 0.2);
 }
-.class-card.ocean:hover .card-icon { 
-    color: #00BFFF; 
-    border-color: #00BFFF; 
-    box-shadow: 0 0 30px rgba(0, 191, 255, 0.4); 
-}
-.class-card.ocean:hover .class-btn { 
-    background: #00BFFF; 
-    border-color: #00BFFF; 
-    color: #000; 
-    box-shadow: 0 0 20px rgba(0, 191, 255, 0.4); 
+
+.class-card.ocean:hover .card-icon {
+    color: #00BFFF;
+    border-color: #00BFFF;
+    box-shadow: 0 0 30px rgba(0, 191, 255, 0.4);
 }
 
-/* B. HERBOLOGY (Green) */
-.class-card.herb:hover { 
-    border-color: #00fa9a; 
-    transform: translateY(-15px); 
-    box-shadow: 0 20px 40px rgba(0, 250, 154, 0.2);
-}
-.class-card.herb:hover .card-icon { 
-    color: #00fa9a; 
-    border-color: #00fa9a; 
-    box-shadow: 0 0 30px rgba(0, 250, 154, 0.4); 
-}
-.class-card.herb:hover .class-btn { 
-    background: #00fa9a; 
-    border-color: #00fa9a; 
-    color: #000; 
-    box-shadow: 0 0 20px rgba(0, 250, 154, 0.4); 
+.class-card.ocean:hover .class-btn {
+    background: #00BFFF;
+    border-color: #00BFFF;
+    color: #000;
+    box-shadow: 0 0 20px rgba(0, 191, 255, 0.4);
 }
 
-/* C. ASTRONOMY (Purple/Gold) */
-.class-card.astro:hover { 
-    border-color: #9370DB; 
-    transform: translateY(-15px); 
-    box-shadow: 0 20px 40px rgba(147, 112, 219, 0.2);
+/* B. POP CULTURE (Red) */
+.class-card.popculture:hover {
+    border-color: #e74c3c;
+    transform: translateY(-15px);
+    box-shadow: 0 20px 40px rgba(231, 76, 60, 0.2);
 }
-.class-card.astro:hover .card-icon { 
-    color: #9370DB; 
-    border-color: #9370DB; 
-    box-shadow: 0 0 30px rgba(147, 112, 219, 0.4); 
+
+.class-card.popculture:hover .card-icon {
+    color: #e74c3c;
+    border-color: #e74c3c;
+    box-shadow: 0 0 30px rgba(231, 76, 60, 0.4);
 }
-.class-card.astro:hover .class-btn { 
-    background: #9370DB; 
-    border-color: #9370DB; 
-    color: #000; 
-    box-shadow: 0 0 20px rgba(147, 112, 219, 0.4); 
+
+.class-card.popculture:hover .class-btn {
+    background: #e74c3c;
+    border-color: #e74c3c;
+    color: #fff;
+    box-shadow: 0 0 20px rgba(231, 76, 60, 0.4);
+}
+
+/* C. MYTHOLOGY (Purple) */
+.class-card.mythology:hover {
+    border-color: #9b59b6;
+    transform: translateY(-15px);
+    box-shadow: 0 20px 40px rgba(155, 89, 182, 0.2);
+}
+
+.class-card.mythology:hover .card-icon {
+    color: #9b59b6;
+    border-color: #9b59b6;
+    box-shadow: 0 0 30px rgba(155, 89, 182, 0.4);
+}
+
+.class-card.mythology:hover .class-btn {
+    background: #9b59b6;
+    border-color: #9b59b6;
+    color: #fff;
+    box-shadow: 0 0 20px rgba(155, 89, 182, 0.4);
+}
+
+/* D. HISTORY OF EGYPT (Gold/Orange) */
+.class-card.egypthistory:hover {
+    border-color: #f39c12;
+    transform: translateY(-15px);
+    box-shadow: 0 20px 40px rgba(243, 156, 18, 0.2);
+}
+
+.class-card.egypthistory:hover .card-icon {
+    color: #f39c12;
+    border-color: #f39c12;
+    box-shadow: 0 0 30px rgba(243, 156, 18, 0.4);
+}
+
+.class-card.egypthistory:hover .class-btn {
+    background: #f39c12;
+    border-color: #f39c12;
+    color: #000;
+    box-shadow: 0 0 20px rgba(243, 156, 18, 0.4);
+}
+
+/* E. ASTRONOMY (Green) */
+.class-card.astro:hover {
+    border-color: #2ecc71;
+    transform: translateY(-15px);
+    box-shadow: 0 20px 40px rgba(46, 204, 113, 0.2);
+}
+
+.class-card.astro:hover .card-icon {
+    color: #2ecc71;
+    border-color: #2ecc71;
+    box-shadow: 0 0 30px rgba(46, 204, 113, 0.4);
+}
+
+.class-card.astro:hover .class-btn {
+    background: #2ecc71;
+    border-color: #2ecc71;
+    color: #000;
+    box-shadow: 0 0 20px rgba(46, 204, 113, 0.4);
 }
 
 /* --- BACKGROUND GLOW ANIMATION (Optional Pemanis) --- */
 .card-glow {
     position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
     opacity: 0;
     transition: opacity 0.5s ease;
     z-index: 0;
     pointer-events: none;
 }
-.class-card:hover .card-glow { opacity: 0.2; }
+
+.class-card:hover .card-glow {
+    opacity: 0.2;
+}
 
 /* =========================================
    RESPONSIVE CLASS PAGE
