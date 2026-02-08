@@ -86,20 +86,14 @@
                     </div>
 
                     <div class="staff-card">
-                        <img src="assets/landing/calix.jpeg" alt="Calix" class="staff-photo">
-                        <h3>Calix Djedefre Thannyros</h3>
-                        <p class="staff-title">Vasiki</p>
-                    </div>
-
-                    <div class="staff-card">
-                        <img src="assets/landing/hector.jpeg" alt="Hector" class="staff-photo">
+                        <img src="assets/landing/hector2.jpeg" alt="Hector" class="staff-photo">
                         <h3>Hector Nicholas Theodore</h3>
                         <p class="staff-title">Vasiki</p>
                     </div>
 
                     <div class="staff-card">
-                        <img src="assets/landing/nio.jpeg" alt="Athynio" class="staff-photo">
-                        <h3>Athynio Victoria Eleanor</h3>
+                        <img src="assets/landing/nio.jpeg" alt="Valen" class="staff-photo">
+                        <h3>Valen Hua Stevvarny</h3>
                         <p class="staff-title">Vasiki</p>
                     </div>
                 </div>
@@ -111,20 +105,26 @@
 
                 <div class="staff-grid">
                     <div class="staff-card">
-                        <img src="assets/landing/staff-1.png" alt="Cho Chang" class="staff-photo">
+                        <img src="assets/landing/cho.jpeg" alt="Cho Chang" class="staff-photo">
                         <h3>Cho Chang</h3>
                         <p class="staff-title">SEN</p>
                     </div>
 
                     <div class="staff-card">
-                        <img src="assets/landing/staff-2.png" alt="Sheren" class="staff-photo">
+                        <img src="assets/landing/sheren.jpeg" alt="Sheren" class="staff-photo">
                         <h3>Sheren Altheda</h3>
                         <p class="staff-title">SEN</p>
                     </div>
 
                     <div class="staff-card">
                         <img src="assets/landing/staff-3.png" alt="Nathaniel" class="staff-photo">
-                        <h3>Nathaniel Vorthalos</h3>
+                        <h3>Nathaniel Valdez Montgomer</h3>
+                        <p class="staff-title">SEN</p>
+                    </div>
+
+                    <div class="staff-card">
+                        <img src="assets/landing/adeline2.jpeg" alt="Adeline" class="staff-photo">
+                        <h3>Adeline Fyodorovna</h3>
                         <p class="staff-title">SEN</p>
                     </div>
                 </div>
@@ -148,20 +148,14 @@
                     </div>
 
                     <div class="staff-card">
-                        <img src="assets/landing/staff-3.png" alt="Loressa" class="staff-photo">
-                        <h3>Loressa Aglenar</h3>
+                        <img src="assets/landing/eden.jpeg" alt="Eden" class="staff-photo">
+                        <h3>Eden Atreides</h3>
                         <p class="staff-title">Staff</p>
                     </div>
 
                     <div class="staff-card">
                         <img src="assets/landing/nada.jpeg" alt="Nada" class="staff-photo">
                         <h3>Nada Kaleria</h3>
-                        <p class="staff-title">Staff</p>
-                    </div>
-
-                    <div class="staff-card">
-                        <img src="assets/landing/lune.jpeg" alt="Lunne" class="staff-photo">
-                        <h3>Lunne Demore</h3>
                         <p class="staff-title">Staff</p>
                     </div>
 
