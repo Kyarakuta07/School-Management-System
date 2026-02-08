@@ -6,14 +6,19 @@
  * Handles play sessions and mood updates from Rhythm Game.
  */
 
-// Ensure constants are loaded
-if (!defined('EXP_PER_LEVEL')) {
+// Ensure constants and evolution functions are loaded
+if (!defined('BASE_EXP_PER_LEVEL')) {
     require_once __DIR__ . '/constants.php';
 }
+require_once __DIR__ . '/evolution.php';
 
 /**
  * Finish a play session and award mood/exp to pet
  * Called by Rhythm Game when game ends
+ * 
+ * FIXED: Now uses centralized addExpToPet() to ensure:
+ * - Consistent EXP formula (exponential, not linear)
+ * - Respects level caps (Egg=10, Baby=20, Adult=99)
  *
  * @param mysqli $conn Database connection
  * @param int $user_id User's ID
@@ -53,7 +58,7 @@ function finishPlaySession($conn, $user_id, $pet_id, $play_type = 'rhythm', $dur
         // For rhythm game, duration is actually the score
         $score = $duration;
         $mood_gain = min(30, floor($score / 10));  // Max 30 mood
-        $exp_gain = min(50, floor($score / 6));    // Max 50 exp
+        $exp_gain = min(80, floor($score / 5));    // Max 80 exp (buffed from 50)
     } else {
         // Default play session (ball, petting, etc.)
         $mood_gain = min(20, floor($duration / 5));  // 1 mood per 5 seconds, max 20
@@ -62,34 +67,17 @@ function finishPlaySession($conn, $user_id, $pet_id, $play_type = 'rhythm', $dur
 
     // Get current pet stats
     $current_mood = (int) $pet['mood'];
-    $current_exp = (int) $pet['exp'];
-    $current_level = (int) $pet['level'];
 
     // Calculate new mood (cap at 100)
     $new_mood = min(100, $current_mood + $mood_gain);
 
-    // Calculate new exp and check for level up
-    $new_exp = $current_exp + $exp_gain;
-    $new_level = $current_level;
-    $leveled_up = false;
-
-    // Check level up (100 exp per level)
-    $exp_needed = $current_level * 100;
-    if ($new_exp >= $exp_needed) {
-        $new_level++;
-        $new_exp = $new_exp - $exp_needed;
-        $leveled_up = true;
-    }
-
-    // Update pet in database
+    // Update mood in database
     $update_stmt = mysqli_prepare(
         $conn,
-        "UPDATE user_pets 
-         SET mood = ?, exp = ?, level = ?, last_update_timestamp = ? 
-         WHERE id = ?"
+        "UPDATE user_pets SET mood = ?, last_update_timestamp = ? WHERE id = ?"
     );
     $current_time = time();
-    mysqli_stmt_bind_param($update_stmt, "iiiii", $new_mood, $new_exp, $new_level, $current_time, $pet_id);
+    mysqli_stmt_bind_param($update_stmt, "iii", $new_mood, $current_time, $pet_id);
     $update_result = mysqli_stmt_execute($update_stmt);
     mysqli_stmt_close($update_stmt);
 
@@ -99,6 +87,14 @@ function finishPlaySession($conn, $user_id, $pet_id, $play_type = 'rhythm', $dur
             'error' => 'Failed to update pet stats'
         ];
     }
+
+    // Use centralized EXP function (respects level caps and uses correct formula)
+    $exp_result = addExpToPet($conn, $pet_id, $exp_gain);
+
+    $leveled_up = ($exp_result['level_ups'] ?? 0) > 0;
+    $new_level = $exp_result['new_level'] ?? $pet['level'];
+    $new_exp = $exp_result['new_exp'] ?? 0;
+    $at_cap = $exp_result['at_cap'] ?? false;
 
     return [
         'success' => true,
@@ -114,7 +110,9 @@ function finishPlaySession($conn, $user_id, $pet_id, $play_type = 'rhythm', $dur
             'exp' => $new_exp,
             'level' => $new_level
         ],
-        'leveled_up' => $leveled_up
+        'leveled_up' => $leveled_up,
+        'at_cap' => $at_cap,
+        'level_cap' => $exp_result['level_cap'] ?? null
     ];
 }
 

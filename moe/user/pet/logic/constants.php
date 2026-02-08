@@ -7,23 +7,31 @@
  */
 
 // ================================================
-// STAT DECAY RATES (per hour)
+// STAT DECAY RATES (per hour) - QoL: Slower decay
 // ================================================
-define('HUNGER_DECAY_PER_HOUR', 5);      // Pet loses 5 hunger per hour
-define('MOOD_DECAY_PER_HOUR', 3);        // Pet loses 3 mood per hour
-define('HEALTH_DECAY_WHEN_STARVING', 8); // When hunger=0, lose 8 health/hour
+define('HUNGER_DECAY_PER_HOUR', 2);      // Pet loses 2 hunger per hour (50h to starve)
+define('MOOD_DECAY_PER_HOUR', 2);        // Pet loses 2 mood per hour (50h to sad)
+define('HEALTH_DECAY_WHEN_STARVING', 4); // When hunger=0, lose 4 health/hour
 
 // ================================================
-// EVOLUTION LEVEL THRESHOLDS
+// EVOLUTION LEVEL THRESHOLDS (Baby -> Adult -> King)
+// DB uses: 'egg', 'baby', 'adult' | UI shows: Baby, Adult, King
 // ================================================
-define('LEVEL_BABY', 5);   // Egg hatches to baby at level 5
-define('LEVEL_ADULT', 15); // Baby evolves to adult at level 15
+define('LEVEL_TIER_2', 30);  // Baby (egg) caps at level 30, evolves to Adult (baby)
+define('LEVEL_TIER_3', 70);  // Adult (baby) caps at level 70, evolves to King (adult)
+define('LEVEL_MAX', 99);     // King (adult) max level
+
+// Legacy constants for backward compatibility
+define('LEVEL_BABY', 30);    // Deprecated, use LEVEL_TIER_2
+define('LEVEL_ADULT', 70);   // Deprecated, use LEVEL_TIER_3
 
 // ================================================
-// EXP SYSTEM
+// EXP SYSTEM - Quadratic Curve for fair grind
+// Formula: floor(100 + (2 * pow($level, 2)))
 // ================================================
 define('BASE_EXP_PER_LEVEL', 100);
-define('EXP_GROWTH_RATE', 1.2);
+define('EXP_GROWTH_RATE', 1.0);  // Not used anymore, kept for compatibility
+define('EXP_QUADRATIC_COEFFICIENT', 2);  // Used in new formula
 
 // ================================================
 // GACHA SYSTEM

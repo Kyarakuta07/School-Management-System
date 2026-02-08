@@ -135,10 +135,11 @@ function useItemOnPet($conn, $user_id, $pet_id, $item_id, $quantity = 1)
                 require_once __DIR__ . '/evolution.php';
                 $current_stage = $pet['evolution_stage'] ?? 'egg';
                 $level_cap = getLevelCapForStage($current_stage);
+                $current_stage_name = getStageName($current_stage);
 
                 if ($pet['level'] >= $level_cap) {
-                    $next_stage = ($current_stage === 'egg') ? 'Baby' : 'Adult';
-                    return ['success' => false, 'error' => "Pet is at level cap ($level_cap)! Evolve to $next_stage first to continue leveling."];
+                    $next_stage_name = ($current_stage === 'egg') ? 'Adult' : 'King';
+                    return ['success' => false, 'error' => "Pet is at level cap ($level_cap)! Evolve to $next_stage_name first to continue leveling."];
                 }
 
                 $exp_result = addExpToPet($conn, $pet_id, $total_effect);
@@ -150,8 +151,8 @@ function useItemOnPet($conn, $user_id, $pet_id, $item_id, $quantity = 1)
 
                 // Warn if now at cap
                 if (isset($exp_result['at_cap']) && $exp_result['at_cap']) {
-                    $next_stage = ($current_stage === 'egg') ? 'Baby' : 'Adult';
-                    $result_message .= " ⚠️ MAX LEVEL for $current_stage stage! Evolve to $next_stage to continue.";
+                    $next_stage_name = ($current_stage === 'egg') ? 'Adult' : 'King';
+                    $result_message .= " ⚠️ MAX LEVEL for $current_stage_name stage! Evolve to $next_stage_name to continue.";
                 }
                 break;
 

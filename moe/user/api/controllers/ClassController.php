@@ -27,7 +27,7 @@ class ClassController
         }
 
         $grades = DB::queryOne(
-            "SELECT history, herbology, oceanology, astronomy, total_pp 
+            "SELECT pop_culture, mythology, history_of_egypt, oceanology, astronomy, total_pp 
              FROM class_grades 
              WHERE id_nethera = ?
              ORDER BY id_grade DESC
@@ -38,8 +38,9 @@ class ClassController
         return $this->json([
             'success' => true,
             'grades' => $grades ?: [
-                'history' => 0,
-                'herbology' => 0,
+                'pop_culture' => 0,
+                'mythology' => 0,
+                'history_of_egypt' => 0,
                 'oceanology' => 0,
                 'astronomy' => 0,
                 'total_pp' => 0
@@ -92,25 +93,29 @@ class ClassController
 
         // Get existing grades first (to preserve values Hakaes shouldn't modify)
         $existingGrades = DB::queryOne(
-            "SELECT history, herbology, oceanology, astronomy FROM class_grades WHERE id_nethera = ?",
+            "SELECT pop_culture, mythology, history_of_egypt, oceanology, astronomy FROM class_grades WHERE id_nethera = ?",
             [$studentId]
         );
 
         // Validate and merge grades
         if ($currentRole === 'Hakaes' && $hakaesSubject) {
             // Hakaes can only update their subject, others remain as is
-            $history = $existingGrades['history'] ?? 0;
-            $herbology = $existingGrades['herbology'] ?? 0;
+            $pop_culture = $existingGrades['pop_culture'] ?? 0;
+            $mythology = $existingGrades['mythology'] ?? 0;
+            $history_of_egypt = $existingGrades['history_of_egypt'] ?? 0;
             $oceanology = $existingGrades['oceanology'] ?? 0;
             $astronomy = $existingGrades['astronomy'] ?? 0;
 
             // Update only the assigned subject
             switch ($hakaesSubject) {
-                case 'history':
-                    $history = max(0, min(100, intval($grades['history'] ?? $history)));
+                case 'pop_culture':
+                    $pop_culture = max(0, min(100, intval($grades['pop_culture'] ?? $pop_culture)));
                     break;
-                case 'herbology':
-                    $herbology = max(0, min(100, intval($grades['herbology'] ?? $herbology)));
+                case 'mythology':
+                    $mythology = max(0, min(100, intval($grades['mythology'] ?? $mythology)));
+                    break;
+                case 'history_of_egypt':
+                    $history_of_egypt = max(0, min(100, intval($grades['history_of_egypt'] ?? $history_of_egypt)));
                     break;
                 case 'oceanology':
                     $oceanology = max(0, min(100, intval($grades['oceanology'] ?? $oceanology)));
@@ -121,13 +126,14 @@ class ClassController
             }
         } else {
             // Vasiki can update all subjects
-            $history = max(0, min(100, intval($grades['history'] ?? 0)));
-            $herbology = max(0, min(100, intval($grades['herbology'] ?? 0)));
+            $pop_culture = max(0, min(100, intval($grades['pop_culture'] ?? 0)));
+            $mythology = max(0, min(100, intval($grades['mythology'] ?? 0)));
+            $history_of_egypt = max(0, min(100, intval($grades['history_of_egypt'] ?? 0)));
             $oceanology = max(0, min(100, intval($grades['oceanology'] ?? 0)));
             $astronomy = max(0, min(100, intval($grades['astronomy'] ?? 0)));
         }
 
-        $totalPP = $history + $herbology + $oceanology + $astronomy;
+        $totalPP = $pop_culture + $mythology + $history_of_egypt + $oceanology + $astronomy;
 
         // Check if student exists
         $student = DB::queryOne(
@@ -149,17 +155,17 @@ class ClassController
             // Update existing record
             $result = DB::execute(
                 "UPDATE class_grades SET 
-                    history = ?, herbology = ?, oceanology = ?, astronomy = ?, 
+                    pop_culture = ?, mythology = ?, history_of_egypt = ?, oceanology = ?, astronomy = ?, 
                     total_pp = ?, updated_at = NOW()
                  WHERE id_nethera = ?",
-                [$history, $herbology, $oceanology, $astronomy, $totalPP, $studentId]
+                [$pop_culture, $mythology, $history_of_egypt, $oceanology, $astronomy, $totalPP, $studentId]
             );
         } else {
             // Insert new record
             $result = DB::execute(
-                "INSERT INTO class_grades (id_nethera, class_name, history, herbology, oceanology, astronomy, total_pp)
-                 VALUES (?, 'Default Class', ?, ?, ?, ?, ?)",
-                [$studentId, $history, $herbology, $oceanology, $astronomy, $totalPP]
+                "INSERT INTO class_grades (id_nethera, class_name, pop_culture, mythology, history_of_egypt, oceanology, astronomy, total_pp)
+                 VALUES (?, 'Default Class', ?, ?, ?, ?, ?, ?)",
+                [$studentId, $pop_culture, $mythology, $history_of_egypt, $oceanology, $astronomy, $totalPP]
             );
         }
 

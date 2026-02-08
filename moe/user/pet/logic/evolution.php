@@ -60,14 +60,36 @@ function getEvolutionImage($pet)
 }
 
 /**
+ * Get UI-friendly stage name (Egg->Baby, Baby->Adult, Adult->King)
+ * 
+ * @param string $db_stage Database stage value
+ * @return string UI display name
+ */
+function getStageName($db_stage)
+{
+    switch ($db_stage) {
+        case 'egg':
+            return 'Baby';
+        case 'baby':
+            return 'Adult';
+        case 'adult':
+            return 'King';
+        default:
+            return ucfirst($db_stage);
+    }
+}
+
+/**
  * Calculate EXP required for next level
+ * Uses Quadratic formula: floor(100 + (2 * level^2))
  *
  * @param int $current_level Current level
  * @return int EXP needed to reach next level
  */
 function getExpForNextLevel($current_level)
 {
-    return floor(BASE_EXP_PER_LEVEL * pow(EXP_GROWTH_RATE, $current_level - 1));
+    // Quadratic curve: more EXP needed at higher levels, but fair grind
+    return floor(BASE_EXP_PER_LEVEL + (EXP_QUADRATIC_COEFFICIENT * pow($current_level, 2)));
 }
 
 /**
@@ -81,19 +103,19 @@ function getLevelCapForStage($stage)
 {
     switch ($stage) {
         case 'egg':
-            return 10;  // Egg caps at level 10
+            return LEVEL_TIER_2;  // Baby caps at level 30
         case 'baby':
-            return 20;  // Baby caps at level 20
+            return LEVEL_TIER_3;  // Adult caps at level 70
         case 'adult':
         default:
-            return 99;  // Adult has no practical cap
+            return LEVEL_MAX;     // King caps at level 99
     }
 }
 
 /**
  * Add EXP to a pet and handle level ups
  * NOTE: Level ups do NOT trigger evolution - evolution is sacrifice-only
- * LEVEL CAPS: Egg caps at 10, Baby caps at 20, Adult caps at 99
+ * LEVEL CAPS: Baby caps at 30, Adult caps at 70, King caps at 99
  *
  * @param mysqli $conn Database connection
  * @param int $pet_id Pet ID
@@ -275,15 +297,15 @@ function evolvePetManual($conn, $user_id, $main_pet_id, $fodder_pet_ids, $gold_c
     $level = $main_pet['level'];
 
     if ($current_stage === 'adult') {
-        return ['success' => false, 'error' => 'Pet is already at Adult stage (max evolution)'];
+        return ['success' => false, 'error' => 'Pet is already at King stage (max evolution)'];
     }
 
-    if ($current_stage === 'egg' && $level < 10) {
-        return ['success' => false, 'error' => "Pet must be Level 10+ to evolve from Egg to Baby (current: Lv.$level)"];
+    if ($current_stage === 'egg' && $level < LEVEL_TIER_2) {
+        return ['success' => false, 'error' => "Pet must be Level " . LEVEL_TIER_2 . "+ to evolve from Baby to Adult (current: Lv.$level)"];
     }
 
-    if ($current_stage === 'baby' && $level < 20) {
-        return ['success' => false, 'error' => "Pet must be Level 20+ to evolve from Baby to Adult (current: Lv.$level)"];
+    if ($current_stage === 'baby' && $level < LEVEL_TIER_3) {
+        return ['success' => false, 'error' => "Pet must be Level " . LEVEL_TIER_3 . "+ to evolve from Adult to King (current: Lv.$level)"];
     }
 
     // Determine next stage

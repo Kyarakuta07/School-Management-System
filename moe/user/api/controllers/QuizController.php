@@ -16,7 +16,7 @@ class QuizController
     public function getQuizzes()
     {
         $subject = $_GET['subject'] ?? '';
-        $validSubjects = ['history', 'herbology', 'oceanology', 'astronomy'];
+        $validSubjects = ['pop_culture', 'mythology', 'history_of_egypt', 'oceanology', 'astronomy'];
 
         if (!in_array($subject, $validSubjects)) {
             return $this->json(['success' => false, 'error' => 'Invalid subject'], 400);
@@ -79,7 +79,7 @@ class QuizController
         $timeLimit = intval($input['time_limit'] ?? 30);
         $passingScore = intval($input['passing_score'] ?? 70);
 
-        $validSubjects = ['history', 'herbology', 'oceanology', 'astronomy'];
+        $validSubjects = ['pop_culture', 'mythology', 'history_of_egypt', 'oceanology', 'astronomy'];
 
         if (!in_array($subject, $validSubjects) || empty($title)) {
             return $this->json(['success' => false, 'error' => 'Subject and title are required'], 400);
@@ -361,7 +361,7 @@ class QuizController
     private function updateGradeFromQuiz($userId, $subject, $score)
     {
         // SECURITY FIX: Whitelist validation to prevent SQL injection
-        $allowed_subjects = ['history', 'herbology', 'oceanology', 'astronomy'];
+        $allowed_subjects = ['pop_culture', 'mythology', 'history_of_egypt', 'oceanology', 'astronomy'];
         if (!in_array($subject, $allowed_subjects)) {
             error_log("Invalid subject attempted in updateGradeFromQuiz: $subject");
             return;
