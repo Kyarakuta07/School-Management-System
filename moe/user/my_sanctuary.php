@@ -378,6 +378,59 @@ $csrf_token = generate_csrf_token();
             body {
                 background-image: var(--bg-mobile);
             }
+
+            .sanctuary-wrapper {
+                padding: 15px;
+                /* Reduce main padding */
+            }
+
+            .sanctuary-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+                padding: 20px;
+            }
+
+            .header-stats {
+                width: 100%;
+                justify-content: center;
+                gap: 15px;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                /* Stack cards */
+            }
+
+            .full-width {
+                grid-column: span 1;
+            }
+
+            /* Fix "Bug Box" Clipping */
+            .control-card .card-body {
+                padding: 15px;
+                /* Reduce inner padding to give more space */
+            }
+
+            /* Donate Form Wrapping */
+            form[method="POST"] {
+                flex-wrap: wrap;
+            }
+
+            input[name="amount"] {
+                min-width: 100px;
+            }
+
+            /* Barracks Grid - Force 1 column that fits exactly */
+            .barracks-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .member-card {
+                /* Ensure card doesn't overflow */
+                width: 100%;
+                box-sizing: border-box;
+            }
         }
 
         /* Main Layout */
