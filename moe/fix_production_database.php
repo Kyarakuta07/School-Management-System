@@ -144,6 +144,23 @@ echo "\n--- 4. Leaderboard Rank Points ---\n";
 addColumn('user_pets', 'rank_points', 'INT DEFAULT 1000 AFTER total_losses');
 addIndex('user_pets', 'idx_rank_points', 'rank_points');
 
+// 5. Class Subjects Update (from 012)
+echo "\n--- 5. Class Subjects Update ---\n";
+addColumn('class_grades', 'pop_culture', 'INT DEFAULT 0');
+addColumn('class_grades', 'mythology', 'INT DEFAULT 0');
+addColumn('class_grades', 'history_of_egypt', 'INT DEFAULT 0');
+
+// Recalculate total_pp
+$sql_update_pp = "UPDATE class_grades 
+SET total_pp = COALESCE(history, 0) + COALESCE(oceanology, 0) + COALESCE(astronomy, 0) 
+             + COALESCE(pop_culture, 0) + COALESCE(mythology, 0) + COALESCE(history_of_egypt, 0)";
+if (mysqli_query($conn, $sql_update_pp)) {
+    echo "✅ Recalculated total_pp for all students\n";
+} else {
+    echo "❌ Error updating total_pp: " . mysqli_error($conn) . "\n";
+}
+
+
 echo "\n\n=== UPDATE COMPLETE ===\n";
 echo "You can now delete this file from your server.";
 echo "</pre>";
