@@ -282,6 +282,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
 /**
  * SECURITY: Secure profile photo path helper
+ * Returns a safe avatar URL, or empty string if invalid/empty.
+ * Note: We skip file_exists() to support production where files are on a different server.
  */
 function get_safe_avatar_url($photo_filename)
 {
@@ -289,13 +291,11 @@ function get_safe_avatar_url($photo_filename)
         return '';
     }
     $safe_filename = basename($photo_filename);
+    // Validate filename format (alphanumeric, underscore, dash, valid image extension)
     if (!preg_match('/^[a-zA-Z0-9_\-]+\.(jpg|jpeg|png|gif|webp)$/i', $safe_filename)) {
         return '';
     }
-    $file_path = __DIR__ . '/../uploads/profile/' . $safe_filename;
-    if (!file_exists($file_path)) {
-        return '';
-    }
+    // Return the path - let the browser handle 404 gracefully if file doesn't exist
     return '../uploads/profile/' . $safe_filename;
 }
 

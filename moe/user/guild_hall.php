@@ -116,6 +116,7 @@ $members = DB::query(
 /**
  * SECURITY: Secure profile photo path helper
  * Prevents directory traversal and validates filename
+ * Note: Skip file_exists() to support production where files are on a different server.
  */
 function get_safe_avatar_url($photo_filename)
 {
@@ -131,12 +132,7 @@ function get_safe_avatar_url($photo_filename)
         return '';
     }
 
-    // Check if file actually exists
-    $file_path = __DIR__ . '/../uploads/profile/' . $safe_filename;
-    if (!file_exists($file_path)) {
-        return '';
-    }
-
+    // Return the path - let the browser handle 404 gracefully if file doesn't exist
     return '../uploads/profile/' . $safe_filename;
 }
 
