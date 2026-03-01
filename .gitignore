@@ -53,12 +53,12 @@ tmp/
 # ========================================
 
 # CI4 writable directory (logs, cache, sessions, uploads)
-ci4_poc/writable/**
-!ci4_poc/writable/.htaccess
-!ci4_poc/writable/index.html
+moe/writable/**
+!moe/writable/.htaccess
+!moe/writable/index.html
 
 # CI4 vendor (installed via composer)
-ci4_poc/vendor/
+moe/vendor/
 
 # Large asset source files (originals before rename)
 PET MOE/
