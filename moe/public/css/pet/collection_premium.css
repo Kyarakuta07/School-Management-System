@@ -1,0 +1,1590 @@
+/**
+ * MOE Pet System - Collection Tab Premium Styling
+ * Dark Egyptian Fantasy Theme with Gold Accents
+ */
+
+/* ================================================
+   COLLECTION HEADER
+   ================================================ */
+.collection-premium-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    margin-bottom: 24px;
+    background: linear-gradient(135deg, rgba(15, 12, 10, 0.95), rgba(10, 8, 6, 0.9));
+    border-radius: 12px;
+    border-bottom: 2px solid var(--color-border-subtle);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.collection-title-section {
+    flex: 1;
+}
+
+.collection-main-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin: 0 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-shadow: 0 2px 15px rgba(218, 165, 32, 0.4);
+}
+
+.collection-main-title i {
+    font-size: 1.6rem;
+}
+
+.collection-subtitle {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.collection-count-badge {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    border-radius: 30px;
+    font-weight: 800;
+    font-size: 1rem;
+    color: #000;
+    box-shadow: 0 0 15px var(--gold-glow);
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* ================================================
+   COLLECTION GRID
+   ================================================ */
+.collection-premium-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+}
+
+/* ================================================
+   PREMIUM PET CARDS
+   ================================================ */
+.pet-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(100, 100, 120, 0.2);
+    border-radius: 16px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
+}
+
+.pet-card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(218, 165, 32, 0.5);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5),
+        0 0 40px rgba(218, 165, 32, 0.2);
+}
+
+.pet-card::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.1), transparent);
+    border-radius: 16px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.pet-card:hover::before {
+    opacity: 1;
+}
+
+/* Active Pet Card */
+.pet-card.active {
+    border: 1px solid var(--gold);
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.15), rgba(0, 0, 0, 0.4));
+    box-shadow: 0 8px 32px rgba(218, 165, 32, 0.25),
+        inset 0 0 15px rgba(218, 165, 32, 0.1);
+}
+
+.pet-card.active::after {
+    content: '👑' !important;
+    position: absolute !important;
+    top: 5px !important;
+    left: 5px !important;
+    font-size: 1.2rem !important;
+    z-index: 30 !important;
+    pointer-events: none !important;
+    animation: crown-pulse 2s ease-in-out infinite;
+    filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.4));
+}
+
+@keyframes crown-pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
+    }
+
+    50% {
+        transform: scale(1.1);
+        filter: drop-shadow(0 0 16px rgba(255, 215, 0, 0.9));
+    }
+}
+
+/* Dead Pet Card */
+.pet-card.dead {
+    opacity: 0.6;
+    filter: grayscale(50%);
+}
+
+.pet-card.dead::after {
+    content: '💀';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem;
+    z-index: 15;
+    opacity: 0.7;
+}
+
+/* ================================================
+   PET CARD CONTENT
+   ================================================ */
+
+/* Rarity Badge (Universal Premium Style) */
+.pet-card .rarity-badge {
+    position: absolute !important;
+    top: 12px !important;
+    right: 12px !important;
+    left: auto !important;
+    height: 24px !important;
+    padding: 0 12px !important;
+    border-radius: 6px !important;
+    font-size: 0.7rem !important;
+    font-weight: 900 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    z-index: 20 !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1 !important;
+    backdrop-filter: blur(12px) saturate(180%) brightness(1.1) !important;
+    -webkit-backdrop-filter: blur(12px) saturate(180%) brightness(1.1) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: 'Cinzel', serif;
+}
+
+.pet-card:hover .rarity-badge {
+    transform: scale(1.05) translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.rarity-badge.common {
+    background: rgba(140, 140, 140, 0.25) !important;
+    color: #eee !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.rarity-badge.rare {
+    background: rgba(52, 152, 219, 0.25) !important;
+    color: #4fc3f7 !important;
+    border-color: rgba(52, 152, 219, 0.3) !important;
+    text-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
+}
+
+.rarity-badge.epic {
+    background: rgba(155, 89, 182, 0.25) !important;
+    color: #e1bee7 !important;
+    border-color: rgba(155, 89, 182, 0.3) !important;
+    text-shadow: 0 0 10px rgba(155, 89, 182, 0.5);
+}
+
+.rarity-badge.legendary {
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.3), rgba(255, 215, 0, 0.15)) !important;
+    color: #ffca28 !important;
+    border-color: rgba(255, 215, 0, 0.4) !important;
+    text-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+    animation: legendary-badge-glow 3s infinite alternate ease-in-out;
+}
+
+.rarity-badge.mythical {
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.3), rgba(0, 128, 255, 0.2)) !important;
+    color: #00ffff !important;
+    border-color: rgba(0, 255, 255, 0.5) !important;
+    text-shadow: 0 0 15px rgba(0, 255, 255, 0.8), 0 0 30px rgba(0, 255, 255, 0.4) !important;
+    font-weight: 900 !important;
+    letter-spacing: 2px !important;
+    animation: mythical-badge-pulse 2.5s infinite ease-in-out;
+}
+
+@keyframes legendary-badge-glow {
+    0% {
+        box-shadow: 0 4px 15px rgba(218, 165, 32, 0.4);
+        border-color: rgba(255, 215, 0, 0.3);
+    }
+
+    100% {
+        box-shadow: 0 4px 25px rgba(218, 165, 32, 0.8);
+        border-color: rgba(255, 215, 0, 0.6);
+    }
+}
+
+@keyframes mythical-badge-pulse {
+
+    0%,
+    100% {
+        filter: brightness(1) drop-shadow(0 0 5px rgba(0, 255, 255, 0.5));
+        transform: scale(1);
+    }
+
+    50% {
+        filter: brightness(1.3) drop-shadow(0 0 15px rgba(0, 255, 255, 0.8));
+        transform: scale(1.05);
+    }
+}
+
+/* Pet Image */
+.pet-card-img {
+    width: 100%;
+    height: 140px;
+    object-fit: contain;
+    margin: 8px 0;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
+    transition: transform 0.3s ease;
+    position: relative;
+    z-index: 5;
+}
+
+.pet-card:hover .pet-card-img {
+    transform: scale(1.05);
+}
+
+/* Pet Name */
+.pet-card-name {
+    font-family: 'Lato', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 8px 0 4px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+    z-index: 5;
+}
+
+/* Pet Level */
+.pet-card-level {
+    display: block;
+    text-align: center;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--gold);
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 5;
+}
+
+/* Element Badge (Sigil Support) */
+.pet-card-element {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(0, 0, 0, 0.5);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.pet-card:hover .pet-card-element {
+    transform: scale(1.1) rotate(5deg);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.element-icon-img {
+    width: 75%;
+    height: 75%;
+    object-fit: contain;
+    filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.8));
+    transition: transform 0.3s ease;
+}
+
+.pet-card-element.fire {
+    border-color: rgba(231, 76, 60, 0.4);
+    box-shadow: 0 0 15px rgba(231, 76, 60, 0.3), inset 0 0 5px rgba(231, 76, 60, 0.2);
+}
+
+.pet-card-element.water {
+    border-color: rgba(52, 152, 219, 0.4);
+    box-shadow: 0 0 15px rgba(52, 152, 219, 0.3), inset 0 0 5px rgba(52, 152, 219, 0.2);
+}
+
+.pet-card-element.earth {
+    border-color: rgba(39, 174, 96, 0.4);
+    box-shadow: 0 0 15px rgba(39, 174, 96, 0.3), inset 0 0 5px rgba(39, 174, 96, 0.2);
+}
+
+.pet-card-element.air {
+    border-color: rgba(189, 195, 199, 0.4);
+    box-shadow: 0 0 15px rgba(189, 195, 199, 0.3), inset 0 0 5px rgba(189, 195, 199, 0.2);
+}
+
+.pet-card-element.light {
+    border-color: rgba(241, 196, 15, 0.4);
+    box-shadow: 0 0 15px rgba(241, 196, 15, 0.3), inset 0 0 5px rgba(241, 196, 15, 0.2);
+}
+
+.pet-card-element.dark {
+    border-color: rgba(155, 89, 182, 0.4);
+    box-shadow: 0 0 15px rgba(155, 89, 182, 0.3), inset 0 0 5px rgba(155, 89, 182, 0.2);
+}
+
+/* Shiny Badge (Premium Star) */
+.shiny-badge-premium {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    z-index: 10;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    border: 1.5px solid rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    color: #000;
+    font-size: 0.9rem;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.6), inset 0 0 5px rgba(255, 255, 255, 0.4);
+    animation: shiny-premium-orbit 6s linear infinite;
+}
+
+@keyframes shiny-premium-orbit {
+    0% {
+        transform: scale(1) rotate(0deg);
+        box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+
+    33% {
+        transform: scale(1.1) rotate(120deg);
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+    }
+
+    66% {
+        transform: scale(0.95) rotate(240deg);
+        box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+    }
+
+    100% {
+        transform: scale(1) rotate(360deg);
+        box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+}
+
+.shiny-badge-premium i {
+    filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
+}
+
+/* Retrieve Button (for sheltered pets) */
+.pet-card .shop-buy-btn {
+    margin-top: 12px;
+    width: 100%;
+    padding: 10px;
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.pet-card .shop-buy-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.5);
+}
+
+/* ================================================
+   EMPTY STATE
+   ================================================ */
+.empty-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.empty-message p {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* ================================================
+   RESPONSIVE DESIGN
+   ================================================ */
+
+/* Desktop Large (> 1200px) */
+@media (min-width: 1200px) {
+    .collection-premium-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 20px;
+    }
+
+    .pet-card-img {
+        height: 160px;
+    }
+}
+
+/* Tablet (600px - 900px) */
+@media (max-width: 900px) {
+    .collection-premium-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .collection-count-badge {
+        align-self: flex-end;
+    }
+
+    .collection-main-title {
+        font-size: 1.5rem;
+    }
+
+    .collection-premium-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 14px;
+    }
+
+    .pet-card-img {
+        height: 120px;
+    }
+}
+
+/* Mobile (< 600px) */
+@media (max-width: 600px) {
+    .collection-premium-header {
+        padding: 16px 12px;
+        margin-bottom: 16px;
+    }
+
+    .collection-main-title {
+        font-size: 1.3rem;
+    }
+
+    .collection-main-title i {
+        font-size: 1.2rem;
+    }
+
+    .collection-subtitle {
+        font-size: 0.8rem;
+    }
+
+    .collection-count-badge {
+        padding: 10px 18px;
+        font-size: 0.95rem;
+    }
+
+    .collection-premium-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .pet-card {
+        padding: 12px;
+    }
+
+    .pet-card-img {
+        height: 110px;
+    }
+
+    .pet-card-name {
+        font-size: 0.9rem;
+    }
+
+    .pet-card-level {
+        font-size: 0.75rem;
+    }
+
+    .rarity-badge {
+        font-size: 0.65rem;
+        padding: 3px 8px;
+    }
+
+    .pet-card-element {
+        width: 24px;
+        height: 24px;
+        font-size: 0.8rem;
+    }
+}
+
+/* Small Mobile (< 400px) */
+@media (max-width: 400px) {
+    .collection-premium-grid {
+        gap: 10px;
+    }
+
+    .pet-card {
+        padding: 10px;
+    }
+
+    .pet-card-img {
+        height: 100px;
+    }
+
+    .pet-card-name {
+        font-size: 0.85rem;
+    }
+}
+
+/* ================================================
+   CARD ENTRANCE ANIMATION
+   ================================================ */
+@keyframes card-entrance {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.pet-card {
+    animation: card-entrance 0.4s ease-out;
+    animation-fill-mode: both;
+}
+
+/* Stagger animation for multiple cards */
+.pet-card:nth-child(1) {
+    animation-delay: 0.05s;
+}
+
+.pet-card:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.pet-card:nth-child(3) {
+    animation-delay: 0.15s;
+}
+
+.pet-card:nth-child(4) {
+    animation-delay: 0.2s;
+}
+
+.pet-card:nth-child(5) {
+    animation-delay: 0.25s;
+}
+
+.pet-card:nth-child(6) {
+    animation-delay: 0.3s;
+}
+
+.pet-card:nth-child(7) {
+    animation-delay: 0.35s;
+}
+
+.pet-card:nth-child(8) {
+    animation-delay: 0.4s;
+}
+
+.pet-card:nth-child(9) {
+    animation-delay: 0.45s;
+}
+
+.pet-card:nth-child(10) {
+    animation-delay: 0.5s;
+}
+
+/* After 10, no more delays to avoid long wait */
+/* ================================================
+   PHASE 2: SEARCH, FILTER, SORT CONTROLS
+   ================================================ */
+.collection-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+/* Search Bar */
+.search-container {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.9rem;
+}
+
+.search-input {
+    width: 100%;
+    padding: 10px 14px 10px 40px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(100, 100, 120, 0.3);
+    border-radius: 12px;
+    color: #fff;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: rgba(218, 165, 32, 0.5);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 3px rgba(218, 165, 32, 0.1);
+}
+
+/* Filter Pills */
+.filter-pills {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.filter-pill {
+    padding: 6px 14px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(218, 165, 32, 0.2);
+    border-radius: 20px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-out);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+}
+
+.filter-pill:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(218, 165, 32, 0.4);
+    color: #fff;
+}
+
+.filter-pill.active {
+    background: linear-gradient(135deg, var(--gold), #FFA500);
+    border-color: var(--gold);
+    color: #1a1a2e;
+    box-shadow: 0 2px 10px rgba(218, 165, 32, 0.4);
+}
+
+.filter-pill i,
+.filter-pill .pill-icon {
+    margin-right: 8px;
+}
+
+.filter-pill .pill-icon {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+    transition: transform 0.3s var(--ease-out);
+}
+
+.filter-pill:hover .pill-icon {
+    transform: scale(1.2);
+}
+
+.filter-pill.active .pill-icon {
+    filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.8));
+}
+
+/* Specific Element Overrides (if needed) */
+.filter-pill[data-filter="light"]:hover {
+    border-color: #f1c40f;
+    box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);
+}
+
+.filter-pill[data-filter="dark"]:hover {
+    border-color: #9b59b6;
+    box-shadow: 0 0 10px rgba(155, 89, 182, 0.2);
+}
+
+/* Sort Dropdown */
+.sort-container {
+    position: relative;
+}
+
+.sort-select {
+    padding: 10px 36px 10px 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(100, 100, 120, 0.3);
+    border-radius: 12px;
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23DAA520' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+}
+
+.sort-select:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: rgba(218, 165, 32, 0.4);
+}
+
+.sort-select:focus {
+    outline: none;
+    border-color: rgba(218, 165, 32, 0.5);
+    box-shadow: 0 0 0 3px rgba(218, 165, 32, 0.1);
+}
+
+.sort-select option {
+    background: #1a1a2e;
+    color: #fff;
+}
+
+/* ================================================
+   STATS PANEL
+   ================================================ */
+.collection-stats-panel {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 16px;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.08), rgba(218, 165, 32, 0.03));
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 16px;
+    backdrop-filter: blur(5px);
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.stat-item i {
+    font-size: 1.5rem;
+    color: var(--gold);
+    filter: drop-shadow(0 0 5px var(--gold-glow));
+}
+
+.stat-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-divider {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(180deg, transparent, var(--color-border-subtle), transparent);
+}
+
+/* Rarity Dots */
+.rarity-icons {
+    display: flex;
+    gap: 4px;
+}
+
+.rarity-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+}
+
+.rarity-dot.common {
+    background: #AAA;
+    border-color: #888;
+}
+
+.rarity-dot.rare {
+    background: #3498db;
+    border-color: #2980b9;
+}
+
+.rarity-dot.epic {
+    background: #9b59b6;
+    border-color: #7d3c98;
+}
+
+.rarity-dot.legendary {
+    background: #FFD700;
+    border-color: #FFA500;
+    animation: dot-glow 2s ease-in-out infinite;
+}
+
+@keyframes dot-glow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 4px rgba(255, 215, 0, 0.5);
+    }
+
+    50% {
+        box-shadow: 0 0 8px rgba(255, 215, 0, 1);
+    }
+}
+
+/* ================================================
+   RESPONSIVE - PHASE 2
+   ================================================ */
+@media (max-width: 900px) {
+    .collection-controls {
+        gap: 10px;
+    }
+
+    .search-container {
+        flex: 1 1 100%;
+    }
+
+    .filter-pills {
+        flex: 1 1 100%;
+    }
+
+    .collection-stats-panel {
+        flex-wrap: wrap;
+        gap: 16px;
+        justify-content: center;
+    }
+
+    .stat-divider {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .collection-controls {
+        margin-bottom: 16px;
+    }
+
+    .filter-pill {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+
+    .sort-select {
+        padding: 8px 32px 8px 12px;
+        font-size: 0.85rem;
+    }
+
+    .collection-stats-panel {
+        padding: 12px;
+        margin-bottom: 16px;
+    }
+
+    .stat-item i {
+        font-size: 1.2rem;
+    }
+
+    .stat-value {
+        font-size: 1rem;
+    }
+
+    .stat-label {
+        font-size: 0.7rem;
+    }
+}
+
+/* --- Mobile Medium (< 400px) --- */
+@media (max-width: 400px) {
+    .collection-premium-header {
+        padding: 14px 12px;
+        margin-bottom: 16px;
+    }
+
+    .collection-main-title {
+        font-size: 1.2rem;
+        gap: 8px;
+    }
+
+    .collection-main-title i {
+        font-size: 1.1rem;
+    }
+
+    .collection-subtitle {
+        font-size: 0.75rem;
+    }
+
+    .collection-count-badge {
+        padding: 8px 14px;
+        font-size: 0.9rem;
+    }
+
+    /* Horizontal scroll for filter pills */
+    .filter-pills {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 8px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .filter-pills::-webkit-scrollbar {
+        display: none;
+    }
+
+    .filter-pill {
+        padding: 5px 10px;
+        font-size: 0.75rem;
+        flex-shrink: 0;
+    }
+
+    .search-input {
+        padding: 8px 12px 8px 36px;
+        font-size: 0.85rem;
+    }
+
+    .sort-select {
+        padding: 7px 28px 7px 10px;
+        font-size: 0.8rem;
+    }
+
+    /* Stats Panel Compact */
+    .collection-stats-panel {
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .stat-item {
+        gap: 8px;
+    }
+
+    .stat-item i {
+        font-size: 1rem;
+    }
+
+    .stat-value {
+        font-size: 0.9rem;
+    }
+
+    .stat-label {
+        font-size: 0.65rem;
+    }
+
+    .rarity-dot {
+        width: 8px;
+        height: 8px;
+    }
+
+    /* Pet Cards Grid */
+    .collection-premium-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .pet-card {
+        padding: 10px;
+    }
+
+    .pet-card-img {
+        height: 90px;
+    }
+
+    .pet-card-name {
+        font-size: 0.85rem;
+    }
+
+    .pet-card-level {
+        font-size: 0.7rem;
+    }
+
+    .rarity-badge {
+        font-size: 0.6rem;
+        padding: 2px 6px;
+    }
+
+    .pet-card-element {
+        width: 22px;
+        height: 22px;
+        font-size: 0.7rem;
+    }
+}
+
+/* --- Mobile Small (< 360px) --- */
+@media (max-width: 360px) {
+    .collection-premium-header {
+        padding: 12px 10px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .collection-main-title {
+        font-size: 1.1rem;
+        justify-content: center;
+    }
+
+    .collection-count-badge {
+        align-self: center;
+    }
+
+    .collection-controls {
+        gap: 8px;
+    }
+
+    .filter-pill {
+        padding: 4px 8px;
+        font-size: 0.7rem;
+    }
+
+    .collection-stats-panel {
+        padding: 8px;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .stat-item {
+        width: 100%;
+        justify-content: center;
+        padding: 6px 0;
+    }
+
+    .collection-premium-grid {
+        gap: 8px;
+    }
+
+    .pet-card {
+        padding: 8px;
+    }
+
+    .pet-card-img {
+        height: 80px;
+    }
+
+    .pet-card-name {
+        font-size: 0.8rem;
+    }
+}
+
+/* --- Very Small (< 320px) --- */
+@media (max-width: 320px) {
+    .collection-main-title {
+        font-size: 1rem;
+    }
+
+    .collection-premium-grid {
+        gap: 6px;
+    }
+
+    .pet-card {
+        padding: 6px;
+    }
+
+    .pet-card-img {
+        height: 70px;
+        margin: 4px 0;
+    }
+
+    .pet-card-name {
+        font-size: 0.75rem;
+    }
+
+    .pet-card-level {
+        font-size: 0.65rem;
+    }
+
+    .rarity-badge {
+        font-size: 0.55rem;
+        padding: 2px 4px;
+        top: 4px;
+        right: 4px;
+    }
+}
+
+/* --- Touch-friendly improvements --- */
+@media (hover: none) and (pointer: coarse) {
+    .filter-pill {
+        min-height: 36px;
+        display: flex;
+        align-items: center;
+    }
+
+    .pet-card {
+        min-height: 140px;
+    }
+
+    .search-input {
+        min-height: 44px;
+    }
+
+    .sort-select {
+        min-height: 44px;
+    }
+}
+
+/* ================================================
+   PET INFO BUTTON (Collection Card)
+   ================================================ */
+.pet-info-btn {
+    position: absolute !important;
+    top: 8px !important;
+    left: 8px !important;
+    width: 26px !important;
+    height: 26px !important;
+    background: rgba(0, 0, 0, 0.6) !important;
+    border: 1px solid var(--gold) !important;
+    border-radius: 50% !important;
+    color: var(--gold) !important;
+    font-size: 0.75rem !important;
+    cursor: pointer;
+    z-index: 25 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    backdrop-filter: blur(4px) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+}
+
+.pet-info-btn:hover {
+    background: var(--gold) !important;
+    color: #000 !important;
+    transform: scale(1.15);
+    box-shadow: 0 0 12px var(--gold-glow) !important;
+}
+
+/* Ensure no overlap with crown for active pets */
+.pet-card.active .pet-info-btn {
+    left: 32px !important;
+}
+
+/* ================================================
+   PET DETAIL MODAL (NEW)
+   ================================================ */
+.pet-detail-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.pet-detail-modal.show {
+    display: flex;
+    animation: fadeIn 0.3s ease;
+}
+
+.pet-detail-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+}
+
+.pet-detail-content {
+    position: relative;
+    background: linear-gradient(135deg, #0a0a0c, #050505);
+    border-radius: 20px;
+    max-width: 440px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    border: 1px solid var(--color-border-subtle);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.9), 0 0 30px rgba(218, 165, 32, 0.1);
+    animation: slideUp 0.4s var(--ease-out);
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.pet-detail-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1rem;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s;
+}
+
+.pet-detail-close:hover {
+    background: rgba(231, 76, 60, 0.6);
+    color: white;
+}
+
+/* Pet Header */
+.pet-detail-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 24px;
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.1), transparent);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.pet-detail-img-container {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.pet-detail-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 16px;
+    object-fit: contain;
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(218, 165, 32, 0.4);
+}
+
+.detail-shiny-indicator {
+    display: none;
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #1a1a2e;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+}
+
+.pet-detail-info {
+    flex: 1;
+}
+
+.pet-detail-name {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: white;
+    margin: 0 0 8px;
+    font-family: 'Cinzel', serif;
+}
+
+.pet-detail-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.detail-badge {
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.detail-badge.element {
+    background: rgba(100, 100, 100, 0.3);
+    color: #fff;
+}
+
+.detail-badge.element.fire {
+    background: rgba(231, 76, 60, 0.3);
+    color: #E74C3C;
+}
+
+.detail-badge.element.water {
+    background: rgba(52, 152, 219, 0.3);
+    color: #3498DB;
+}
+
+.detail-badge.element.earth {
+    background: rgba(39, 174, 96, 0.3);
+    color: #27AE60;
+}
+
+.detail-badge.element.air {
+    background: rgba(189, 195, 199, 0.3);
+    color: #BDC3C7;
+}
+
+.detail-badge.rarity {
+    background: rgba(100, 100, 100, 0.3);
+    color: #AAA;
+}
+
+.detail-badge.rarity.common {
+    background: rgba(170, 170, 170, 0.2);
+    color: #AAA;
+}
+
+.detail-badge.rarity.rare {
+    background: rgba(52, 152, 219, 0.2);
+    color: #3498DB;
+}
+
+.detail-badge.rarity.epic {
+    background: rgba(155, 89, 182, 0.2);
+    color: #9B59B6;
+}
+
+.detail-badge.rarity.legendary {
+    background: rgba(255, 215, 0, 0.2);
+    color: #FFD700;
+}
+
+.detail-badge.level {
+    background: rgba(218, 165, 32, 0.2);
+    color: var(--gold);
+}
+
+.pet-detail-stage {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.pet-detail-stage i {
+    margin-right: 4px;
+}
+
+/* Sections */
+.pet-detail-section {
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.pet-detail-section .section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin: 0 0 4px;
+}
+
+.pet-detail-section .section-subtitle {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0 0 16px;
+}
+
+/* Battle Stats Grid */
+.battle-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.battle-stat-card {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    padding: 16px 12px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.battle-stat-card .stat-icon {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+}
+
+.battle-stat-card .stat-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 4px;
+}
+
+.battle-stat-card .stat-label {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+}
+
+/* Base Stats List */
+.base-stats-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.base-stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+}
+
+.base-stat-row .base-label {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.85rem;
+}
+
+.base-stat-row .base-value {
+    color: white;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+/* Action Buttons */
+.pet-detail-actions {
+    padding: 20px 24px;
+}
+
+.detail-action-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.detail-action-btn.primary {
+    background: linear-gradient(135deg, #DAA520, #b8860b);
+    color: #1a1a2e;
+}
+
+.detail-action-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(218, 165, 32, 0.4);
+}
+
+.detail-action-btn.secondary {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+}
+
+.detail-action-btn.success {
+    background: linear-gradient(135deg, #27ae60, #229954);
+    color: white;
+    cursor: default;
+}
+
+.detail-action-btn.disabled {
+    background: rgba(100, 100, 100, 0.3);
+    color: rgba(255, 255, 255, 0.4);
+    cursor: not-allowed;
+}
+
+/* Responsive - Pet Detail Modal */
+@media (max-width: 480px) {
+    .pet-detail-modal {
+        padding: 10px;
+    }
+
+    .pet-detail-content {
+        border-radius: 16px;
+    }
+
+    .pet-detail-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+        padding: 20px 16px;
+    }
+
+    .pet-detail-img {
+        width: 80px;
+        height: 80px;
+    }
+
+    .pet-detail-name {
+        font-size: 1.2rem;
+    }
+
+    .pet-detail-badges {
+        justify-content: center;
+    }
+
+    .pet-detail-section {
+        padding: 16px;
+    }
+
+    .battle-stats-grid {
+        gap: 8px;
+    }
+
+    .battle-stat-card {
+        padding: 12px 8px;
+    }
+
+    .battle-stat-card .stat-icon {
+        font-size: 1.2rem;
+    }
+
+    .battle-stat-card .stat-value {
+        font-size: 1.1rem;
+    }
+
+    .pet-detail-actions {
+        padding: 16px;
+    }
+}

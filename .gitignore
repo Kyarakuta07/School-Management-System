@@ -27,7 +27,7 @@ error_log
 .cache/
 tmp/
 
-# Dependencies (jika pakai composer/npm)
+# Dependencies
 /vendor/
 /node_modules/
 
@@ -47,3 +47,21 @@ tmp/
 !README.md
 !docs/*.md
 !moe/migrations/*.md
+
+# ========================================
+# CodeIgniter 4 Specific
+# ========================================
+
+# CI4 writable directory (logs, cache, sessions, uploads)
+ci4_poc/writable/**
+!ci4_poc/writable/.htaccess
+!ci4_poc/writable/index.html
+
+# CI4 vendor (installed via composer)
+ci4_poc/vendor/
+
+# Large asset source files (originals before rename)
+PET MOE/
+
+# Backup copies
+moe_backup/

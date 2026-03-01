@@ -1,0 +1,1 @@
+﻿<link rel="stylesheet" href="<?= base_url('css/pet/pet_components.css') ?>?v=<?= time() ?>">

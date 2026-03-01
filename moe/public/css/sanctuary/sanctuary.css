@@ -1,0 +1,521 @@
+﻿:root {
+            --gold: #DAA520;
+            --gold-glow: rgba(218, 165, 32, 0.5);
+            --dark-bg: #0a0a0a;
+            --panel-bg: rgba(20, 20, 25, 0.65);
+            --card-bg: rgba(30, 30, 35, 0.6);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+            --glass-blur: blur(12px);
+            --bg-desktop: url('<?= base_url('assets/sanctuhall/halldesktop_' . esc($factionSlug) . '.jpeg') ?>');
+            --bg-mobile: url('<?= base_url('assets/sanctuhall/hallmobile_' . esc($factionSlug) . '.jpeg') ?>');
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            background-image: var(--bg-desktop);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            color: #fff;
+            font-family: 'Lato', sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.85));
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                background-image: var(--bg-mobile);
+            }
+
+            .sanctuary-wrapper {
+                padding: 15px;
+            }
+
+            .sanctuary-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+                padding: 20px;
+            }
+
+            .header-stats {
+                width: 100%;
+                justify-content: center;
+                gap: 15px;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: span 1;
+            }
+
+            .card-body {
+                padding: 15px;
+            }
+
+            form[method="POST"] {
+                flex-wrap: wrap;
+            }
+
+            input[name="amount"] {
+                min-width: 100px;
+            }
+
+            .barracks-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .member-card {
+                width: 100%;
+                box-sizing: border-box;
+                padding: 12px;
+                gap: 12px;
+            }
+
+            .member-name {
+                font-size: 0.95rem;
+            }
+
+            .card-header h3 {
+                font-size: 1rem;
+            }
+        }
+
+        .sanctuary-wrapper {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px 40px 60px;
+        }
+
+        .sanctuary-header {
+            background: var(--panel-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sanctuary-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+
+        .header-emblem {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 20px var(--gold-glow));
+            flex-shrink: 0;
+        }
+
+        .header-info {
+            flex: 1;
+        }
+
+        .header-title {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            color: var(--gold);
+            margin: 0 0 8px 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+        }
+
+        .header-subtitle {
+            color: #ddd;
+            font-size: 1rem;
+            margin: 0;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 30px;
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 15px 25px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 10px;
+            border: 1px solid rgba(218, 165, 32, 0.2);
+            backdrop-filter: blur(4px);
+        }
+
+        .stat-value {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            color: var(--gold);
+            display: block;
+            text-shadow: 0 0 10px rgba(218, 165, 32, 0.5);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #ccc;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .control-card {
+            background: var(--card-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .control-card:hover {
+            border-color: rgba(218, 165, 32, 0.5);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            padding: 20px 24px;
+            background: linear-gradient(135deg, rgba(218, 165, 32, 0.1), transparent);
+            border-bottom: 1px solid rgba(218, 165, 32, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-header i {
+            color: var(--gold);
+            font-size: 1.2rem;
+        }
+
+        .card-header h3 {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .card-body {
+            padding: 24px;
+        }
+
+        .treasury-display {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .treasury-amount {
+            font-family: 'Cinzel', serif;
+            font-size: 3rem;
+            color: var(--gold);
+            text-shadow: 0 0 20px var(--gold-glow);
+        }
+
+        .treasury-label {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .donate-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--gold), #B8860B);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .donate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px var(--gold-glow);
+        }
+
+        .donate-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .upgrade-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .upgrade-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, rgba(218, 165, 32, 0.2), transparent);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: var(--gold);
+            font-size: 1.5rem;
+        }
+
+        .upgrade-info {
+            flex: 1;
+        }
+
+        .upgrade-name {
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .upgrade-desc {
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        .upgrade-cost {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        .leader-row {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .leader-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid var(--gold);
+            margin-right: 15px;
+            object-fit: cover;
+            background: #222;
+        }
+
+        .leader-avatar-fallback {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid var(--gold);
+            margin-right: 15px;
+            background: linear-gradient(135deg, #2a2a35, #1a1a25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold);
+        }
+
+        .leader-details {
+            flex: 1;
+        }
+
+        .leader-name {
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .leader-role {
+            font-size: 0.8rem;
+            color: var(--gold);
+            text-transform: uppercase;
+        }
+
+        .barracks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .member-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: linear-gradient(135deg, rgba(30, 30, 35, 0.6), rgba(20, 20, 25, 0.8));
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .member-card::before {
+            content: '';
+            position: absolute;
+            top: 15%;
+            left: 0;
+            bottom: 15%;
+            width: 3px;
+            background: var(--gold);
+            border-radius: 0 4px 4px 0;
+            opacity: 0.4;
+            transition: opacity 0.3s;
+        }
+
+        .member-card:hover {
+            transform: translateX(5px);
+            background: linear-gradient(135deg, rgba(40, 40, 45, 0.8), rgba(30, 30, 35, 0.9));
+            border-color: rgba(218, 165, 32, 0.4);
+        }
+
+        .member-card:hover::before {
+            opacity: 1;
+        }
+
+        .member-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 2px solid rgba(218, 165, 32, 0.2);
+            background: #222;
+        }
+
+        .member-avatar-fallback {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            background: #222;
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+
+        .member-info {
+            flex: 1;
+        }
+
+        .member-name {
+            font-weight: 700;
+            color: #ddd;
+            font-size: 1rem;
+        }
+
+        .member-username {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.4);
+            font-style: italic;
+        }
+
+        .member-pp {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            font-weight: 700;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            flex-shrink: 0;
+            margin-left: auto;
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        .back-nav {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 30px;
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            text-decoration: none;
+            border-radius: 8px;
+            font-family: 'Cinzel', serif;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            background: var(--gold);
+            color: #000;
+        }
+
+        @media (max-width: 900px) {
+            .sanctuary-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header-stats {
+                justify-content: center;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: span 1;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .sanctuary-wrapper {
+                padding: 16px;
+            }
+
+            .header-stats {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }

@@ -1,0 +1,1589 @@
+/* ================================================
+   BATTLE ARENA 2.0 - REFINED
+   Theme: Dark Egyptian Fantasy (Gold, Void, Purple)
+   Focus: Solid UI, Readability, Mobile Responsiveness
+   ================================================ */
+
+:root {
+    --gold-primary: #FFD700;
+    --gold-dim: #C5A028;
+    --gold-glow: rgba(255, 215, 0, 0.4);
+
+    --void-bg: #0a0a0a;
+    --glass-dark: rgba(20, 20, 20, 0.9);
+    --glass-border: rgba(212, 175, 55, 0.5);
+
+    --hp-player: #4CAF50;
+    --hp-enemy: #E74C3C;
+
+    --font-cinzel: 'Cinzel', serif;
+    --font-outfit: 'Outfit', sans-serif;
+
+    /* Base Sizing */
+    --header-h: clamp(2.5rem, 8vh, 4rem);
+    --log-h: clamp(3rem, 15vh, 12rem);
+    --skills-h: auto;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html {
+    font-size: 16px;
+    /* Base for rem calculation */
+}
+
+body {
+    font-family: var(--font-outfit);
+    background: var(--void-bg);
+    color: #fff;
+    min-height: 100dvh;
+    overflow: hidden;
+    user-select: none;
+}
+
+/* ================================================
+   BACKGROUND
+   ================================================ */
+.battle-mystical-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    /* Correct path as verified */
+    background: url('../../assets/pets/background_battle.png') no-repeat center center fixed;
+    background-size: cover;
+    background-position: 48% 100%;
+}
+
+/* Vignette for UI contrast */
+.vignette-overlay {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 50%,
+            transparent 20%,
+            rgba(0, 0, 0, 0.4) 60%,
+            rgba(0, 0, 0, 0.8) 100%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* God Rays Effect */
+.god-rays {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+    opacity: 0.4;
+}
+
+.god-rays::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: repeating-conic-gradient(from 0deg,
+            transparent 0deg 20deg,
+            rgba(255, 215, 0, 0.05) 25deg 30deg,
+            transparent 35deg 50deg);
+    animation: rotateRays 60s linear infinite;
+    filter: blur(20px);
+}
+
+@keyframes rotateRays {
+    0% {
+        transform: rotate(0deg) scale(1);
+        opacity: 0.4;
+    }
+
+    50% {
+        transform: rotate(180deg) scale(1.1);
+        opacity: 0.6;
+    }
+
+    100% {
+        transform: rotate(360deg) scale(1);
+        opacity: 0.4;
+    }
+}
+
+/* Dust Motes Effect */
+.dust-motes {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.dust-motes::before {
+    content: '';
+    position: absolute;
+    inset: -50%;
+    background-image:
+        radial-gradient(1px 1px at 10% 10%, #fff, transparent),
+        radial-gradient(1px 1px at 30% 50%, #fff, transparent),
+        radial-gradient(2px 2px at 50% 20%, #fff, transparent),
+        radial-gradient(1px 1px at 70% 80%, #fff, transparent),
+        radial-gradient(2px 2px at 90% 40%, #fff, transparent);
+    background-size: 200px 200px;
+    animation: floatingDust 20s linear infinite;
+    opacity: 0.2;
+}
+
+@keyframes floatingDust {
+    0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 0.2;
+    }
+
+    80% {
+        opacity: 0.2;
+    }
+
+    100% {
+        transform: translateY(-200px) translateX(20px);
+        opacity: 0;
+    }
+}
+
+/* Cinematic Camera Zoom */
+.camera-zoom-in {
+    animation: cameraZoomIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes cameraZoomIn {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Skill Glint Animation */
+.skill-ready-glint {
+    position: relative;
+    overflow: hidden;
+}
+
+.skill-ready-glint::after {
+    content: '';
+    position: absolute;
+    inset: -100%;
+    background: linear-gradient(45deg, transparent 45%, rgba(255, 255, 255, 0.3) 50%, transparent 55%);
+    animation: skillGlint 3s infinite;
+    pointer-events: none;
+}
+
+@keyframes skillGlint {
+    0% {
+        transform: translateX(-100%) translateY(-100%) rotate(0deg);
+    }
+
+    30% {
+        transform: translateX(100%) translateY(100%) rotate(0deg);
+    }
+
+    100% {
+        transform: translateX(100%) translateY(100%) rotate(0deg);
+    }
+}
+
+/* Cinematic VS Aura Container */
+.vs-aura-container {
+    position: absolute;
+    top: 35%;
+    /* Midpoint between combatants */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.vs-text {
+    font-family: var(--font-cinzel);
+    font-size: clamp(3rem, 15vw, 6rem);
+    /* Fluid size */
+    font-weight: 900;
+    background: linear-gradient(180deg, #fff 0%, var(--gold-primary) 50%, var(--gold-dark) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 1.25rem rgba(212, 175, 55, 0.3));
+    opacity: 0.1;
+    letter-spacing: 1.5rem;
+    text-transform: uppercase;
+    animation: vsGlow 4s ease-in-out infinite alternate;
+}
+
+@keyframes vsGlow {
+    from {
+        opacity: 0.05;
+        filter: blur(3px) drop-shadow(0 0 10px rgba(212, 175, 55, 0.1));
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 0.2;
+        filter: blur(0px) drop-shadow(0 0 40px rgba(212, 175, 55, 0.4));
+        transform: scale(1.1);
+    }
+}
+
+/* ================================================
+   LAYOUT
+   ================================================ */
+.battle-container {
+    position: relative;
+    z-index: 10;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* DESKTOP OPTIMIZATION - SIDEBAR LOG */
+@media (min-width: 64rem) {
+
+    /* 1024px equivalent */
+    .battle-container {
+        display: grid;
+        grid-template-columns: 1fr 22rem;
+        /* Fluid sidebar width */
+        grid-template-rows: var(--header-h) 1fr auto;
+        grid-template-areas:
+            "header header"
+            "stage log"
+            "stage skills";
+        background: rgba(0, 0, 0, 0.4);
+    }
+
+    header.battle-header {
+        grid-area: header;
+        border-bottom: 0.0625rem solid rgba(255, 255, 255, 0.1);
+    }
+
+    main.battle-stage {
+        grid-area: stage;
+        height: 100%;
+        border-right: 0.0625rem solid rgba(212, 175, 55, 0.2);
+        padding: 0.625rem 1.25rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+    }
+
+    .pet-sprite img {
+        max-height: clamp(10rem, 30vh, 20rem);
+        max-width: 100%;
+        object-fit: contain;
+    }
+
+    section.battle-log {
+        grid-area: log;
+        height: 100%;
+        max-height: var(--log-h);
+        overflow-y: auto;
+        border-bottom: 0.0625rem solid rgba(212, 175, 55, 0.1);
+    }
+
+    nav.skills-panel {
+        grid-area: skills;
+        padding: 0.625rem 0.9375rem;
+        background: rgba(0, 0, 0, 0.2);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.625rem;
+    }
+
+    .skill-btn {
+        height: clamp(2.5rem, 6vh, 4rem);
+    }
+
+    .skill-btn:hover {
+        transform: translateY(-0.3125rem);
+        background: linear-gradient(145deg, rgba(60, 60, 60, 0.6), rgba(40, 40, 40, 0.8));
+        border-color: var(--gold-primary);
+    }
+
+    .vs-aura-container {
+        left: calc(50% - 11rem);
+        top: 48%;
+    }
+}
+
+/* ================================================
+   1. HEADER
+   ================================================ */
+header.battle-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.9375rem 1.25rem;
+    padding-top: calc(0.9375rem + env(safe-area-inset-top, 0rem));
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+    width: 100%;
+    height: var(--header-h);
+}
+
+.back-btn {
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    width: 44px;
+    /* Mobile touch friendly > 44px */
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.2s;
+}
+
+.back-btn:active {
+    transform: scale(0.9);
+}
+
+.battle-header h1 {
+    display: none;
+}
+
+/* Hidden as per cinematic design */
+
+.turn-indicator {
+    font-family: var(--font-cinzel);
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--gold-primary);
+    text-transform: uppercase;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid var(--gold-dim);
+    padding: 8px 16px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+}
+
+.turn-indicator.turn-active {
+    animation: turnPulse 2s infinite;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+}
+
+.turn-indicator.enemy-turn {
+    color: #ff4444;
+    border-color: #ff4444;
+    box-shadow: 0 0 15px rgba(255, 68, 68, 0.3);
+}
+
+@keyframes turnPulse {
+
+    0%,
+    100% {
+        transform: scale(1.0);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+}
+
+/* ================================================
+   2. BATTLE STAGE (HUD & PETS)
+   ================================================ */
+main.battle-stage {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 0.625rem;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.combatant {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+/* Enemy Setup (Top) */
+.enemy-side {
+    margin-top: 0.3125rem;
+}
+
+.enemy-side .pet-sprite {
+    order: 2;
+    margin-top: -0.625rem;
+}
+
+.enemy-side .combat-hud {
+    order: 1;
+    margin-bottom: 0.625rem;
+}
+
+/* Player Setup (Bottom) */
+.player-side {
+    margin-bottom: 0.3125rem;
+}
+
+.player-side .pet-sprite {
+    order: 1;
+    margin-bottom: -0.625rem;
+    z-index: 5;
+}
+
+.player-side .combat-hud {
+    order: 2;
+    z-index: 6;
+    margin-top: 0.625rem;
+}
+
+/* Combat HUD - ORNATE FRAME V2 */
+.combat-hud {
+    width: 100%;
+    max-width: 21.25rem;
+    background: linear-gradient(135deg, rgba(20, 20, 20, 0.85), rgba(40, 40, 40, 0.95));
+    backdrop-filter: blur(0.75rem);
+    border: 0.0625rem solid rgba(212, 175, 55, 0.3);
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    position: relative;
+    box-shadow: 0 0.625rem 1.875rem rgba(0, 0, 0, 0.8), inset 0 0 1.25rem rgba(212, 175, 55, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+}
+
+/* Ornate Corner Accents */
+.combat-hud::before,
+.combat-hud::after {
+    content: '';
+    position: absolute;
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 0.125rem solid var(--gold-primary);
+    pointer-events: none;
+}
+
+.combat-hud::before {
+    top: -0.125rem;
+    left: -0.125rem;
+    border-right: none;
+    border-bottom: none;
+}
+
+.combat-hud::after {
+    bottom: -0.125rem;
+    right: -0.125rem;
+    border-left: none;
+    border-top: none;
+}
+
+/* Info Row (Name, Lvl, Element) */
+.pet-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.pet-name {
+    font-family: var(--font-cinzel);
+    font-weight: 700;
+    font-size: clamp(0.9rem, 2vh, 1.1rem);
+    color: #fff;
+    text-shadow: 0 0.125rem 0.25rem #000;
+}
+
+.pet-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pet-level {
+    font-size: 0.8rem;
+    color: #ddd;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
+}
+
+.element-badge {
+    font-size: 0.7rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.25rem;
+    border: 0.0625rem solid;
+}
+
+/* SOLID HP BAR IMPLEMENTATION - GLASS TUBE STYLE */
+.hp-bar-container {
+    width: 100%;
+    height: clamp(1.2rem, 3vh, 1.625rem);
+    background: rgba(0, 0, 0, 0.6);
+    border: 0.125rem solid rgba(212, 175, 55, 0.3);
+    border-radius: 0.8125rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 0.125rem 0.625rem rgba(0, 0, 0, 0.8), 0 0 0.9375rem rgba(212, 175, 55, 0.1);
+}
+
+.hp-bar-container::after {
+    content: '';
+    position: absolute;
+    top: 0.125rem;
+    left: 0.125rem;
+    right: 0.125rem;
+    height: 0.5rem;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), transparent);
+    border-radius: 0.625rem;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.hp-bar {
+    height: 100%;
+    background: linear-gradient(180deg, #66bb6a 0%, #388e3c 100%);
+    width: 100%;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    box-shadow: 0 0 1.25rem rgba(102, 187, 106, 0.3);
+}
+
+.hp-bar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.1) 50%,
+            transparent 100%);
+    animation: barShimmer 3s infinite;
+}
+
+#enemy-hp-bar {
+    background: linear-gradient(180deg, #ef5350 0%, #c62828 100%);
+    box-shadow: 0 0 1.25rem rgba(239, 83, 80, 0.3);
+}
+
+.hp-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(0.65rem, 1.5vh, 0.85rem);
+    font-weight: 800;
+    color: #fff;
+    text-shadow: 0 0 0.25rem rgba(0, 0, 0, 0.9);
+    z-index: 4;
+    letter-spacing: 0.0625rem;
+}
+
+/* Pet Sprites Presentation */
+.pet-sprite {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1.25rem;
+}
+
+.pet-sprite img {
+    max-width: 12.5rem;
+    width: 100%;
+    height: auto;
+    max-height: clamp(8rem, 25vh, 20rem);
+    /* Fluid height based on viewport */
+    object-fit: contain;
+    filter: drop-shadow(0 0.9375rem 1.5625rem rgba(0, 0, 0, 0.7));
+    position: relative;
+    z-index: 2;
+    animation: petBreathing 3s ease-in-out infinite;
+}
+
+.pet-shadow {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 7.5rem;
+    height: 1.875rem;
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.6) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: 1;
+    animation: shadowPulse 3s ease-in-out infinite;
+}
+
+@keyframes petBreathing {
+
+    0%,
+    100% {
+        transform: translateY(0) scale(1.0);
+    }
+
+    50% {
+        transform: translateY(-8px) scale(1.02);
+    }
+}
+
+@keyframes shadowPulse {
+
+    0%,
+    100% {
+        opacity: 0.6;
+        transform: translateX(-50%) scale(1.0);
+    }
+
+    50% {
+        opacity: 0.3;
+        transform: translateX(-50%) scale(1.2);
+    }
+}
+
+.player-side .pet-sprite img {
+    transform: scaleX(-1);
+    /* Combined with breathing later */
+}
+
+/* Adjust breathing for player side (flipped) */
+.player-side .pet-sprite img {
+    animation-name: petBreathingPlayer;
+}
+
+@keyframes petBreathingPlayer {
+
+    0%,
+    100% {
+        transform: scaleX(-1) translateY(0) scale(1.0);
+    }
+
+    50% {
+        transform: scaleX(-1) translateY(-8px) scale(1.02);
+    }
+}
+
+.enemy-side .pet-sprite img {
+    transform: scale(0.9);
+    animation-delay: 0.5s;
+    /* De-sync from player */
+}
+
+/* VS Divider Styling */
+.vs-divider {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--font-cinzel);
+    font-weight: 800;
+    font-size: 3rem;
+    color: rgba(255, 215, 0, 0.2);
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.1);
+    z-index: 1;
+    pointer-events: none;
+    letter-spacing: 15px;
+}
+
+/* ================================================
+   2.5 BATTLE LOG (Fixed Height)
+   ================================================ */
+section.battle-log {
+    width: 100%;
+    margin: 0.625rem 0;
+    height: var(--log-h);
+    background: rgba(0, 0, 0, 0.6);
+    border: 0.0625rem solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    padding: 0.625rem;
+    font-size: clamp(0.75rem, 1.8vh, 0.9rem);
+    color: #ddd;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--gold-dim) rgba(0, 0, 0, 0.3);
+}
+
+section.battle-log::-webkit-scrollbar {
+    width: 0.25rem;
+}
+
+section.battle-log::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+section.battle-log::-webkit-scrollbar-thumb {
+    background-color: var(--gold-dim);
+    border-radius: 0.25rem;
+}
+
+.log-entry {
+    line-height: 1.4;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 2px;
+}
+
+.log-entry:last-child {
+    border-bottom: none;
+    color: #fff;
+    font-weight: bold;
+    animation: flashLog 0.5s ease-out;
+}
+
+@keyframes flashLog {
+    0% {
+        background-color: rgba(255, 215, 0, 0.2);
+    }
+
+    100% {
+        background-color: transparent;
+    }
+}
+
+/* ================================================
+   3. SKILL PANEL ("COMMAND DECK")
+   ================================================ */
+nav.skills-panel {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem calc(0.625rem + env(safe-area-inset-bottom, 0rem));
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.skill-btn {
+    height: clamp(2.5rem, 8vh, 4.375rem);
+    background: linear-gradient(145deg, rgba(40, 40, 40, 0.6), rgba(20, 20, 20, 0.8));
+    border: 0.0625rem solid rgba(212, 175, 55, 0.4);
+    border-radius: 0.8125rem;
+    padding: 0.25rem 0.9375rem;
+    color: #fff;
+    position: relative;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 0.25rem 0.9375rem rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.skill-btn:hover {
+    transform: translateY(-4px) scale(1.02);
+    border-color: rgba(212, 175, 55, 0.8);
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.2);
+}
+
+.skill-btn:active {
+    transform: translateY(1px) scale(0.98);
+}
+
+/* Reflective Glint */
+.skill-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.skill-btn:hover::after {
+    left: 100%;
+}
+
+/* Accent border left */
+.skill-btn::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0.375rem;
+    background: var(--gold-dim);
+    border-radius: 0.875rem 0 0 0.875rem;
+    box-shadow: 0 0 0.625rem rgba(197, 160, 40, 0.4);
+}
+
+.skill-btn.fire::before {
+    background: #e74c3c;
+    box-shadow: 0 0 15px rgba(231, 76, 60, 0.5);
+}
+
+.skill-btn.water::before {
+    background: #3498db;
+    box-shadow: 0 0 15px rgba(52, 152, 219, 0.5);
+}
+
+.skill-btn.plant::before {
+    background: #2ecc71;
+    box-shadow: 0 0 15px rgba(46, 204, 113, 0.5);
+}
+
+.skill-btn.light::before {
+    background: #f1c40f;
+    box-shadow: 0 0 15px rgba(241, 196, 15, 0.5);
+}
+
+.skill-btn.dark::before {
+    background: #9b59b6;
+    box-shadow: 0 0 15px rgba(155, 89, 182, 0.5);
+}
+
+/* Element Icons in Skills */
+.skill-element {
+    position: absolute;
+    right: 0.9375rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.4rem;
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.skill-name {
+    font-family: var(--font-cinzel);
+    font-size: clamp(0.75rem, 2vh, 1rem);
+    font-weight: 700;
+    margin-bottom: 0.125rem;
+    color: #fff;
+    text-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.5);
+}
+
+.skill-damage {
+    font-size: clamp(0.65rem, 1.8vh, 0.85rem);
+    color: var(--gold-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-weight: 600;
+}
+
+/* ================================================
+   4. VICTORY OVERLAY (PREMIUM POLISH)
+   ================================================ */
+.result-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.95);
+    /* Deep focus */
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.4s ease-out;
+    backdrop-filter: blur(8px);
+}
+
+.result-overlay:not(.hidden) {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.result-content {
+    width: 90%;
+    max-width: 23.75rem;
+    background: linear-gradient(160deg, rgba(30, 30, 30, 0.9) 0%, rgba(10, 10, 10, 0.95) 100%);
+    border: 0.0625rem solid var(--gold-primary);
+    border-radius: 1.5rem;
+    padding: 2.5rem 1.875rem;
+    text-align: center;
+    box-shadow: 0 0 3.125rem rgba(212, 175, 55, 0.15),
+        inset 0 0 1.25rem rgba(212, 175, 55, 0.05);
+    transform: scale(0.8) translateY(1.25rem);
+    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Ornamental glow */
+.result-content::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.result-overlay:not(.hidden) .result-content {
+    transform: scale(1) translateY(0);
+}
+
+/* Victory Title */
+.result-content h1 {
+    font-family: var(--font-cinzel);
+    font-size: clamp(1.5rem, 5vh, 2.8rem);
+    background: linear-gradient(to bottom, #fff 0%, var(--gold-primary) 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 1.5625rem;
+    filter: drop-shadow(0 0 0.9375rem rgba(255, 215, 0, 0.5));
+    line-height: 1.2;
+}
+
+/* Stats Container */
+.result-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 2.1875rem;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1.25rem;
+    border-radius: 1rem;
+    border: 0.0625rem solid rgba(255, 255, 255, 0.05);
+}
+
+.result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1rem;
+    color: #aeaeae;
+    padding: 5px 0;
+}
+
+.result-row span:last-child {
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.2rem;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+}
+
+/* Specific colors for rewards */
+#reward-gold {
+    color: var(--gold-primary) !important;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.4) !important;
+}
+
+#reward-exp {
+    color: #00ff88 !important;
+    text-shadow: 0 0 10px rgba(0, 255, 136, 0.4) !important;
+}
+
+#reward-rp {
+    color: #a066ff !important;
+    text-shadow: 0 0 10px rgba(160, 102, 255, 0.4) !important;
+}
+
+/* Return Button */
+.return-btn {
+    background: linear-gradient(90deg, #D4AF37 0%, #FDC830 100%);
+    border: none;
+    color: #1a1a1a;
+    font-family: var(--font-cinzel);
+    font-weight: 800;
+    padding: 1rem 2rem;
+    border-radius: 3.125rem;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: 0 0.3125rem 1.25rem rgba(212, 175, 55, 0.3);
+    width: 100%;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.return-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.5s;
+}
+
+.return-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5);
+}
+
+.return-btn:hover::after {
+    transform: translateX(100%);
+}
+
+/* ================================================
+   5. DEEP MOBILE RESPONSIVENESS (Small Screens)
+   ================================================ */
+/* ================================================
+   5. NATURAL BREAKPOINTS (BEHAVIORAL)
+   ================================================ */
+
+/* MOBILE COMPACT (Narrow Width) */
+@media screen and (max-width: 25rem) {
+    header.battle-header {
+        padding: 0.3125rem 0.9375rem;
+    }
+
+    .turn-indicator {
+        font-size: 0.8rem;
+        padding: 0.25rem 0.625rem;
+    }
+
+    .pet-sprite img {
+        max-width: 10rem;
+    }
+
+    .combat-hud {
+        padding: 0.5rem;
+        max-width: 16.25rem;
+    }
+
+    .pet-name {
+        font-size: 0.9rem;
+    }
+
+    nav.skills-panel {
+        gap: 0.5rem;
+        padding: 0.625rem 0.9375rem 1.5625rem;
+    }
+
+    .skill-btn {
+        height: 3.25rem;
+        padding: 0 0.5rem;
+    }
+
+    .skill-name {
+        font-size: 0.75rem;
+    }
+
+    .skill-damage {
+        font-size: 0.7rem;
+    }
+}
+
+/* VERTICAL CONSTRAINT (Short Height) */
+@media screen and (max-height: 42rem) {
+    header.battle-header {
+        height: 2.25rem;
+        padding: 0.25rem 1rem;
+    }
+
+    header.battle-header h1 {
+        font-size: 1rem;
+    }
+
+    .turn-indicator {
+        padding: 0.2rem 0.6rem;
+        font-size: 0.7rem;
+    }
+
+    main.battle-stage {
+        padding: 0;
+        justify-content: space-between;
+    }
+
+    .combatant {
+        flex: 0 0 auto;
+    }
+
+    .enemy-side {
+        margin-top: 0;
+    }
+
+    .player-side {
+        margin-bottom: 0;
+    }
+
+    .pet-sprite img {
+        max-height: 15vh;
+    }
+
+    .pet-shadow {
+        width: 5rem;
+        height: 1rem;
+    }
+
+    section.battle-log {
+        height: 2.25rem;
+        min-height: 2.25rem;
+        margin: 0;
+        font-size: 0.7rem;
+        border-radius: 0;
+    }
+
+    nav.skills-panel {
+        padding: 0.3rem;
+        gap: 0.25rem;
+    }
+
+    .skill-btn {
+        height: 2.5rem;
+    }
+
+    .combat-hud {
+        transform: scale(0.85);
+        transform-origin: center;
+        padding: 0.2rem 0.4rem;
+    }
+
+    .pet-meta {
+        display: none;
+    }
+
+    /* Hide non-critical info */
+    .hp-bar-container {
+        height: 1rem;
+    }
+
+    .enemy-side .combat-hud {
+        transform: scale(0.85) translateY(0.3125rem);
+    }
+
+    .player-side .combat-hud {
+        transform: scale(0.85) translateY(-0.3125rem);
+    }
+}
+
+/* TABLET / MEDIUM (In-between) */
+@media screen and (min-width: 48rem) and (max-width: 63.9375rem) {
+    main.battle-stage {
+        padding: 1.25rem 2.5rem;
+        gap: 2.5rem;
+    }
+
+    .pet-sprite img {
+        max-width: 17.5rem;
+    }
+
+    .combat-hud {
+        max-width: 25rem;
+    }
+
+    nav.skills-panel {
+        padding: 1.25rem 2.5rem 1.875rem;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.25rem;
+    }
+}
+
+/* LARGE DESKTOP (Ultra-wide) */
+@media screen and (min-width: 100rem) {
+    .pet-sprite img {
+        max-width: 28rem;
+    }
+
+    .combat-hud {
+        max-width: 25rem;
+    }
+
+    nav.skills-panel {
+        max-width: 75rem;
+    }
+}
+
+/* ================================================
+   9. NEW VISUAL FEEDBACK ANIMATIONS
+   ================================================ */
+
+/* Damage Popup */
+.damage-popup {
+    position: absolute;
+    color: #fff;
+    font-family: var(--font-outfit);
+    font-weight: 800;
+    font-size: 1.5rem;
+    pointer-events: none;
+    z-index: 100;
+    text-shadow: 0 0 0.3125rem #000, 0 0 0.625rem #000;
+    animation: float-up 1s ease-out forwards;
+}
+
+.damage-popup.critical {
+    color: #f1c40f;
+    font-size: 2.2rem;
+    text-shadow: 0 0 10px rgba(241, 196, 15, 0.8);
+    font-family: var(--font-cinzel);
+}
+
+.damage-popup.effective {
+    color: #e74c3c;
+    /* Redish for super effective damage taken */
+}
+
+.damage-popup.weak {
+    color: #95a5a6;
+    font-size: 1.2rem;
+}
+
+@keyframes float-up {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, 0) scale(1);
+    }
+
+    20% {
+        transform: translate(-50%, -20px) scale(1.2);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -60px) scale(1);
+    }
+}
+
+/* Screen Shake */
+.shake-effect {
+    animation: shake 0.5s cubic-bezier(.36, .07, .19, .97) both;
+}
+
+@keyframes shake {
+
+    10%,
+    90% {
+        transform: translate3d(-1px, 0, 0);
+    }
+
+    20%,
+    80% {
+        transform: translate3d(2px, 0, 0);
+    }
+
+    30%,
+    50%,
+    70% {
+        transform: translate3d(-4px, 0, 0);
+    }
+
+    40%,
+    60% {
+        transform: translate3d(4px, 0, 0);
+    }
+}
+
+/* Projectile Styles */
+.projectile {
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    z-index: 1000;
+    pointer-events: none;
+    filter: drop-shadow(0 0 10px currentColor);
+}
+
+.projectile.fire {
+    background: #e74c3c;
+    color: #e74c3c;
+    box-shadow: 0 0 20px #e74c3c;
+}
+
+.projectile.water {
+    background: #3498db;
+    color: #3498db;
+    box-shadow: 0 0 20px #3498db;
+}
+
+.projectile.plant {
+    background: #2ecc71;
+    color: #2ecc71;
+    box-shadow: 0 0 20px #2ecc71;
+}
+
+.projectile.dark {
+    background: #9b59b6;
+    color: #9b59b6;
+    box-shadow: 0 0 20px #9b59b6;
+}
+
+.projectile.light {
+    background: #f1c40f;
+    color: #f1c40f;
+    box-shadow: 0 0 20px #f1c40f;
+}
+
+/* Hit Flash */
+.hit {
+    animation: flash-red 0.3s;
+}
+
+@keyframes flash-red {
+
+    0%,
+    100% {
+        filter: brightness(1);
+    }
+
+    50% {
+        filter: sepia(1) hue-rotate(-50deg) saturate(5) brightness(1.2);
+    }
+}
+
+/* Impact Flash (Heavy/Crit) */
+.impact-flash {
+    animation: flash-white 0.2s ease-out forwards;
+}
+
+@keyframes flash-white {
+    0% {
+        filter: brightness(1);
+    }
+
+    50% {
+        filter: brightness(5) white-balance(200%);
+    }
+
+    100% {
+        filter: brightness(1);
+    }
+}
+
+/* Dodge Animation */
+.dodge {
+    animation: side-step 0.5s ease;
+}
+
+@keyframes side-step {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-30px) skewX(-10deg);
+        opacity: 0.7;
+    }
+
+    50% {
+        transform: translateX(0);
+    }
+}
+
+/* Attack Lunge */
+.attacking {
+    animation: lunge 0.3s ease-in-out;
+}
+
+@keyframes lunge {
+    0% {
+        transform: translateX(0);
+    }
+
+    50% {
+        transform: translateX(30px);
+    }
+
+    /* Towards right (player) */
+    100% {
+        transform: translateX(0);
+    }
+}
+
+/* Victory Confetti */
+.victory-confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    background: gold;
+    z-index: 999;
+}
+
+/* ================================================
+   FCT (FLOATING COMBAT TEXT) SYSTEM
+   ================================================ */
+.fct {
+    position: fixed;
+    font-family: var(--font-cinzel);
+    font-weight: 900;
+    font-size: 1.8rem;
+    pointer-events: none;
+    z-index: 50;
+    text-align: center;
+    transform: translateX(-50%);
+    animation: fctFloat 1.2s ease-out forwards;
+}
+
+.fct.damage {
+    color: #ff4444;
+    text-shadow:
+        0 0 10px rgba(255, 0, 0, 0.8),
+        0 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+.fct.heal {
+    color: #44ff44;
+    text-shadow:
+        0 0 10px rgba(0, 255, 0, 0.8),
+        0 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+.fct.miss {
+    color: #888888;
+    font-style: italic;
+    font-size: 1.4rem;
+}
+
+.fct.crit {
+    font-size: 2.5rem;
+    color: #ffd700;
+    text-shadow:
+        0 0 20px rgba(255, 215, 0, 0.9),
+        0 0 40px rgba(255, 165, 0, 0.6),
+        0 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+.fct.effective {
+    color: #27ae60;
+    font-size: 2rem;
+}
+
+.fct.weak {
+    color: #7f8c8d;
+    font-size: 1.4rem;
+}
+
+@keyframes fctFloat {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(0) scale(0.5);
+    }
+
+    15% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-15px) scale(1.2);
+    }
+
+    30% {
+        transform: translateX(-50%) translateY(-25px) scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-60px) scale(0.8);
+    }
+}
+
+/* ================================================
+   SCREEN SHAKE (Critical Hit Effect)
+   ================================================ */
+.battle-stage.screen-shake {
+    animation: screenShake 0.4s ease-out;
+}
+
+@keyframes screenShake {
+
+    0%,
+    100% {
+        transform: translateX(0) translateY(0);
+    }
+
+    10% {
+        transform: translateX(-8px) translateY(-2px);
+    }
+
+    30% {
+        transform: translateX(8px) translateY(2px);
+    }
+
+    50% {
+        transform: translateX(-6px) translateY(-1px);
+    }
+
+    70% {
+        transform: translateX(6px) translateY(1px);
+    }
+
+    90% {
+        transform: translateX(-3px);
+    }
+}
+
+/* ================================================
+   TARGET GLOW EFFECT
+   ================================================ */
+.pet-sprite.targeted img {
+    animation: targetGlow 0.6s ease-in-out infinite alternate !important;
+}
+
+@keyframes targetGlow {
+    from {
+        filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
+    }
+
+    to {
+        filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.9)) drop-shadow(0 0 40px rgba(255, 165, 0, 0.5));
+    }
+}
+
+/* ================================================
+   STATUS EFFECTS DISPLAY
+   ================================================ */
+.status-effects-container {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    min-height: 1.5rem;
+    margin-top: 4px;
+}
+
+.status-effects-container .status-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 0.9rem;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    animation: statusPulse 2s ease-in-out infinite;
+    cursor: default;
+}
+
+@keyframes statusPulse {
+    0%, 100% { opacity: 0.8; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.1); }
+}
+
+/* Status Effect Log Styling */
+.log-entry.status-effect {
+    color: #e67e22 !important;
+    font-style: italic;
+}
+
+.log-entry.status-resist {
+    color: #3498db !important;
+    font-style: italic;
+}

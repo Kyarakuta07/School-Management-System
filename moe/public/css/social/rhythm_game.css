@@ -1,0 +1,1227 @@
+/* ================================================
+   RHYTHM GAME - Magic Tiles 3 Style (V2 Refactored)
+   ================================================
+   CSS class names aligned with HTML:
+   - .track-lane (not .lane)
+   - .hit-horizon (not .hit-zone)
+   ================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700&display=swap');
+
+/* Reset & Base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+    overflow: hidden;
+    touch-action: manipulation;
+}
+
+body {
+    font-family: 'Titillium Web', 'Outfit', sans-serif;
+    background: linear-gradient(180deg, #0d1117 0%, #1a1040 50%, #0d1117 100%);
+    color: #fff;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* Utility */
+.hidden {
+    display: none !important;
+}
+
+/* ================================================
+   GAME CONTAINER
+   ================================================ */
+.game-container {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    /* dynamic viewport height for mobile */
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 999;
+    background: linear-gradient(180deg, #0d1117 0%, #1a1040 50%, #0d1117 100%);
+}
+
+/* ================================================
+   HEADER BAR
+   ================================================ */
+.game-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    z-index: 100;
+}
+
+.back-btn {
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    color: #888;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+
+.back-btn:hover {
+    background: rgba(231, 76, 60, 0.2);
+    border-color: #e74c3c;
+    color: #e74c3c;
+}
+
+.game-stats {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.stat-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    min-width: 70px;
+}
+
+.stat-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #666;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.stat-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.score-box .stat-value {
+    color: #DAA520;
+}
+
+.combo-box .stat-value {
+    color: #4ecdc4;
+}
+
+/* Lives Display */
+.lives-container {
+    display: flex;
+    gap: 4px;
+    margin-top: 4px;
+}
+
+.life-heart {
+    color: #ff6b6b;
+    font-size: 1rem;
+    transition: all 0.3s;
+}
+
+.life-heart.lost {
+    color: #444;
+    transform: scale(0.8);
+    opacity: 0.5;
+}
+
+/* ================================================
+   GAME SCREEN
+   ================================================ */
+.game-screen {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    min-height: 0;
+}
+
+/* ================================================
+   GAME AREA (4 LANES) — uses .track-lane
+   ================================================ */
+.game-area {
+    flex: 1;
+    position: relative;
+    display: flex;
+    overflow: hidden;
+}
+
+.track-area {
+    display: flex;
+    flex: 1;
+    position: relative;
+    height: 100%;
+    /* explicit height for children to reference */
+}
+
+.track-lane {
+    flex: 1;
+    position: relative;
+    /* Piano Tiles style: light gray lanes with white borders */
+    border-left: 2px solid rgba(255, 255, 255, 0.15);
+    border-right: 2px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.03);
+    overflow: hidden;
+}
+
+/* Lane colors */
+.track-lane:nth-child(1) {
+    --lane-color: #ff6b6b;
+    --lane-color-rgb: 255, 107, 107;
+}
+
+.track-lane:nth-child(2) {
+    --lane-color: #4ecdc4;
+    --lane-color-rgb: 78, 205, 196;
+}
+
+.track-lane:nth-child(3) {
+    --lane-color: #ffd93d;
+    --lane-color-rgb: 255, 217, 61;
+}
+
+.track-lane:nth-child(4) {
+    --lane-color: #a78bfa;
+    --lane-color-rgb: 167, 139, 250;
+}
+
+/* Lane press flash (Piano Tiles style) */
+.track-lane.active {
+    background: rgba(var(--lane-color-rgb, 255, 255, 255), 0.08);
+}
+
+/* ================================================
+   HIT HORIZON — the target line notes should reach
+   ================================================ */
+.hit-horizon {
+    position: absolute;
+    bottom: 15%;
+    left: 0;
+    right: 0;
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(218, 165, 32, 0.9);
+    z-index: 10;
+    box-shadow: 0 0 12px rgba(218, 165, 32, 0.8),
+        0 0 30px rgba(218, 165, 32, 0.4),
+        0 0 60px rgba(218, 165, 32, 0.2);
+    pointer-events: none;
+}
+
+/* Glow area around hit horizon */
+.hit-horizon::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 80px;
+    transform: translateY(-50%);
+    background: linear-gradient(180deg,
+            transparent 0%,
+            rgba(218, 165, 32, 0.05) 20%,
+            rgba(218, 165, 32, 0.2) 50%,
+            rgba(218, 165, 32, 0.05) 80%,
+            transparent 100%);
+    pointer-events: none;
+}
+
+/* ================================================
+   NOTES — Piano Tiles Style (full-width black tiles)
+   ================================================ */
+.note {
+    position: absolute;
+    /* Piano Tiles: fill entire lane width */
+    width: 100%;
+    left: 0;
+    /* Height is set dynamically by JS based on noteSpeed */
+    height: 80px;
+    /* Classic Piano Tiles: dark black tile */
+    background: #111;
+    border-radius: 2px;
+    display: grid;
+    place-items: center;
+    z-index: 5;
+    /* Subtle border to separate adjacent tiles */
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+    /* GPU acceleration */
+    will-change: transform, opacity;
+    top: 0;
+    /* Hover-like inner highlight */
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+}
+
+/* Hold Notes — Piano Tiles long press style */
+.note.hold-note {
+    background: #0a0a0a;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-bottom: none;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    display: block;
+    overflow: visible;
+    border-radius: 4px;
+}
+
+.note.hold-note.holding {
+    background: rgba(var(--lane-color-rgb, 255, 255, 255), 0.15);
+    box-shadow: 0 0 20px rgba(var(--lane-color-rgb, 255, 255, 255), 0.3);
+    animation: holdPulse 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes holdPulse {
+    from {
+        box-shadow: 0 0 15px rgba(var(--lane-color-rgb, 255, 255, 255), 0.2);
+    }
+
+    to {
+        box-shadow: 0 0 30px rgba(var(--lane-color-rgb, 255, 255, 255), 0.5);
+    }
+}
+
+/* Animated Stripes inside hold body */
+.note.hold-note::before {
+    content: '';
+    position: absolute;
+    top: 30px;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    background: repeating-linear-gradient(45deg,
+            rgba(255, 255, 255, 0.1),
+            rgba(255, 255, 255, 0.1) 10px,
+            rgba(255, 255, 255, 0.2) 10px,
+            rgba(255, 255, 255, 0.2) 20px);
+    animation: scrollStripes 1s linear infinite;
+    opacity: 0.6;
+}
+
+@keyframes scrollStripes {
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: 0 40px;
+    }
+}
+
+/* Hold Head */
+.hold-head {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    background: var(--note-color);
+    border-radius: 6px 6px 0 0;
+    box-shadow: 0 0 10px var(--note-color);
+    z-index: 2;
+}
+
+/* Hold Tail */
+.hold-tail {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 10px;
+    background: var(--note-color);
+    border-radius: 0 0 6px 6px;
+    opacity: 0.8;
+}
+
+/* Hold Label */
+.hold-body-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-shadow: 0 0 5px black;
+    z-index: 3;
+}
+
+/* Holding state active */
+.note.holding .hold-head {
+    background: #fff;
+    box-shadow: 0 0 20px #fff, 0 0 10px var(--note-color);
+}
+
+.note.holding::before {
+    animation-duration: 0.2s;
+    background: repeating-linear-gradient(45deg,
+            rgba(255, 255, 255, 0.3),
+            rgba(255, 255, 255, 0.3) 10px,
+            rgba(255, 255, 255, 0.5) 10px,
+            rgba(255, 255, 255, 0.5) 20px);
+}
+
+.note.hit {
+    animation: noteHit 0.3s ease-out forwards !important;
+}
+
+@keyframes noteHit {
+    0% {
+        transform: translateY(var(--note-y, 0)) scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(var(--note-y, 0)) scale(1.5);
+        opacity: 0;
+    }
+}
+
+.note.miss {
+    animation: noteMiss 0.3s ease-out forwards !important;
+}
+
+@keyframes noteMiss {
+    0% {
+        opacity: 0.5;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(calc(var(--note-y, 0) + 20px));
+    }
+}
+
+/* ================================================
+   TOUCH AREAS (unified)
+   ================================================ */
+.touch-areas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    z-index: 25;
+    pointer-events: none;
+}
+
+.touch-lane {
+    flex: 1;
+    pointer-events: auto;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    background: transparent;
+    border: none;
+    outline: none;
+}
+
+.touch-lane:active {
+    background: rgba(var(--lane-color-rgb, 255, 255, 255), 0.1);
+}
+
+/* ================================================
+   HIT EFFECTS
+   ================================================ */
+.effects-container {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+    overflow: hidden;
+}
+
+.hit-effect {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+            rgba(218, 165, 32, 0.6) 0%,
+            transparent 70%);
+    transform: translate(-50%, -50%) scale(0);
+    animation: hitPop 0.4s ease-out forwards;
+    pointer-events: none;
+}
+
+@keyframes hitPop {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(2);
+        opacity: 0;
+    }
+}
+
+.hit-text {
+    position: absolute;
+    font-size: 1.2rem;
+    font-weight: 700;
+    transform: translateX(-50%);
+    animation: hitTextPop 0.5s ease-out forwards;
+    pointer-events: none;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.hit-text.perfect-plus {
+    color: #FFD700;
+    text-shadow: 0 0 10px #FFD700, 0 0 20px #FFA500, 0 0 30px #FF8C00;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.hit-text.perfect {
+    color: #DAA520;
+}
+
+.hit-text.great {
+    color: #4ecdc4;
+}
+
+.hit-text.good {
+    color: #a78bfa;
+}
+
+.hit-text.miss {
+    color: #ff6b6b;
+}
+
+.hit-text.hold {
+    color: #ffd93d;
+}
+
+@keyframes hitTextPop {
+    0% {
+        transform: translateX(-50%) translateY(0) scale(0.5);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateX(-50%) translateY(-50px) scale(1);
+        opacity: 0;
+    }
+}
+
+/* ================================================
+   OVERLAYS
+   ================================================ */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 500;
+    animation: overlayIn 0.3s ease-out;
+}
+
+.overlay.hidden {
+    display: none;
+}
+
+@keyframes overlayIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.overlay-content {
+    text-align: center;
+    padding: 40px;
+    max-width: 400px;
+}
+
+.overlay h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 2rem;
+    color: #DAA520;
+    margin-bottom: 16px;
+    text-shadow: 0 4px 20px rgba(218, 165, 32, 0.4);
+}
+
+.overlay p {
+    color: #888;
+    font-size: 1rem;
+    margin-bottom: 24px;
+}
+
+.start-btn,
+.return-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 40px;
+    background: linear-gradient(135deg, #DAA520, #B8860B);
+    border: none;
+    border-radius: 12px;
+    color: #000;
+    font-family: inherit;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.start-btn:hover,
+.return-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 30px rgba(218, 165, 32, 0.4);
+}
+
+/* ================================================
+   RESULT SCREEN
+   ================================================ */
+.result-content h1 {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+}
+
+.result-stats {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+.result-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.result-row:last-child {
+    border-bottom: none;
+}
+
+.result-label {
+    color: #888;
+}
+
+.result-value {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #DAA520;
+}
+
+/* Grade display */
+.result-grade {
+    font-family: 'Cinzel', serif;
+    font-size: 4rem;
+    font-weight: 700;
+    color: #DAA520;
+    text-shadow: 0 0 20px rgba(218, 165, 32, 0.5);
+    margin-bottom: 10px;
+}
+
+.result-grade.grade-s {
+    color: #FFD700;
+    text-shadow: 0 0 30px #FFD700;
+}
+
+.result-grade.grade-a {
+    color: #4ecdc4;
+}
+
+.result-grade.grade-b {
+    color: #a78bfa;
+}
+
+.result-grade.grade-c {
+    color: #ffd93d;
+}
+
+.result-grade.grade-d {
+    color: #ff6b6b;
+}
+
+.result-grade.grade-f {
+    color: #666;
+}
+
+.rewards-section {
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.1), transparent);
+    border: 1px solid rgba(218, 165, 32, 0.3);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+.rewards-section h3 {
+    color: #DAA520;
+    margin-bottom: 16px;
+}
+
+.rewards-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 1.1rem;
+}
+
+.rewards-row span:last-child {
+    color: #4ecdc4;
+    font-weight: 600;
+}
+
+/* ================================================
+   COMBO POPUP
+   ================================================ */
+.combo-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Cinzel', serif;
+    font-size: 3rem;
+    font-weight: 700;
+    color: #DAA520;
+    text-shadow: 0 4px 30px rgba(218, 165, 32, 0.6);
+    animation: comboPop 0.6s ease-out forwards;
+    pointer-events: none;
+    z-index: 200;
+}
+
+@keyframes comboPop {
+    0% {
+        transform: translate(-50%, -50%) scale(0.5);
+        opacity: 0;
+    }
+
+    30% {
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0;
+    }
+}
+
+/* ================================================
+   IMPORT BUTTON (compact icon for admin)
+   ================================================ */
+.import-osu-btn {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    background: rgba(218, 165, 32, 0.15);
+    border: 1px solid rgba(218, 165, 32, 0.3);
+    border-radius: 10px;
+    color: #DAA520;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: all 0.3s;
+    flex-shrink: 0;
+}
+
+.import-osu-btn:hover {
+    background: #DAA520;
+    color: #000;
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(218, 165, 32, 0.5);
+}
+
+/* ================================================
+   HUB HEADER (premium music header)
+   ================================================ */
+.hub-screen {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.hub-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 16px 12px;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.7) 0%, transparent 100%);
+    position: relative;
+}
+
+.hub-title-group {
+    flex: 1;
+    text-align: center;
+}
+
+.hub-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.hub-title h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #DAA520, #FFD700, #DAA520);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmerGold 3s ease infinite;
+    margin: 0;
+}
+
+@keyframes shimmerGold {
+
+    0%,
+    100% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+.music-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, #DAA520, #B8860B);
+    border-radius: 10px;
+    color: #000;
+    font-size: 1.2rem;
+    font-weight: bold;
+    animation: iconPulse 2s ease-in-out infinite;
+    box-shadow: 0 0 20px rgba(218, 165, 32, 0.3);
+}
+
+@keyframes iconPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 15px rgba(218, 165, 32, 0.3);
+    }
+
+    50% {
+        transform: scale(1.1);
+        box-shadow: 0 0 25px rgba(218, 165, 32, 0.6);
+    }
+}
+
+.hub-subtitle {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.35);
+    margin: 4px 0 0;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+/* ================================================
+   WAVEFORM EQUALIZER BAR
+   ================================================ */
+.waveform-bar {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 3px;
+    height: 24px;
+    padding: 0 16px;
+    overflow: hidden;
+}
+
+.waveform-bar span {
+    display: block;
+    width: 3px;
+    background: linear-gradient(to top, #DAA520, #FFD700);
+    border-radius: 2px;
+    animation: waveform 1.2s ease-in-out infinite alternate;
+    opacity: 0.6;
+}
+
+.waveform-bar span:nth-child(1) {
+    height: 8px;
+    animation-delay: 0s;
+}
+
+.waveform-bar span:nth-child(2) {
+    height: 14px;
+    animation-delay: 0.1s;
+}
+
+.waveform-bar span:nth-child(3) {
+    height: 6px;
+    animation-delay: 0.2s;
+}
+
+.waveform-bar span:nth-child(4) {
+    height: 18px;
+    animation-delay: 0.15s;
+}
+
+.waveform-bar span:nth-child(5) {
+    height: 10px;
+    animation-delay: 0.3s;
+}
+
+.waveform-bar span:nth-child(6) {
+    height: 20px;
+    animation-delay: 0.05s;
+}
+
+.waveform-bar span:nth-child(7) {
+    height: 8px;
+    animation-delay: 0.25s;
+}
+
+.waveform-bar span:nth-child(8) {
+    height: 16px;
+    animation-delay: 0.1s;
+}
+
+.waveform-bar span:nth-child(9) {
+    height: 12px;
+    animation-delay: 0.35s;
+}
+
+.waveform-bar span:nth-child(10) {
+    height: 22px;
+    animation-delay: 0.2s;
+}
+
+.waveform-bar span:nth-child(11) {
+    height: 6px;
+    animation-delay: 0.15s;
+}
+
+.waveform-bar span:nth-child(12) {
+    height: 18px;
+    animation-delay: 0.3s;
+}
+
+.waveform-bar span:nth-child(13) {
+    height: 10px;
+    animation-delay: 0.05s;
+}
+
+.waveform-bar span:nth-child(14) {
+    height: 14px;
+    animation-delay: 0.25s;
+}
+
+.waveform-bar span:nth-child(15) {
+    height: 8px;
+    animation-delay: 0.1s;
+}
+
+.waveform-bar span:nth-child(16) {
+    height: 20px;
+    animation-delay: 0.35s;
+}
+
+.waveform-bar span:nth-child(17) {
+    height: 12px;
+    animation-delay: 0.15s;
+}
+
+.waveform-bar span:nth-child(18) {
+    height: 16px;
+    animation-delay: 0.2s;
+}
+
+.waveform-bar span:nth-child(19) {
+    height: 6px;
+    animation-delay: 0.3s;
+}
+
+.waveform-bar span:nth-child(20) {
+    height: 18px;
+    animation-delay: 0.05s;
+}
+
+@keyframes waveform {
+    0% {
+        transform: scaleY(0.4);
+    }
+
+    100% {
+        transform: scaleY(1);
+    }
+}
+
+/* ================================================
+   KEYBOARD HINTS
+   ================================================ */
+.hub-controls {
+    text-align: center;
+    padding: 8px 16px;
+}
+
+.key-hint {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.3);
+    letter-spacing: 0.5px;
+}
+
+.key-hint kbd {
+    display: inline-block;
+    padding: 2px 6px;
+    font-size: 0.65rem;
+    font-family: 'Titillium Web', monospace;
+    color: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* ================================================
+   SONG SELECTION (scrollable container)
+   ================================================ */
+.songs-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 8px 16px 20px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(218, 165, 32, 0.4) transparent;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 3%, black 97%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 3%, black 97%, transparent 100%);
+}
+
+.songs-container::-webkit-scrollbar {
+    width: 4px;
+}
+
+.songs-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.songs-container::-webkit-scrollbar-thumb {
+    background: rgba(218, 165, 32, 0.4);
+    border-radius: 10px;
+}
+
+/* ================================================
+   SONG CARDS (glassmorphism + gradient borders)
+   ================================================ */
+.song-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    backdrop-filter: blur(8px);
+    overflow: hidden;
+}
+
+/* Gradient accent line on left */
+.song-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, #DAA520, #B8860B);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.song-card:hover::before {
+    opacity: 1;
+}
+
+.song-card:hover {
+    background: rgba(218, 165, 32, 0.08);
+    border-color: rgba(218, 165, 32, 0.4);
+    transform: translateX(4px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3),
+        0 0 30px rgba(218, 165, 32, 0.08);
+}
+
+/* Play button circle */
+.play-overlay {
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    transition: all 0.35s;
+    flex-shrink: 0;
+}
+
+.song-card:hover .play-overlay {
+    background: linear-gradient(135deg, #DAA520, #FFD700);
+    border-color: #DAA520;
+    transform: scale(1.15);
+    box-shadow: 0 0 20px rgba(218, 165, 32, 0.5);
+}
+
+.play-icon {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.95rem;
+    margin-left: 2px;
+    transition: all 0.3s;
+}
+
+.song-card:hover .play-icon {
+    color: #000;
+    transform: scale(1.1);
+}
+
+/* Card content */
+.card-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    /* prevent overflow */
+}
+
+.song-info {
+    text-align: left;
+}
+
+.song-info h2 {
+    font-family: 'Titillium Web', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.song-info p {
+    font-size: 0.82rem;
+    color: rgba(255, 255, 255, 0.45);
+    margin: 2px 0 0 0 !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.difficulty-pill {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    color: rgba(255, 255, 255, 0.6);
+    letter-spacing: 1px;
+}
+
+.song-card:hover .difficulty-pill {
+    background: rgba(218, 165, 32, 0.15);
+    border-color: rgba(218, 165, 32, 0.3);
+    color: #DAA520;
+}
+
+/* ================================================
+   HIGHSCORE BADGE (trophy pill on song cards)
+   ================================================ */
+.highscore-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: rgba(218, 165, 32, 0.1);
+    border: 1px solid rgba(218, 165, 32, 0.2);
+    color: #DAA520;
+    margin-top: 6px;
+    transition: all 0.3s;
+}
+
+.highscore-badge i {
+    font-size: 0.65rem;
+}
+
+.song-card:hover .highscore-badge {
+    background: rgba(218, 165, 32, 0.2);
+    border-color: rgba(218, 165, 32, 0.4);
+}
+
+/* ================================================
+   RESPONSIVE
+   ================================================ */
+@media (min-width: 600px) {
+    .game-container {
+        border-left: 1px solid rgba(255, 255, 255, 0.08);
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
+    }
+}
+
+@media (max-width: 380px) {
+    .stat-box {
+        padding: 6px 12px;
+        min-width: 60px;
+    }
+
+    .stat-value {
+        font-size: 1.2rem;
+    }
+
+    .hub-title h1 {
+        font-size: 1.2rem;
+    }
+
+    .song-card {
+        padding: 12px;
+        gap: 10px;
+    }
+}

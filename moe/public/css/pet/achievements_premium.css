@@ -1,0 +1,421 @@
+/* ================================================
+   ACHIEVEMENTS TAB - PREMIUM DESIGN
+   Dark Egyptian Fantasy Theme with Gold Accents
+   Vertical Layout - 2 Columns Grid
+   ================================================ */
+
+/* ================================================
+   ACHIEVEMENTS HEADER
+   ================================================ */
+.achievements-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    padding: 1.25rem;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+    border-radius: 16px;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.achievements-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.achievements-title i {
+    -webkit-text-fill-color: var(--gold);
+}
+
+.achievements-subtitle {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* ================================================
+   ACHIEVEMENTS GRID - 2 Columns
+   ================================================ */
+.achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+}
+
+/* ================================================
+   ACHIEVEMENT CARD - Glassmorphism V3
+   ================================================ */
+.achievement-card {
+    background: rgba(20, 20, 30, 0.4);
+    backdrop-filter: blur(15px) saturate(160%);
+    -webkit-backdrop-filter: blur(15px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.achievement-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right,
+            transparent,
+            rgba(255, 255, 255, 0.05),
+            transparent);
+    transform: skewX(-25deg);
+    transition: none;
+}
+
+.achievement-card:hover::before {
+    left: 200%;
+    transition: all 0.8s ease;
+}
+
+.achievement-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    border-color: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.6);
+}
+
+/* Tiered Grades */
+.achievement-card.tier-bronze {
+    border-color: rgba(205, 127, 50, 0.3);
+}
+
+.achievement-card.tier-silver {
+    border-color: rgba(192, 192, 192, 0.3);
+}
+
+.achievement-card.tier-gold {
+    border-color: rgba(255, 215, 0, 0.3);
+}
+
+.achievement-card.tier-platinum {
+    border-color: rgba(0, 255, 255, 0.3);
+    animation: ach-platinum-glow 3s infinite alternate;
+}
+
+@keyframes ach-platinum-glow {
+    0% {
+        box-shadow: 0 8px 32px rgba(0, 255, 255, 0.1);
+    }
+
+    100% {
+        box-shadow: 0 8px 45px rgba(0, 255, 255, 0.3);
+    }
+}
+
+.achievement-card.locked {
+    opacity: 0.6;
+    filter: grayscale(80%);
+}
+
+.achievement-card.unlocked {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+}
+
+/* Achievement Icon - Ornate Sigil Frame */
+.achievement-icon {
+    width: 65px;
+    height: 65px;
+    margin: 0 auto 1.25rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    z-index: 2;
+    transition: all 0.4s ease;
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+.achievement-icon::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+    z-index: -1;
+}
+
+.achievement-card.unlocked.tier-bronze .achievement-icon {
+    border-color: #cd7f32;
+    box-shadow: 0 0 20px rgba(205, 127, 50, 0.3);
+}
+
+.achievement-card.unlocked.tier-silver .achievement-icon {
+    border-color: #c0c0c0;
+    box-shadow: 0 0 20px rgba(192, 192, 192, 0.3);
+}
+
+.achievement-card.unlocked.tier-gold .achievement-icon {
+    border-color: #ffd700;
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.4);
+}
+
+.achievement-card.unlocked.tier-platinum .achievement-icon {
+    border-color: #00ffff;
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+}
+
+.achievement-icon i {
+    font-size: 1.8rem;
+    color: rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.achievement-card.unlocked .achievement-icon i {
+    color: #fff;
+    filter: drop-shadow(0 0 8px currentColor);
+}
+
+.achievement-card.unlocked.tier-gold .achievement-icon i {
+    color: #ffd700;
+}
+
+.achievement-card.unlocked.tier-platinum .achievement-icon i {
+    color: #00ffff;
+}
+
+/* Emoji Icon */
+.achievement-icon .emoji-icon {
+    font-size: 2rem;
+    line-height: 1;
+}
+
+/* Achievement Info */
+.achievement-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.5px;
+}
+
+.achievement-desc {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.4;
+    margin-bottom: 1rem;
+    flex: 1;
+}
+
+/* Progress Bar - Shimmering */
+.achievement-progress {
+    height: 8px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.achievement-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ffd700, #ffae00, #ffd700);
+    background-size: 200% 100%;
+    border-radius: 10px;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    animation: ach-progress-shimmer 2s linear infinite;
+}
+
+@keyframes ach-progress-shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+.achievement-progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 20px;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.3);
+    filter: blur(5px);
+}
+
+.achievement-progress-text {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--gold);
+    margin-top: 0.4rem;
+    letter-spacing: 0.5px;
+}
+
+/* Achievement Reward */
+.achievement-reward {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    margin-top: auto;
+    padding: 0.25rem 0.5rem;
+    background: rgba(212, 175, 55, 0.15);
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--gold);
+}
+
+.achievement-reward i {
+    font-size: 0.6rem;
+}
+
+/* Claim Button */
+.ach-claim-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    margin-top: auto;
+    padding: 0.4rem 0.75rem;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    border: none;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #0a0a0a;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+}
+
+.ach-claim-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.5);
+}
+
+.ach-claim-btn:active {
+    transform: scale(0.98);
+}
+
+.ach-claim-btn i {
+    font-size: 0.65rem;
+}
+
+/* Claimed State */
+.achievement-reward.claimed {
+    background: rgba(39, 174, 96, 0.2);
+    color: #27ae60;
+}
+
+.achievement-reward.claimed i {
+    color: #27ae60;
+}
+
+/* Loading Spinner */
+.achievements-grid .loading-spinner {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 2rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.achievements-grid .loading-spinner i {
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+}
+
+.achievements-grid .loading-spinner p {
+    font-size: 0.9rem;
+}
+
+/* ================================================
+   EMPTY STATE
+   ================================================ */
+.achievements-empty {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: rgba(255, 255, 255, 0.5);
+    grid-column: 1 / -1;
+}
+
+.achievements-empty i {
+    font-size: 2.5rem;
+    color: rgba(212, 175, 55, 0.3);
+    margin-bottom: 0.75rem;
+    display: block;
+}
+
+.achievements-empty p {
+    font-size: 0.9rem;
+}
+
+/* ================================================
+   RESPONSIVE DESIGN
+   ================================================ */
+@media (max-width: 360px) {
+    .achievements-header {
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .achievements-title {
+        font-size: 1rem;
+    }
+
+    .achievements-grid {
+        gap: 0.5rem;
+    }
+
+    .achievement-card {
+        padding: 0.75rem 0.5rem;
+    }
+
+    .achievement-icon {
+        width: 40px;
+        height: 40px;
+        margin-bottom: 0.5rem;
+    }
+
+    .achievement-icon i {
+        font-size: 1.1rem;
+    }
+
+    .achievement-name {
+        font-size: 0.7rem;
+    }
+
+    .achievement-desc {
+        font-size: 0.55rem;
+    }
+
+    .achievement-reward {
+        font-size: 0.6rem;
+        padding: 0.2rem 0.4rem;
+    }
+}
+
+/* --- Touch-friendly improvements --- */
+@media (hover: none) and (pointer: coarse) {
+    .achievement-card {
+        min-height: 140px;
+    }
+}

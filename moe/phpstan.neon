@@ -1,0 +1,9 @@
+parameters:
+    level: 0
+    paths:
+        - app
+    excludePaths:
+        - vendor/*
+        - tests/*
+    bootstrapFiles:
+        - vendor/codeigniter4/framework/system/Test/bootstrap.php

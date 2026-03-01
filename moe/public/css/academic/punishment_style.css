@@ -1,0 +1,1121 @@
+/* ================================================
+   PUNISHMENT PAGE STYLES - PREMIUM EDITION
+   Mediterranean of Egypt - Dark Egyptian Theme
+   Enhanced with modern UI/UX principles
+   ================================================ */
+
+:root {
+    --gold: #DAA520;
+    --gold-glow: rgba(218, 165, 32, 0.4);
+    --glass-border: rgba(218, 165, 32, 0.25);
+    --font-head: 'Cinzel', serif;
+    --bg-dark: #0a0a0c;
+    --glass-bg: rgba(25, 25, 30, 0.9);
+}
+
+
+/* Main Layout */
+.punishment-main-content {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 28px;
+    padding: 0 40px 40px 40px;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+/* --- HERO HEADER (COMMAND HUB STYLE) --- */
+.hero-header {
+    margin: 20px 40px 40px 40px;
+    padding: 35px 45px;
+    background: linear-gradient(135deg, rgba(25, 25, 30, 0.9), rgba(18, 18, 22, 0.8));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.6),
+        0 0 40px rgba(218, 165, 32, 0.05);
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUp 1s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {}
+}
+
+/* ================================================
+   TOP ALERTS - Full Width Above Content
+   ================================================ */
+.alert-top {
+    max-width: 1600px;
+    margin: 0 auto 20px auto;
+    padding: 16px 24px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1rem;
+    font-weight: 500;
+    animation: slideDown 0.3s ease-out;
+}
+
+.alert-top.alert-lock {
+    background: linear-gradient(135deg, rgba(231, 76, 60, 0.2), rgba(192, 57, 43, 0.1));
+    border: 2px solid rgba(231, 76, 60, 0.5);
+    color: #ff6b6b;
+}
+
+.alert-top.alert-success {
+    background: linear-gradient(135deg, rgba(46, 204, 113, 0.2), rgba(39, 174, 96, 0.1));
+    border: 2px solid rgba(46, 204, 113, 0.5);
+    color: #2ecc71;
+}
+
+.alert-top.alert-error {
+    background: linear-gradient(135deg, rgba(231, 76, 60, 0.2), rgba(192, 57, 43, 0.1));
+    border: 2px solid rgba(231, 76, 60, 0.5);
+    color: #e74c3c;
+}
+
+.alert-top i {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .alert-top {
+        margin: 0 16px 16px 16px;
+        padding: 14px 18px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .alert-top {
+        margin: 0 10px 12px 10px;
+        padding: 12px 14px;
+        font-size: 0.85rem;
+        gap: 10px;
+    }
+
+    .alert-top i {
+        font-size: 1rem;
+    }
+}
+
+/* ================================================
+   SIDEBAR STYLES - ENHANCED
+   ================================================ */
+.punishment-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Stats Card - Premium Design */
+.stats-card {
+    background: linear-gradient(135deg,
+            rgba(218, 165, 32, 0.15) 0%,
+            rgba(184, 134, 11, 0.08) 50%,
+            rgba(30, 30, 35, 0.95) 100%);
+    border: 2px solid rgba(218, 165, 32, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.stats-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(218, 165, 32, 0.1) 0%, transparent 70%);
+    animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.stats-card .card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: relative;
+    z-index: 1;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 18px;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4));
+    border-radius: 10px;
+    border-left: 4px solid var(--gold);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stat-item:hover {
+    transform: translateX(8px);
+    box-shadow: 0 6px 25px rgba(218, 165, 32, 0.3);
+    border-left-color: #FFD700;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 900;
+    font-family: 'Cinzel', serif;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+}
+
+.stat-value.safe {
+    color: #2ecc71;
+    text-shadow: 0 0 20px rgba(46, 204, 113, 0.5);
+}
+
+.stat-value.warning {
+    color: #f39c12;
+    text-shadow: 0 0 20px rgba(243, 156, 18, 0.5);
+}
+
+.stat-value.danger {
+    color: #e74c3c;
+    text-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.clean-record-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 18px;
+    background: linear-gradient(135deg,
+            rgba(46, 204, 113, 0.2),
+            rgba(39, 174, 96, 0.1));
+    border: 2px solid #2ecc71;
+    border-radius: 12px;
+    color: #2ecc71;
+    margin-top: 12px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    animation: glowPulse 3s ease-in-out infinite;
+    position: relative;
+    overflow: hidden;
+}
+
+.clean-record-badge::before {
+    content: '✨';
+    position: absolute;
+    font-size: 3rem;
+    opacity: 0.1;
+    right: -10px;
+    top: -10px;
+    animation: sparkle 4s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 15px rgba(46, 204, 113, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 30px rgba(46, 204, 113, 0.6);
+    }
+}
+
+@keyframes sparkle {
+
+    0%,
+    100% {
+        transform: rotate(0deg) scale(1);
+    }
+
+    50% {
+        transform: rotate(180deg) scale(1.2);
+    }
+}
+
+/* Active Punishments - Enhanced */
+.active-punishment-card {
+    border: 2px solid rgba(231, 76, 60, 0.5);
+    background: linear-gradient(135deg,
+            rgba(231, 76, 60, 0.15),
+            rgba(192, 57, 43, 0.08));
+}
+
+.active-punishment-item {
+    padding: 16px;
+    background: linear-gradient(135deg,
+            rgba(231, 76, 60, 0.2),
+            rgba(0, 0, 0, 0.5));
+    border-left: 4px solid #e74c3c;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.active-punishment-item::before {
+    content: '⚠️';
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2rem;
+    opacity: 0.2;
+}
+
+.active-punishment-item:hover {
+    transform: translateX(8px);
+    box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+}
+
+.active-punishment-item:last-child {
+    margin-bottom: 0;
+}
+
+.punishment-title {
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 8px;
+    font-size: 1.05rem;
+}
+
+.punishment-points {
+    color: #e74c3c;
+    font-size: 1rem;
+    font-weight: 900;
+    text-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
+}
+
+.punishment-end {
+    color: #bbb;
+    font-size: 0.85rem;
+    margin-top: 6px;
+    font-style: italic;
+}
+
+.no-active-card {
+    border: 2px solid rgba(46, 204, 113, 0.3);
+}
+
+.no-active-card .card-body {
+    padding: 40px 20px;
+}
+
+/* ================================================
+   MAIN CONTENT - PREMIUM CARDS
+   ================================================ */
+.punishment-main {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+.punishment-card {
+    background: linear-gradient(145deg, rgba(25, 25, 30, 0.9), rgba(15, 15, 20, 0.85));
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    box-shadow:
+        0 15px 35px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba(218, 165, 32, 0.05);
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    position: relative;
+    animation: fadeInUp 1s cubic-bezier(0.165, 0.84, 0.44, 1) calc(0.1s * var(--order, 1)) backwards;
+}
+
+.hero-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold) 20%, var(--gold) 80%, transparent);
+    box-shadow: 0 0 20px var(--gold-glow);
+}
+
+.hero-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 30px;
+}
+
+.greeting-section {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.greeting-emoji {
+    font-size: 2.8rem;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
+}
+
+.greeting-text .greeting-line {
+    color: #aaa;
+    font-size: 0.95rem;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.greeting-text .user-name-hero {
+    font-family: var(--font-head);
+    font-size: 2.5rem;
+    color: var(--gold);
+    margin: 5px 0 0 0;
+    background: linear-gradient(135deg, #FFD700, #DAA520, #B8860B);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 30px rgba(218, 165, 32, 0.3);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.back-btn-hero {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.back-btn-hero:hover {
+    background: var(--gold);
+    color: #000;
+    border-color: var(--gold);
+    transform: scale(1.1);
+}
+
+.hero-badges {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.sanctuary-badge {
+    background: linear-gradient(145deg, rgba(30, 30, 35, 0.9), rgba(20, 20, 25, 0.8));
+    border: 1px solid rgba(218, 165, 32, 0.3);
+    padding: 10px 20px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.sanctuary-badge i {
+    color: var(--gold);
+    font-size: 1.2rem;
+}
+
+.sanctuary-badge span {
+    font-size: 0.85rem;
+    color: #eee;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+.punishment-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 4px;
+    background: linear-gradient(90deg,
+            transparent,
+            var(--gold),
+            transparent);
+    animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        left: -100%;
+    }
+
+    50%,
+    100% {
+        left: 100%;
+    }
+}
+
+.punishment-card:hover {
+    border-color: rgba(212, 175, 55, 0.6);
+    box-shadow:
+        0 15px 60px rgba(0, 0, 0, 0.8),
+        0 0 100px rgba(218, 165, 32, 0.2);
+    transform: translateY(-4px);
+}
+
+.card-header {
+    padding: 28px 32px;
+    background: linear-gradient(135deg,
+            rgba(218, 165, 32, 0.15),
+            rgba(184, 134, 11, 0.08));
+    border-bottom: 3px solid rgba(218, 165, 32, 0.4);
+    position: relative;
+}
+
+.card-header::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg,
+            transparent,
+            var(--gold),
+            transparent);
+}
+
+.card-header h2,
+.card-header h3 {
+    font-family: 'Cinzel', serif;
+    color: var(--gold);
+    font-size: 1.5rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    text-shadow: 0 2px 15px rgba(218, 165, 32, 0.4);
+}
+
+.card-header h3 {
+    font-size: 1.2rem;
+}
+
+.header-subtitle {
+    color: #bbb;
+    font-size: 0.9rem;
+    margin: 8px 0 0 0;
+    font-style: italic;
+}
+
+.card-body {
+    padding: 32px;
+}
+
+/* ================================================
+   CODE OF CONDUCT - PREMIUM GRID
+   ================================================ */
+/* ================================================
+   CODE OF CONDUCT - PREMIUM GLASSMORPHISM
+   ================================================ */
+.conduct-card {
+    animation: fadeInUp 1s cubic-bezier(0.165, 0.84, 0.44, 1) 0.3s backwards;
+}
+
+.code-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 25px;
+}
+
+.code-category {
+    background: linear-gradient(145deg, rgba(30, 30, 35, 0.8), rgba(20, 20, 25, 0.7));
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 18px;
+    padding: 25px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.code-category:hover {
+    transform: translateY(-8px) scale(1.02);
+    border-color: var(--gold);
+    box-shadow: 0 15px 45px rgba(218, 165, 32, 0.2);
+    background: rgba(40, 40, 45, 0.9);
+}
+
+.code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(218, 165, 32, 0.2);
+}
+
+.code-header h4 {
+    font-family: var(--font-head);
+    color: var(--gold);
+    font-size: 1.1rem;
+    margin: 0;
+    letter-spacing: 1px;
+}
+
+.severity-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.severity-badge.high {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: #fff;
+    box-shadow: 0 0 15px rgba(231, 76, 60, 0.4);
+}
+
+.severity-badge.medium {
+    background: linear-gradient(135deg, #f39c12, #d35400);
+    color: #000;
+    box-shadow: 0 0 15px rgba(243, 156, 18, 0.4);
+}
+
+.severity-badge.low {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    color: #000;
+    box-shadow: 0 0 15px rgba(46, 204, 113, 0.4);
+}
+
+.code-rules {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.code-rules li {
+    padding: 10px 0;
+    color: #ccc;
+    font-size: 0.9rem;
+    display: flex;
+    gap: 12px;
+    line-height: 1.5;
+}
+
+.code-rules li i {
+    color: var(--gold);
+    margin-top: 3px;
+    font-size: 1rem;
+}
+
+.code-points {
+    background: rgba(218, 165, 32, 0.1);
+    border-left: 3px solid var(--gold);
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    color: #aaa;
+}
+
+.code-points strong {
+    color: var(--gold);
+    font-family: var(--font-head);
+    font-size: 1rem;
+    margin-left: 5px;
+}
+
+/* ================================================
+   PUNISHMENT HISTORY - PREMIUM TABLE
+   ================================================ */
+.history-table {
+    overflow-x: auto;
+    border-radius: 12px;
+    box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.3);
+}
+
+.history-table table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.history-table thead {
+    background: linear-gradient(135deg,
+            rgba(218, 165, 32, 0.2),
+            rgba(184, 134, 11, 0.1));
+}
+
+.history-table th {
+    padding: 18px 20px;
+    text-align: left;
+    color: var(--gold);
+    font-family: 'Cinzel', serif;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 800;
+    border-bottom: 3px solid rgba(218, 165, 32, 0.4);
+    text-shadow: 0 2px 10px rgba(218, 165, 32, 0.3);
+}
+
+.history-table td {
+    padding: 18px 20px;
+    color: #ddd;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.95rem;
+}
+
+.history-table tr {
+    transition: all 0.3s ease;
+}
+
+.history-table tbody tr:hover {
+    background: linear-gradient(135deg,
+            rgba(218, 165, 32, 0.1),
+            rgba(184, 134, 11, 0.05));
+    transform: scale(1.01);
+}
+
+.points-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    border: 2px solid #e74c3c;
+    border-radius: 20px;
+    color: #fff;
+    font-weight: 900;
+    font-size: 0.85rem;
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.status-badge.active {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    border: 2px solid #e74c3c;
+    color: #fff;
+}
+
+.status-badge.completed {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    border: 2px solid #2ecc71;
+    color: #000;
+}
+
+.status-badge.pending {
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+    border: 2px solid #f39c12;
+    color: #000;
+}
+
+/* Empty State - Enhanced */
+.empty-state {
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.empty-state i {
+    color: var(--gold);
+    margin-bottom: 24px;
+    opacity: 0.6;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.empty-state h3 {
+    font-family: 'Cinzel', serif;
+    color: var(--gold);
+    font-size: 1.8rem;
+    margin: 24px 0 12px 0;
+    text-shadow: 0 2px 20px rgba(218, 165, 32, 0.4);
+}
+
+.empty-state p {
+    color: #aaa;
+    font-size: 1.05rem;
+    line-height: 1.6;
+}
+
+/* ================================================
+   RESPONSIVE DESIGN
+   ================================================ */
+@media (max-width: 1200px) {
+    .punishment-main-content {
+        grid-template-columns: 340px 1fr;
+        gap: 24px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .punishment-main-content {
+        grid-template-columns: 1fr;
+    }
+
+    .punishment-sidebar {
+        order: 2;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        flex-direction: row;
+    }
+
+    .punishment-main {
+        order: 1;
+    }
+}
+
+/* ================================================
+   RESPONSIVE DESIGN - MOBILE OPTIMIZATION
+   ================================================ */
+
+/* Tablets & Small Laptops (Landscape) */
+@media (max-width: 1024px) {
+    .punishment-main-content {
+        grid-template-columns: 1fr;
+        padding: 20px 40px;
+    }
+
+    .punishment-sidebar {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+    }
+}
+
+/* Tablets (Portrait) & Large Phones */
+@media (max-width: 768px) {
+    .hero-header {
+        margin: 10px 15px 20px 15px;
+        padding: 25px 20px;
+        border-radius: 18px;
+    }
+
+    .hero-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .hero-badges {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .greeting-emoji {
+        font-size: 2rem;
+    }
+
+    .greeting-text .user-name-hero {
+        font-size: 1.8rem;
+    }
+
+    .punishment-main-content {
+        padding: 15px;
+        padding-bottom: 100px;
+        /* Space for bottom nav */
+    }
+
+    .punishment-sidebar {
+        grid-template-columns: 1fr;
+    }
+
+    /* Table Stacking Logic */
+    .history-table table,
+    .history-table thead,
+    .history-table tbody,
+    .history-table th,
+    .history-table td,
+    .history-table tr {
+        display: block;
+    }
+
+    .history-table thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    .history-table tr {
+        border: 1px solid var(--glass-border);
+        margin-bottom: 15px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.02);
+        padding: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .history-table td {
+        border: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        position: relative;
+        padding-left: 45%;
+        text-align: right;
+        min-height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    .history-table td:last-child {
+        border-bottom: none;
+    }
+
+    .history-table td:before {
+        position: absolute;
+        left: 10px;
+        width: 40%;
+        white-space: nowrap;
+        text-align: left;
+        font-weight: bold;
+        color: var(--gold);
+        content: attr(data-label);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .points-badge {
+        margin-left: auto;
+    }
+}
+
+/* Small Phones */
+@media (max-width: 480px) {
+    .greeting-text .user-name-hero {
+        font-size: 1.5rem;
+    }
+
+    .hero-header {
+        padding: 20px 15px;
+    }
+
+    .anubis-panel {
+        padding: 20px;
+    }
+
+    .btn-anubis {
+        padding: 18px;
+        /* Larger touch target */
+    }
+
+    .code-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .severity-badge {
+        font-size: 0.6rem;
+        padding: 4px 8px;
+    }
+
+    .punishment-main-content {
+        padding: 10px;
+    }
+}
+
+/* Extra Small Screens */
+@media (max-width: 380px) {
+    .hero-badges {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .sanctuary-badge {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ================================================
+   ANUBIS PANEL & FORM STYLES
+   (Extracted from inline <style> in punishment.php)
+   ================================================ */
+/* --- ANUBIS PANEL & FORM STYLES (PREMIUM REDESIGN) --- */
+.anubis-panel {
+    background: linear-gradient(145deg, rgba(25, 25, 30, 0.95), rgba(15, 15, 20, 0.9));
+    border: 2px solid rgba(218, 165, 32, 0.3);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+
+.anubis-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(to bottom, var(--gold), var(--gold-dark));
+}
+
+.anubis-panel h3 {
+    font-family: var(--font-head);
+    color: var(--gold);
+    font-size: 1.35rem;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+.panel-subtitle {
+    color: #888;
+    font-size: 0.85rem;
+    margin-bottom: 25px;
+    font-style: italic;
+}
+
+.anubis-form .form-group {
+    margin-bottom: 20px;
+}
+
+.anubis-form label {
+    display: block;
+    color: #aaa;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.anubis-form .form-control {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 12px 15px;
+    color: #fff;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.anubis-form .form-control:focus {
+    outline: none;
+    border-color: var(--gold);
+    background: rgba(0, 0, 0, 0.6);
+    box-shadow: 0 0 15px rgba(218, 165, 32, 0.15);
+}
+
+.btn-anubis {
+    width: 100%;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    border: none;
+    border-radius: 12px;
+    padding: 15px;
+    color: #000;
+    font-weight: 800;
+    font-family: var(--font-head);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.btn-anubis:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 10px 25px rgba(218, 165, 32, 0.4);
+}
+
+.btn-release {
+    background: rgba(46, 204, 113, 0.1);
+    color: #2ecc71;
+    border: 1px solid rgba(46, 204, 113, 0.3);
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+.btn-release:hover {
+    background: #2ecc71;
+    color: #000;
+}

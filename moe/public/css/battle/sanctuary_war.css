@@ -1,0 +1,780 @@
+/* ================================================
+   Sanctuary War V3 - Supreme Glassmorphism Edition
+   Luxury, Cinematic, and Ultra-Fidelity (Modern RWD Refactor)
+   ================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@1,900&display=swap');
+
+:root {
+    --war-gold: #ffcc00;
+    --war-gold-soft: #ffe566;
+    --war-gold-deep: #b8860b;
+    --war-purple-luxury: #1a0b2e;
+    --war-glass-v3: rgba(255, 255, 255, 0.04);
+    --war-glass-border: rgba(255, 255, 255, 0.12);
+    --war-accent-blue: #4ecca3;
+    --war-accent-crimson: #ff2e63;
+    --glass-blur: blur(2.2rem);
+    --base-padding: clamp(1rem, 5vw, 3rem);
+}
+
+/* Base Tab Overhaul */
+#tab-war {
+    position: relative;
+    background: #05020a;
+    min-height: 85vh;
+    color: #fff;
+    font-family: 'Outfit', sans-serif;
+    overflow-x: hidden;
+}
+
+/* V3 Background: Nebula & Stardust */
+.war-v3-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.nebula-cloud {
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    top: -50%;
+    left: -50%;
+    background: radial-gradient(circle at center, rgba(82, 33, 108, 0.2) 0%, transparent 60%);
+    filter: blur(5rem);
+    animation: nebulaDrift 30s linear infinite;
+}
+
+.nebula-cloud-2 {
+    background: radial-gradient(circle at center, rgba(33, 44, 108, 0.15) 0%, transparent 50%);
+    animation-direction: reverse;
+    animation-duration: 45s;
+}
+
+@keyframes nebulaDrift {
+    0% {
+        transform: rotate(0deg) scale(1);
+    }
+
+    50% {
+        transform: rotate(180deg) scale(1.1);
+    }
+
+    100% {
+        transform: rotate(360deg) scale(1);
+    }
+}
+
+.stardust-layer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image:
+        radial-gradient(1px 1px at 20px 30px, #fff, rgba(0, 0, 0, 0)),
+        radial-gradient(1px 1px at 40px 70px, rgba(255, 255, 255, 0.5), rgba(0, 0, 0, 0)),
+        radial-gradient(2px 2px at 90px 40px, #fff, rgba(0, 0, 0, 0));
+    background-size: 12.5rem 12.5rem;
+    opacity: 0.3;
+}
+
+/* V3 Main Container */
+.war-v3-container {
+    position: relative;
+    z-index: 1;
+    padding: var(--base-padding);
+    max-width: 75rem;
+    /* ~1200px */
+    margin: 0 auto;
+}
+
+/* Supreme Glass Tiles */
+.glass-tile-v3 {
+    background: var(--war-glass-v3);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--war-glass-border);
+    border-radius: 1.5rem;
+    box-shadow:
+        0 0.5rem 2rem 0 rgba(0, 0, 0, 0.8),
+        inset 0 0 1px 1px rgba(255, 255, 255, 0.05);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+}
+
+.glass-tile-v3::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.05), transparent);
+    transform: skewX(-25deg);
+    animation: glassSweep 6s infinite;
+}
+
+@keyframes glassSweep {
+    0% {
+        left: -100%;
+    }
+
+    20% {
+        left: 200%;
+    }
+
+    100% {
+        left: 200%;
+    }
+}
+
+/* CHAMPION HERO BOX */
+.v3-champ-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: clamp(2rem, 8vh, 4rem) 1rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.v3-prestige-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.4rem;
+    color: var(--war-gold);
+    margin-bottom: 1rem;
+    font-weight: 800;
+    opacity: 0.9;
+}
+
+.v3-champ-name {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.8rem, 10vw, 3.5rem);
+    font-weight: 900;
+    background: linear-gradient(135deg, #fff 30%, var(--war-gold) 60%, var(--war-gold-soft) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 1rem rgba(255, 204, 0, 0.4));
+    margin: 0.5rem 0;
+    line-height: 1.2;
+}
+
+.v3-timer-display {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--war-accent-crimson);
+    padding: 0.6rem 2rem;
+    border-radius: 6rem;
+    color: var(--war-accent-crimson);
+    font-weight: 800;
+    font-size: 0.9rem;
+    box-shadow: 0 0 1.2rem rgba(255, 46, 99, 0.2);
+}
+
+/* V3 DASHBOARD GRID */
+.v3-war-dashboard {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+/* Natural Breakpoint for 2-column layout */
+@media (min-width: 56rem) {
+
+    /* ~900px */
+    .v3-war-dashboard {
+        grid-template-columns: 1.5fr 1fr;
+    }
+}
+
+/* LEADERBOARD MODULE */
+.v3-module-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid var(--war-glass-border);
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.v3-module-header h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    letter-spacing: 0.1rem;
+}
+
+.allegiance-pill {
+    font-size: 0.7rem;
+    opacity: 0.8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.allegiance-pill span {
+    color: var(--war-gold);
+    font-weight: 800;
+}
+
+.v3-standings-scroll {
+    padding: 1rem;
+    max-height: 32rem;
+    overflow-y: auto;
+}
+
+.v3-standings-scroll::-webkit-scrollbar {
+    width: 0.25rem;
+}
+
+.v3-standings-scroll::-webkit-scrollbar-thumb {
+    background: var(--war-gold);
+    border-radius: 0.5rem;
+}
+
+.v3-row {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 1rem;
+    margin-bottom: 0.8rem;
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+    max-width: 45rem;
+    /* Prevents extreme stretching on wide screens */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.v3-row:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 204, 0, 0.3);
+    transform: scale(1.02);
+}
+
+.v3-row-rank {
+    width: 2.2rem;
+    height: 2.2rem;
+    background: #000;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 0.85rem;
+    margin-right: 1rem;
+    border: 1px solid var(--war-glass-border);
+    flex-shrink: 0;
+}
+
+.rank-1 .v3-row-rank {
+    background: var(--war-gold);
+    color: #000;
+    box-shadow: 0 0 1rem var(--war-gold);
+}
+
+.v3-row-name {
+    font-weight: 600;
+    flex-grow: 1;
+    font-size: clamp(0.9rem, 2vw, 1.05rem);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 0.5rem;
+}
+
+.v3-row-pts {
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.v3-row-pts .val {
+    display: block;
+    font-weight: 800;
+    color: var(--war-gold);
+    font-size: 1.1rem;
+}
+
+.v3-row-pts .lbl {
+    display: block;
+    font-size: 0.55rem;
+    text-transform: uppercase;
+    opacity: 0.5;
+}
+
+/* STATS MODULES */
+.v3-stats-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.v3-stat-tile {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.v3-battle-ready {
+    background: linear-gradient(135deg, rgba(255, 46, 99, 0.1), rgba(138, 35, 135, 0.1));
+}
+
+.v3-btn-battle {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #ff2e63 0%, #8a2387 100%);
+    border: none;
+    border-radius: 1rem;
+    color: #fff;
+    font-family: 'Cinzel', serif;
+    font-weight: 900;
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    letter-spacing: 0.15rem;
+    cursor: pointer;
+    box-shadow: 0 0.6rem 2rem rgba(255, 46, 99, 0.3);
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+}
+
+.v3-btn-battle:hover:not(:disabled) {
+    transform: translateY(-0.2rem);
+    box-shadow: 0 1rem 2.5rem rgba(255, 46, 99, 0.5);
+}
+
+.v3-btn-battle:disabled {
+    filter: grayscale(1);
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.contrib-grid-v2 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 1rem 0;
+    gap: 0.5rem;
+}
+
+.contrib-item-v2 .num {
+    display: block;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--war-gold);
+}
+
+.contrib-item-v2 .lbl {
+    font-size: 0.55rem;
+    opacity: 0.6;
+    text-transform: uppercase;
+}
+
+/* INACTIVE V3 - COSMIC ALIGNMENT */
+.v3-inactive-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: clamp(3rem, 10vh, 6rem) 1rem;
+    text-align: center;
+}
+
+.v3-portal-visual {
+    position: relative;
+    width: clamp(9rem, 30vw, 12.5rem);
+    height: clamp(9rem, 30vw, 12.5rem);
+    margin-bottom: 2rem;
+}
+
+.v3-portal-ring {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 1px solid rgba(255, 204, 0, 0.3);
+    border-radius: 50%;
+    animation: portalPulse 5s infinite ease-in-out;
+}
+
+.v3-portal-ring:nth-child(2) {
+    animation-delay: 1.5s;
+    width: 80%;
+    height: 80%;
+    top: 10%;
+    left: 10%;
+}
+
+.v3-portal-ring:nth-child(3) {
+    animation-delay: 3s;
+    width: 60%;
+    height: 60%;
+    top: 20%;
+    left: 20%;
+}
+
+@keyframes portalPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.3;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 0.7;
+        box-shadow: 0 0 2.5rem rgba(255, 204, 0, 0.4);
+    }
+}
+
+.v3-portal-core {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+    width: 70%;
+}
+
+.v3-portal-core img {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 0 2rem rgba(255, 204, 0, 0.6));
+    animation: v3Float 4s ease-in-out infinite;
+}
+
+@keyframes v3Float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-0.8rem);
+    }
+}
+
+.v3-inactive-hero h2 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(2rem, 8vw, 3.5rem);
+    letter-spacing: 0.2rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(to bottom, #fff, var(--war-gold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.v3-inactive-desc {
+    opacity: 0.7;
+    max-width: 28rem;
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+.v3-next-alignment {
+    margin-top: 2rem;
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    color: var(--war-gold);
+    letter-spacing: 1px;
+}
+
+/* RECAP GRID V3 */
+.v3-recap-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    width: 100%;
+    max-width: 60rem;
+}
+
+@media (min-width: 45rem) {
+
+    /* ~720px */
+    .v3-recap-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.recap-card-v2 {
+    padding: 2.5rem;
+}
+
+.recap-hero {
+    margin-top: 2rem;
+}
+
+.recap-badge {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    font-size: 0.6rem;
+    background: var(--war-gold);
+    color: #000;
+    padding: 0.3rem 0.8rem;
+    border-radius: 100px;
+    font-weight: 900;
+}
+
+.recap-score {
+    font-weight: 800;
+    color: var(--war-gold);
+    letter-spacing: 2px;
+    font-size: 1.1rem;
+}
+
+.standings-panel-v2 {
+    padding: 1.5rem;
+}
+
+.v3-legacy-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: var(--war-gold);
+}
+
+.mini-row-v2 {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 0.8rem;
+    border-radius: 0.75rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.mini-row-v2 .name {
+    font-weight: 600;
+}
+
+.mini-row-v2 .pts {
+    color: var(--war-gold);
+    font-weight: 800;
+}
+
+/* Dynamic JS Helpers */
+.v3-empty-state {
+    padding: 2rem;
+    text-align: center;
+    opacity: 0.4;
+}
+
+.v3-row-animated {
+    animation-delay: var(--d);
+}
+
+/* V3 TICKETS */
+.v3-ticket-row {
+    display: flex;
+    justify-content: center;
+    gap: clamp(0.5rem, 3vw, 1.5rem);
+    margin: 1.5rem 0;
+}
+
+.v3-token {
+    font-size: clamp(1.8rem, 5vw, 2.5rem);
+    filter: drop-shadow(0 0 0.5rem var(--war-gold));
+    transition: all 0.3s;
+}
+
+.v3-token.used {
+    opacity: 0.15;
+    filter: grayscale(1) blur(1px);
+    transform: scale(0.85);
+}
+
+/* RESULT MODAL */
+.war-result-modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(1rem);
+    padding: 1rem;
+}
+
+.v3-result-content {
+    max-width: 26rem;
+    width: 100%;
+    padding: clamp(2rem, 10vh, 3.5rem) 1.5rem;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.v3-result-icon {
+    font-size: 4.5rem;
+    margin-bottom: 1.5rem;
+    filter: drop-shadow(0 0 1.2rem var(--war-gold));
+}
+
+.v3-result-modal-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    margin-bottom: 2rem;
+    background: linear-gradient(to bottom, #fff, var(--war-gold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.v3-result-modal-title.won {
+    background: linear-gradient(to bottom, #fff, var(--war-gold));
+}
+
+.v3-result-modal-title.lost {
+    background: linear-gradient(to bottom, #fff, var(--war-accent-crimson));
+}
+
+.v3-result-rewards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+}
+
+.reward-item {
+    padding: 1rem;
+    background: rgba(255, 204, 0, 0.05);
+    border-radius: 1rem;
+}
+
+.reward-val {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--war-gold);
+}
+
+.reward-lbl {
+    font-size: 0.55rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.6;
+}
+
+.v3-btn-continue {
+    font-size: 0.9rem;
+}
+
+/* ANIMATIONS */
+.v3-fade-up {
+    animation: v3FadeUp 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+
+@keyframes v3FadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(2rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* DESKTOP OPTIMIZATION: REMOVE DOUBLE SCROLLBAR */
+@media (min-width: 56.25rem) {
+
+    /* 900px */
+    html {
+        overflow-y: auto !important;
+        height: auto !important;
+    }
+
+    body {
+        overflow: visible !important;
+        height: auto !important;
+    }
+
+    .app-container,
+    .main-content,
+    #tab-war {
+        overflow: visible !important;
+        height: auto !important;
+    }
+
+    .war-v3-container {
+        padding-bottom: 5rem;
+    }
+}
+
+/* V3 LOADING STATE & OVERLAP FIX */
+.v3-loading-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10, 10, 15, 0.4);
+    backdrop-filter: blur(10px);
+    z-index: 100;
+    transition: opacity 0.5s ease, visibility 0.5s;
+    pointer-events: all;
+}
+
+.v3-loading-overlay[style*="opacity: 0"] {
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.v3-loader-ring {
+    width: 60px;
+    height: 60px;
+    border: 4px solid rgba(255, 215, 0, 0.1);
+    border-top: 4px solid var(--accent-gold);
+    border-radius: 50%;
+    animation: v3-spin 1s linear infinite;
+}
+
+@keyframes v3-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.v3-loader-text {
+    margin-top: 1.5rem;
+    font-family: var(--font-fancy);
+    letter-spacing: 0.2rem;
+    color: var(--accent-gold);
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+    font-size: 0.8rem;
+    animation: v3-pulse 2s infinite ease-in-out;
+}
+
+@keyframes v3-pulse {
+
+    0%,
+    100% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+.war-v3-inner {
+    will-change: opacity;
+}
+
+/* OVERLAP FIX: Clearance for fixed bottom nav */
+#tab-war {
+    padding-bottom: 9rem !important;
+    /* Definitive clearance for all viewports */
+}

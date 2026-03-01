@@ -1,0 +1,419 @@
+﻿:root {
+            --gold: #DAA520;
+            --gold-glow: rgba(218, 165, 32, 0.5);
+            --dark-bg: #0a0a0a;
+            --panel-bg: rgba(10, 10, 10, 0.85);
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: #fff;
+            font-family: 'Lato', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .guild-header {
+            height: 70vh;
+            min-height: 500px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+            background: linear-gradient(180deg, rgba(10, 10, 10, 0) 0%, rgba(10, 10, 10, 0.8) 80%, rgba(10, 10, 10, 1) 100%);
+        }
+
+        .guild-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, transparent 0%, rgba(10, 10, 10, 0.7) 100%);
+            z-index: 1;
+        }
+
+        .guild-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.6;
+            filter: blur(2px) brightness(0.8) saturate(1.1);
+            z-index: 0;
+        }
+
+        .guild-title-wrapper {
+            position: relative;
+            z-index: 2;
+        }
+
+        .guild-emblem {
+            width: 180px;
+            height: auto;
+            filter: drop-shadow(0 0 40px var(--gold-glow)) drop-shadow(0 0 60px rgba(218, 165, 32, 0.3));
+            margin-bottom: 1.5rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .guild-name {
+            font-family: 'Cinzel', serif;
+            font-size: 4rem;
+            background: linear-gradient(180deg, #FFD700 0%, #DAA520 50%, #B8860B 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-transform: uppercase;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.8));
+            margin: 0;
+            letter-spacing: 4px;
+        }
+
+        .guild-stats {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin-top: 1rem;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .stat-item i {
+            color: var(--gold);
+            margin-right: 5px;
+        }
+
+        .guild-section {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .guild-section::after {
+            content: '';
+            display: block;
+            width: 80%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(218, 165, 32, 0.5), transparent);
+            margin: 4rem auto 0;
+            opacity: 0.3;
+        }
+
+        .section-title {
+            text-align: center;
+            font-family: 'Cinzel', serif;
+            font-size: 2.5rem;
+            color: var(--gold);
+            margin-bottom: 3.5rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(218, 165, 32, 0.5);
+        }
+
+        .section-title::before,
+        .section-title::after {
+            content: '';
+            position: relative;
+            flex: 1;
+            max-width: 60px;
+            min-width: 20px;
+            height: 2px;
+            border-radius: 2px;
+        }
+
+        .section-title::before {
+            background: linear-gradient(90deg, transparent, var(--gold));
+        }
+
+        .section-title::after {
+            background: linear-gradient(90deg, var(--gold), transparent);
+        }
+
+        .throne-room {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+            align-items: flex-start;
+        }
+
+        .leader-card {
+            background: linear-gradient(160deg, rgba(20, 20, 25, 0.95), rgba(40, 35, 20, 0.9));
+            border: 1px solid rgba(218, 165, 32, 0.4);
+            border-radius: 12px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            width: 320px;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+        }
+
+        .leader-card.hosa-card {
+            transform: scale(1.05);
+            border: 2px solid var(--gold);
+            background: linear-gradient(160deg, rgba(30, 30, 35, 0.95), rgba(60, 50, 20, 0.9));
+            box-shadow: 0 0 40px rgba(218, 165, 32, 0.15), 0 10px 30px rgba(0, 0, 0, 0.7);
+            z-index: 2;
+        }
+
+        .leader-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--gold);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 25px rgba(218, 165, 32, 0.3);
+        }
+
+        .leader-card.hosa-card:hover {
+            transform: scale(1.05) translateY(-8px);
+        }
+
+        .role-badge {
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(45deg, #DAA520, #F0E68C, #DAA520);
+            color: #000;
+            padding: 8px 25px;
+            border-radius: 4px;
+            font-family: 'Cinzel', serif;
+            font-weight: 900;
+            font-size: 0.9rem;
+            box-shadow: 0 0 20px rgba(218, 165, 32, 0.6);
+            letter-spacing: 1px;
+            clip-path: polygon(10% 0, 90% 0, 100% 50%, 90% 100%, 10% 100%, 0% 50%);
+            width: 120px;
+            text-align: center;
+        }
+
+        .leader-avatar-wrapper {
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .leader-avatar-wrapper::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, transparent, var(--gold), transparent);
+            z-index: -1;
+            animation: spin 3s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .leader-avatar {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            border: 4px solid #1a1a1a;
+            object-fit: cover;
+            background: #222;
+        }
+
+        .leader-avatar-fallback {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #2a2a35, #1a1a25);
+            color: var(--gold);
+            font-size: 3rem;
+        }
+
+        .leader-name {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #fff;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
+            background: linear-gradient(to bottom, #fff, #ddd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .leader-username {
+            color: var(--gold);
+            font-style: italic;
+            font-size: 0.95rem;
+            opacity: 0.8;
+        }
+
+        .barracks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .member-card {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            background: linear-gradient(135deg, rgba(30, 30, 35, 0.6) 0%, rgba(20, 20, 25, 0.8) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 1.2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .member-card::before {
+            content: '';
+            position: absolute;
+            top: 15%;
+            left: 0;
+            bottom: 15%;
+            width: 3px;
+            background: var(--gold);
+            border-radius: 0 4px 4px 0;
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+
+        .member-card:hover {
+            transform: translateX(5px);
+            background: linear-gradient(135deg, rgba(40, 40, 45, 0.8), rgba(30, 30, 35, 0.9));
+            border-color: rgba(218, 165, 32, 0.4);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .member-card:hover::before {
+            opacity: 1;
+            box-shadow: 0 0 10px var(--gold);
+        }
+
+        .member-avatar {
+            width: 55px;
+            height: 55px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 2px solid rgba(218, 165, 32, 0.2);
+            transition: border-color 0.3s;
+        }
+
+        .member-card:hover .member-avatar {
+            border-color: var(--gold);
+        }
+
+        .avatar-fallback {
+            display: none;
+            width: 55px;
+            height: 55px;
+            border-radius: 8px;
+            background: #222;
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+
+        .member-info {
+            flex: 1;
+        }
+
+        .member-name {
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            color: #ddd;
+            font-size: 1.1rem;
+            margin-bottom: 2px;
+        }
+
+        .member-username {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.4);
+            font-style: italic;
+        }
+
+        .member-pp {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            font-weight: bold;
+            font-size: 0.95rem;
+            text-shadow: 0 0 5px rgba(218, 165, 32, 0.3);
+        }
+
+        .back-link {
+            display: inline-block;
+            padding: 12px 30px;
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            text-decoration: none;
+            border-radius: 4px;
+            font-family: 'Cinzel', serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .back-link:hover {
+            background: var(--gold);
+            color: #0d0d0d;
+            box-shadow: 0 0 20px rgba(218, 165, 32, 0.4);
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .guild-name {
+                font-size: 2.5rem;
+            }
+
+            .throne-room {
+                gap: 3rem;
+            }
+
+            .leader-card,
+            .leader-card.hosa-card {
+                width: 100%;
+                max-width: 350px;
+                transform: none;
+            }
+
+            .leader-card.hosa-card:hover {
+                transform: translateY(-5px);
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+        }
