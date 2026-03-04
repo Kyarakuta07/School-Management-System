@@ -1073,19 +1073,23 @@ function endGame(isFail) {
 }
 
 function exitGame() {
-    if (GameState.isPlaying || GameState.isPaused) {
-        if (!confirm('Exit game? Your progress will be lost.')) {
-            return;
-        }
-        GameState.isPlaying = false;
-        GameState.isPaused = false;
-        stopAudio();
+    if (GameState.isPlaying && !GameState.isPaused) {
+        // First tap: pause the game and show pause menu
+        togglePause();
+        return;
     }
 
-    // Hide pause overlay if visible
-    const pauseOverlay = document.getElementById('pause-overlay');
-    if (pauseOverlay) pauseOverlay.classList.add('hidden');
+    if (GameState.isPaused) {
+        // From pause menu: forfeit — submit score as fail and show results
+        GameState.isPaused = false;
+        const pauseOverlay = document.getElementById('pause-overlay');
+        if (pauseOverlay) pauseOverlay.classList.add('hidden');
 
+        endGame(true); // Forfeit = fail, shows result screen
+        return;
+    }
+
+    // Not playing (e.g. on result screen) — just go back
     returnToSongSelect();
 }
 

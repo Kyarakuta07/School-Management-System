@@ -93,15 +93,16 @@
     <div class="overlay hidden" id="pause-overlay">
         <div class="overlay-content">
             <h1 style="font-size: 2rem; color: #DAA520; margin-bottom: 8px;">⏸ PAUSED</h1>
-            <p style="color: rgba(255,255,255,0.5); margin-bottom: 24px; font-size: 0.9rem;">Press ESC or tap to resume
+            <p style="color: rgba(255,255,255,0.5); margin-bottom: 24px; font-size: 0.9rem;">Press ESC or tap Resume to
+                continue
             </p>
             <div style="display: flex; flex-direction: column; gap: 12px; align-items: center;">
                 <button class="start-btn" onclick="togglePause()" style="min-width: 200px;">
                     <i class="fas fa-play"></i> Resume
                 </button>
                 <button class="return-btn" onclick="exitGame()"
-                    style="min-width: 200px; background: rgba(255,255,255,0.1); color: #ccc;">
-                    <i class="fas fa-door-open"></i> Quit
+                    style="min-width: 200px; background: rgba(231, 76, 60, 0.2); border: 1px solid rgba(231, 76, 60, 0.4); color: #e74c3c;">
+                    <i class="fas fa-flag"></i> Forfeit
                 </button>
             </div>
         </div>
