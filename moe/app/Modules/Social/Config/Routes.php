@@ -13,4 +13,5 @@ $routes->group('', ['namespace' => 'App\Modules\Social\Controllers\Api'], functi
     $routes->post('rhythm/score', 'RhythmController::submitScore');
     $routes->get('rhythm/highscore', 'RhythmController::highscore');
     $routes->post('rhythm/import', 'ImportController::importOsz', ['filter' => 'auth:vasiki']);
+    $routes->post('rhythm/delete-song', 'ImportController::deleteSong', ['filter' => 'auth:vasiki']);
 });

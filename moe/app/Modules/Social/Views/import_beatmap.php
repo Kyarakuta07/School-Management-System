@@ -123,6 +123,101 @@
         .back-link:hover {
             text-decoration: underline;
         }
+
+        /* ── Song Manager ── */
+        .song-manager {
+            margin-top: 40px;
+        }
+
+        .song-manager h2 {
+            color: #DAA520;
+            margin-bottom: 16px;
+            font-size: 1.2rem;
+        }
+
+        .song-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .song-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 12px 14px;
+            transition: all 0.2s;
+        }
+
+        .song-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .song-item-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .song-item-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .song-item-meta {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.4);
+            margin-top: 2px;
+        }
+
+        .song-item-id {
+            font-size: 0.65rem;
+            color: rgba(255, 255, 255, 0.2);
+            flex-shrink: 0;
+        }
+
+        .btn-delete {
+            padding: 6px 14px;
+            background: rgba(245, 101, 101, 0.15);
+            border: 1px solid rgba(245, 101, 101, 0.3);
+            border-radius: 8px;
+            color: #fc8181;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            font-family: inherit;
+        }
+
+        .btn-delete:hover {
+            background: rgba(245, 101, 101, 0.3);
+            border-color: #f56565;
+        }
+
+        .btn-delete:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .song-list-empty {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.3);
+            padding: 24px;
+        }
+
+        .song-list-loading {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.3);
+            padding: 24px;
+        }
     </style>
 </head>
 
@@ -145,6 +240,14 @@
 
         <div class="status" id="status"></div>
 
+        <!-- Song Manager -->
+        <div class="song-manager">
+            <h2><i class="fas fa-music"></i> Manage Songs</h2>
+            <div class="song-list" id="songList">
+                <div class="song-list-loading"><i class="fas fa-spinner fa-spin"></i> Loading songs...</div>
+            </div>
+        </div>
+
         <a href="<?= base_url('rhythm-game') ?>" class="back-link">
             <i class="fas fa-arrow-left"></i> Kembali ke Game
         </a>
@@ -152,10 +255,97 @@
 
     <script>
         const IMPORT_API_URL = '<?= base_url('api/rhythm/import') ?>';
+        const SONGS_API_URL = '<?= base_url('api/rhythm/songs') ?>';
+        const DELETE_API_URL = '<?= base_url('api/rhythm/delete-song') ?>';
         const csrfName = '<?= csrf_token() ?>';
         let csrfHash = '<?= csrf_hash() ?>';
     </script>
     <script src="<?= base_url('js/social/import_beatmap.js') ?>"></script>
+    <script>
+        // ── Song List Management ──
+        async function loadSongList() {
+            const container = document.getElementById('songList');
+            try {
+                const res = await fetch(SONGS_API_URL);
+                const data = await res.json();
+
+                if (!data.success || !data.songs || data.songs.length === 0) {
+                    container.innerHTML = '<div class="song-list-empty">No songs uploaded yet.</div>';
+                    return;
+                }
+
+                container.innerHTML = data.songs.map(song => `
+                    <div class="song-item" id="song-${song.id}">
+                        <div class="song-item-info">
+                            <div class="song-item-title">${escHtml(song.title)}</div>
+                            <div class="song-item-meta">${escHtml(song.artist)} · ${song.bpm} BPM · ${song.difficulty}</div>
+                        </div>
+                        <span class="song-item-id">#${song.id}</span>
+                        <button class="btn-delete" onclick="deleteSong(${song.id}, '${escHtml(song.title)}')" title="Delete Song">
+                            <i class="fas fa-trash-alt"></i> Delete
+                        </button>
+                    </div>
+                `).join('');
+            } catch (e) {
+                container.innerHTML = '<div class="song-list-empty">Failed to load songs.</div>';
+            }
+        }
+
+        async function deleteSong(songId, title) {
+            if (!confirm(`Delete "${title}"?\n\nThis will also delete all scores and the audio file. This cannot be undone.`)) {
+                return;
+            }
+
+            const btn = document.querySelector(`#song-${songId} .btn-delete`);
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            }
+
+            try {
+                const fetchFn = typeof fetchWithCsrf === 'function' ? fetchWithCsrf : fetch;
+                const res = await fetchFn(DELETE_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ song_id: songId })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    const el = document.getElementById(`song-${songId}`);
+                    if (el) {
+                        el.style.transition = 'all 0.3s';
+                        el.style.opacity = '0';
+                        el.style.transform = 'translateX(20px)';
+                        setTimeout(() => el.remove(), 300);
+                    }
+                    // Update CSRF if returned
+                    if (data.csrf_token) csrfHash = data.csrf_token;
+                } else {
+                    alert('Delete failed: ' + (data.error || 'Unknown error'));
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fas fa-trash-alt"></i> Delete';
+                    }
+                }
+            } catch (e) {
+                alert('Network error. Please try again.');
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-trash-alt"></i> Delete';
+                }
+            }
+        }
+
+        function escHtml(str) {
+            const d = document.createElement('div');
+            d.textContent = str;
+            return d.innerHTML;
+        }
+
+        // Load song list on page load
+        document.addEventListener('DOMContentLoaded', loadSongList);
+    </script>
 </body>
 
 </html>

@@ -181,6 +181,58 @@ class ImportController extends BaseApiController
     }
 
     /**
+     * Delete a song and all related data (beatmap, scores, audio file).
+     * POST: /api/rhythm/delete-song { song_id: int }
+     */
+    public function deleteSong(): ResponseInterface
+    {
+        $input = $this->getInput();
+        $songId = (int) ($input['song_id'] ?? 0);
+
+        if (!$songId) {
+            return $this->error('Song ID required', 400, 'VALIDATION_ERROR');
+        }
+
+        // Get song to find audio file
+        $song = $this->rhythmModel->getSong($songId);
+        if (!$song) {
+            return $this->error('Song not found', 404, 'NOT_FOUND');
+        }
+
+        $this->db->transBegin();
+
+        try {
+            // Delete scores
+            $this->db->table('rhythm_scores')->where('song_id', $songId)->delete();
+
+            // Delete beatmap
+            $this->db->table('rhythm_beatmaps')->where('song_id', $songId)->delete();
+
+            // Delete song
+            $this->rhythmModel->delete($songId);
+
+            // Delete audio file from disk
+            if (!empty($song['audio_file'])) {
+                $audioPath = FCPATH . 'assets/music/' . $song['audio_file'];
+                if (is_file($audioPath)) {
+                    unlink($audioPath);
+                }
+            }
+
+            $this->db->transCommit();
+
+            return $this->success([
+                'deleted_id' => $songId,
+            ], "Deleted: {$song['title']}");
+
+        } catch (\Throwable $e) {
+            $this->db->transRollback();
+            log_message('error', '[ImportController] deleteSong failed: ' . $e->getMessage());
+            return $this->error('Failed to delete song.', 500, 'DATABASE_ERROR');
+        }
+    }
+
+    /**
      * Ported parser from legacy
      */
     private function parseOsuFile($filePath): array
