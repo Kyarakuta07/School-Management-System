@@ -393,14 +393,13 @@ function renderSongCards(songs, hsMap = {}) {
         const grade = hs ? (hs.rank_grade || hs.rank || '-') : null;
         const gradeColor = grade ? (GRADE_COLORS[grade.toUpperCase()] || '#888') : '#888';
 
-        const hsBadge = hs
-            ? `<div class="hs-badge-row">
+        const gradeSection = hs
+            ? `<div class="card-grade">
                     <span class="grade-circle" style="background:${gradeColor};color:#000;">${grade}</span>
                     <span class="hs-score">${hs.score.toLocaleString()}</span>
                </div>`
-            : `<div class="hs-badge-row no-record">
-                    <span class="grade-circle" style="background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.3);">-</span>
-                    <span class="hs-score" style="opacity:0.3;">No record</span>
+            : `<div class="card-grade no-record">
+                    <span class="grade-circle" style="background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.2);">-</span>
                </div>`;
 
         return `
@@ -409,16 +408,15 @@ function renderSongCards(songs, hsMap = {}) {
                 <div class="play-icon">▶</div>
             </div>
             <div class="card-content">
-                <div class="song-info">
-                    <h2>${escapeHtml(song.title)}</h2>
-                    <div class="song-meta-row">
-                        <span class="artist-name">${escapeHtml(song.artist)}</span>
-                        <span class="bpm-tag"><i class="fas fa-drum"></i> ${parseInt(song.bpm)}</span>
-                        <span class="difficulty-pill">${escapeHtml(song.difficulty)}</span>
-                    </div>
+                <h2 class="song-title">${escapeHtml(song.title)}</h2>
+                <div class="song-meta-row">
+                    <span class="artist-name">${escapeHtml(song.artist)}</span>
+                    <span class="meta-dot">·</span>
+                    <span class="bpm-tag">${parseInt(song.bpm)} BPM</span>
+                    <span class="difficulty-pill">${escapeHtml(song.difficulty)}</span>
                 </div>
-                ${hsBadge}
             </div>
+            ${gradeSection}
         </div>
     `;
     }).join('');

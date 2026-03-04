@@ -1030,13 +1030,11 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    padding: 10px 16px 24px;
+    gap: 8px;
+    padding: 8px 16px 24px;
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: rgba(218, 165, 32, 0.4) transparent;
-    -webkit-mask-image: linear-gradient(to bottom, black 0%, black 95%, transparent 100%);
-    mask-image: linear-gradient(to bottom, black 0%, black 95%, transparent 100%);
 }
 
 .songs-container::-webkit-scrollbar {
@@ -1108,21 +1106,20 @@ body {
 }
 
 /* ================================================
-   SONG CARDS (compact + grade circle)
+   SONG CARDS
    ================================================ */
 .song-card {
     position: relative;
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 12px;
-    padding: 12px 14px;
+    border-radius: 14px;
+    padding: 14px 16px;
     cursor: pointer;
     transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
     backdrop-filter: blur(8px);
-    overflow: hidden;
 }
 
 /* Gradient accent line on left */
@@ -1136,6 +1133,7 @@ body {
     background: linear-gradient(to bottom, #DAA520, #B8860B);
     opacity: 0;
     transition: opacity 0.3s;
+    border-radius: 3px 0 0 3px;
 }
 
 .song-card:hover::before {
@@ -1152,8 +1150,8 @@ body {
 
 /* Play button circle */
 .play-overlay {
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
     background: rgba(255, 255, 255, 0.05);
     border: 1.5px solid rgba(255, 255, 255, 0.15);
     border-radius: 50%;
@@ -1172,7 +1170,7 @@ body {
 
 .play-icon {
     color: rgba(255, 255, 255, 0.6);
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     margin-left: 2px;
     transition: all 0.3s;
 }
@@ -1186,47 +1184,35 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
     min-width: 0;
 }
 
-.song-info {
-    text-align: left;
-}
-
-.song-info h2 {
-    font-family: 'Titillium Web', sans-serif;
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: #fff;
-    margin: 0;
-    line-height: 1.3;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
 
 /* Meta row: artist · BPM · difficulty in one line */
 .song-meta-row {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-top: 3px;
-    flex-wrap: wrap;
+    margin-top: 4px;
+    flex-wrap: nowrap;
 }
 
 .artist-name {
-    font-size: 0.75rem;
+    font-size: 0.78rem;
     color: rgba(255, 255, 255, 0.4);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 120px;
+    flex-shrink: 1;
+    min-width: 0;
 }
 
 .bpm-tag {
-    font-size: 0.65rem;
-    color: rgba(255, 255, 255, 0.35);
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.3);
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .bpm-tag i {
@@ -1243,6 +1229,8 @@ body {
     border-radius: 20px;
     color: rgba(255, 255, 255, 0.5);
     letter-spacing: 0.5px;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .song-card:hover .difficulty-pill {
@@ -1251,37 +1239,55 @@ body {
     color: #DAA520;
 }
 
+.meta-dot {
+    color: rgba(255, 255, 255, 0.15);
+    font-size: 0.7rem;
+    flex-shrink: 0;
+}
+
+/* Song title (moved out of song-info wrapper) */
+.song-title {
+    font-family: 'Titillium Web', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 /* ================================================
-   GRADE CIRCLE + HIGHSCORE ROW
+   GRADE CIRCLE (right-aligned on card)
    ================================================ */
-.hs-badge-row {
+.card-grade {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 8px;
-    margin-top: 4px;
+    gap: 3px;
+    flex-shrink: 0;
+    min-width: 36px;
 }
 
 .grade-circle {
-    width: 24px;
-    height: 24px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     display: grid;
     place-items: center;
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     font-weight: 800;
     font-family: 'Cinzel', serif;
     flex-shrink: 0;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .hs-score {
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.6);
-}
-
-.hs-badge-row.no-record .hs-score {
-    font-weight: 400;
+    color: rgba(255, 255, 255, 0.45);
+    white-space: nowrap;
 }
 
 /* Hide keyboard hints on mobile */
