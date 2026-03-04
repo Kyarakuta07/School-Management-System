@@ -164,7 +164,7 @@ class RhythmController extends BaseApiController
             $expReward = (int) (2 * $rewardMultiplier);
         }
 
-        // Pet mood boost only for non-fails, capped at +5
+        // Pet mood boost: win = +15, fail = +5
         $moodBoost = (!$isFail && $rank !== 'F') ? GameConfig::RHYTHM_MOOD_BOOST_WIN : GameConfig::RHYTHM_MOOD_BOOST_FAIL;
 
         // Atomic transaction
@@ -216,6 +216,7 @@ class RhythmController extends BaseApiController
             'rank' => $rank,
             'gold_earned' => $goldReward,
             'exp_earned' => $expReward,
+            'mood_earned' => $moodBoost,
             'remaining_rewarded_plays' => $remainingPlays,
         ], $rewardMultiplier > 0 ? "Score submitted!" : "Score recorded. Daily reward limit reached.");
     }

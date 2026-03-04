@@ -44,8 +44,8 @@ class GameConfig
     public const RHYTHM_SCORE_GOLD_DIV = 10000;  // Score ÷ this = base gold
     public const RHYTHM_SCORE_EXP_DIV = 5000;   // Score ÷ this = base exp
     public const RHYTHM_BASE_REWARD = 3;      // Base reward added on top
-    public const RHYTHM_MOOD_BOOST_WIN = 5;      // Pet mood boost for non-fail
-    public const RHYTHM_MOOD_BOOST_FAIL = 1;      // Pet mood boost for fail
+    public const RHYTHM_MOOD_BOOST_WIN = 15;      // Pet mood boost for non-fail (was 5)
+    public const RHYTHM_MOOD_BOOST_FAIL = 5;       // Pet mood boost for fail (was 1)
     public const RHYTHM_SCORE_SUBMIT_CD = 30;     // Seconds between score submissions
 
     // ── Battle ──

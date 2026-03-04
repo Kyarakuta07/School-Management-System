@@ -1285,8 +1285,10 @@ function showResults(data, isFail, grade) {
     if (data.success) {
         const goldEl = document.getElementById('reward-gold');
         const expEl = document.getElementById('reward-exp');
+        const moodEl = document.getElementById('reward-mood');
         if (goldEl) goldEl.textContent = `+${data.gold_earned || 0}`;
         if (expEl) expEl.textContent = `+${data.exp_earned || 0}`;
+        if (moodEl) moodEl.textContent = `+${data.mood_earned || 0}`;
 
         // Show daily plays remaining
         if (data.remaining_rewarded_plays !== undefined) {

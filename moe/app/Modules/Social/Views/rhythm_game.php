@@ -138,6 +138,10 @@
                         <span><i class="fas fa-sparkles text-info"></i> EXP</span>
                         <span id="reward-exp">+0</span>
                     </div>
+                    <div class="rewards-row">
+                        <span><i class="fas fa-heart" style="color:#ff6b9d;"></i> Mood</span>
+                        <span id="reward-mood" style="color:#ff6b9d;">+0</span>
+                    </div>
                     <div style="text-align:center;margin-top:8px;">
                         <span id="reward-info" style="font-size:0.75rem;color:rgba(255,255,255,0.4);"></span>
                     </div>
