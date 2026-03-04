@@ -1,30 +1,25 @@
 # Disable directory browsing
 Options -Indexes
 
-# ----------------------------------------------------------------------
-# Rewrite engine
-# ----------------------------------------------------------------------
+# Fix: disable PHP session auto-start (prevents CI4 500 error)
+php_value session.auto_start 0
 
-# Turning on the rewrite engine is necessary for the following rules and features.
-# FollowSymLinks must be enabled for this to work.
+# ----------------------------------------------------------------------
+# Rewrite engine (LiteSpeed & Apache compatible)
+# ----------------------------------------------------------------------
 <IfModule mod_rewrite.c>
 	Options +FollowSymlinks
 	RewriteEngine On
 
-	# If you installed CodeIgniter in a subfolder, you will need to
-	# change the following line to match the subfolder you need.
-	# http://httpd.apache.org/docs/current/mod/mod_rewrite.html#rewritebase
-	# RewriteBase /
+	# IMPORTANT: RewriteBase = / karena di hosting cPanel,
+	# document root domain sudah diarahkan ke folder public/ ini.
+	# Jika masih error, coba ganti ke /moe/public/
+	RewriteBase /
 
 	# Redirect Trailing Slashes...
 	RewriteCond %{REQUEST_FILENAME} !-d
 	RewriteCond %{REQUEST_URI} (.+)/$
 	RewriteRule ^ %1 [L,R=301]
-
-	# Rewrite "www.example.com -> example.com"
-	RewriteCond %{HTTPS} !=on
-	RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
-	RewriteRule ^ http://%1%{REQUEST_URI} [R=301,L]
 
 	# Checks to see if the user is attempting to access a valid file,
 	# such as an image or css document, if this isn't true it sends the
@@ -39,11 +34,58 @@ Options -Indexes
 </IfModule>
 
 <IfModule !mod_rewrite.c>
-	# If we don't have mod_rewrite installed, all 404's
-	# can be sent to index.php, and everything works as normal.
 	ErrorDocument 404 index.php
 </IfModule>
 
-# Disable server signature start
+# Disable server signature
 ServerSignature Off
-# Disable server signature end
+
+# ======================================================
+# CACHE CONTROL - Auto Cache Busting
+# ======================================================
+# Asset statis (CSS, JS, gambar, font) → cache 7 hari di browser
+# Tapi karena URL-nya pakai ?v=timestamp (dari asset_v()),
+# browser otomatis re-download saat file berubah.
+# ETag memastikan validasi konten jika diperlukan.
+<IfModule mod_expires.c>
+    ExpiresActive On
+
+    # Default: tidak di-cache (untuk halaman PHP/HTML)
+    ExpiresDefault                          "access plus 0 seconds"
+    Header set Cache-Control                "no-store, no-cache, must-revalidate"
+
+    # CSS & JavaScript → cache 7 hari (akan di-bust oleh ?v= jika berubah)
+    ExpiresByType text/css                  "access plus 7 days"
+    ExpiresByType application/javascript    "access plus 7 days"
+    ExpiresByType text/javascript           "access plus 7 days"
+
+    # Gambar → cache 30 hari
+    ExpiresByType image/png                 "access plus 30 days"
+    ExpiresByType image/jpg                 "access plus 30 days"
+    ExpiresByType image/jpeg                "access plus 30 days"
+    ExpiresByType image/gif                 "access plus 30 days"
+    ExpiresByType image/webp                "access plus 30 days"
+    ExpiresByType image/svg+xml             "access plus 30 days"
+    ExpiresByType image/x-icon              "access plus 30 days"
+    ExpiresByType image/vnd.microsoft.icon  "access plus 30 days"
+
+    # Font
+    ExpiresByType font/woff                 "access plus 30 days"
+    ExpiresByType font/woff2                "access plus 30 days"
+    ExpiresByType application/font-woff     "access plus 30 days"
+    ExpiresByType application/font-woff2    "access plus 30 days"
+</IfModule>
+
+# Override Cache-Control untuk asset statis (immutable jika ada ?v=)
+<IfModule mod_headers.c>
+    # CSS & JS
+    <FilesMatch "\.(css|js)$">
+        Header set Cache-Control "public, max-age=604800, must-revalidate"
+    </FilesMatch>
+
+    # Gambar & Font
+    <FilesMatch "\.(png|jpg|jpeg|gif|webp|svg|ico|woff|woff2)$">
+        Header set Cache-Control "public, max-age=2592000, must-revalidate"
+    </FilesMatch>
+</IfModule>
+

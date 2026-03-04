@@ -111,7 +111,7 @@ class AuthController extends BaseController
         if ($user['role'] === ROLE_VASIKI) {
             return redirect()->to(base_url('admin'));
         } elseif ($user['role'] === ROLE_HAKAES) {
-            return redirect()->to(base_url('admin/manage-classes'));
+            return redirect()->to(base_url('admin/classes'));
         } else {
             return redirect()->to(base_url('beranda'));
         }

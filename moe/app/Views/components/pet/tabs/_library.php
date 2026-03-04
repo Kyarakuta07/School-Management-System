@@ -25,7 +25,8 @@
         </div>
 
         <?php
-        // Group species by rarity
+        // Group species by rarity — skip entries with invalid/empty rarity
+        $validRarities = ['Mythical', 'Legendary', 'Epic', 'Rare', 'Common'];
         $groupedSpecies = [
             'Mythical' => [],
             'Legendary' => [],
@@ -33,8 +34,18 @@
             'Rare' => [],
             'Common' => []
         ];
+        $rarityIcons = [
+            'Mythical' => 'fa-infinity',
+            'Legendary' => 'fa-crown',
+            'Epic' => 'fa-gem',
+            'Rare' => 'fa-shield-alt',
+            'Common' => 'fa-feather',
+        ];
         foreach ($allSpecies as $s) {
-            $groupedSpecies[$s['rarity']][] = $s;
+            $r = $s['rarity'] ?? '';
+            if (in_array($r, $validRarities)) {
+                $groupedSpecies[$r][] = $s;
+            }
         }
         ?>
 

@@ -42,8 +42,9 @@ class PunishmentFilter implements FilterInterface
         $userId = (int) $session->get('id_nethera');
         $role = $session->get('role');
 
-        // Don't enforce on admins/managers
-        if (!$userId || in_array($role, [ROLE_ANUBIS, ROLE_VASIKI])) {
+        // Skip if no session (let AuthFilter handle redirect to login)
+        // Also skip for admins/managers
+        if (!$userId || in_array($role, [ROLE_ANUBIS, ROLE_VASIKI], true)) {
             return;
         }
 

@@ -152,6 +152,8 @@
 
     <script>
         const IMPORT_API_URL = '<?= base_url('api/rhythm/import') ?>';
+        const csrfName = '<?= csrf_token() ?>';
+        let csrfHash = '<?= csrf_hash() ?>';
     </script>
     <script src="<?= base_url('js/social/import_beatmap.js') ?>"></script>
 </body>

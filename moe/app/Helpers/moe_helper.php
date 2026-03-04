@@ -217,3 +217,62 @@ if (!function_exists('wrap_plain_text')) {
         return '<p>' . nl2br(htmlspecialchars($text)) . '</p>';
     }
 }
+
+
+// ==================================================
+// ASSET CACHE BUSTING
+// ==================================================
+
+if (!function_exists('asset_v')) {
+    /**
+     * Generate a versioned asset URL using the file's last-modified timestamp.
+     *
+     * Browser akan otomatis re-download asset ketika file diubah,
+     * tanpa user perlu manual delete cache.
+     *
+     * Usage di view:
+     *   <link rel="stylesheet" href="<?= asset_v('css/style.css') ?>">
+     *   <script src="<?= asset_v('js/app.js') ?>"></script>
+     *   <img src="<?= asset_v('images/logo.png') ?>">
+     *
+     * @param string $path Path relatif dari folder public/ (contoh: 'css/style.css')
+     * @return string Full URL dengan ?v=timestamp, atau fallback ke base_url tanpa versi
+     */
+    function asset_v(string $path): string
+    {
+        $publicPath = FCPATH . ltrim($path, '/');
+        $version = file_exists($publicPath) ? filemtime($publicPath) : time();
+
+        return base_url($path) . '?v=' . $version;
+    }
+}
+
+if (!function_exists('asset_v_batch')) {
+    /**
+     * Helper untuk generate versi dari satu direktori berdasarkan file terbaru di dalamnya.
+     * Berguna kalau mau satu ?v= untuk semua CSS atau semua JS.
+     *
+     * Usage:
+     *   <link rel="stylesheet" href="<?= base_url('css/bundle.css') ?>?v=<?= asset_v_batch('css') ?>">
+     *
+     * @param string $dir Subfolder dalam public/ (contoh: 'css', 'js')
+     */
+    function asset_v_batch(string $dir): int
+    {
+        $dirPath = FCPATH . ltrim($dir, '/');
+        if (!is_dir($dirPath)) {
+            return time();
+        }
+
+        $files = glob($dirPath . '/*.*') ?: [];
+        $maxTime = 0;
+        foreach ($files as $file) {
+            $mt = (int) filemtime($file);
+            if ($mt > $maxTime) {
+                $maxTime = $mt;
+            }
+        }
+
+        return $maxTime ?: time();
+    }
+}

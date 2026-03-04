@@ -1,0 +1,48 @@
+# MOE School Management System - Root .htaccess
+DirectoryIndex home.php index.php index.html
+RewriteEngine On
+
+# ================================================
+# 1. HTTPS REDIRECT (SELALU PERTAMA)
+# ================================================
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# ================================================
+# 2. PHP extension stripping (native PHP files)
+# ================================================
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^([^\.]+)$ $1.php [NC,L]
+
+# ================================================
+# 3. REDIRECT KE /moe/public/
+# ================================================
+RewriteCond %{REQUEST_URI} !^/moe/public/
+RewriteRule ^(.*)$ /moe/public/$1 [L]
+
+# ================================================
+# SECURITY
+# ================================================
+ServerSignature Off
+
+<FilesMatch "(\.env|error_log|README\.md)">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json
+</IfModule>
+
+# ================================================
+# PHP LIMITS & HANDLER
+# ================================================
+php_value upload_max_filesize 20M
+php_value post_max_size 25M
+php_value max_execution_time 120
+php_value memory_limit 256M
+
+<IfModule mime_module>
+  AddHandler application/x-httpd-ea-php84 .php .php8 .phtml
+</IfModule>

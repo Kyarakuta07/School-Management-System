@@ -63,6 +63,13 @@ class BattlePageController extends BaseController
         // Calculate battle stats via Service
         $stats = $this->petService->calculateBattleStats($attacker, $defender);
 
+
+        // Set battle session token to validate result submission
+        $battleToken = bin2hex(random_bytes(16));
+        $session->set('battle_1v1_token', $battleToken);
+        $session->set('battle_1v1_attacker', $attackerPetId);
+        $session->set('battle_1v1_defender', $defenderPetId);
+
         return view('App\Modules\Battle\Views\battle_arena', array_merge([
             'attacker' => $attacker,
             'defender' => $defender,

@@ -71,9 +71,9 @@ class Session extends BaseConfig
      * WARNING: If you're using the database driver, don't forget to update
      *          your session table's PRIMARY KEY when changing this setting.
      */
-    // Production: true (prevents session hijacking)
-    // Development: false (IP alternates between 127.0.0.1 and ::1 on localhost)
-    public bool $matchIP = true;
+    // Set to false: HP/mobile sering ganti IP (WiFi <-> data seluler)
+    // matchIP=true menyebabkan error 500 saat IP berubah setelah restart browser
+    public bool $matchIP = false;
 
     /**
      * --------------------------------------------------------------------------
@@ -93,7 +93,7 @@ class Session extends BaseConfig
      * when auto-regenerating the session ID. When set to FALSE, the data
      * will be later deleted by the garbage collector.
      */
-    public bool $regenerateDestroy = true;
+    public bool $regenerateDestroy = false;
 
     /**
      * --------------------------------------------------------------------------

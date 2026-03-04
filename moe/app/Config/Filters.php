@@ -77,7 +77,7 @@ class Filters extends BaseFilters
     public array $globals = [
         'before' => [
             // 'honeypot',
-            'csrf',  // ✅ ENABLED: CSRF protection now active globally
+            'csrf' => ['except' => ['api/*']],  // ✅ CSRF active globally, except API (already auth-protected)
             // 'invalidchars',
         ],
         'after' => [

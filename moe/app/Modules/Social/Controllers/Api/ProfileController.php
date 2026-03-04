@@ -160,6 +160,13 @@ class ProfileController extends BaseApiController
 
                 $userModel->update($userId, ['profile_photo' => $newFilename]);
 
+
+                // Invalidate sanctuary leaders cache so new photo appears immediately
+                $freshUser = $userModel->find($userId);
+                if (!empty($freshUser['id_sanctuary'])) {
+                    cache()->delete('sanctuary_leaders_' . $freshUser['id_sanctuary']);
+                }
+
                 $this->activityLog->log('PHOTO_UPDATE', 'USER', "Updated profile photo.", $userId);
 
                 return $this->success([

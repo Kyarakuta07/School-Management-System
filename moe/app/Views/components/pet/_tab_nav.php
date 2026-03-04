@@ -9,7 +9,7 @@
         <span>Collect</span>
     </button>
     <button class="tab-btn" data-tab="library">
-        <i class="fas fa-book-spells"></i>
+        <i class="fas fa-dragon"></i>
         <span>Bestiary</span>
     </button>
     <button class="tab-btn" data-tab="gacha">

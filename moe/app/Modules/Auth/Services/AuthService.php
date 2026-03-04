@@ -104,7 +104,7 @@ class AuthService
         // OTP: CSPRNG + hash before storage
         $otpCode = (string) random_int(100000, 999999);
         $data['otp_code'] = hash('sha256', $otpCode);
-        $data['otp_expires'] = date('Y-m-d H:i:s', time() + 300); // 5 min
+        $data['otp_expires'] = date('Y-m-d H:i:s', time() + 900); // 15 min
         $data['otp_attempts'] = 0;
         $data['status_akun'] = 'Pending';
         $data['role'] = ROLE_NETHERA;
@@ -229,7 +229,7 @@ class AuthService
 
         $this->userModel->update($user['id_nethera'], [
             'otp_code' => $hashedOtp,
-            'otp_expires' => date('Y-m-d H:i:s', time() + 300), // 5 min
+            'otp_expires' => date('Y-m-d H:i:s', time() + 900), // 15 min
             'otp_attempts' => 0,
         ]);
 

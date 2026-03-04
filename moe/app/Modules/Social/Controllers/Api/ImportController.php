@@ -35,7 +35,18 @@ class ImportController extends BaseApiController
         // 2. File validation
         $file = $this->request->getFile('osz_file');
         if (!$file || !$file->isValid()) {
-            return $this->error('No valid file uploaded', 400, 'VALIDATION_ERROR');
+            $uploadError = $file ? $file->getErrorString() : 'File object is null';
+            $phpError = $_FILES['osz_file']['error'] ?? 'No file in $_FILES';
+            $maxUpload = ini_get('upload_max_filesize');
+            $maxPost = ini_get('post_max_size');
+
+            log_message('error', "[ImportController] Upload failed. Error: {$uploadError}, PHP Error code: {$phpError}, upload_max: {$maxUpload}, post_max: {$maxPost}");
+
+            return $this->error(
+                "Upload gagal: {$uploadError} (Limit server: upload={$maxUpload}, post={$maxPost})",
+                400,
+                'VALIDATION_ERROR'
+            );
         }
 
         $ext = strtolower($file->getExtension());
@@ -46,7 +57,8 @@ class ImportController extends BaseApiController
         // Additional MIME check for osz/zip
         if ($ext === 'osz' || $ext === 'zip') {
             $mime = $file->getMimeType();
-            if ($mime !== 'application/zip' && $mime !== 'application/x-zip-compressed') {
+            $allowedMimes = ['application/zip', 'application/x-zip-compressed', 'application/octet-stream'];
+            if (!in_array($mime, $allowedMimes)) {
                 return $this->error('Invalid file format. Expected ZIP archive.', 400, 'VALIDATION_ERROR');
             }
         }
