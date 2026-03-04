@@ -33,8 +33,17 @@
         </div>
 
         <div class="hub-controls">
-            <span class="key-hint"><kbd>D</kbd> <kbd>F</kbd> <kbd>J</kbd> <kbd>K</kbd> to play &nbsp;·&nbsp;
+            <span class="key-hint hide-mobile"><kbd>D</kbd> <kbd>F</kbd> <kbd>J</kbd> <kbd>K</kbd> to play &nbsp;·&nbsp;
                 <kbd>ESC</kbd> pause</span>
+        </div>
+
+        <!-- Search & Song Count -->
+        <div class="song-search-bar">
+            <div class="search-input-wrap">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="song-search" placeholder="Search songs..." autocomplete="off">
+            </div>
+            <span class="song-count" id="song-count"></span>
         </div>
 
         <div id="songs-container" class="songs-container">

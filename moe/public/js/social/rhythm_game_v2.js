@@ -321,12 +321,17 @@ function stopAudio() {
 // ================================================
 // SONG LOADING
 // ================================================
+let cachedSongs = [];
+let cachedHsMap = {};
+
 async function loadSongs() {
     try {
         const response = await fetch(`${API_BASE}rhythm/songs`);
         const data = await response.json();
 
         if (data.success && data.songs.length > 0) {
+            cachedSongs = data.songs;
+
             // Fetch highscores for all songs in parallel
             const highscorePromises = data.songs.map(song =>
                 fetch(`${API_BASE}rhythm/highscore?song_id=${song.id}`)
@@ -335,10 +340,30 @@ async function loadSongs() {
                     .catch(() => ({ songId: song.id, hs: null }))
             );
             const highscores = await Promise.all(highscorePromises);
-            const hsMap = {};
-            highscores.forEach(h => { hsMap[h.songId] = h.hs; });
+            cachedHsMap = {};
+            highscores.forEach(h => { cachedHsMap[h.songId] = h.hs; });
 
-            renderSongCards(data.songs, hsMap);
+            renderSongCards(cachedSongs, cachedHsMap);
+            updateSongCount(cachedSongs.length, cachedSongs.length);
+
+            // Setup search
+            const searchInput = document.getElementById('song-search');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    const q = e.target.value.toLowerCase().trim();
+                    if (!q) {
+                        renderSongCards(cachedSongs, cachedHsMap);
+                        updateSongCount(cachedSongs.length, cachedSongs.length);
+                        return;
+                    }
+                    const filtered = cachedSongs.filter(s =>
+                        s.title.toLowerCase().includes(q) ||
+                        s.artist.toLowerCase().includes(q)
+                    );
+                    renderSongCards(filtered, cachedHsMap);
+                    updateSongCount(filtered.length, cachedSongs.length);
+                });
+            }
         } else {
             DOM.songsContainer.innerHTML = '<p style="text-align:center;color:rgba(255,255,255,0.5);padding:2rem;">No songs available yet.</p>';
         }
@@ -348,12 +373,36 @@ async function loadSongs() {
     }
 }
 
+function updateSongCount(shown, total) {
+    const el = document.getElementById('song-count');
+    if (el) {
+        el.textContent = shown === total ? `${total} songs` : `${shown}/${total}`;
+    }
+}
+
+const GRADE_COLORS = { S: '#FFD700', A: '#4ecdc4', B: '#a78bfa', C: '#ffd93d', D: '#ff6b6b', F: '#666' };
+
 function renderSongCards(songs, hsMap = {}) {
+    if (songs.length === 0) {
+        DOM.songsContainer.innerHTML = '<p style="text-align:center;color:rgba(255,255,255,0.35);padding:2rem;"><i class="fas fa-search"></i> No songs found</p>';
+        return;
+    }
+
     DOM.songsContainer.innerHTML = songs.map(song => {
         const hs = hsMap[song.id];
+        const grade = hs ? (hs.rank_grade || hs.rank || '-') : null;
+        const gradeColor = grade ? (GRADE_COLORS[grade.toUpperCase()] || '#888') : '#888';
+
         const hsBadge = hs
-            ? `<span class="highscore-badge"><i class="fas fa-trophy"></i> ${hs.score.toLocaleString()} (${hs.rank_grade || hs.rank || '-'})</span>`
-            : '<span class="highscore-badge" style="opacity:0.4"><i class="fas fa-trophy"></i> No record</span>';
+            ? `<div class="hs-badge-row">
+                    <span class="grade-circle" style="background:${gradeColor};color:#000;">${grade}</span>
+                    <span class="hs-score">${hs.score.toLocaleString()}</span>
+               </div>`
+            : `<div class="hs-badge-row no-record">
+                    <span class="grade-circle" style="background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.3);">-</span>
+                    <span class="hs-score" style="opacity:0.3;">No record</span>
+               </div>`;
+
         return `
         <div class="song-card" onclick="selectSong(${parseInt(song.id)})">
             <div class="play-overlay">
@@ -362,13 +411,13 @@ function renderSongCards(songs, hsMap = {}) {
             <div class="card-content">
                 <div class="song-info">
                     <h2>${escapeHtml(song.title)}</h2>
-                    <p>${escapeHtml(song.artist)}</p>
-                    ${hsBadge}
+                    <div class="song-meta-row">
+                        <span class="artist-name">${escapeHtml(song.artist)}</span>
+                        <span class="bpm-tag"><i class="fas fa-drum"></i> ${parseInt(song.bpm)}</span>
+                        <span class="difficulty-pill">${escapeHtml(song.difficulty)}</span>
+                    </div>
                 </div>
-                <div class="card-meta">
-                    <span class="difficulty-pill">${escapeHtml(song.difficulty)}</span>
-                    <span style="font-size:0.85rem;opacity:0.8;"><i class="fas fa-drum"></i> ${parseInt(song.bpm)} BPM</span>
-                </div>
+                ${hsBadge}
             </div>
         </div>
     `;

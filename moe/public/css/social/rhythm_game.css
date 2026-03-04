@@ -1053,19 +1053,74 @@ body {
 }
 
 /* ================================================
-   SONG CARDS (glassmorphism + gradient borders)
+   SONG SEARCH BAR
+   ================================================ */
+.song-search-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 16px 8px;
+}
+
+.search-input-wrap {
+    flex: 1;
+    position: relative;
+}
+
+.search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.25);
+    font-size: 0.8rem;
+    pointer-events: none;
+}
+
+#song-search {
+    width: 100%;
+    padding: 10px 12px 10px 34px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.85rem;
+    outline: none;
+    transition: all 0.3s;
+}
+
+#song-search::placeholder {
+    color: rgba(255, 255, 255, 0.25);
+}
+
+#song-search:focus {
+    border-color: rgba(218, 165, 32, 0.5);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 12px rgba(218, 165, 32, 0.15);
+}
+
+.song-count {
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.3);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* ================================================
+   SONG CARDS (compact + grade circle)
    ================================================ */
 .song-card {
     position: relative;
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 14px;
-    padding: 14px 16px;
+    border-radius: 12px;
+    padding: 12px 14px;
     cursor: pointer;
     transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
     backdrop-filter: blur(8px);
     overflow: hidden;
 }
@@ -1097,8 +1152,8 @@ body {
 
 /* Play button circle */
 .play-overlay {
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     background: rgba(255, 255, 255, 0.05);
     border: 1.5px solid rgba(255, 255, 255, 0.15);
     border-radius: 50%;
@@ -1111,20 +1166,19 @@ body {
 .song-card:hover .play-overlay {
     background: linear-gradient(135deg, #DAA520, #FFD700);
     border-color: #DAA520;
-    transform: scale(1.15);
-    box-shadow: 0 0 20px rgba(218, 165, 32, 0.5);
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(218, 165, 32, 0.5);
 }
 
 .play-icon {
     color: rgba(255, 255, 255, 0.6);
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     margin-left: 2px;
     transition: all 0.3s;
 }
 
 .song-card:hover .play-icon {
     color: #000;
-    transform: scale(1.1);
 }
 
 /* Card content */
@@ -1134,7 +1188,6 @@ body {
     flex-direction: column;
     gap: 4px;
     min-width: 0;
-    /* prevent overflow */
 }
 
 .song-info {
@@ -1143,7 +1196,7 @@ body {
 
 .song-info h2 {
     font-family: 'Titillium Web', sans-serif;
-    font-size: 1.05rem;
+    font-size: 0.95rem;
     font-weight: 700;
     color: #fff;
     margin: 0;
@@ -1153,32 +1206,43 @@ body {
     text-overflow: ellipsis;
 }
 
-.song-info p {
-    font-size: 0.82rem;
-    color: rgba(255, 255, 255, 0.45);
-    margin: 2px 0 0 0 !important;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.card-meta {
+/* Meta row: artist · BPM · difficulty in one line */
+.song-meta-row {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-top: 6px;
+    margin-top: 3px;
+    flex-wrap: wrap;
+}
+
+.artist-name {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.4);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 120px;
+}
+
+.bpm-tag {
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.35);
+}
+
+.bpm-tag i {
+    margin-right: 2px;
 }
 
 .difficulty-pill {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     font-weight: 700;
     text-transform: uppercase;
-    padding: 3px 10px;
-    background: rgba(255, 255, 255, 0.08);
+    padding: 2px 8px;
+    background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 20px;
-    color: rgba(255, 255, 255, 0.6);
-    letter-spacing: 1px;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 0.5px;
 }
 
 .song-card:hover .difficulty-pill {
@@ -1188,30 +1252,47 @@ body {
 }
 
 /* ================================================
-   HIGHSCORE BADGE (trophy pill on song cards)
+   GRADE CIRCLE + HIGHSCORE ROW
    ================================================ */
-.highscore-badge {
-    display: inline-flex;
+.hs-badge-row {
+    display: flex;
     align-items: center;
-    gap: 5px;
-    font-size: 0.72rem;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.grade-circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 0.7rem;
+    font-weight: 800;
+    font-family: 'Cinzel', serif;
+    flex-shrink: 0;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+}
+
+.hs-score {
+    font-size: 0.75rem;
     font-weight: 600;
-    padding: 3px 10px;
-    border-radius: 20px;
-    background: rgba(218, 165, 32, 0.1);
-    border: 1px solid rgba(218, 165, 32, 0.2);
-    color: #DAA520;
-    margin-top: 6px;
-    transition: all 0.3s;
+    color: rgba(255, 255, 255, 0.6);
 }
 
-.highscore-badge i {
-    font-size: 0.65rem;
+.hs-badge-row.no-record .hs-score {
+    font-weight: 400;
 }
 
-.song-card:hover .highscore-badge {
-    background: rgba(218, 165, 32, 0.2);
-    border-color: rgba(218, 165, 32, 0.4);
+/* Hide keyboard hints on mobile */
+@media (pointer: coarse) {
+    .hide-mobile {
+        display: none !important;
+    }
+
+    .hub-controls {
+        display: none;
+    }
 }
 
 /* ================================================
@@ -1239,7 +1320,11 @@ body {
     }
 
     .song-card {
-        padding: 12px;
+        padding: 10px;
         gap: 10px;
+    }
+
+    .artist-name {
+        max-width: 80px;
     }
 }
