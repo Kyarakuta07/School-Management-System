@@ -546,6 +546,8 @@ body {
     justify-content: center;
     z-index: 500;
     animation: overlayIn 0.3s ease-out;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .overlay.hidden {
@@ -568,6 +570,13 @@ body {
     max-width: 400px;
 }
 
+.result-content {
+    padding: 24px 16px;
+    margin: auto;
+    max-height: 100vh;
+    max-height: 100dvh;
+}
+
 .overlay h1 {
     font-family: 'Cinzel', serif;
     font-size: 2rem;
@@ -586,14 +595,14 @@ body {
 .return-btn {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    padding: 16px 40px;
+    gap: 8px;
+    padding: 12px 24px;
     background: linear-gradient(135deg, #DAA520, #B8860B);
     border: none;
     border-radius: 12px;
     color: #000;
     font-family: inherit;
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.2s;
@@ -609,22 +618,22 @@ body {
    RESULT SCREEN
    ================================================ */
 .result-content h1 {
-    font-size: 2.5rem;
-    margin-bottom: 30px;
+    font-size: 1.6rem;
+    margin-bottom: 8px;
 }
 
 .result-stats {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 24px;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
 }
 
 .result-row {
     display: flex;
     justify-content: space-between;
-    padding: 12px 0;
+    padding: 8px 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
@@ -645,11 +654,11 @@ body {
 /* Grade display */
 .result-grade {
     font-family: 'Cinzel', serif;
-    font-size: 4rem;
+    font-size: 3rem;
     font-weight: 700;
     color: #DAA520;
     text-shadow: 0 0 20px rgba(218, 165, 32, 0.5);
-    margin-bottom: 10px;
+    margin-bottom: 6px;
 }
 
 .result-grade.grade-s {
@@ -680,14 +689,15 @@ body {
 .rewards-section {
     background: linear-gradient(135deg, rgba(218, 165, 32, 0.1), transparent);
     border: 1px solid rgba(218, 165, 32, 0.3);
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 24px;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
 }
 
 .rewards-section h3 {
     color: #DAA520;
-    margin-bottom: 16px;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
 }
 
 .rewards-row {
