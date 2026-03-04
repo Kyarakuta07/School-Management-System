@@ -1,5 +1,5 @@
 <!-- quiz_attempt.php — CI4 View -->
-<!-- Ported from legacy moe/user/quiz_attempt.php -->
+<?php // Quiz Attempt View ?>
 <!DOCTYPE html>
 <html lang="id">
 

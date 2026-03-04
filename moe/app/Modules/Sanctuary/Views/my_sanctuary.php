@@ -1,5 +1,4 @@
-<!-- my_sanctuary.php — CI4 View -->
-<!-- Ported from legacy moe/user/my_sanctuary.php -->
+<?php // My Sanctuary — CI4 View ?>
 <?php
 // Helper function for safe avatar URL within view
 $getSafeAvatar = function ($photo) {

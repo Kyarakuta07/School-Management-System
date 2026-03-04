@@ -17,7 +17,7 @@
 <!-- Sanctuary War -->
 <script src="<?= base_url('js/battle/sanctuary_war.js?v=' . time()) ?>"></script>
 
-<!-- Leaderboard logic is now imported by main.js -->
+<?php // Leaderboard scripts ?>
 
 <!-- Leaderboard Helper (Glue for non-module calls) -->
 <script>

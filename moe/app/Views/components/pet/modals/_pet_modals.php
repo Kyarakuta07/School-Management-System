@@ -46,7 +46,7 @@
     </div>
 </div>
 
-<!-- Shop Buy Modal (Legacy) -->
+<?php // Shop Buy Modal ?>
 <div class="modal-overlay" id="shop-modal">
     <div class="modal-content modal-bottom-sheet">
         <div class="modal-header">
@@ -76,7 +76,9 @@
             <div class="help-section" style="margin-bottom: 20px;">
                 <h4 style="color: var(--gold); margin-bottom: 8px;"><i class="fas fa-paw"></i> Getting Started</h4>
                 <p style="color: #aaa; line-height: 1.6; font-size: 0.9rem;">
-                    Welcome to <strong style="color: #fff;">Mediterranean of Egypt</strong>! Start by rolling for your first pet in the <strong style="color: var(--gold);">Gacha</strong> tab using Gold. Each roll costs gold and gives you a random pet with different elements and rarities.
+                    Welcome to <strong style="color: #fff;">Mediterranean of Egypt</strong>! Start by rolling for your
+                    first pet in the <strong style="color: var(--gold);">Gacha</strong> tab using Gold. Each roll costs
+                    gold and gives you a random pet with different elements and rarities.
                 </p>
             </div>
 
@@ -88,13 +90,17 @@
                 </p>
                 <div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 10px; margin-bottom: 8px;">
                     <div style="color: #ccc; font-size: 0.85rem; line-height: 1.8;">
-                        🍗 <strong>Hunger</strong> — decreases <strong style="color: #E74C3C;">-4/hour</strong>. Use <em>Food</em> items to restore.<br>
-                        😊 <strong>Mood</strong> — decreases <strong style="color: #E74C3C;">-3/hour</strong>. Play <em>Rhythm Game</em> to restore.<br>
+                        🍗 <strong>Hunger</strong> — decreases <strong style="color: #E74C3C;">-4/hour</strong>. Use
+                        <em>Food</em> items to restore.<br>
+                        😊 <strong>Mood</strong> — decreases <strong style="color: #E74C3C;">-3/hour</strong>. Play
+                        <em>Rhythm Game</em> to restore.<br>
                         ❤️ <strong>HP</strong> — takes damage when hunger or mood reach 0.
                     </div>
                 </div>
                 <p style="color: #E74C3C; font-size: 0.85rem; line-height: 1.5;">
-                    <i class="fas fa-exclamation-triangle"></i> <strong>Warning:</strong> When hunger=0, pet loses <strong>-10 HP/hour</strong>. When mood=0, loses <strong>-5 HP/hour</strong>. If HP reaches 0, your pet <strong>dies</strong>! Use a Revival item to bring it back.
+                    <i class="fas fa-exclamation-triangle"></i> <strong>Warning:</strong> When hunger=0, pet loses
+                    <strong>-10 HP/hour</strong>. When mood=0, loses <strong>-5 HP/hour</strong>. If HP reaches 0, your
+                    pet <strong>dies</strong>! Use a Revival item to bring it back.
                 </p>
             </div>
 
@@ -102,7 +108,9 @@
             <div class="help-section" style="margin-bottom: 20px;">
                 <h4 style="color: var(--gold); margin-bottom: 8px;"><i class="fas fa-home"></i> Shelter</h4>
                 <p style="color: #aaa; line-height: 1.6; font-size: 0.9rem;">
-                    Send pets to the <strong style="color: #fff;">Shelter</strong> to <strong>pause stat decay</strong>. Sheltered pets won't lose hunger, mood, or HP — but they also can't be used in battle. Retrieve them anytime to make them active again.
+                    Send pets to the <strong style="color: #fff;">Shelter</strong> to <strong>pause stat decay</strong>.
+                    Sheltered pets won't lose hunger, mood, or HP — but they also can't be used in battle. Retrieve them
+                    anytime to make them active again.
                 </p>
             </div>
 
@@ -110,17 +118,20 @@
             <div class="help-section" style="margin-bottom: 20px;">
                 <h4 style="color: var(--gold); margin-bottom: 8px;"><i class="fas fa-shield-alt"></i> Battle System</h4>
                 <p style="color: #aaa; line-height: 1.6; font-size: 0.9rem; margin-bottom: 8px;">
-                    Enter the <strong style="color: #fff;">Arena</strong> to battle other players' pets or Wild Trainers.
+                    Enter the <strong style="color: #fff;">Arena</strong> to battle other players' pets or Wild
+                    Trainers.
                 </p>
                 <div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 10px; margin-bottom: 8px;">
                     <div style="color: #ccc; font-size: 0.85rem; line-height: 1.8;">
                         ⚔️ Choose skills each turn — damage depends on Attack, Defense, and Element.<br>
                         🎯 <strong>Critical Hits</strong> — 10% chance to deal <strong>1.5x damage</strong>.<br>
                         🏆 <strong>Win</strong> → earn Gold + EXP + Rank Points.<br>
-                        💀 <strong>Lose</strong> → your pet loses <strong style="color: #E74C3C;">-10 HP</strong>. Can die!
+                        💀 <strong>Lose</strong> → your pet loses <strong style="color: #E74C3C;">-10 HP</strong>. Can
+                        die!
                     </div>
                 </div>
-                <p style="color: #aaa; font-size: 0.85rem; margin-bottom: 6px;"><strong style="color: #fff;">Element Advantages (2x damage):</strong></p>
+                <p style="color: #aaa; font-size: 0.85rem; margin-bottom: 6px;"><strong style="color: #fff;">Element
+                        Advantages (2x damage):</strong></p>
                 <div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 10px;">
                     <div style="color: #ccc; font-size: 0.85rem; line-height: 1.8; text-align: center;">
                         🔥 Fire → 💨 Air → 🌍 Earth → 💧 Water → 🔥 Fire<br>
@@ -133,7 +144,8 @@
             <div class="help-section" style="margin-bottom: 20px;">
                 <h4 style="color: var(--gold); margin-bottom: 8px;"><i class="fas fa-dna"></i> Evolution</h4>
                 <p style="color: #aaa; line-height: 1.6; font-size: 0.9rem; margin-bottom: 8px;">
-                    Pets evolve through 3 stages. Each stage has a <strong style="color: #fff;">level cap</strong> — evolve to unlock higher levels!
+                    Pets evolve through 3 stages. Each stage has a <strong style="color: #fff;">level cap</strong> —
+                    evolve to unlock higher levels!
                 </p>
                 <div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 10px;">
                     <div style="color: #ccc; font-size: 0.85rem; line-height: 1.8;">
@@ -163,14 +175,17 @@
             <div class="help-section" style="margin-bottom: 20px;">
                 <h4 style="color: var(--gold); margin-bottom: 8px;"><i class="fas fa-music"></i> Rhythm Game</h4>
                 <p style="color: #aaa; line-height: 1.6; font-size: 0.9rem;">
-                    Play the Rhythm Game to boost your pet's <strong style="color: #fff;">Mood</strong>! Tap to the beat and score high — the better your score, the more mood your pet gains. Access it via the <strong style="color: var(--gold);">Play</strong> button on the My Pet tab.
+                    Play the Rhythm Game to boost your pet's <strong style="color: #fff;">Mood</strong>! Tap to the beat
+                    and score high — the better your score, the more mood your pet gains. Access it via the <strong
+                        style="color: var(--gold);">Play</strong> button on the My Pet tab.
                 </p>
             </div>
 
             <!-- Tips -->
             <div class="help-section" style="margin-bottom: 8px;">
                 <h4 style="color: var(--gold); margin-bottom: 8px;"><i class="fas fa-lightbulb"></i> Pro Tips</h4>
-                <div style="background: rgba(255, 193, 7, 0.08); border: 1px solid rgba(255, 193, 7, 0.2); border-radius: 8px; padding: 10px;">
+                <div
+                    style="background: rgba(255, 193, 7, 0.08); border: 1px solid rgba(255, 193, 7, 0.2); border-radius: 8px; padding: 10px;">
                     <div style="color: #ccc; font-size: 0.85rem; line-height: 1.8;">
                         💡 Shelter pets you're not using to prevent stat decay.<br>
                         💡 Use element advantage in battle for 2x damage!<br>

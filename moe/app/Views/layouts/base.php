@@ -28,7 +28,7 @@
     <?= csrf_meta() ?>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Layout-specific head content (CSS, extra icons, etc.) -->
+    <?php // Layout-specific head content ?>
     <?= $this->renderSection('head') ?>
 </head>
 
@@ -37,7 +37,7 @@
     <div class="bg-fixed"></div>
     <div class="bg-overlay"></div>
 
-    <!-- Global API Base URL for JavaScript -->
+    <?php // Global JS constants ?>
     <script>
         const API_BASE = '<?= base_url('api/') ?>';
         const ASSET_BASE = '<?= base_url() ?>';
@@ -46,19 +46,19 @@
         window.ASSET_BASE = ASSET_BASE;
     </script>
 
-    <!-- CSRF Helper for fetch() requests -->
+    <?php // CSRF Helper ?>
     <script src="<?= base_url('js/shared/csrf_helper.js') ?>"></script>
 
-    <!-- Flash Message Alerts -->
+    <?php // Flash alerts ?>
     <?= $this->include('partials/common/alerts') ?>
 
-    <!-- Main Content Area (defined by child layouts) -->
+    <?php // Main content ?>
     <?= $this->renderSection('body') ?>
 
-    <!-- Toast Notification System (extracted to external file) -->
+    <?php // Toast system ?>
     <script src="<?= base_url('js/shared/toast.js') ?>"></script>
 
-    <!-- Layout-specific scripts -->
+    <?php // Scripts ?>
     <?= $this->renderSection('scripts') ?>
 </body>
 

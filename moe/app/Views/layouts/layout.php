@@ -29,7 +29,7 @@
     <!-- Global CSS -->
     <link rel="stylesheet" href="<?= base_url('css/shared/global.css') ?>">
 
-    <!-- Page-specific CSS -->
+    <?php // Page CSS ?>
     <?= $this->renderSection('css') ?>
 </head>
 
@@ -38,19 +38,19 @@
     <div class="bg-fixed"></div>
     <div class="bg-overlay"></div>
 
-    <!-- Global API Base URL for JavaScript -->
+    <?php // Global JS constants ?>
     <script>
         const API_BASE = '<?= base_url('api/') ?>';
         const ASSET_BASE = '<?= base_url() ?>';
     </script>
 
-    <!-- Page Content -->
+    <?php // Page content ?>
     <?= $this->renderSection('content') ?>
 
-    <!-- Toast Notification System (extracted to external file) -->
+    <?php // Toast system ?>
     <script src="<?= base_url('js/shared/toast.js') ?>"></script>
 
-    <!-- Page-specific Scripts -->
+    <?php // Page scripts ?>
     <?= $this->renderSection('scripts') ?>
 </body>
 

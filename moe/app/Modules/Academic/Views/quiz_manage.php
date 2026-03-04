@@ -1,5 +1,5 @@
 <!-- quiz_manage.php — CI4 View -->
-<!-- Ported from legacy moe/user/quiz_manage.php -->
+<?php // Quiz Management View ?>
 <!DOCTYPE html>
 <html lang="id">
 

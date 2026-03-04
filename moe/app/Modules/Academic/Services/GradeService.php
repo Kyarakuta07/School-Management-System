@@ -105,5 +105,9 @@ class GradeService
             $values['class_name'] = 'Default Class';
             $db->table('class_grades')->insert($values);
         }
+
+        // Invalidate cached rankings after grade change
+        cache()->delete('top_scholars_5');
+        cache()->delete('sanctuary_ranking');
     }
 }

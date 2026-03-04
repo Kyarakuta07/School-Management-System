@@ -19,11 +19,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Lato:wght@400;700&display=swap"
         rel="stylesheet">
 
-    <!-- Core Admin Styles -->
+    <?php // Core admin styles ?>
     <link rel="stylesheet" href="<?= base_url('css/admin/style.css') ?>" />
     <link rel="stylesheet" href="<?= base_url('css/admin/cards.css') ?>" />
 
-    <!-- Extra CSS (page-specific) -->
+    <?php // Extra CSS ?>
     <?php if (!empty($extraCss)): ?>
         <?php foreach ($extraCss as $css): ?>
             <link rel="stylesheet" href="<?= base_url('css/admin/' . $css) ?>" />
@@ -37,14 +37,14 @@
     <div class="bg-fixed"></div>
     <div class="bg-overlay"></div>
 
-    <!-- Admin Sidebar -->
+    <?php // Admin sidebar ?>
     <?= $this->include('partials/admin/sidebar') ?>
 
     <main class="main-content">
         <?= $this->renderSection('content') ?>
     </main>
 
-    <!-- Common Scripts -->
+    <?php // Common scripts ?>
     <script src="<?= base_url('js/admin/sidebar-toggle.js') ?>"></script>
 
     <?= $this->renderSection('scripts') ?>

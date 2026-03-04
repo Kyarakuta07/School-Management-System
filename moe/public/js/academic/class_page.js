@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (!sanctuaryId) {
             scholarsList.innerHTML = originalScholarsHTML;
+            const filterMsg = scholarsList.querySelector('.filter-msg');
+            if (filterMsg) filterMsg.remove();
             return;
         }
 
@@ -110,12 +112,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
 
                 try {
-                    const res = await fetch(API_BASE + 'class/grades', {
+                    const res = await fetchWithCsrf(API_BASE + 'class/grades', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                             'X-Requested-With': 'XMLHttpRequest',
-                            [CSRF_NAME]: CSRF_TOKEN // Integration with CSRF
                         },
                         body: JSON.stringify({ student_id: studentId, grades: grades })
                     });
@@ -150,8 +151,8 @@ document.addEventListener('DOMContentLoaded', function () {
             let visibleCount = 0;
 
             rows.forEach(row => {
-                const nameText = row.querySelector('td[data-label="Nama"]').textContent.toLowerCase();
-                const sancText = row.querySelector('td[data-label="Sanctuary"]').textContent.toLowerCase();
+                const nameText = (row.querySelector('td[data-label="Nama"]')?.textContent || '').toLowerCase();
+                const sancText = (row.querySelector('td[data-label="Sanctuary"]')?.textContent || '').toLowerCase();
 
                 if (nameText.includes(query) || sancText.includes(query)) {
                     row.style.display = '';

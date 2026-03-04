@@ -2,10 +2,10 @@
 <?= $this->extend('layouts/base') ?>
 
 <?= $this->section('head') ?>
-<!-- Auth pages use css/shared/global.css which has login-specific styles (glass card, inputs, buttons) -->
+<?php // Auth CSS ?>
 <link rel="stylesheet" href="<?= base_url('css/shared/global.css') ?>">
 
-<!-- Page-specific CSS -->
+<?php // Page CSS ?>
 <?= $this->renderSection('css') ?>
 <?= $this->endSection() ?>
 
@@ -26,7 +26,7 @@
         </p>
     <?php endif; ?>
 
-    <!-- Page Content (form, success message, etc.) -->
+    <?php // Page content ?>
     <?= $this->renderSection('content') ?>
 </div>
 <?= $this->endSection() ?>
