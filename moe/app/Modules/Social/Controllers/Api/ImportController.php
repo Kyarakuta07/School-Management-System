@@ -63,10 +63,10 @@ class ImportController extends BaseApiController
             }
         }
 
-        // 3. File size guard — reject very large files early (max 10MB)
-        $maxSize = 10 * 1024 * 1024; // 10MB
+        // 3. File size guard — reject very large files early (max 20MB)
+        $maxSize = 20 * 1024 * 1024; // 20MB
         if ($file->getSize() > $maxSize) {
-            return $this->error('File too large. Maximum size is 10MB.', 400, 'VALIDATION_ERROR');
+            return $this->error('File too large. Maximum size is 20MB.', 400, 'VALIDATION_ERROR');
         }
 
         // 3b. Prepare temp directory
