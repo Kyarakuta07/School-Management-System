@@ -26,6 +26,7 @@
             <input type="number" name="amount" min="10" max="<?= $userGold ?>" value="100"
                 style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid rgba(218,165,32,0.3); background: rgba(0,0,0,0.3); color: #fff; font-size: 1rem;">
             <button type="submit" class="donate-btn" style="flex: 0 0 auto; width: auto; padding: 12px 20px;"
+                onclick="this.disabled=true; this.innerHTML='<i class=\'fas fa-spinner fa-spin\'></i> Donating...'; this.closest('form').submit();"
                 <?= $userGold < 10 ? 'disabled' : '' ?>>
                 <i class="fas fa-hand-holding-usd"></i> Donate
             </button>

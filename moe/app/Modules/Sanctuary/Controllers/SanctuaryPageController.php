@@ -113,6 +113,11 @@ class SanctuaryPageController extends BaseController
             $nextClaimTime
         );
 
+        // Invalidate cached stats after successful mutation
+        if ($actionSuccess) {
+            cache()->delete("sanctuary_stats_{$sanctuaryId}");
+        }
+
         return view('App\Modules\Sanctuary\Views\my_sanctuary', [
             'sanctuaryName' => $sanctuaryName,
             'userRole' => $userRole,

@@ -2,7 +2,7 @@
 
 namespace App\Modules\Sanctuary\Services;
 
-use CodeIgniter\Database\ConnectionInterface;
+use CodeIgniter\Database\BaseConnection;
 use App\Modules\Sanctuary\Interfaces\SanctuaryServiceInterface;
 
 /**
@@ -16,9 +16,9 @@ use App\Modules\Sanctuary\Interfaces\SanctuaryServiceInterface;
  */
 class SanctuaryService implements SanctuaryServiceInterface
 {
-    protected ConnectionInterface $db;
+    protected BaseConnection $db;
 
-    public function __construct(ConnectionInterface $db)
+    public function __construct(BaseConnection $db)
     {
         $this->db = $db;
     }
@@ -212,16 +212,28 @@ class SanctuaryService implements SanctuaryServiceInterface
      */
     public function processDonation(int $userId, int $sanctuaryId, int $amount, int $userGold, int $sanctuaryGold): array
     {
-        // Validation
+        // Validation — early return before touching DB
         if ($amount < 10) {
             return ['success' => false, 'message' => 'Minimum donation is 10 Gold.', 'newUserGold' => null, 'newSanctuaryGold' => null];
         }
 
+        if ($amount > 100000) {
+            return ['success' => false, 'message' => 'Maximum donation is 100,000 Gold.', 'newUserGold' => null, 'newSanctuaryGold' => null];
+        }
+
+        // Use DB transaction to ensure atomicity
+        $this->db->transStart();
+
+        // Fetch fresh gold with row lock to prevent race conditions
+        $freshUser = $this->db->query("SELECT gold FROM nethera WHERE id_nethera = ? FOR UPDATE", [$userId])->getRowArray();
+        $userGold = (int) ($freshUser['gold'] ?? 0);
+
         if ($amount > $userGold) {
+            $this->db->transRollback();
             return ['success' => false, 'message' => 'Not enough gold!', 'newUserGold' => null, 'newSanctuaryGold' => null];
         }
 
-        // Process donation
+        // Process donation atomically
         $this->db->query("UPDATE nethera SET gold = gold - ? WHERE id_nethera = ?", [$amount, $userId]);
         $this->db->query("UPDATE sanctuary SET gold = gold + ? WHERE id_sanctuary = ?", [$amount, $sanctuaryId]);
 
@@ -231,6 +243,13 @@ class SanctuaryService implements SanctuaryServiceInterface
              VALUES (?, 0, ?, 'donation', 'Sanctuary Donation', 'completed')",
             [$userId, $amount]
         );
+
+        $this->db->transComplete();
+
+        // Check transaction status
+        if ($this->db->transStatus() === false) {
+            return ['success' => false, 'message' => 'Donation failed. Please try again.', 'newUserGold' => null, 'newSanctuaryGold' => null];
+        }
 
         return [
             'success' => true,

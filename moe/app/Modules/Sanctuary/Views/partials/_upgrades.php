@@ -29,7 +29,7 @@
                 <?php if ($isPurchased): ?>
                     <span style="color: #4a4; font-weight: 700;"><i class="fas fa-check"></i> ACTIVE</span>
                 <?php elseif ($isLeader): ?>
-                    <form method="POST" style="margin: 0;">
+                    <form method="POST" action="<?= site_url('my-sanctuary') ?>" style="margin: 0;">
                         <?= csrf_field() ?>
                         <input type="hidden" name="action" value="upgrade">
                         <input type="hidden" name="upgrade_type" value="<?= $type ?>">
