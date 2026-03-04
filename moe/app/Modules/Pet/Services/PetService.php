@@ -135,7 +135,11 @@ class PetService implements PetServiceInterface
     {
         $this->db->transStart();
 
-        $this->petModel->update($petId, ['status' => 'ALIVE']);
+        // Reset timestamp so decay starts fresh from now (not from shelter entry time)
+        $this->petModel->update($petId, [
+            'status' => 'ALIVE',
+            'last_update_timestamp' => time(),
+        ]);
         $this->petModel->setActivePet($userId, $petId);
 
         $this->db->transComplete();

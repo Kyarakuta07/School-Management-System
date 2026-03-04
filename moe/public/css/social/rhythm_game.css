@@ -52,6 +52,7 @@ body {
     overflow: hidden;
     z-index: 999;
     background: linear-gradient(180deg, #0d1117 0%, #1a1040 50%, #0d1117 100%);
+    touch-action: none;
 }
 
 /* ================================================
@@ -165,6 +166,7 @@ body {
     position: relative;
     display: flex;
     overflow: hidden;
+    touch-action: none;
 }
 
 .track-area {
@@ -248,7 +250,7 @@ body {
 }
 
 /* ================================================
-   NOTES — Piano Tiles Style (full-width black tiles)
+   NOTES — Colored Lane Tiles (visible against dark bg)
    ================================================ */
 .note {
     position: absolute;
@@ -257,28 +259,33 @@ body {
     left: 0;
     /* Height is set dynamically by JS based on noteSpeed */
     height: 80px;
-    /* Classic Piano Tiles: dark black tile */
-    background: #111;
-    border-radius: 2px;
+    /* Colored tile using lane color */
+    background: linear-gradient(180deg,
+            rgba(var(--lane-color-rgb, 255, 255, 255), 0.85) 0%,
+            rgba(var(--lane-color-rgb, 255, 255, 255), 0.65) 100%);
+    border-radius: 4px;
     display: grid;
     place-items: center;
     z-index: 5;
-    /* Subtle border to separate adjacent tiles */
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+    /* Border for definition */
+    border: 1px solid rgba(var(--lane-color-rgb, 255, 255, 255), 0.4);
+    border-bottom: 3px solid rgba(var(--lane-color-rgb, 255, 255, 255), 0.9);
     /* GPU acceleration */
     will-change: transform, opacity;
     top: 0;
-    /* Hover-like inner highlight */
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+    /* Glow effect */
+    box-shadow: 0 0 8px rgba(var(--lane-color-rgb, 255, 255, 255), 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
-/* Hold Notes — Piano Tiles long press style */
+/* Hold Notes — colored long press style */
 .note.hold-note {
-    background: #0a0a0a;
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: linear-gradient(180deg,
+            rgba(var(--lane-color-rgb, 255, 255, 255), 0.7) 0%,
+            rgba(var(--lane-color-rgb, 255, 255, 255), 0.5) 100%);
+    border: 1px solid rgba(var(--lane-color-rgb, 255, 255, 255), 0.5);
     border-bottom: none;
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 12px rgba(var(--lane-color-rgb, 255, 255, 255), 0.25);
     display: block;
     overflow: visible;
     border-radius: 4px;
@@ -434,6 +441,7 @@ body {
     background: transparent;
     border: none;
     outline: none;
+    touch-action: none;
 }
 
 .touch-lane:active {
