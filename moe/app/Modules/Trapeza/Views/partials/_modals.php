@@ -17,8 +17,8 @@
                     <div class="search-container">
                         <input type="text" id="recipientInput" placeholder="Search student...">
                         <i class="fas fa-search search-icon"></i>
+                        <div id="searchResults" class="search-results"></div>
                     </div>
-                    <div id="searchResults" class="search-results"></div>
                 </div>
 
                 <!-- Amount -->
