@@ -1,4 +1,4 @@
-<!-- quiz_attempt.php — CI4 View -->
+<!-- quiz_attempt.php â€” CI4 View -->
 <?php // Quiz Attempt View ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -9,7 +9,7 @@
     <title>
         <?= esc($quiz['title']) ?> - Quiz
     </title>
-    <link rel="stylesheet" href="<?= base_url('css/shared/global.css') ?>">
+    <link rel="stylesheet" href="<?= asset_v('css/shared/global.css') ?>">
     <link rel="stylesheet" href="<?= base_url('user/css/user/beranda_style.css') ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <?= csrf_meta() ?>
@@ -401,7 +401,7 @@
     <div id="quiz-config" style="display:none" data-csrf-token="<?= csrf_hash() ?>" data-quiz-id="<?= $quizId ?>"
         data-total-questions="<?= count($questions) ?>" data-api-base="<?= base_url('api/') ?>"
         data-time-limit="<?= $quiz['time_limit'] * 60 ?>"></div>
-    <script src="<?= base_url('js/academic/quiz_attempt.js') ?>?v=<?= time() ?>"></script>
+    <script src="<?= asset_v('js/academic/quiz_attempt.js') ?>"></script>
 </body>
 
 </html>

@@ -5,7 +5,7 @@ $isLoggedIn = user_is_logged_in(); ?>
 <header class="main-header <?= $isLoggedIn ? 'premium-dashboard-nav' : '' ?>">
     <div class="logo-container">
         <a href="<?= base_url('/') ?>">
-            <img src="<?= base_url('assets/landing/logo.png') ?>" alt="Logo" class="logo">
+            <img src="<?= asset_v('assets/landing/logo.png') ?>" alt="Logo" class="logo">
         </a>
     </div>
 

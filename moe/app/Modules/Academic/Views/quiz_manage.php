@@ -1,4 +1,4 @@
-<!-- quiz_manage.php — CI4 View -->
+<!-- quiz_manage.php â€” CI4 View -->
 <?php // Quiz Management View ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -9,7 +9,7 @@
     <title>Manage Quiz -
         <?= esc($quiz['title']) ?>
     </title>
-    <link rel="stylesheet" href="<?= base_url('css/shared/global.css') ?>">
+    <link rel="stylesheet" href="<?= asset_v('css/shared/global.css') ?>">
     <link rel="stylesheet" href="<?= base_url('user/css/user/beranda_style.css') ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <?= csrf_meta() ?>
@@ -294,7 +294,7 @@
         <?= view('App\Modules\Academic\Views\partials\quiz\_question_list') ?>
     </div>
 
-    <script src="<?= base_url('js/academic/quiz_manage.js') ?>?v=<?= time() ?>"></script>
+    <script src="<?= asset_v('js/academic/quiz_manage.js') ?>"></script>
 </body>
 
 </html>

@@ -34,6 +34,7 @@ class AdminNetheraController extends BaseController
         $totalCount = 0;
         $statusCounts = [
             'Aktif' => 0,
+            'Pending' => 0,
             'Hiatus' => 0,
             'Out' => 0
         ];
@@ -45,9 +46,30 @@ class AdminNetheraController extends BaseController
             }
         }
 
-        // 2. Paginated User List
+        // 2. Server-side filter & search
+        $statusFilter = $this->request->getGet('status') ?? 'all';
+        $searchQuery = trim($this->request->getGet('q') ?? '');
+
         $perPage = 15;
-        $allNethera = $this->userModel->getNetheraWithSanctuary($perPage);
+        $builder = $this->userModel->select('nethera.*, sanctuary.nama_sanctuary')
+            ->join('sanctuary', 'sanctuary.id_sanctuary = nethera.id_sanctuary', 'left')
+            ->where('nethera.role', ROLE_NETHERA)
+            ->orderBy('nethera.id_nethera', 'DESC');
+
+        if ($statusFilter !== 'all') {
+            $builder->where('nethera.status_akun', $statusFilter);
+        }
+
+        if (!empty($searchQuery)) {
+            $builder->groupStart()
+                ->like('nethera.nama_lengkap', $searchQuery)
+                ->orLike('nethera.username', $searchQuery)
+                ->orLike('sanctuary.nama_sanctuary', $searchQuery)
+                ->orLike('nethera.no_registrasi', $searchQuery)
+                ->groupEnd();
+        }
+
+        $allNethera = $builder->paginate($perPage);
         $pager = $this->userModel->pager;
 
         return view('App\Modules\Admin\Views\manage_nethera', [
@@ -55,10 +77,13 @@ class AdminNetheraController extends BaseController
             'currentPage' => ROLE_NETHERA,
             'totalCount' => $totalCount,
             'aktifCount' => $statusCounts['Aktif'],
+            'pendingCount' => $statusCounts['Pending'],
             'hiatusCount' => $statusCounts['Hiatus'],
             'outCount' => $statusCounts['Out'],
             'allNethera' => $allNethera,
             'pager' => $pager->links('default', 'default_full'),
+            'currentStatus' => $statusFilter,
+            'currentSearch' => $searchQuery,
         ]);
     }
 
@@ -101,7 +126,7 @@ class AdminNetheraController extends BaseController
                 'id_nethera' => 'required|integer|greater_than[0]',
                 'nama_lengkap' => 'required|min_length[3]|max_length[100]',
                 'username' => 'required|alpha_numeric|min_length[3]|max_length[50]',
-                'status_akun' => 'required|in_list[Aktif,Pending,Out]',
+                'status_akun' => 'required|in_list[Aktif,Pending,Hiatus,Out]',
                 'noHP' => 'permit_empty|min_length[10]|max_length[15]',
                 'password' => 'permit_empty|min_length[8]',
             ])

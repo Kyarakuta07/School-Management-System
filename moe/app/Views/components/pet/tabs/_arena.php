@@ -3,7 +3,7 @@
     <!-- Premium Arena Header -->
     <div class="arena-premium-header">
         <div class="arena-header-bg-layer"
-            style="background-image: url('<?= base_url('assets/ui/arena_header_bg.png') ?>');"></div>
+            style="background-image: url('<?= asset_v('assets/ui/arena_header_bg.png') ?>');"></div>
         <div class="arena-header-overlay"></div>
 
         <div class="arena-header-content">

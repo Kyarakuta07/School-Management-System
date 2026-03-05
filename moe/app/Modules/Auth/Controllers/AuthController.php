@@ -259,6 +259,14 @@ class AuthController extends BaseController
             'periode_masuk' => (int) $this->request->getPost('periode_masuk'),
         ];
 
+        // DNS MX validation — reject domains that can't receive email
+        $emailDomain = substr($payload['email'], strpos($payload['email'], '@') + 1);
+        if (!checkdnsrr($emailDomain, 'MX')) {
+            return redirect()->to(base_url('register'))
+                ->withInput()
+                ->with('error', 'Domain email tidak valid. Pastikan Anda menggunakan email yang aktif (contoh: Gmail, Yahoo, Outlook).');
+        }
+
         $authService = service('authService');
         $result = $authService->register($payload);
 

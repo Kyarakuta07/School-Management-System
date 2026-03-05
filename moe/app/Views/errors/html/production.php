@@ -12,7 +12,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
             padding: 50px;
-            background-image: url('<?= base_url('assets/images/bg_home.jpg') ?>');
+            background-image: url('<?= asset_v('assets/images/bg_home.jpg') ?>');
             background-size: cover;
             background-position: center;
             position: relative;
@@ -78,7 +78,13 @@
         <p>Aduh! Sistem sedang tertiup badai pasir dan para Arsitek (Developer) telah diberitahu untuk mendesain ulang
             reruntuhan ini.</p>
         <p>Silakan coba beberapa saat lagi.</p>
-        <a href="<?= base_url('beranda') ?>" class="back-btn">Kembali ke Tempat Aman</a>
+        <?php
+        // Smart redirect: if session exists â†’ beranda, otherwise â†’ login
+        $safeUrl = !empty($_SESSION['id_nethera'] ?? null)
+            ? base_url('beranda')
+            : base_url('login');
+        ?>
+        <a href="<?= $safeUrl ?>" class="back-btn">Kembali ke Tempat Aman</a>
     </div>
 </body>
 

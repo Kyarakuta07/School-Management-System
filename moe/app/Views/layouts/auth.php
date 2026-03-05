@@ -3,7 +3,7 @@
 
 <?= $this->section('head') ?>
 <?php // Auth CSS ?>
-<link rel="stylesheet" href="<?= base_url('css/shared/global.css') ?>">
+<link rel="stylesheet" href="<?= asset_v('css/shared/global.css') ?>">
 
 <?php // Page CSS ?>
 <?= $this->renderSection('css') ?>
@@ -13,7 +13,7 @@
 <div class="login-container <?= $containerClass ?? '' ?>" <?= isset($containerMaxWidth) ? 'style="max-width:' . $containerMaxWidth . '"' : '' ?>>
     <!-- Logo -->
     <div class="login-logo">
-        <img src="<?= base_url('assets/landing/logo.png') ?>" alt="MOE Logo">
+        <img src="<?= asset_v('assets/landing/logo.png') ?>" alt="MOE Logo">
     </div>
 
     <!-- Page Title & Subtitle -->

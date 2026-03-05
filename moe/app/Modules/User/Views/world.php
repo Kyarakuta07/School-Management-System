@@ -16,7 +16,7 @@
     <meta name="theme-color" content="#0a0a0a">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="<?= base_url('assets/landing/logo.png') ?>">
+    <link rel="icon" type="image/png" href="<?= asset_v('assets/landing/logo.png') ?>">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,8 +28,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <!-- Global CSS -->
-    <link rel="stylesheet" href="<?= base_url('css/shared/navbar.css') ?>">
-    <link rel="stylesheet" href="<?= base_url('css/auth/landing-style.css') ?>">
+    <link rel="stylesheet" href="<?= asset_v('css/shared/navbar.css') ?>">
+    <link rel="stylesheet" href="<?= asset_v('css/auth/landing-style.css') ?>">
 
     <style>
         .world-container {
@@ -267,32 +267,32 @@
 
             <div class="map-wrapper">
                 <!-- Base Map -->
-                <img src="<?= base_url('assets/map/map_moe_cleanup.jpeg') ?>" alt="World Map of Mediterranean of Egypt"
+                <img src="<?= asset_v('assets/map/map_moe_cleanup.jpeg') ?>" alt="World Map of Mediterranean of Egypt"
                     class="map-base">
 
                 <div class="sanctuary-building building-horus" data-sanctuary="horus" data-name="Sanctuary of Horus">
-                    <img src="<?= base_url('assets/map/sanctuary_horus (1).png') ?>" alt="Horus Sanctuary">
+                    <img src="<?= asset_v('assets/map/sanctuary_horus (1).png') ?>" alt="Horus Sanctuary">
                 </div>
 
                 <div class="sanctuary-building building-khonshu" data-sanctuary="khonshu"
                     data-name="Sanctuary of Khonshu">
-                    <img src="<?= base_url('assets/map/sanctuary_khonshu (1).png') ?>" alt="Khonshu Sanctuary">
+                    <img src="<?= asset_v('assets/map/sanctuary_khonshu (1).png') ?>" alt="Khonshu Sanctuary">
                 </div>
 
                 <div class="sanctuary-building building-osiris" data-sanctuary="osiris" data-name="Sanctuary of Osiris">
-                    <img src="<?= base_url('assets/map/sanctuary_osiris (1).png') ?>" alt="Osiris Sanctuary">
+                    <img src="<?= asset_v('assets/map/sanctuary_osiris (1).png') ?>" alt="Osiris Sanctuary">
                 </div>
 
                 <div class="sanctuary-building building-hathor" data-sanctuary="hathor" data-name="Sanctuary of Hathor">
-                    <img src="<?= base_url('assets/map/sanctuary_hathor (1).png') ?>" alt="Hathor Sanctuary">
+                    <img src="<?= asset_v('assets/map/sanctuary_hathor (1).png') ?>" alt="Hathor Sanctuary">
                 </div>
 
                 <div class="sanctuary-building building-ammit" data-sanctuary="ammit" data-name="Sanctuary of Ammit">
-                    <img src="<?= base_url('assets/map/sanctuary_ammit (1).png') ?>" alt="Ammit Sanctuary">
+                    <img src="<?= asset_v('assets/map/sanctuary_ammit (1).png') ?>" alt="Ammit Sanctuary">
                 </div>
 
                 <div class="sanctuary-building building-pyramid" data-sanctuary="pyramid" data-name="Pyramid Khufu">
-                    <img src="<?= base_url('assets/map/Piramida_tengah (1).png') ?>" alt="Pyramid Khufu">
+                    <img src="<?= asset_v('assets/map/Piramida_tengah (1).png') ?>" alt="Pyramid Khufu">
                 </div>
 
             </div>
@@ -357,7 +357,7 @@
             }
         };
     </script>
-    <script src="<?= base_url('js/social/world.js') ?>"></script>
+    <script src="<?= asset_v('js/social/world.js') ?>"></script>
 </body>
 
 </html>

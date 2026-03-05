@@ -2,9 +2,9 @@
 
 <?= $this->section('head') ?>
 <!-- Consolidated Production Bundle (Global + Navbar + Pet Core) -->
-<link rel="stylesheet" href="<?= base_url('css/pet/pet_bundle_v1.css') ?>">
+<link rel="stylesheet" href="<?= asset_v('css/pet/pet_bundle_v1.css') ?>">
 <!-- Gacha & Bestiary Premium Styles -->
-<link rel="stylesheet" href="<?= base_url('css/pet/gacha_premium.css') ?>">
+<link rel="stylesheet" href="<?= asset_v('css/pet/gacha_premium.css') ?>">
 <!-- Sub-tab CSS files are lazy-loaded by pet/ui.js -->
 <?= $this->endSection() ?>
 

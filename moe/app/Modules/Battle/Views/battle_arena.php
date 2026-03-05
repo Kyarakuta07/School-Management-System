@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>⚔️ Battle Arena - MOE Pet</title>
+    <title>âš”ï¸ Battle Arena - MOE Pet</title>
 
     <!-- Fonts -->
     <link
@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Battle CSS -->
-    <link rel="stylesheet" href="<?= base_url('css/battle/battle_arena_premium.css') ?>">
+    <link rel="stylesheet" href="<?= asset_v('css/battle/battle_arena_premium.css') ?>">
 
     <!-- PixiJS for Premium Effects -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.3.2/pixi.min.js"></script>
@@ -40,7 +40,7 @@
             <button class="back-btn" onclick="forfeitBattle()">
                 <i class="fas fa-arrow-left"></i>
             </button>
-            <h1>⚔️ BATTLE</h1>
+            <h1>âš”ï¸ BATTLE</h1>
             <div class="turn-indicator" id="turn-indicator">YOUR TURN</div>
         </header>
 
@@ -76,7 +76,7 @@
                     <div class="pet-shadow"></div>
                     <img src="<?= base_url('assets/pets/' . esc($defenderImg)) ?>"
                         alt="<?= esc($defender['species_name']) ?>" id="enemy-pet-img"
-                        onerror="this.src='<?= base_url('assets/placeholder.png') ?>'">
+                        onerror="this.src='<?= asset_v('assets/placeholder.png') ?>'">
                 </div>
             </div>
 
@@ -87,7 +87,7 @@
                     <div class="pet-shadow"></div>
                     <img src="<?= base_url('assets/pets/' . esc($attackerImg)) ?>"
                         alt="<?= esc($attacker['species_name']) ?>" id="player-pet-img"
-                        onerror="this.src='<?= base_url('assets/placeholder.png') ?>'">
+                        onerror="this.src='<?= asset_v('assets/placeholder.png') ?>'">
                 </div>
                 <div class="combat-hud">
                     <div class="hp-bar-container">
@@ -158,7 +158,7 @@
         <!-- Result Overlay -->
         <div class="result-overlay hidden" id="result-overlay">
             <div class="result-content">
-                <h1 id="result-title">🏆 Victory!</h1>
+                <h1 id="result-title">ðŸ† Victory!</h1>
                 <div class="result-stats">
                     <div class="result-row">
                         <span>Gold Earned</span>
@@ -196,10 +196,10 @@
         data-asset-base="<?= base_url() ?>"></div>
 
     <!-- Battle JS -->
-    <script src="<?= base_url('js/shared/sound_manager.js') ?>"></script>
-    <script src="<?= base_url('js/shared/csrf_helper.js') ?>"></script>
-    <script src="<?= base_url('js/battle/battle_arena.js') ?>?v=2"></script>
-    <script src="<?= base_url('js/battle/pixi_battle.js') ?>"></script>
+    <script src="<?= asset_v('js/shared/sound_manager.js') ?>"></script>
+    <script src="<?= asset_v('js/shared/csrf_helper.js') ?>"></script>
+    <script src="<?= asset_v('js/battle/battle_arena.js') ?>"></script>
+    <script src="<?= asset_v('js/battle/pixi_battle.js') ?>"></script>
 </body>
 
 </html>

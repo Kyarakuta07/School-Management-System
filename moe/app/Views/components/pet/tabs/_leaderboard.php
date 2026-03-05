@@ -1,11 +1,11 @@
-﻿<!-- Pet Leaderboard Tab - Premium Design v2 (No Emoji) -->
+<!-- Pet Leaderboard Tab - Premium Design v2 (No Emoji) -->
 <div class="tab-content" id="leaderboard" style="display: none;">
     <div class="leaderboard-container">
 
         <!-- Header with animated trophy -->
         <div class="leaderboard-header-premium">
             <div class="leaderboard-header-bg"
-                style="background-image: url('<?= base_url('assets/leaderboard/podium_bg.png') ?>');"></div>
+                style="background-image: url('<?= asset_v('assets/leaderboard/podium_bg.png') ?>');"></div>
             <div class="leaderboard-header-overlay"></div>
 
             <div class="lb-header-content">
@@ -120,4 +120,4 @@
     </div>
 </div>
 
-<link rel="stylesheet" href="<?= base_url('css/pet/leaderboard.css') ?>?v=<?= time() ?>">
+<link rel="stylesheet" href="<?= asset_v('css/pet/leaderboard.css') ?>">

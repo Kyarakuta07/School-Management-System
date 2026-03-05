@@ -26,31 +26,31 @@
                 <i class="fas fa-th"></i> All
             </button>
             <button class="filter-pill" data-filter="fire" onclick="filterCollection('fire')">
-                <img src="<?= base_url('assets/elements/fire.png') ?>" alt="Fire" class="pill-icon"> Fire
+                <img src="<?= asset_v('assets/elements/fire.png') ?>" alt="Fire" class="pill-icon"> Fire
             </button>
             <button class="filter-pill" data-filter="water" onclick="filterCollection('water')">
-                <img src="<?= base_url('assets/elements/water.png') ?>" alt="Water" class="pill-icon"> Water
+                <img src="<?= asset_v('assets/elements/water.png') ?>" alt="Water" class="pill-icon"> Water
             </button>
             <button class="filter-pill" data-filter="earth" onclick="filterCollection('earth')">
-                <img src="<?= base_url('assets/elements/earth.png') ?>" alt="Earth" class="pill-icon"> Earth
+                <img src="<?= asset_v('assets/elements/earth.png') ?>" alt="Earth" class="pill-icon"> Earth
             </button>
             <button class="filter-pill" data-filter="air" onclick="filterCollection('air')">
-                <img src="<?= base_url('assets/elements/air.png') ?>" alt="Air" class="pill-icon"> Air
+                <img src="<?= asset_v('assets/elements/air.png') ?>" alt="Air" class="pill-icon"> Air
             </button>
             <button class="filter-pill" data-filter="light" onclick="filterCollection('light')">
-                <img src="<?= base_url('assets/elements/light.png') ?>" alt="Light" class="pill-icon"> Light
+                <img src="<?= asset_v('assets/elements/light.png') ?>" alt="Light" class="pill-icon"> Light
             </button>
             <button class="filter-pill" data-filter="dark" onclick="filterCollection('dark')">
-                <img src="<?= base_url('assets/elements/dark.png') ?>" alt="Dark" class="pill-icon"> Dark
+                <img src="<?= asset_v('assets/elements/dark.png') ?>" alt="Dark" class="pill-icon"> Dark
             </button>
         </div>
 
         <!-- Sort Dropdown -->
         <div class="sort-container">
             <select id="pet-sort" class="sort-select" onchange="sortCollection(this.value)">
-                <option value="level-desc">Level ↓</option>
-                <option value="level-asc">Level ↑</option>
-                <option value="rarity-desc">Rarity ↓</option>
+                <option value="level-desc">Level â†“</option>
+                <option value="level-asc">Level â†‘</option>
+                <option value="rarity-desc">Rarity â†“</option>
                 <option value="name-asc">Name A-Z</option>
                 <option value="recent">Recent</option>
             </select>
@@ -125,21 +125,21 @@
 
             <!-- Battle Stats Section -->
             <div class="pet-detail-section">
-                <h3 class="section-title">⚔️ Battle Stats</h3>
+                <h3 class="section-title">âš”ï¸ Battle Stats</h3>
                 <p class="section-subtitle">Calculated combat statistics</p>
                 <div class="battle-stats-grid">
                     <div class="battle-stat-card">
-                        <div class="stat-icon health">❤️</div>
+                        <div class="stat-icon health">â¤ï¸</div>
                         <div class="stat-value" id="detail-hp">0</div>
                         <div class="stat-label">Health</div>
                     </div>
                     <div class="battle-stat-card">
-                        <div class="stat-icon attack">⚔️</div>
+                        <div class="stat-icon attack">âš”ï¸</div>
                         <div class="stat-value" id="detail-atk">0</div>
                         <div class="stat-label">Attack</div>
                     </div>
                     <div class="battle-stat-card">
-                        <div class="stat-icon power">💪</div>
+                        <div class="stat-icon power">ðŸ’ª</div>
                         <div class="stat-value" id="detail-power">0</div>
                         <div class="stat-label">Power</div>
                     </div>
@@ -148,7 +148,7 @@
 
             <!-- Base Stats Section -->
             <div class="pet-detail-section">
-                <h3 class="section-title">📊 Base Stats</h3>
+                <h3 class="section-title">ðŸ“Š Base Stats</h3>
                 <div class="base-stats-list">
                     <div class="base-stat-row">
                         <span class="base-label">Base HP</span>

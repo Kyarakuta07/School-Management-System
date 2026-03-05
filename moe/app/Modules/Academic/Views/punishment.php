@@ -1,7 +1,7 @@
-﻿<?= $this->extend('layouts/user') ?>
+<?= $this->extend('layouts/user') ?>
 
 <?= $this->section('css') ?>
-<link rel="stylesheet" href="<?= base_url('css/academic/punishment_style.css') ?>">
+<link rel="stylesheet" href="<?= asset_v('css/academic/punishment_style.css') ?>">
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>

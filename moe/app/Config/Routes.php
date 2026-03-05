@@ -80,6 +80,9 @@ require APPPATH . 'Modules/Admin/Config/Routes.php';
 
 // ── API Routes (protected) ──
 $routes->group('api', ['filter' => ['auth:nethera,vasiki,hakaes,anubis', 'throttle']], function ($routes) {
+    // Session heartbeat (used by session_guard.js)
+    $routes->get('session/ping', '\App\Kernel\Controllers\SessionController::ping');
+
     require APPPATH . 'Modules/Pet/Config/Routes.php';
     require APPPATH . 'Modules/Battle/Config/Routes.php';
     require APPPATH . 'Modules/Academic/Config/Routes.php';

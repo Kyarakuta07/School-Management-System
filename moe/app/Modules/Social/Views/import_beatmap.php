@@ -124,7 +124,7 @@
             text-decoration: underline;
         }
 
-        /* ── Song Manager ── */
+        /* â”€â”€ Song Manager â”€â”€ */
         .song-manager {
             margin-top: 40px;
         }
@@ -260,9 +260,9 @@
         const csrfName = '<?= csrf_token() ?>';
         let csrfHash = '<?= csrf_hash() ?>';
     </script>
-    <script src="<?= base_url('js/social/import_beatmap.js') ?>"></script>
+    <script src="<?= asset_v('js/social/import_beatmap.js') ?>"></script>
     <script>
-        // ── Song List Management ──
+        // â”€â”€ Song List Management â”€â”€
         async function loadSongList() {
             const container = document.getElementById('songList');
             try {
@@ -278,7 +278,7 @@
                     <div class="song-item" id="song-${song.id}">
                         <div class="song-item-info">
                             <div class="song-item-title">${escHtml(song.title)}</div>
-                            <div class="song-item-meta">${escHtml(song.artist)} · ${song.bpm} BPM · ${song.difficulty}</div>
+                            <div class="song-item-meta">${escHtml(song.artist)} Â· ${song.bpm} BPM Â· ${song.difficulty}</div>
                         </div>
                         <span class="song-item-id">#${song.id}</span>
                         <button class="btn-delete" onclick="deleteSong(${song.id}, '${escHtml(song.title)}')" title="Delete Song">

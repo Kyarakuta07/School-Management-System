@@ -1,7 +1,7 @@
 <?= $this->extend('layouts/user') ?>
 
 <?= $this->section('css') ?>
-<link rel="stylesheet" href="<?= base_url('css/trapeza/trapeza.css') ?>">
+<link rel="stylesheet" href="<?= asset_v('css/trapeza/trapeza.css') ?>">
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
@@ -13,7 +13,7 @@
     <header class="hero-header">
         <div class="hero-content">
             <div class="greeting-section">
-                <div class="greeting-emoji">🏛️</div>
+                <div class="greeting-emoji">ðŸ›ï¸</div>
                 <div class="greeting-text">
                     <p class="greeting-line">Trapeza Mobile Banking,</p>
                     <h1 class="user-name-hero"><?= $userName ?></h1>
@@ -53,5 +53,5 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('page_scripts') ?>
-<script src="<?= base_url('js/trapeza/trapeza_banking.js') ?>"></script>
+<script src="<?= asset_v('js/trapeza/trapeza_banking.js') ?>"></script>
 <?= $this->endSection() ?>

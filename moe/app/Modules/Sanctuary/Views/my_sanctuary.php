@@ -1,4 +1,4 @@
-<?php // My Sanctuary — CI4 View ?>
+<?php // My Sanctuary â€” CI4 View ?>
 <?php
 // Helper function for safe avatar URL within view
 $getSafeAvatar = function ($photo) {
@@ -28,10 +28,10 @@ $getSafeAvatar = function ($photo) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="<?= base_url('css/shared/global.css') ?>">
-    <link rel="stylesheet" href="<?= base_url('css/user/beranda_style.css') ?>">
+    <link rel="stylesheet" href="<?= asset_v('css/shared/global.css') ?>">
+    <link rel="stylesheet" href="<?= asset_v('css/user/beranda_style.css') ?>">
 
-    <link rel="stylesheet" href="<?= base_url('css/sanctuary/sanctuary.css') ?>?v=<?= time() ?>">
+    <link rel="stylesheet" href="<?= asset_v('css/sanctuary/sanctuary.css') ?>">
 </head>
 
 <body>
@@ -76,7 +76,7 @@ $getSafeAvatar = function ($photo) {
         </div>
     </div>
 
-    <script src="<?= base_url('js/sanctuary/sanctuary.js') ?>?v=<?= time() ?>"></script>
+    <script src="<?= asset_v('js/sanctuary/sanctuary.js') ?>"></script>
 </body>
 
 </html>

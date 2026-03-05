@@ -1,8 +1,8 @@
 <?= $this->extend('layouts/user') ?>
 
 <?= $this->section('css') ?>
-<link rel="stylesheet" href="<?= base_url('css/auth/landing-style.css') ?>">
-<link rel="stylesheet" href="<?= base_url('css/social/guild_style.css') ?>">
+<link rel="stylesheet" href="<?= asset_v('css/auth/landing-style.css') ?>">
+<link rel="stylesheet" href="<?= asset_v('css/social/guild_style.css') ?>">
 <style>
     /* Override global body flex centering that breaks multi-section guild page */
     body.page-guild {
@@ -38,7 +38,7 @@
         <source media="(max-width: 768px)"
             srcset="<?= base_url('assets/sanctuhall/hallmobile_' . esc($factionSlug, 'url') . '.jpeg') ?>">
         <img src="<?= base_url('assets/sanctuhall/halldesktop_' . esc($factionSlug, 'url') . '.jpeg') ?>"
-            alt="Background" class="guild-bg" onerror="this.src='<?= base_url('assets/map/map_moe_cleanup.jpeg') ?>'">
+            alt="Background" class="guild-bg" onerror="this.src='<?= asset_v('assets/map/map_moe_cleanup.jpeg') ?>'">
     </picture>
 
     <div class="guild-title-wrapper">
@@ -163,9 +163,9 @@
                             <div class="member-name">
                                 <?= esc($member['nama_lengkap']) ?>
                                 <?php if (($member['sanctuary_role'] ?? '') === 'hosa'): ?>
-                                    <span class="member-role-tag hosa">👑</span>
+                                    <span class="member-role-tag hosa">ðŸ‘‘</span>
                                 <?php elseif (($member['sanctuary_role'] ?? '') === 'vizier'): ?>
-                                    <span class="member-role-tag vizier">⚔️</span>
+                                    <span class="member-role-tag vizier">âš”ï¸</span>
                                 <?php endif; ?>
                             </div>
                             <div class="member-username">@

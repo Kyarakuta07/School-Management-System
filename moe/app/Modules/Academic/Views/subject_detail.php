@@ -1,7 +1,7 @@
 <?= $this->extend('layouts/user') ?>
 
 <?= $this->section('css') ?>
-<link rel="stylesheet" href="<?= base_url('css/academic/subject_detail.css') ?>?v=<?= time() ?>">
+<link rel="stylesheet" href="<?= asset_v('css/academic/subject_detail.css') ?>">
 <style>
     .bg-fixed {
         position: fixed;
@@ -64,7 +64,7 @@
 
 <?= $this->section('page_scripts') ?>
 <script>
-    // Inject server-side config directly — always correct regardless of caching
+    // Inject server-side config directly â€” always correct regardless of caching
     (function () {
         var origin = window.location.origin;
         var phpBase = '<?= base_url() ?>';
@@ -80,6 +80,6 @@
         };
     })();
 </script>
-<script src="<?= base_url('js/academic/subject_materials.js') ?>?v=<?= time() ?>"></script>
-<script src="<?= base_url('js/academic/subject_content_preview.js') ?>?v=<?= time() ?>"></script>
+<script src="<?= asset_v('js/academic/subject_materials.js') ?>"></script>
+<script src="<?= asset_v('js/academic/subject_content_preview.js') ?>"></script>
 <?= $this->endSection() ?>

@@ -20,8 +20,8 @@
         rel="stylesheet">
 
     <?php // Core admin styles ?>
-    <link rel="stylesheet" href="<?= base_url('css/admin/style.css') ?>" />
-    <link rel="stylesheet" href="<?= base_url('css/admin/cards.css') ?>" />
+    <link rel="stylesheet" href="<?= asset_v('css/admin/style.css') ?>" />
+    <link rel="stylesheet" href="<?= asset_v('css/admin/cards.css') ?>" />
 
     <?php // Extra CSS ?>
     <?php if (!empty($extraCss)): ?>
@@ -44,8 +44,18 @@
         <?= $this->renderSection('content') ?>
     </main>
 
+    <?php // Global JS constants ?>
+    <meta name="X-CSRF-TOKEN" content="<?= csrf_hash() ?>">
+    <script>
+        const API_BASE = '<?= base_url('api/') ?>';
+        const ASSET_BASE = '<?= base_url() ?>';
+    </script>
+
     <?php // Common scripts ?>
-    <script src="<?= base_url('js/admin/sidebar-toggle.js') ?>"></script>
+    <script src="<?= asset_v('js/admin/sidebar-toggle.js') ?>"></script>
+
+    <?php // Session guard (heartbeat + CSRF refresh + tab-resume) ?>
+    <script src="<?= asset_v('js/shared/session_guard.js') ?>"></script>
 
     <?= $this->renderSection('scripts') ?>
 </body>

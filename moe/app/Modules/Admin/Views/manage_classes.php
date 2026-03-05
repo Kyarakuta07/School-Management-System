@@ -176,5 +176,5 @@
     const CHART_LABELS = <?= json_encode($sanctuaryLabels) ?>;
     const CHART_POINTS = <?= json_encode($sanctuaryPoints) ?>;
 </script>
-<script src="<?= base_url('js/admin/manage_classes.js') ?>"></script>
+<script src="<?= asset_v('js/admin/manage_classes.js') ?>"></script>
 <?= $this->endSection() ?>

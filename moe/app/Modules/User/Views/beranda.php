@@ -1,7 +1,7 @@
 <?= $this->extend('layouts/user') ?>
 
 <?= $this->section('css') ?>
-<link rel="stylesheet" href="<?= base_url('css/user/beranda_style.css') ?>">
+<link rel="stylesheet" href="<?= asset_v('css/user/beranda_style.css') ?>">
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
@@ -102,12 +102,12 @@
                 <a href="<?= base_url('pet') ?>" class="dashboard-card study-buddy-card animate-entrance delay-2">
                     <div class="card-header">
                         <h3><i class="fas fa-dragon"></i> Study Buddy</h3>
-                        <span class="card-link">View All →</span>
+                        <span class="card-link">View All â†’</span>
                     </div>
                     <div class="card-body buddy-body">
                         <div class="buddy-pet">
                             <img src="<?= $petImage ?>" alt="<?= esc($petDisplayName) ?>" class="buddy-img"
-                                onerror="this.src='<?= base_url('assets/placeholder.png') ?>'">
+                                onerror="this.src='<?= asset_v('assets/placeholder.png') ?>'">
                             <span class="element-badge <?= strtolower($activePet['element']) ?>">
                                 <?= $activePet['element'] ?>
                             </span>
@@ -133,7 +133,7 @@
                     <div class="card-body buddy-empty">
                         <i class="fas fa-egg"></i>
                         <p>No active companion</p>
-                        <span class="get-pet-btn">Get Your Pet →</span>
+                        <span class="get-pet-btn">Get Your Pet â†’</span>
                     </div>
                 </a>
             <?php endif; ?>
@@ -142,7 +142,7 @@
             <a href="<?= base_url('my-sanctuary') ?>" class="dashboard-card sanctuary-card animate-entrance delay-3">
                 <div class="card-header">
                     <h3><i class="fas fa-ankh"></i> My Sanctuary</h3>
-                    <span class="card-link">Enter Control Room →</span>
+                    <span class="card-link">Enter Control Room â†’</span>
                 </div>
                 <div class="card-body sanctuary-body-premium">
                     <div class="sanctuary-emblem-wrapper">
@@ -194,5 +194,5 @@
     const CSRF_NAME = '<?= csrf_token() ?>';
     const CSRF_TOKEN = '<?= csrf_hash() ?>';
 </script>
-<script src="<?= base_url('js/user/beranda.js') ?>"></script>
+<script src="<?= asset_v('js/user/beranda.js') ?>"></script>
 <?= $this->endSection() ?>

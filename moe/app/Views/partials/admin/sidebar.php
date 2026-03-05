@@ -12,7 +12,7 @@ $isHakaes = ($userRole === 'Hakaes');
 ?>
 <nav class="sidebar">
     <div class="sidebar-header">
-        <img src="<?= base_url('assets/landing/logo.png') ?>" class="sidebar-logo" alt="Logo" />
+        <img src="<?= asset_v('assets/landing/logo.png') ?>" class="sidebar-logo" alt="Logo" />
         <div class="brand-name">MOE<br>
             <?= $isHakaes ? 'Teacher' : 'Admin' ?>
         </div>
@@ -35,11 +35,7 @@ $isHakaes = ($userRole === 'Hakaes');
             <i class="uil uil-eye"></i> <span>View User Dashboard</span>
         </a>
 
-        <?php if (!$isHakaes): ?>
-            <a href="<?= base_url('admin') ?>" <?= $currentPage === 'settings' ? 'class="active"' : '' ?>>
-                <i class="uil uil-setting"></i> <span>Settings</span>
-            </a>
-        <?php endif; ?>
+        <?php /* Settings link removed â€” no settings page exists yet */ ?>
 
         <div class="menu-bottom">
             <form action="<?= base_url('logout') ?>" method="POST" style="margin: 0;">

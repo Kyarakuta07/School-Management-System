@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, orientation=landscape">
     <meta name="screen-orientation" content="landscape">
-    <title>⚔️ Battle Arena 3v3 - MOE Pet</title>
+    <title>âš”ï¸ Battle Arena 3v3 - MOE Pet</title>
 
     <!-- Fonts -->
     <link
@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Battle 3v3 CSS -->
-    <link rel="stylesheet" href="<?= base_url('css/battle/battle_3v3.css') ?>">
+    <link rel="stylesheet" href="<?= asset_v('css/battle/battle_3v3.css') ?>">
 
     <!-- PixiJS for visual effects -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.3.2/pixi.min.js"></script>
@@ -152,7 +152,7 @@
     <!-- Result Overlay -->
     <div class="result-overlay hidden" id="result-overlay">
         <div class="result-content">
-            <h1 id="result-title">🏆 Victory!</h1>
+            <h1 id="result-title">ðŸ† Victory!</h1>
             <div class="result-stats">
                 <div class="result-row">
                     <span><i class="fas fa-coins"></i> Gold Earned</span>
@@ -183,10 +183,10 @@
     </script>
 
     <!-- Battle JS -->
-    <script src="<?= base_url('js/shared/sound_manager.js') ?>"></script>
-    <script src="<?= base_url('js/shared/csrf_helper.js') ?>"></script>
-    <script src="<?= base_url('js/battle/pixi_battle.js') ?>"></script>
-    <script src="<?= base_url('js/battle/battle_3v3.js') ?>"></script>
+    <script src="<?= asset_v('js/shared/sound_manager.js') ?>"></script>
+    <script src="<?= asset_v('js/shared/csrf_helper.js') ?>"></script>
+    <script src="<?= asset_v('js/battle/pixi_battle.js') ?>"></script>
+    <script src="<?= asset_v('js/battle/battle_3v3.js') ?>"></script>
 </body>
 
 </html>

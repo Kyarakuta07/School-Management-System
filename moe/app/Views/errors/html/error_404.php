@@ -12,7 +12,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
             padding: 50px;
-            background-image: url('<?= base_url('assets/images/bg_home.jpg') ?>');
+            background-image: url('<?= asset_v('assets/images/bg_home.jpg') ?>');
             background-size: cover;
             background-position: center;
             position: relative;
@@ -91,7 +91,13 @@
             <p class="error-message"><?= nl2br(esc($message)) ?></p>
         <?php endif; ?>
 
-        <a href="<?= base_url('beranda') ?>" class="back-btn">Kembali ke Tempat Aman</a>
+        <?php
+        // Smart redirect: if session exists â†’ beranda, otherwise â†’ login
+        $safeUrl = !empty($_SESSION['id_nethera'] ?? null)
+            ? base_url('beranda')
+            : base_url('login');
+        ?>
+        <a href="<?= $safeUrl ?>" class="back-btn">Kembali ke Tempat Aman</a>
     </div>
 </body>
 

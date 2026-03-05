@@ -5,8 +5,8 @@
 <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css" />
 
 <?php // Core admin styles ?>
-<link rel="stylesheet" href="<?= base_url('css/admin/style.css') ?>" />
-<link rel="stylesheet" href="<?= base_url('css/admin/cards.css') ?>" />
+<link rel="stylesheet" href="<?= asset_v('css/admin/style.css') ?>" />
+<link rel="stylesheet" href="<?= asset_v('css/admin/cards.css') ?>" />
 
 <?php // Extra CSS (page-specific) ?>
 <?php if (!empty($extraCss)): ?>
@@ -28,5 +28,5 @@
 </main>
 
 <?php // Common admin scripts ?>
-<script src="<?= base_url('js/admin/sidebar-toggle.js') ?>"></script>
+<script src="<?= asset_v('js/admin/sidebar-toggle.js') ?>"></script>
 <?= $this->endSection() ?>

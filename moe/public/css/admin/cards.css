@@ -111,8 +111,7 @@ tbody tr:hover {
     border: 1px solid #32cd32;
 }
 
-.status-OUT,
-.status-Tidak-Lulus {
+.status-OUT {
     /* Merah Outline */
     background: rgba(220, 20, 60, 0.15);
     color: #ff6b6b;
@@ -580,14 +579,24 @@ th i {
     grid-template-columns: repeat(6, 1fr);
 }
 
+.stats-row--5 {
+    grid-template-columns: repeat(5, 1fr);
+}
+
 @media (max-width: 1200px) {
     .stats-row--6 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .stats-row--5 {
         grid-template-columns: repeat(3, 1fr);
     }
 }
 
 @media (max-width: 767px) {
-    .stats-row--6 {
+
+    .stats-row--6,
+    .stats-row--5 {
         grid-template-columns: repeat(2, 1fr);
     }
 
@@ -643,9 +652,7 @@ th i {
     font-weight: 600;
     font-size: 0.9rem;
     color: #fff;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    word-break: break-word;
 }
 
 .user-sanctuary {

@@ -15,8 +15,8 @@
     <meta name="robots" content="noindex, nofollow">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="<?= base_url('assets/landing/logo.png') ?>">
-    <link rel="apple-touch-icon" href="<?= base_url('assets/landing/logo.png') ?>">
+    <link rel="icon" type="image/png" href="<?= asset_v('assets/landing/logo.png') ?>">
+    <link rel="apple-touch-icon" href="<?= asset_v('assets/landing/logo.png') ?>">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -47,7 +47,7 @@
     </script>
 
     <?php // CSRF Helper ?>
-    <script src="<?= base_url('js/shared/csrf_helper.js') ?>"></script>
+    <script src="<?= asset_v('js/shared/csrf_helper.js') ?>"></script>
 
     <?php // Flash alerts ?>
     <?= $this->include('partials/common/alerts') ?>
@@ -56,7 +56,7 @@
     <?= $this->renderSection('body') ?>
 
     <?php // Toast system ?>
-    <script src="<?= base_url('js/shared/toast.js') ?>"></script>
+    <script src="<?= asset_v('js/shared/toast.js') ?>"></script>
 
     <?php // Scripts ?>
     <?= $this->renderSection('scripts') ?>

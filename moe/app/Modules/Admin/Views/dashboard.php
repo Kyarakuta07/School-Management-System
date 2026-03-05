@@ -14,10 +14,7 @@
     <div class="alert-banner alert-warning">
         <i class="uil uil-exclamation-triangle"></i>
         <div class="alert-content">
-            <strong>
-                <?= $totalPending ?> Pending Registration
-                <?= $totalPending > 1 ? 's' : '' ?>
-            </strong>
+            <strong><?= $totalPending ?> Pending Registration<?= $totalPending > 1 ? 's' : '' ?></strong>
             <span>Members menunggu verifikasi akun</span>
         </div>
         <a href="<?= base_url('admin/nethera') ?>" class="alert-action">Review Now <i class="uil uil-arrow-right"></i></a>
@@ -165,5 +162,5 @@
     const CHART_LABELS = <?= json_encode($sanctuaryLabels) ?>;
     const CHART_DATA = <?= json_encode($sanctuaryValues) ?>;
 </script>
-<script src="<?= base_url('js/admin/dashboard.js') ?>"></script>
+<script src="<?= asset_v('js/admin/dashboard.js') ?>"></script>
 <?= $this->endSection() ?>

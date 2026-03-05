@@ -19,22 +19,22 @@
     <meta property="og:title" content="Mediterranean of Egypt - Virtual Academy">
     <meta property="og:description"
         content="A premier virtual academy bridging ancient wisdom and digital learning. Explore gamified education with pet companions.">
-    <meta property="og:image" content="<?= base_url('assets/landing/logo.png') ?>">
+    <meta property="og:image" content="<?= asset_v('assets/landing/logo.png') ?>">
     <meta property="og:site_name" content="MOE - Mediterranean of Egypt">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Mediterranean of Egypt - Virtual Academy">
     <meta name="twitter:description" content="Explore gamified education with pet companions at MOE Virtual Academy.">
-    <meta name="twitter:image" content="<?= base_url('assets/landing/logo.png') ?>">
+    <meta name="twitter:image" content="<?= asset_v('assets/landing/logo.png') ?>">
 
     <!-- Theme Color -->
     <meta name="theme-color" content="#0a0a0a">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="<?= base_url('assets/landing/logo.png') ?>">
-    <link rel="shortcut icon" type="image/png" href="<?= base_url('assets/landing/logo.png') ?>">
-    <link rel="apple-touch-icon" href="<?= base_url('assets/landing/logo.png') ?>">
+    <link rel="icon" type="image/png" href="<?= asset_v('assets/landing/logo.png') ?>">
+    <link rel="shortcut icon" type="image/png" href="<?= asset_v('assets/landing/logo.png') ?>">
+    <link rel="apple-touch-icon" href="<?= asset_v('assets/landing/logo.png') ?>">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -46,11 +46,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <!-- Global CSS -->
-    <link rel="stylesheet" href="<?= base_url('css/shared/navbar.css') ?>">
-    <link rel="stylesheet" href="<?= base_url('css/auth/landing-style.css') ?>">
+    <link rel="stylesheet" href="<?= asset_v('css/shared/navbar.css') ?>">
+    <link rel="stylesheet" href="<?= asset_v('css/auth/landing-style.css') ?>">
 
     <!-- Home Page CSS -->
-    <link rel="stylesheet" href="<?= base_url('css/shared/home.css') ?>">
+    <link rel="stylesheet" href="<?= asset_v('css/shared/home.css') ?>">
 
     <!-- Spline 3D Styles -->
     <style>
@@ -179,7 +179,7 @@
             <div class="hero-left">
 
                 <div class="title-container">
-                    <img src="<?= base_url('assets/landing/7.png') ?>" alt="MOE" class="moe-text-img">
+                    <img src="<?= asset_v('assets/landing/7.png') ?>" alt="MOE" class="moe-text-img">
                     <h1>Mediterranean of Egypt</h1>
                 </div>
 
@@ -214,7 +214,7 @@
             <div class="hero-right" id="hero-right">
                 <!-- Original character image -->
                 <div class="character-container">
-                    <img src="<?= base_url('assets/landing/nyatuin.png') ?>" alt="Main Character" class="main-combined">
+                    <img src="<?= asset_v('assets/landing/nyatuin.png') ?>" alt="Main Character" class="main-combined">
                 </div>
             </div>
         </section>

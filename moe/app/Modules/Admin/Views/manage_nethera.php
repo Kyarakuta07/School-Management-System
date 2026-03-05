@@ -8,7 +8,7 @@
 </header>
 
 <!-- Stats Summary Cards -->
-<div class="stats-row">
+<div class="stats-row stats-row--5">
     <div class="mini-stat-card">
         <div class="mini-stat-icon" style="background: rgba(218, 165, 32, 0.2); color: var(--gold);">
             <i class="uil uil-users-alt"></i>
@@ -29,6 +29,17 @@
                 <?= $aktifCount ?>
             </span>
             <span class="mini-stat-label">Aktif</span>
+        </div>
+    </div>
+    <div class="mini-stat-card">
+        <div class="mini-stat-icon" style="background: rgba(255, 165, 0, 0.2); color: #ffa500;">
+            <i class="uil uil-clock"></i>
+        </div>
+        <div class="mini-stat-info">
+            <span class="mini-stat-value">
+                <?= $pendingCount ?>
+            </span>
+            <span class="mini-stat-label">Pending</span>
         </div>
     </div>
     <div class="mini-stat-card">
@@ -61,17 +72,19 @@
             <i class="uil uil-list-ul"></i> All Registered Nethera
         </h3>
         <div class="table-controls">
-            <select id="statusFilter" class="filter-select" onchange="filterStatus(this.value)">
-                <option value="all">All Status</option>
-                <option value="Aktif">Aktif</option>
-                <option value="Pending">Pending</option>
-                <option value="Hiatus">Hiatus</option>
-                <option value="Out">Out</option>
+            <select id="statusFilter" class="filter-select" onchange="applyFilters()">
+                <?php
+                $filterOptions = ['all' => 'All Status', 'Aktif' => 'Aktif', 'Pending' => 'Pending', 'Hiatus' => 'Hiatus', 'Out' => 'Out'];
+                foreach ($filterOptions as $val => $label):
+                    $selected = ($currentStatus === $val) ? 'selected' : '';
+                    ?>
+                    <option value="<?= $val ?>" <?= $selected ?>><?= $label ?></option>
+                <?php endforeach; ?>
             </select>
             <div class="search-container">
                 <i class="uil uil-search"></i>
                 <input type="search" id="searchInput" class="search-input"
-                    placeholder="Search name, username, sanctuary...">
+                    placeholder="Search name, username, sanctuary..." value="<?= esc($currentSearch) ?>">
             </div>
         </div>
     </div>
@@ -101,9 +114,7 @@
                             <td>
                                 <?= esc($nethera['nama_lengkap']) ?>
                             </td>
-                            <td>@
-                                <?= esc($nethera['username']) ?>
-                            </td>
+                            <td>@<?= esc($nethera['username']) ?></td>
                             <td>
                                 <span class="sanctuary-badge">
                                     <?= esc($nethera['nama_sanctuary'] ?? '-') ?>
@@ -155,5 +166,5 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>
-<script src="<?= base_url('js/admin/manage_nethera.js') ?>"></script>
+<script src="<?= asset_v('js/admin/manage_nethera.js') ?>"></script>
 <?= $this->endSection() ?>

@@ -3,7 +3,7 @@
     <!-- Premium 3v3 Header -->
     <div class="arena-premium-header arena-3v3-variant">
         <div class="arena-header-bg-layer"
-            style="background-image: url('<?= base_url('assets/arena/arena_3v3_header_bg.png') ?>');"></div>
+            style="background-image: url('<?= asset_v('assets/arena/arena_3v3_header_bg.png') ?>');"></div>
         <div class="arena-header-overlay"></div>
 
         <!-- Particles -->

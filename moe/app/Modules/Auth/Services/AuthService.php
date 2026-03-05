@@ -64,8 +64,8 @@ class AuthService
             log_message('info', "Login failed: account status '{$user['status_akun']}' for '{$username}'");
             $statusMessages = [
                 'Pending' => 'Akun Anda sedang menunggu persetujuan Vasiki (Admin). Mohon bersabar.',
-                'Ditolak' => 'Pendaftaran akun Anda ditolak. Silakan hubungi admin.',
-                'Diblokir' => 'Akun Anda telah diblokir. Silakan hubungi admin.',
+                'Hiatus' => 'Akun Anda sedang dalam status Hiatus. Silakan hubungi admin.',
+                'Out' => 'Akun Anda sudah tidak aktif. Silakan hubungi admin.',
             ];
             $msg = $statusMessages[$user['status_akun']] ?? 'Akun Anda belum aktif. Silakan hubungi admin.';
             return ['success' => false, 'message' => $msg, 'status' => $user['status_akun']];
@@ -82,11 +82,12 @@ class AuthService
 
     /**
      * Register a new user.
-     * OTP is generated via CSPRNG and hashed before storage.
+     * Data is stored in SESSION first — only inserted into DB after OTP verification.
+     * OTP is generated via CSPRNG and hashed before session storage.
      */
     public function register(array $data): array
     {
-        // 1. Duplicate check
+        // 1. Duplicate check against DB
         $exists = $this->userModel->groupStart()
             ->where('username', $data['username'])
             ->orWhere('email', $data['email'])
@@ -101,43 +102,83 @@ class AuthService
         // 2. Hash password
         $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
 
-        // OTP: CSPRNG + hash before storage
+        // 3. Generate OTP (CSPRNG)
         $otpCode = (string) random_int(100000, 999999);
-        $data['otp_code'] = hash('sha256', $otpCode);
-        $data['otp_expires'] = date('Y-m-d H:i:s', time() + 900); // 15 min
-        $data['otp_attempts'] = 0;
-        $data['status_akun'] = 'Pending';
-        $data['role'] = ROLE_NETHERA;
 
-        // 4. Atomic transaction: Insert + Send Email
-        $db = \Config\Database::connect();
-        $db->transStart();
+        // 4. Store in SESSION (NOT database) — prevents ghost accounts
+        $pendingData = $data;
+        $pendingData['otp_code'] = hash('sha256', $otpCode);
+        $pendingData['otp_expires'] = date('Y-m-d H:i:s', time() + 900); // 15 min
+        $pendingData['otp_attempts'] = 0;
+        $pendingData['status_akun'] = 'Pending';
+        $pendingData['role'] = ROLE_NETHERA;
 
-        $this->userModel->insert($data);
+        session()->set('pending_registration', $pendingData);
 
-        // Email the plaintext OTP (only the hash is stored)
+        // 5. Send OTP email (plaintext OTP — only hash is in session)
         $mailResult = $this->mailService->sendOtp($data['email'], $data['username'], $otpCode);
 
         if (!$mailResult['success']) {
-            $db->transRollback();
+            session()->remove('pending_registration');
             return ['success' => false, 'message' => 'Gagal mengirim email verifikasi.'];
-        }
-
-        $db->transComplete();
-
-        if (!$db->transStatus()) {
-            return ['success' => false, 'message' => 'Registrasi gagal. Silakan coba lagi.'];
         }
 
         return ['success' => true];
     }
 
     /**
-     * Verify OTP — delegates to UserModel which handles
-     * hash comparison, attempt limits, and email_verified_at.
+     * Verify OTP.
+     * New flow: checks session data, then inserts into DB on success.
+     * Legacy flow: falls back to UserModel for existing unverified DB users.
      */
     public function verifyOTP(string $username, string $code): bool
     {
+        // --- New flow: session-based pending registration ---
+        $pending = session('pending_registration');
+        if ($pending && ($pending['username'] ?? '') === $username) {
+            // Check expiry
+            if (strtotime($pending['otp_expires']) < time()) {
+                return false;
+            }
+
+            // Check attempt limit
+            if (($pending['otp_attempts'] ?? 0) >= 5) {
+                session()->remove('pending_registration');
+                return false;
+            }
+
+            // Compare OTP hash
+            if (hash('sha256', $code) !== $pending['otp_code']) {
+                $pending['otp_attempts'] = ($pending['otp_attempts'] ?? 0) + 1;
+                session()->set('pending_registration', $pending);
+                return false;
+            }
+
+            // OTP verified! Insert user into DB
+            $insertData = [
+                'nama_lengkap' => $pending['nama_lengkap'],
+                'username' => $pending['username'],
+                'email' => $pending['email'],
+                'noHP' => $pending['noHP'],
+                'password' => $pending['password'],
+                'tanggal_lahir' => $pending['tanggal_lahir'],
+                'periode_masuk' => $pending['periode_masuk'],
+                'status_akun' => $pending['status_akun'],
+                'role' => $pending['role'],
+                'email_verified_at' => date('Y-m-d H:i:s'),
+                'otp_code' => null,
+                'otp_expires' => null,
+                'otp_attempts' => 0,
+            ];
+
+            $this->userModel->insert($insertData);
+            session()->remove('pending_registration');
+
+            log_message('info', "Registration completed for '{$username}' after OTP verification.");
+            return true;
+        }
+
+        // --- Legacy flow: existing unverified users in DB ---
         return $this->userModel->verifyOTP($username, $code);
     }
 
@@ -206,19 +247,41 @@ class AuthService
 
     /**
      * Check if user has a pending OTP.
+     * Checks session first (new flow), then DB (legacy).
      */
     public function hasPendingOTP(string $username): bool
     {
+        // New flow: check session
+        $pending = session('pending_registration');
+        if ($pending && ($pending['username'] ?? '') === $username) {
+            return true;
+        }
+
+        // Legacy flow: check DB
         $user = $this->userModel->findByUsername($username);
         return $user && !empty($user['otp_code']);
     }
 
     /**
      * Resend OTP code to user email.
-     * Uses CSPRNG, hashes before storage. 5 min expiry.
+     * Uses CSPRNG, hashes before storage. 15 min expiry.
+     * Checks session first (new flow), then DB (legacy).
      */
     public function resendOTP(string $username): array
     {
+        // --- New flow: session-based pending registration ---
+        $pending = session('pending_registration');
+        if ($pending && ($pending['username'] ?? '') === $username) {
+            $otpCode = (string) random_int(100000, 999999);
+            $pending['otp_code'] = hash('sha256', $otpCode);
+            $pending['otp_expires'] = date('Y-m-d H:i:s', time() + 900);
+            $pending['otp_attempts'] = 0;
+            session()->set('pending_registration', $pending);
+
+            return $this->mailService->sendOtp($pending['email'], $pending['username'], $otpCode);
+        }
+
+        // --- Legacy flow: DB-based ---
         $user = $this->userModel->findByUsername($username);
         if (!$user) {
             return ['success' => false, 'message' => 'User tidak ditemukan.'];
@@ -229,11 +292,10 @@ class AuthService
 
         $this->userModel->update($user['id_nethera'], [
             'otp_code' => $hashedOtp,
-            'otp_expires' => date('Y-m-d H:i:s', time() + 900), // 15 min
+            'otp_expires' => date('Y-m-d H:i:s', time() + 900),
             'otp_attempts' => 0,
         ]);
 
-        // Email plaintext OTP
         return $this->mailService->sendOtp($user['email'], $user['username'], $otpCode);
     }
 }

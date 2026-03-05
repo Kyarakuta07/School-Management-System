@@ -69,7 +69,7 @@
                     <label for="status_akun">Status Akun</label>
                     <select id="status_akun" name="status_akun">
                         <?php
-                        $statuses = ['Aktif', 'Pending', 'Hiatus', 'Out', 'Tidak Lulus'];
+                        $statuses = ['Aktif', 'Pending', 'Hiatus', 'Out'];
                         foreach ($statuses as $status):
                             $selected = ($netheraData['status_akun'] == $status) ? 'selected' : '';
                             ?>

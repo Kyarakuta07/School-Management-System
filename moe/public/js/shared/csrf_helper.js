@@ -8,29 +8,10 @@
  * @returns {string} CSRF token
  */
 function getCsrfToken() {
-    // 1. Primary: Try to get from injected global variables (Most reliable for battles)
-    if (typeof BATTLE_CONFIG !== 'undefined' && BATTLE_CONFIG.csrfToken) {
-        return BATTLE_CONFIG.csrfToken;
-    }
-    if (typeof CSRF_TOKEN !== 'undefined') {
-        return CSRF_TOKEN;
-    }
-
-    // 2. Secondary: Try to get from cookie
-    const cookieName = 'csrf_cookie_name=';
-    const cookies = document.cookie.split(';');
-
-    for (let cookie of cookies) {
-        cookie = cookie.trim();
-        if (cookie.indexOf(cookieName) === 0) {
-            return cookie.substring(cookieName.length);
-        }
-    }
-
-    // 3. Fallback: Try to get from meta tag
+    // 1. Primary: Meta tag (kept fresh by session_guard.js on tab-resume)
     const metaParams = [
-        'csrf_test_name',
         'X-CSRF-TOKEN',
+        'csrf_test_name',
         'csrf-token'
     ];
 
@@ -38,6 +19,25 @@ function getCsrfToken() {
         const meta = document.querySelector(`meta[name="${name}"]`);
         if (meta && meta.content) {
             return meta.content;
+        }
+    }
+
+    // 2. Secondary: Injected global variables
+    if (typeof BATTLE_CONFIG !== 'undefined' && BATTLE_CONFIG.csrfToken) {
+        return BATTLE_CONFIG.csrfToken;
+    }
+    if (typeof CSRF_TOKEN !== 'undefined') {
+        return CSRF_TOKEN;
+    }
+
+    // 3. Fallback: Cookie
+    const cookieName = 'csrf_cookie_name=';
+    const cookies = document.cookie.split(';');
+
+    for (let cookie of cookies) {
+        cookie = cookie.trim();
+        if (cookie.indexOf(cookieName) === 0) {
+            return cookie.substring(cookieName.length);
         }
     }
 

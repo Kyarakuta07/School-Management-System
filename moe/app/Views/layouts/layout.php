@@ -14,8 +14,8 @@
     <meta name="robots" content="noindex, nofollow">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="<?= base_url('assets/landing/logo.png') ?>">
-    <link rel="apple-touch-icon" href="<?= base_url('assets/landing/logo.png') ?>">
+    <link rel="icon" type="image/png" href="<?= asset_v('assets/landing/logo.png') ?>">
+    <link rel="apple-touch-icon" href="<?= asset_v('assets/landing/logo.png') ?>">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,7 +27,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Global CSS -->
-    <link rel="stylesheet" href="<?= base_url('css/shared/global.css') ?>">
+    <link rel="stylesheet" href="<?= asset_v('css/shared/global.css') ?>">
 
     <?php // Page CSS ?>
     <?= $this->renderSection('css') ?>
@@ -39,6 +39,7 @@
     <div class="bg-overlay"></div>
 
     <?php // Global JS constants ?>
+    <meta name="X-CSRF-TOKEN" content="<?= csrf_hash() ?>">
     <script>
         const API_BASE = '<?= base_url('api/') ?>';
         const ASSET_BASE = '<?= base_url() ?>';
@@ -48,7 +49,10 @@
     <?= $this->renderSection('content') ?>
 
     <?php // Toast system ?>
-    <script src="<?= base_url('js/shared/toast.js') ?>"></script>
+    <script src="<?= asset_v('js/shared/toast.js') ?>"></script>
+
+    <?php // Session guard (heartbeat + CSRF refresh + tab-resume) ?>
+    <script src="<?= asset_v('js/shared/session_guard.js') ?>"></script>
 
     <?php // Page scripts ?>
     <?= $this->renderSection('scripts') ?>

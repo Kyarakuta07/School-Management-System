@@ -18,14 +18,14 @@
     <meta property="og:type" content="website">
     <meta property="og:title" content="Staff & Council - Mediterranean of Egypt">
     <meta property="og:description" content="Meet the Guardians of Mediterranean - our leadership and staff team.">
-    <meta property="og:image" content="<?= base_url('assets/landing/logo.png') ?>">
+    <meta property="og:image" content="<?= asset_v('assets/landing/logo.png') ?>">
 
     <!-- Theme Color -->
     <meta name="theme-color" content="#0a0a0a">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="<?= base_url('assets/landing/logo.png') ?>">
-    <link rel="apple-touch-icon" href="<?= base_url('assets/landing/logo.png') ?>">
+    <link rel="icon" type="image/png" href="<?= asset_v('assets/landing/logo.png') ?>">
+    <link rel="apple-touch-icon" href="<?= asset_v('assets/landing/logo.png') ?>">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -37,11 +37,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <!-- Global CSS -->
-    <link rel="stylesheet" href="<?= base_url('css/shared/navbar.css') ?>">
-    <link rel="stylesheet" href="<?= base_url('css/auth/landing-style.css') ?>">
+    <link rel="stylesheet" href="<?= asset_v('css/shared/navbar.css') ?>">
+    <link rel="stylesheet" href="<?= asset_v('css/auth/landing-style.css') ?>">
 
     <!-- Staff Page CSS -->
-    <link rel="stylesheet" href="<?= base_url('css/user/staff.css') ?>">
+    <link rel="stylesheet" href="<?= asset_v('css/user/staff.css') ?>">
 </head>
 
 <body class="landing-page">
@@ -66,27 +66,27 @@
                 <h3 class="group-title">VASIKI</h3>
                 <div class="staff-grid">
                     <div class="staff-card">
-                        <img src="<?= base_url('assets/landing/jason.jpeg') ?>" alt="Jason" class="staff-photo">
+                        <img src="<?= asset_v('assets/landing/jason.jpeg') ?>" alt="Jason" class="staff-photo">
                         <h3>Jason Alekhenako Momoa</h3>
                         <p class="staff-title">Vasiki</p>
                     </div>
                     <div class="staff-card">
-                        <img src="<?= base_url('assets/landing/cheva.jpeg') ?>" alt="Cheva" class="staff-photo">
+                        <img src="<?= asset_v('assets/landing/cheva.jpeg') ?>" alt="Cheva" class="staff-photo">
                         <h3>Cheva Asenath Nefreti</h3>
                         <p class="staff-title">Vasiki</p>
                     </div>
                     <div class="staff-card">
-                        <img src="<?= base_url('assets/landing/matthew.jpeg') ?>" alt="Matthew" class="staff-photo">
+                        <img src="<?= asset_v('assets/landing/matthew.jpeg') ?>" alt="Matthew" class="staff-photo">
                         <h3>Matthew Djoser Akenatem</h3>
                         <p class="staff-title">Vasiki</p>
                     </div>
                     <div class="staff-card">
-                        <img src="<?= base_url('assets/landing/hector2.jpeg') ?>" alt="Hector" class="staff-photo">
+                        <img src="<?= asset_v('assets/landing/hector2.jpeg') ?>" alt="Hector" class="staff-photo">
                         <h3>Hector Nicholas Theodore</h3>
                         <p class="staff-title">Vasiki</p>
                     </div>
                     <div class="staff-card">
-                        <img src="<?= base_url('assets/landing/nio.jpeg') ?>" alt="Valen" class="staff-photo">
+                        <img src="<?= asset_v('assets/landing/nio.jpeg') ?>" alt="Valen" class="staff-photo">
                         <h3>Valen Hua Stevvarny</h3>
                         <p class="staff-title">Vasiki</p>
                     </div>
@@ -98,22 +98,22 @@
                 <h3 class="group-title">SEN</h3>
                 <div class="staff-grid">
                     <div class="staff-card">
-                        <img src="<?= base_url('assets/landing/cho.jpeg') ?>" alt="Cho Chang" class="staff-photo">
+                        <img src="<?= asset_v('assets/landing/cho.jpeg') ?>" alt="Cho Chang" class="staff-photo">
                         <h3>Cho Chang</h3>
                         <p class="staff-title">SEN</p>
                     </div>
                     <div class="staff-card">
-                        <img src="<?= base_url('assets/landing/sheren.jpeg') ?>" alt="Sheren" class="staff-photo">
+                        <img src="<?= asset_v('assets/landing/sheren.jpeg') ?>" alt="Sheren" class="staff-photo">
                         <h3>Sheren Altheda</h3>
                         <p class="staff-title">SEN</p>
                     </div>
                     <div class="staff-card">
-                        <img src="<?= base_url('assets/landing/staff-3.png') ?>" alt="Nathaniel" class="staff-photo">
+                        <img src="<?= asset_v('assets/landing/staff-3.png') ?>" alt="Nathaniel" class="staff-photo">
                         <h3>Nathaniel Valdez Montgomer</h3>
                         <p class="staff-title">SEN</p>
                     </div>
                     <div class="staff-card">
-                        <img src="<?= base_url('assets/landing/adeline2.jpeg') ?>" alt="Adeline" class="staff-photo">
+                        <img src="<?= asset_v('assets/landing/adeline2.jpeg') ?>" alt="Adeline" class="staff-photo">
                         <h3>Adeline Fyodorovna</h3>
                         <p class="staff-title">SEN</p>
                     </div>
@@ -125,27 +125,27 @@
                 <h3 class="group-title">OTHER STAFF</h3>
                 <div class="staff-grid">
                     <div class="staff-card">
-                        <img src="<?= base_url('assets/landing/Azura.jpeg') ?>" alt="Azura" class="staff-photo">
+                        <img src="<?= asset_v('assets/landing/Azura.jpeg') ?>" alt="Azura" class="staff-photo">
                         <h3>Azura Lexy Dexton</h3>
                         <p class="staff-title">Staff</p>
                     </div>
                     <div class="staff-card">
-                        <img src="<?= base_url('assets/landing/carina.jpeg') ?>" alt="Carina" class="staff-photo">
+                        <img src="<?= asset_v('assets/landing/carina.jpeg') ?>" alt="Carina" class="staff-photo">
                         <h3>Carina de Agler Obelia</h3>
                         <p class="staff-title">Staff</p>
                     </div>
                     <div class="staff-card">
-                        <img src="<?= base_url('assets/landing/eden.jpeg') ?>" alt="Eden" class="staff-photo">
+                        <img src="<?= asset_v('assets/landing/eden.jpeg') ?>" alt="Eden" class="staff-photo">
                         <h3>Eden Atreides</h3>
                         <p class="staff-title">Staff</p>
                     </div>
                     <div class="staff-card">
-                        <img src="<?= base_url('assets/landing/nada.jpeg') ?>" alt="Nada" class="staff-photo">
+                        <img src="<?= asset_v('assets/landing/nada.jpeg') ?>" alt="Nada" class="staff-photo">
                         <h3>Nada Kaleria</h3>
                         <p class="staff-title">Staff</p>
                     </div>
                     <div class="staff-card">
-                        <img src="<?= base_url('assets/landing/tom.jpeg') ?>" alt="Thomas" class="staff-photo">
+                        <img src="<?= asset_v('assets/landing/tom.jpeg') ?>" alt="Thomas" class="staff-photo">
                         <h3>Thomas El</h3>
                         <p class="staff-title">Staff</p>
                     </div>

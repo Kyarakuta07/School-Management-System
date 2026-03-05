@@ -28,7 +28,7 @@ var options = {
         labels: { style: { colors: '#e0e0e0', fontSize: '12px', fontFamily: 'Lato, sans-serif' } },
         axisBorder: { show: false }, axisTicks: { show: false }
     },
-    yaxis: { labels: { style: { colors: '#aaa' } } },
+    yaxis: { min: 0, labels: { style: { colors: '#aaa' } } },
     grid: { borderColor: '#333', strokeDashArray: 4 }
 };
 

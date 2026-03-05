@@ -2,8 +2,8 @@
 
 <?= $this->section('head') ?>
 <?php // Global User CSS ?>
-<link rel="stylesheet" href="<?= base_url('css/shared/global.css') ?>">
-<link rel="stylesheet" href="<?= base_url('css/shared/navbar.css') ?>">
+<link rel="stylesheet" href="<?= asset_v('css/shared/global.css') ?>">
+<link rel="stylesheet" href="<?= asset_v('css/shared/navbar.css') ?>">
 
 <?php // Page CSS ?>
 <?= $this->renderSection('css') ?>

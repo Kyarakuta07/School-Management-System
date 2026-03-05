@@ -16,11 +16,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <!-- Global CSS -->
-    <link rel="stylesheet" href="<?= base_url('css/shared/navbar.css') ?>">
-    <link rel="stylesheet" href="<?= base_url('css/auth/landing-style.css') ?>">
+    <link rel="stylesheet" href="<?= asset_v('css/shared/navbar.css') ?>">
+    <link rel="stylesheet" href="<?= asset_v('css/auth/landing-style.css') ?>">
 
     <!-- Class Page CSS -->
-    <link rel="stylesheet" href="<?= base_url('css/academic/class.css') ?>">
+    <link rel="stylesheet" href="<?= asset_v('css/academic/class.css') ?>">
 </head>
 
 <body class="landing-page">

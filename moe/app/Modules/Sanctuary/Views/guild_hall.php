@@ -1,7 +1,7 @@
 <?= $this->extend('layouts/user') ?>
 
 <?= $this->section('css') ?>
-<link rel="stylesheet" href="<?= base_url('css/social/guild_hall.css') ?>?v=<?= time() ?>">
+<link rel="stylesheet" href="<?= asset_v('css/social/guild_hall.css') ?>">
 <style>
     /* Custom override for guild hall if needed */
     .guild-header {

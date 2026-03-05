@@ -1,7 +1,7 @@
 <?= $this->extend('layouts/user') ?>
 
 <?= $this->section('css') ?>
-<link rel="stylesheet" href="<?= base_url('css/academic/class_style.css') ?>">
+<link rel="stylesheet" href="<?= asset_v('css/academic/class_style.css') ?>">
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
@@ -15,7 +15,7 @@
         <div class="hero-content">
             <div class="greeting-section">
                 <!-- Emoji/Icon for Academy -->
-                <div class="greeting-emoji">📜</div>
+                <div class="greeting-emoji">ðŸ“œ</div>
                 <div class="greeting-text">
                     <p class="greeting-line">Kurikulum Akademi,</p>
                     <h1 class="user-name-hero"><?= esc($userName) ?></h1>
@@ -73,5 +73,5 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('page_scripts') ?>
-<script src="<?= base_url('js/academic/class_page.js') ?>"></script>
+<script src="<?= asset_v('js/academic/class_page.js') ?>"></script>
 <?= $this->endSection() ?>
