@@ -14,7 +14,7 @@
     'use strict';
 
     // ── Config ──────────────────────────────────────
-    const HEARTBEAT_INTERVAL = 10 * 60 * 1000; // 10 minutes
+    const HEARTBEAT_INTERVAL = 12 * 60 * 1000; // 12 minutes
     const PING_URL = (typeof API_BASE !== 'undefined' ? API_BASE : '/api/') + 'session/ping';
     const LOGIN_URL = (typeof ASSET_BASE !== 'undefined' ? ASSET_BASE : '/') + 'login';
 
