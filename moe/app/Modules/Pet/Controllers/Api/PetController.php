@@ -223,7 +223,8 @@ class PetController extends BaseApiController
             'Uncommon' => 2,
             'Rare' => 3,
             'Epic' => 10,
-            'Legendary' => 25
+            'Legendary' => 25,
+            'Mythical' => 50
         ];
 
         $base = $basePrices[$rarity] ?? 1;

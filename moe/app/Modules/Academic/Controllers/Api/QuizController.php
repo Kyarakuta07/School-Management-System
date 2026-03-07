@@ -184,11 +184,20 @@ class QuizController extends BaseApiController
             $this->updateGradeFromQuiz($this->userId, $quiz['subject'], $score);
 
             // Gold Reward for high scores (via raw method — no nested TX)
+            // Daily cap: only reward gold for first N high-score quiz attempts per day
             $goldEarned = 0;
             if ($score >= 90) {
-                $goldService = service('goldService');
-                $goldEarned = ($score == 100) ? \App\Config\GameConfig::QUIZ_GOLD_PERFECT : \App\Config\GameConfig::QUIZ_GOLD_PASS;
-                $goldService->addGoldRaw($this->userId, $goldEarned, 'battle_reward', "Scored {$score}% on quiz: {$quiz['title']}");
+                $todayRewardedQuizzes = $this->db->table('quiz_attempts')
+                    ->where('id_nethera', $this->userId)
+                    ->where('percentage >=', 90)
+                    ->where('completed_at >=', date('Y-m-d 00:00:00'))
+                    ->countAllResults();
+
+                if ($todayRewardedQuizzes < \App\Config\GameConfig::QUIZ_DAILY_REWARD_CAP) {
+                    $goldService = service('goldService');
+                    $goldEarned = ($score == 100) ? \App\Config\GameConfig::QUIZ_GOLD_PERFECT : \App\Config\GameConfig::QUIZ_GOLD_PASS;
+                    $goldService->addGoldRaw($this->userId, $goldEarned, 'quiz_reward', "Scored {$score}% on quiz: {$quiz['title']}");
+                }
             }
 
             $this->db->transCommit();

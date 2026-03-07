@@ -37,6 +37,7 @@ class GameConfig
     // ── Quiz Rewards ──
     public const QUIZ_GOLD_PERFECT = 50;
     public const QUIZ_GOLD_PASS = 25;
+    public const QUIZ_DAILY_REWARD_CAP = 3;  // Max rewarded quiz attempts per day
 
     // ── Rhythm Game ──
     public const RHYTHM_MIN_DURATION_MS = 10000;  // 10 seconds minimum play

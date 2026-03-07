@@ -150,10 +150,11 @@ class RewardService
                 [$nextDay, $today, $userId]
             );
 
-            // 6. Give gold reward
+            // 6. Give gold reward (via GoldService for ledger consistency)
             $goldReceived = 0;
             if ($reward['gold'] > 0) {
-                $this->db->query("UPDATE nethera SET gold = gold + ? WHERE id_nethera = ?", [$reward['gold'], $userId]);
+                $goldService = service('goldService');
+                $goldService->addGoldRaw($userId, $reward['gold'], 'daily_login', "Day {$currentDay} daily login reward");
                 $goldReceived = $reward['gold'];
             }
 

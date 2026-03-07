@@ -180,8 +180,10 @@ class SanctuaryService implements SanctuaryServiceInterface
             $reward = $this->calculateDailyReward($upgrades, $activePet);
             $totalGold = $reward['totalGold'];
 
-            // 4. Grant gold
-            $this->db->query("UPDATE nethera SET gold = gold + ? WHERE id_nethera = ?", [$totalGold, $userId]);
+            // 4. Grant gold (via GoldService for ledger consistency)
+            // GoldService.addGoldRaw() automatically logs to trapeza_transactions
+            $goldService = service('goldService');
+            $goldService->addGoldRaw($userId, $totalGold, 'daily_reward', 'Sanctuary Daily Reward');
 
             // 5. Grant pet EXP (+10) if active pet exists
             $petExpGranted = 0;
@@ -190,13 +192,6 @@ class SanctuaryService implements SanctuaryServiceInterface
                 $petExpGranted = 10;
                 $petService->addExpRaw((int) $activePet['id'], $petExpGranted);
             }
-
-            // 6. Log transaction
-            $this->db->query(
-                "INSERT INTO trapeza_transactions (sender_id, receiver_id, amount, transaction_type, description, status) 
-                 VALUES (0, ?, ?, 'daily_reward', 'Sanctuary Daily Reward', 'completed')",
-                [$userId, $totalGold]
-            );
 
             // 7. Update or insert claim record
             if ($lockedClaim) {
