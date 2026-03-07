@@ -18,14 +18,14 @@
 
         <div id="war-v3-content" class="war-v3-inner" style="opacity: 0; transition: opacity 0.4s ease;">
 
-            <!-- ðŸŸ¢ ACTIVE WAR STATE (V3 DASHBOARD) -->
+            <!-- 🟢 ACTIVE WAR STATE (V3 DASHBOARD) -->
             <section id="war-active-container" class="war-view-state" style="display: none;">
 
                 <!-- V3 Champion Hero Module -->
                 <header class="glass-tile-v3 v3-champ-hero v3-fade-up">
                     <span class="v3-prestige-label">LEGENDARY CHAMPION SANCTUARY</span>
                     <h2 id="champ-name" class="v3-champ-name">...</h2>
-                    <div class="v3-timer-display" id="war-timer-val">â° SYNCHRONIZING...</div>
+                    <div class="v3-timer-display" id="war-timer-val">⏰ SYNCHRONIZING...</div>
                 </header>
 
                 <div class="v3-war-dashboard">
@@ -33,7 +33,7 @@
                     <!-- Left: Majestic Rankings Module -->
                     <article class="glass-tile-v3 v3-rankings-module v3-fade-up">
                         <header class="v3-module-header">
-                            <h3>ðŸ† Sanctuary League</h3>
+                            <h3>🏆 Sanctuary League</h3>
                             <div class="allegiance-pill">
                                 ALIGNED: <span id="your-sanctuary-name">...</span>
                             </div>
@@ -80,7 +80,7 @@
                 </div>
             </section>
 
-            <!-- ðŸ”´ INACTIVE WAR STATE (V3 COSMIC ALIGNMENT) -->
+            <!-- 🔴 INACTIVE WAR STATE (V3 COSMIC ALIGNMENT) -->
             <section id="war-inactive-container" class="war-view-state" style="display: none;">
                 <div class="glass-tile-v3 v3-inactive-hero v3-fade-up">
 
@@ -107,7 +107,7 @@
                         <article class="glass-tile-v3 recap-card-v2">
                             <span class="recap-badge">SUPREME VICTOR</span>
                             <div class="recap-hero">
-                                <div class="crown">ðŸ‘‘</div>
+                                <div class="crown">👑</div>
                                 <div class="name" id="recap-champion-name">...</div>
                                 <div class="recap-score" id="recap-champion-score">0 PTS</div>
                             </div>
@@ -129,7 +129,7 @@
         <!-- V3 Result Modal (Supreme Glass) -->
         <div class="war-result-modal" id="war-result-modal" style="display: none;">
             <div class="glass-tile-v3 v3-result-content v3-fade-up">
-                <div id="result-icon" class="v3-result-icon">ðŸŽ‰</div>
+                <div id="result-icon" class="v3-result-icon">🎉</div>
                 <h2 id="result-title" class="v3-result-modal-title">VICTORY</h2>
 
                 <div class="v3-result-rewards">

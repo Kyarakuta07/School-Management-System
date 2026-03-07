@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>âš”ï¸ Sanctuary War - MOE Pet</title>
+    <title>⚔️ Sanctuary War - MOE Pet</title>
 
     <!-- Fonts -->
     <link
@@ -43,7 +43,7 @@
             <button class="back-btn" onclick="forfeitBattle()">
                 <i class="fas fa-arrow-left"></i>
             </button>
-            <h1>âš”ï¸ SANCTUARY WAR</h1>
+            <h1>⚔️ SANCTUARY WAR</h1>
             <div class="turn-indicator" id="turn-indicator">YOUR TURN</div>
         </header>
 
@@ -161,7 +161,7 @@
         <!-- Result Overlay -->
         <div class="result-overlay hidden" id="result-overlay">
             <div class="result-content">
-                <h1 id="result-title">ðŸ† Victory!</h1>
+                <h1 id="result-title">🏆 Victory!</h1>
                 <div class="result-stats">
                     <div class="result-row">
                         <span>Gold Earned</span>

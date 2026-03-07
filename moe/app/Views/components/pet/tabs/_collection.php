@@ -48,9 +48,9 @@
         <!-- Sort Dropdown -->
         <div class="sort-container">
             <select id="pet-sort" class="sort-select" onchange="sortCollection(this.value)">
-                <option value="level-desc">Level â†“</option>
-                <option value="level-asc">Level â†‘</option>
-                <option value="rarity-desc">Rarity â†“</option>
+                <option value="level-desc">Level ↓</option>
+                <option value="level-asc">Level ↑</option>
+                <option value="rarity-desc">Rarity ↓</option>
                 <option value="name-asc">Name A-Z</option>
                 <option value="recent">Recent</option>
             </select>
@@ -125,21 +125,21 @@
 
             <!-- Battle Stats Section -->
             <div class="pet-detail-section">
-                <h3 class="section-title">âš”ï¸ Battle Stats</h3>
+                <h3 class="section-title">⚔️ Battle Stats</h3>
                 <p class="section-subtitle">Calculated combat statistics</p>
                 <div class="battle-stats-grid">
                     <div class="battle-stat-card">
-                        <div class="stat-icon health">â¤ï¸</div>
+                        <div class="stat-icon health">❤️</div>
                         <div class="stat-value" id="detail-hp">0</div>
                         <div class="stat-label">Health</div>
                     </div>
                     <div class="battle-stat-card">
-                        <div class="stat-icon attack">âš”ï¸</div>
+                        <div class="stat-icon attack">⚔️</div>
                         <div class="stat-value" id="detail-atk">0</div>
                         <div class="stat-label">Attack</div>
                     </div>
                     <div class="battle-stat-card">
-                        <div class="stat-icon power">ðŸ’ª</div>
+                        <div class="stat-icon power">💪</div>
                         <div class="stat-value" id="detail-power">0</div>
                         <div class="stat-label">Power</div>
                     </div>
@@ -148,7 +148,7 @@
 
             <!-- Base Stats Section -->
             <div class="pet-detail-section">
-                <h3 class="section-title">ðŸ“Š Base Stats</h3>
+                <h3 class="section-title">📊 Base Stats</h3>
                 <div class="base-stats-list">
                     <div class="base-stat-row">
                         <span class="base-label">Base HP</span>

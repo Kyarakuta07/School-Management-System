@@ -163,9 +163,9 @@
                             <div class="member-name">
                                 <?= esc($member['nama_lengkap']) ?>
                                 <?php if (($member['sanctuary_role'] ?? '') === 'hosa'): ?>
-                                    <span class="member-role-tag hosa">ðŸ‘‘</span>
+                                    <span class="member-role-tag hosa">👑</span>
                                 <?php elseif (($member['sanctuary_role'] ?? '') === 'vizier'): ?>
-                                    <span class="member-role-tag vizier">âš”ï¸</span>
+                                    <span class="member-role-tag vizier">⚔️</span>
                                 <?php endif; ?>
                             </div>
                             <div class="member-username">@

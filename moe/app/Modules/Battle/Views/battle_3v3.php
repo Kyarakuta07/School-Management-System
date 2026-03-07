@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, orientation=landscape">
     <meta name="screen-orientation" content="landscape">
-    <title>âš”ï¸ Battle Arena 3v3 - MOE Pet</title>
+    <title>⚔️ Battle Arena 3v3 - MOE Pet</title>
 
     <!-- Fonts -->
     <link
@@ -152,7 +152,7 @@
     <!-- Result Overlay -->
     <div class="result-overlay hidden" id="result-overlay">
         <div class="result-content">
-            <h1 id="result-title">ðŸ† Victory!</h1>
+            <h1 id="result-title">🏆 Victory!</h1>
             <div class="result-stats">
                 <div class="result-row">
                     <span><i class="fas fa-coins"></i> Gold Earned</span>

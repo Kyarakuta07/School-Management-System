@@ -15,7 +15,7 @@
         <div class="hero-content">
             <div class="greeting-section">
                 <!-- Emoji/Icon for Academy -->
-                <div class="greeting-emoji">ðŸ“œ</div>
+                <div class="greeting-emoji">📜</div>
                 <div class="greeting-text">
                     <p class="greeting-line">Kurikulum Akademi,</p>
                     <h1 class="user-name-hero"><?= esc($userName) ?></h1>

@@ -12,7 +12,7 @@
             <a href="<?= base_url('pet') ?>" class="back-btn"><i class="fas fa-arrow-left"></i></a>
             <div class="hub-title-group">
                 <div class="hub-title">
-                    <span class="music-icon">â™ª</span>
+                    <span class="music-icon">♪</span>
                     <h1>Rhythm Game</h1>
                 </div>
                 <p class="hub-subtitle">Tap the beat, feel the rhythm</p>
@@ -33,7 +33,7 @@
         </div>
 
         <div class="hub-controls">
-            <span class="key-hint hide-mobile"><kbd>D</kbd> <kbd>F</kbd> <kbd>J</kbd> <kbd>K</kbd> to play &nbsp;Â·&nbsp;
+            <span class="key-hint hide-mobile"><kbd>D</kbd> <kbd>F</kbd> <kbd>J</kbd> <kbd>K</kbd> to play &nbsp;·&nbsp;
                 <kbd>ESC</kbd> pause</span>
         </div>
 
@@ -101,7 +101,7 @@
     <!-- Pause Overlay -->
     <div class="overlay hidden" id="pause-overlay">
         <div class="overlay-content">
-            <h1 style="font-size: 2rem; color: #DAA520; margin-bottom: 8px;">â¸ PAUSED</h1>
+            <h1 style="font-size: 2rem; color: #DAA520; margin-bottom: 8px;">⏸ PAUSED</h1>
             <p style="color: rgba(255,255,255,0.5); margin-bottom: 24px; font-size: 0.9rem;">Press ESC or tap Resume to
                 continue
             </p>
@@ -120,7 +120,7 @@
     <!-- Results Overlay -->
     <div class="overlay hidden" id="result-overlay">
         <div class="overlay-content result-content">
-            <h1 id="result-title">ðŸŽµ Results</h1>
+            <h1 id="result-title">🎵 Results</h1>
             <div id="result-grade" class="result-grade">-</div>
             <div class="result-stats">
                 <div class="result-row">

@@ -13,9 +13,9 @@ use App\Modules\Sanctuary\Services\LeaderboardService;
  * Ported from legacy LeaderboardController.php
  * 
  * Endpoints:
- *   GET /api/leaderboard         â†’ index()    (pet leaderboard)
- *   GET /api/leaderboard/war     â†’ war()      (war leaderboard)
- *   GET /api/leaderboard/fame    â†’ hallOfFame()
+ *   GET /api/leaderboard         → index()    (pet leaderboard)
+ *   GET /api/leaderboard/war     → war()      (war leaderboard)
+ *   GET /api/leaderboard/fame    → hallOfFame()
  */
 class LeaderboardController extends BaseApiController
 {
@@ -142,45 +142,45 @@ class LeaderboardController extends BaseApiController
     private function calculateTierByRp(int $rp): array
     {
         if ($rp >= 2000)
-            return ['name' => 'Master', 'color' => '#FF00FF', 'icon' => 'ðŸ‘‘'];
+            return ['name' => 'Master', 'color' => '#FF00FF', 'icon' => '👑'];
         if ($rp >= 1800)
-            return ['name' => 'Diamond', 'color' => '#B9F2FF', 'icon' => 'ðŸ’Ž'];
+            return ['name' => 'Diamond', 'color' => '#B9F2FF', 'icon' => '💎'];
         if ($rp >= 1600)
-            return ['name' => 'Platinum', 'color' => '#E5E4E2', 'icon' => 'ðŸ†'];
+            return ['name' => 'Platinum', 'color' => '#E5E4E2', 'icon' => '🏆'];
         if ($rp >= 1400)
-            return ['name' => 'Gold', 'color' => '#FFD700', 'icon' => 'ðŸ¥‡'];
+            return ['name' => 'Gold', 'color' => '#FFD700', 'icon' => '🥇'];
         if ($rp >= 1200)
-            return ['name' => 'Silver', 'color' => '#C0C0C0', 'icon' => 'ðŸ¥ˆ'];
-        return ['name' => 'Bronze', 'color' => '#CD7F32', 'icon' => 'ðŸ¥‰'];
+            return ['name' => 'Silver', 'color' => '#C0C0C0', 'icon' => '🥈'];
+        return ['name' => 'Bronze', 'color' => '#CD7F32', 'icon' => '🥉'];
     }
 
     private function calculateTierByLevel(int $level): array
     {
         if ($level >= 100)
-            return ['name' => 'Master', 'color' => '#FF00FF', 'icon' => 'ðŸ‘‘'];
+            return ['name' => 'Master', 'color' => '#FF00FF', 'icon' => '👑'];
         if ($level >= 80)
-            return ['name' => 'Diamond', 'color' => '#B9F2FF', 'icon' => 'ðŸ’Ž'];
+            return ['name' => 'Diamond', 'color' => '#B9F2FF', 'icon' => '💎'];
         if ($level >= 60)
-            return ['name' => 'Platinum', 'color' => '#E5E4E2', 'icon' => 'ðŸ†'];
+            return ['name' => 'Platinum', 'color' => '#E5E4E2', 'icon' => '🏆'];
         if ($level >= 40)
-            return ['name' => 'Gold', 'color' => '#FFD700', 'icon' => 'ðŸ¥‡'];
+            return ['name' => 'Gold', 'color' => '#FFD700', 'icon' => '🥇'];
         if ($level >= 20)
-            return ['name' => 'Silver', 'color' => '#C0C0C0', 'icon' => 'ðŸ¥ˆ'];
-        return ['name' => 'Bronze', 'color' => '#CD7F32', 'icon' => 'ðŸ¥‰'];
+            return ['name' => 'Silver', 'color' => '#C0C0C0', 'icon' => '🥈'];
+        return ['name' => 'Bronze', 'color' => '#CD7F32', 'icon' => '🥉'];
     }
 
     private function calculateTierByWins(int $wins): array
     {
         if ($wins >= 500)
-            return ['name' => 'Master', 'color' => '#FF00FF', 'icon' => 'ðŸ‘‘'];
+            return ['name' => 'Master', 'color' => '#FF00FF', 'icon' => '👑'];
         if ($wins >= 350)
-            return ['name' => 'Diamond', 'color' => '#B9F2FF', 'icon' => 'ðŸ’Ž'];
+            return ['name' => 'Diamond', 'color' => '#B9F2FF', 'icon' => '💎'];
         if ($wins >= 200)
-            return ['name' => 'Platinum', 'color' => '#E5E4E2', 'icon' => 'ðŸ†'];
+            return ['name' => 'Platinum', 'color' => '#E5E4E2', 'icon' => '🏆'];
         if ($wins >= 100)
-            return ['name' => 'Gold', 'color' => '#FFD700', 'icon' => 'ðŸ¥‡'];
+            return ['name' => 'Gold', 'color' => '#FFD700', 'icon' => '🥇'];
         if ($wins >= 50)
-            return ['name' => 'Silver', 'color' => '#C0C0C0', 'icon' => 'ðŸ¥ˆ'];
-        return ['name' => 'Bronze', 'color' => '#CD7F32', 'icon' => 'ðŸ¥‰'];
+            return ['name' => 'Silver', 'color' => '#C0C0C0', 'icon' => '🥈'];
+        return ['name' => 'Bronze', 'color' => '#CD7F32', 'icon' => '🥉'];
     }
 }

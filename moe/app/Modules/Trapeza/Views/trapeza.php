@@ -13,7 +13,7 @@
     <header class="hero-header">
         <div class="hero-content">
             <div class="greeting-section">
-                <div class="greeting-emoji">ðŸ›ï¸</div>
+                <div class="greeting-emoji">🏛️</div>
                 <div class="greeting-text">
                     <p class="greeting-line">Trapeza Mobile Banking,</p>
                     <h1 class="user-name-hero"><?= $userName ?></h1>
