@@ -70,7 +70,7 @@ class Arena1v1Controller extends BaseApiController
 
         // Deduct quota only after successful validation
         $limiter = new \App\Kernel\Libraries\RateLimiter();
-        $limiter->checkDailyLimit((string) $userId, 'battle', 5, 0, 'Asia/Jakarta');
+        $limiter->checkDailyLimit((string) $userId, 'battle', \App\Config\GameConfig::BATTLE_DAILY_QUOTA, 0, 'Asia/Jakarta');
 
         // Generate battle token to prevent result farming
         $battleToken = bin2hex(random_bytes(16));

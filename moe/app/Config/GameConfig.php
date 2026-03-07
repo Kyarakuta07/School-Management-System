@@ -50,7 +50,8 @@ class GameConfig
     public const RHYTHM_SCORE_SUBMIT_CD = 30;     // Seconds between score submissions
 
     // ── Battle ──
-    public const BATTLE_DAILY_QUOTA = 5;      // Max battles per day
+    public const BATTLE_DAILY_QUOTA = 10;     // Max battles per day
+    public const BATTLE_LOSER_HP_PENALTY = 5;  // HP lost per battle loss
 
     // ── Pet Stage Names ──
     public static function getPetStageName(string $stage): string

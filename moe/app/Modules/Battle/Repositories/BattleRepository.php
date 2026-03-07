@@ -72,11 +72,11 @@ class BattleRepository
             $this->db->query("SELECT id FROM user_pets WHERE id = ? FOR UPDATE", [$loserPetId]);
             $this->db->table('user_pets')->where('id', $loserPetId)->set('total_losses', 'total_losses + 1', false)->update();
 
-            // 2b. Battle HP penalty: loser takes -10 HP, can die
+            // 2b. Battle HP penalty: loser takes HP penalty, can die
             $loserPet = $this->db->table('user_pets')->select('hp, health')->where('id', $loserPetId)->get()->getRowArray();
             if ($loserPet) {
                 $currentHp = (int) ($loserPet['hp'] ?? $loserPet['health'] ?? 100);
-                $newHp = max(0, $currentHp - 10);
+                $newHp = max(0, $currentHp - \App\Config\GameConfig::BATTLE_LOSER_HP_PENALTY);
                 $hpUpdate = ['hp' => $newHp];
                 if ($newHp <= 0) {
                     $hpUpdate['status'] = 'DEAD';

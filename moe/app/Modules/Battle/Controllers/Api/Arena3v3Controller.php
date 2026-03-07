@@ -71,7 +71,7 @@ class Arena3v3Controller extends BaseApiController
 
             // Deduct quota only after successful battle creation
             $limiter = new \App\Kernel\Libraries\RateLimiter();
-            $limiter->checkDailyLimit((string) $userId, 'battle', 5, 0, 'Asia/Jakarta');
+            $limiter->checkDailyLimit((string) $userId, 'battle', \App\Config\GameConfig::BATTLE_DAILY_QUOTA, 0, 'Asia/Jakarta');
 
             return $this->success(['battle_id' => $state['battle_id'], 'battle_state' => $state]);
         } catch (\Exception $e) {

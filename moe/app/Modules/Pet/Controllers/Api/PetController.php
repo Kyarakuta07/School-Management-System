@@ -219,12 +219,12 @@ class PetController extends BaseApiController
         $level = (int) $pet['level'];
 
         $basePrices = [
-            'Common' => 1,
-            'Uncommon' => 2,
-            'Rare' => 3,
-            'Epic' => 10,
-            'Legendary' => 25,
-            'Mythical' => 50
+            'Common' => 5,
+            'Uncommon' => 10,
+            'Rare' => 20,
+            'Epic' => 50,
+            'Legendary' => 120,
+            'Mythical' => 250
         ];
 
         $base = $basePrices[$rarity] ?? 1;

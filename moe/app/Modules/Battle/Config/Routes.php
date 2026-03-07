@@ -8,7 +8,7 @@
 $routes->group('', ['namespace' => 'App\Modules\Battle\Controllers\Api'], function ($routes) {
     // 1v1
     $routes->get('battle/opponents', 'Arena1v1Controller::opponents');
-    $routes->post('battle/start', 'Arena1v1Controller::start', ['filter' => ['auth:nethera,vasiki,hakaes,anubis', 'arena_quota:battle,5']]);
+    $routes->post('battle/start', 'Arena1v1Controller::start', ['filter' => ['auth:nethera,vasiki,hakaes,anubis', 'arena_quota:battle,10']]);
     $routes->post('battle/result', 'Arena1v1Controller::result');
     $routes->post('battle/play-finish', 'Arena1v1Controller::playFinish');
     $routes->post('battle/petting', 'Arena1v1Controller::petting');
@@ -22,7 +22,7 @@ $routes->group('', ['namespace' => 'App\Modules\Battle\Controllers\Api'], functi
     $routes->get('battle/leaderboard', 'BattleHistoryController::leaderboard');
 
     // 3v3
-    $routes->post('battle/start-3v3', 'Arena3v3Controller::start3v3', ['filter' => ['auth:nethera,vasiki,hakaes,anubis', 'arena_quota:battle,5']]);
+    $routes->post('battle/start-3v3', 'Arena3v3Controller::start3v3', ['filter' => ['auth:nethera,vasiki,hakaes,anubis', 'arena_quota:battle,10']]);
     $routes->post('battle/attack', 'Arena3v3Controller::attack');
     $routes->post('battle/enemy-turn', 'Arena3v3Controller::enemyTurn');
     $routes->get('battle/state', 'Arena3v3Controller::battleState');
