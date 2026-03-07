@@ -74,13 +74,14 @@ class SanctuaryRepository
     public function getMembers(int $sanctuaryId, int $limit = 50): array
     {
         return $this->db->table('nethera AS n')
-            ->select('n.nama_lengkap, n.username, n.profile_photo, n.sanctuary_role, COALESCE(cg.total_pp, 0) as total_pp')
+            ->select('n.id_nethera, n.nama_lengkap, n.username, n.profile_photo, n.sanctuary_role, COALESCE(SUM(cg.total_pp), 0) as total_pp')
             ->join('class_grades AS cg', 'n.id_nethera = cg.id_nethera', 'left')
             ->where('n.id_sanctuary', $sanctuaryId)
             ->where('n.role', ROLE_NETHERA)
             ->where('n.status_akun', 'Aktif')
             ->whereNotIn('n.sanctuary_role', ['hosa', 'vizier'])
-            ->orderBy('cg.total_pp', 'DESC')
+            ->groupBy('n.id_nethera')
+            ->orderBy('total_pp', 'DESC')
             ->limit($limit)
             ->get()
             ->getResultArray();
