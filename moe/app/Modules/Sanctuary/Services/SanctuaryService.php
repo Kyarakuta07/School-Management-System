@@ -151,54 +151,88 @@ class SanctuaryService implements SanctuaryServiceInterface
 
     /**
      * Process daily claim (update DB, grant rewards)
+     * Guard check + mutation in single TX with FOR UPDATE lock to prevent double-claim.
      * 
      * @return array ['success' => bool, 'message' => string, 'goldEarned' => int]
      */
     public function processDailyClaim(int $userId, int $sanctuaryId, array $upgrades, ?array $activePet): array
     {
-        $eligibility = $this->canClaimDaily($userId, $sanctuaryId);
+        $this->db->transStart();
 
-        if (!$eligibility['canClaim']) {
-            return ['success' => false, 'message' => 'Daily reward already claimed today.', 'goldEarned' => 0];
-        }
-
-        $reward = $this->calculateDailyReward($upgrades, $activePet);
-        $totalGold = $reward['totalGold'];
-
-        // Grant gold
-        $this->db->query("UPDATE nethera SET gold = gold + ? WHERE id_nethera = ?", [$totalGold, $userId]);
-
-        // Log transaction
-        $this->db->query(
-            "INSERT INTO trapeza_transactions (sender_id, receiver_id, amount, transaction_type, description, status) 
-             VALUES (0, ?, ?, 'daily_reward', 'Sanctuary Daily Reward', 'completed')",
-            [$userId, $totalGold]
-        );
-
-        // Update claim record
-        $existingClaim = $this->db->query(
-            "SELECT id FROM sanctuary_daily_claims WHERE user_id = ? AND sanctuary_id = ?",
-            [$userId, $sanctuaryId]
-        )->getRowArray();
-
-        if ($existingClaim) {
-            $this->db->query(
-                "UPDATE sanctuary_daily_claims SET last_claim = NOW() WHERE user_id = ? AND sanctuary_id = ?",
+        try {
+            // 1. Lock the claim record INSIDE the transaction to prevent race conditions
+            $lockedClaim = $this->db->query(
+                "SELECT last_claim FROM sanctuary_daily_claims WHERE user_id = ? AND sanctuary_id = ? FOR UPDATE",
                 [$userId, $sanctuaryId]
-            );
-        } else {
+            )->getRowArray();
+
+            // 2. Re-check eligibility under lock (authoritative check)
+            if ($lockedClaim) {
+                $lastClaimTime = strtotime($lockedClaim['last_claim']);
+                $nextClaimTime = $lastClaimTime + (24 * 60 * 60);
+                if (time() < $nextClaimTime) {
+                    $this->db->transRollback();
+                    return ['success' => false, 'message' => 'Daily reward already claimed today.', 'goldEarned' => 0];
+                }
+            }
+
+            // 3. Calculate reward
+            $reward = $this->calculateDailyReward($upgrades, $activePet);
+            $totalGold = $reward['totalGold'];
+
+            // 4. Grant gold
+            $this->db->query("UPDATE nethera SET gold = gold + ? WHERE id_nethera = ?", [$totalGold, $userId]);
+
+            // 5. Grant pet EXP (+10) if active pet exists
+            $petExpGranted = 0;
+            if ($activePet) {
+                $petService = service('petService');
+                $petExpGranted = 10;
+                $petService->addExpRaw((int) $activePet['id'], $petExpGranted);
+            }
+
+            // 6. Log transaction
             $this->db->query(
-                "INSERT INTO sanctuary_daily_claims (user_id, sanctuary_id, last_claim) VALUES (?, ?, NOW())",
-                [$userId, $sanctuaryId]
+                "INSERT INTO trapeza_transactions (sender_id, receiver_id, amount, transaction_type, description, status) 
+                 VALUES (0, ?, ?, 'daily_reward', 'Sanctuary Daily Reward', 'completed')",
+                [$userId, $totalGold]
             );
-        }
 
-        $message = "Claimed {$totalGold} Gold!";
-        if ($reward['happyBonus']) {
-            $message .= " 🌟 Happy Bonus!";
-        }
+            // 7. Update or insert claim record
+            if ($lockedClaim) {
+                $this->db->query(
+                    "UPDATE sanctuary_daily_claims SET last_claim = NOW() WHERE user_id = ? AND sanctuary_id = ?",
+                    [$userId, $sanctuaryId]
+                );
+            } else {
+                $this->db->query(
+                    "INSERT INTO sanctuary_daily_claims (user_id, sanctuary_id, last_claim) VALUES (?, ?, NOW())",
+                    [$userId, $sanctuaryId]
+                );
+            }
 
-        return ['success' => true, 'message' => $message, 'goldEarned' => $totalGold];
+            $this->db->transComplete();
+
+            // Check transaction status
+            if ($this->db->transStatus() === false) {
+                return ['success' => false, 'message' => 'Failed to claim reward. Please try again.', 'goldEarned' => 0];
+            }
+
+            $message = "Claimed {$totalGold} Gold!";
+            if ($petExpGranted > 0) {
+                $message .= " +{$petExpGranted} Pet EXP!";
+            }
+            if ($reward['happyBonus']) {
+                $message .= " 🌟 Happy Bonus!";
+            }
+
+            return ['success' => true, 'message' => $message, 'goldEarned' => $totalGold];
+
+        } catch (\Throwable $e) {
+            $this->db->transRollback();
+            log_message('error', '[SanctuaryService] Daily claim failed: ' . $e->getMessage());
+            return ['success' => false, 'message' => 'Failed to claim reward. Please try again.', 'goldEarned' => 0];
+        }
     }
 
     // ================================================

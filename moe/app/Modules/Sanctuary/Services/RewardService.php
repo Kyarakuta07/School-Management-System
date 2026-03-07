@@ -58,8 +58,13 @@ class RewardService
             $dayDiff = ($todayTimestamp - $lastClaim) / 86400;
 
             if ($dayDiff > 1) {
-                // Streak broken, reset to day 1
+                // Streak broken, reset to day 1 and persist to DB
+                // so claimDaily() sees the same value as this preview
                 $currentDay = 1;
+                $this->db->query(
+                    "UPDATE daily_login_streak SET current_day = 1 WHERE user_id = ?",
+                    [$userId]
+                );
             }
         }
 
