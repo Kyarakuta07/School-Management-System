@@ -221,9 +221,9 @@ export async function useItem(itemId, targetPetId = 0, quantity = 1) {
 
             if (document.getElementById('item-modal')) closeItemModal();
 
-            loadActivePet();
-            loadInventory();
-            loadPets();
+            await loadActivePet();
+            await loadInventory();
+            await loadPets();
         } else {
             showToast(data.error || 'Failed to use item', 'error');
         }

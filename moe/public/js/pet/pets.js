@@ -180,7 +180,7 @@ export function renderActivePet() {
     updateCircularProgress('mood', state.activePet.mood);
 
     expCard.style.display = '';
-    const expNeeded = Math.floor(100 * Math.pow(1.2, state.activePet.level - 1));
+    const expNeeded = Math.floor(100 + 2 * Math.pow(state.activePet.level, 2));
     const expPercent = (state.activePet.exp / expNeeded) * 100;
     document.getElementById('exp-bar').style.width = `${expPercent}%`;
     document.getElementById('exp-text').textContent = `${state.activePet.exp} / ${expNeeded}`;
@@ -248,7 +248,7 @@ export function updateActivePetStatsUI(pet) {
     const expBar = document.getElementById('exp-bar');
     const expText = document.getElementById('exp-text');
     if (expBar && expText) {
-        const expNeeded = Math.floor(100 * Math.pow(1.2, pet.level - 1));
+        const expNeeded = Math.floor(100 + 2 * Math.pow(pet.level, 2));
         const expPercent = (pet.exp / expNeeded) * 100;
         expBar.style.width = `${expPercent}%`;
         expText.textContent = `${pet.exp} / ${expNeeded}`;
