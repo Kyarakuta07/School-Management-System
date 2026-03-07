@@ -35,7 +35,7 @@ $isHakaes = ($userRole === 'Hakaes');
             <i class="uil uil-eye"></i> <span>View User Dashboard</span>
         </a>
 
-        <?php /* Settings link removed â€” no settings page exists yet */ ?>
+        <?php /* Settings link removed — no settings page exists yet */ ?>
 
         <div class="menu-bottom">
             <form action="<?= base_url('logout') ?>" method="POST" style="margin: 0;">

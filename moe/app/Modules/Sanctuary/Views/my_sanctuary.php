@@ -1,4 +1,4 @@
-<?php // My Sanctuary â€” CI4 View ?>
+<?php // My Sanctuary — CI4 View ?>
 <?php
 // Helper function for safe avatar URL within view
 $getSafeAvatar = function ($photo) {

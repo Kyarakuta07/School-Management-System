@@ -12,11 +12,11 @@ use App\Modules\Academic\Models\MaterialModel;
  * Ported from legacy MaterialController.php
  * 
  * Endpoints:
- *   GET  /api/materials           â†’ index()
- *   POST /api/materials/add       â†’ add()
- *   POST /api/materials/update    â†’ update()
- *   POST /api/materials/delete    â†’ delete()
- *   POST /api/materials/upload    â†’ upload()
+ *   GET  /api/materials           → index()
+ *   POST /api/materials/add       → add()
+ *   POST /api/materials/update    → update()
+ *   POST /api/materials/delete    → delete()
+ *   POST /api/materials/upload    → upload()
  */
 class MaterialController extends BaseApiController
 {

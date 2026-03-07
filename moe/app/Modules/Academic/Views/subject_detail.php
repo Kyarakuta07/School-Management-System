@@ -64,7 +64,7 @@
 
 <?= $this->section('page_scripts') ?>
 <script>
-    // Inject server-side config directly â€” always correct regardless of caching
+    // Inject server-side config directly — always correct regardless of caching
     (function () {
         var origin = window.location.origin;
         var phpBase = '<?= base_url() ?>';

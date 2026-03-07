@@ -12,8 +12,8 @@ use CodeIgniter\HTTP\ResponseInterface;
  * Ported from legacy EvolutionController.php
  * 
  * Endpoints:
- *   GET  /api/evolution/candidates â†’ candidates()
- *   POST /api/evolution/evolve     â†’ evolve()
+ *   GET  /api/evolution/candidates → candidates()
+ *   POST /api/evolution/evolve     → evolve()
  */
 class EvolutionController extends BaseApiController
 {

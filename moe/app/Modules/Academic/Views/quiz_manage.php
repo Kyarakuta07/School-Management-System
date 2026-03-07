@@ -1,4 +1,4 @@
-<!-- quiz_manage.php â€” CI4 View -->
+<!-- quiz_manage.php — CI4 View -->
 <?php // Quiz Management View ?>
 <!DOCTYPE html>
 <html lang="id">

@@ -1,4 +1,4 @@
-<!-- quiz_attempt.php â€” CI4 View -->
+<!-- quiz_attempt.php — CI4 View -->
 <?php // Quiz Attempt View ?>
 <!DOCTYPE html>
 <html lang="id">

@@ -102,7 +102,7 @@
                 <a href="<?= base_url('pet') ?>" class="dashboard-card study-buddy-card animate-entrance delay-2">
                     <div class="card-header">
                         <h3><i class="fas fa-dragon"></i> Study Buddy</h3>
-                        <span class="card-link">View All â†’</span>
+                        <span class="card-link">View All →</span>
                     </div>
                     <div class="card-body buddy-body">
                         <div class="buddy-pet">
@@ -133,7 +133,7 @@
                     <div class="card-body buddy-empty">
                         <i class="fas fa-egg"></i>
                         <p>No active companion</p>
-                        <span class="get-pet-btn">Get Your Pet â†’</span>
+                        <span class="get-pet-btn">Get Your Pet →</span>
                     </div>
                 </a>
             <?php endif; ?>
@@ -142,7 +142,7 @@
             <a href="<?= base_url('my-sanctuary') ?>" class="dashboard-card sanctuary-card animate-entrance delay-3">
                 <div class="card-header">
                     <h3><i class="fas fa-ankh"></i> My Sanctuary</h3>
-                    <span class="card-link">Enter Control Room â†’</span>
+                    <span class="card-link">Enter Control Room →</span>
                 </div>
                 <div class="card-body sanctuary-body-premium">
                     <div class="sanctuary-emblem-wrapper">

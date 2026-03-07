@@ -15,10 +15,10 @@ use CodeIgniter\HTTP\ResponseInterface;
  * Ported from legacy TrapezaController.php
  * 
  * Endpoints:
- *   GET  /api/bank/balance       â†’ balance()
- *   GET  /api/bank/transactions  â†’ transactions()
- *   POST /api/bank/transfer      â†’ transfer()
- *   GET  /api/bank/search        â†’ search()
+ *   GET  /api/bank/balance       → balance()
+ *   GET  /api/bank/transactions  → transactions()
+ *   POST /api/bank/transfer      → transfer()
+ *   GET  /api/bank/search        → search()
  */
 class TrapezaController extends BaseApiController
 {

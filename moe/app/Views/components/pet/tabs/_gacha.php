@@ -123,7 +123,7 @@
             <?php if ($hasBeastiary): ?>
                 <div class="shiny-promo active pulse-glow">
                     <i class="fas fa-magic"></i>
-                    <p><strong>Beastiary Library active:</strong> +5% Boost to Shiny Chance! âœ¨</p>
+                    <p><strong>Beastiary Library active:</strong> +5% Boost to Shiny Chance! ✨</p>
                 </div>
             <?php else: ?>
                 <div class="shiny-promo locked glass-premium" onclick="location.href='<?= base_url('sanctuary') ?>'">

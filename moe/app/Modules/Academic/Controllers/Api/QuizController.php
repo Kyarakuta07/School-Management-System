@@ -12,14 +12,14 @@ use CodeIgniter\HTTP\ResponseInterface;
  * Ported from legacy QuizController.php
  * 
  * Endpoints:
- *   GET  /api/quiz                â†’ index()         (list quizzes)
- *   POST /api/quiz/create         â†’ create()        (create quiz, Hakaes only)
- *   POST /api/quiz/add-question   â†’ addQuestion()   (add question, Hakaes only)
- *   GET  /api/quiz/details        â†’ details()       (get quiz with questions)
- *   POST /api/quiz/submit         â†’ submit()        (submit attempt, Nethera only)
- *   POST /api/quiz/update-status  â†’ updateStatus()  (toggle active, Hakaes only)
- *   POST /api/quiz/delete-question â†’ deleteQuestion() (delete question, Hakaes only)
- *   GET  /api/quiz/history        â†’ history()       (student quiz history)
+ *   GET  /api/quiz                → index()         (list quizzes)
+ *   POST /api/quiz/create         → create()        (create quiz, Hakaes only)
+ *   POST /api/quiz/add-question   → addQuestion()   (add question, Hakaes only)
+ *   GET  /api/quiz/details        → details()       (get quiz with questions)
+ *   POST /api/quiz/submit         → submit()        (submit attempt, Nethera only)
+ *   POST /api/quiz/update-status  → updateStatus()  (toggle active, Hakaes only)
+ *   POST /api/quiz/delete-question → deleteQuestion() (delete question, Hakaes only)
+ *   GET  /api/quiz/history        → history()       (student quiz history)
  */
 class QuizController extends BaseApiController
 {

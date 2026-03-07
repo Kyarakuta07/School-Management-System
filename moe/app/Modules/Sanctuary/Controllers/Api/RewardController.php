@@ -13,10 +13,10 @@ use CodeIgniter\HTTP\ResponseInterface;
  * Ported from legacy RewardController.php
  * 
  * Endpoints:
- *   GET  /api/rewards/daily        â†’ dailyStatus()
- *   POST /api/rewards/claim-daily  â†’ claimDaily()
- *   GET  /api/rewards/achievements â†’ achievements()
- *   POST /api/rewards/claim        â†’ claimAchievement()
+ *   GET  /api/rewards/daily        → dailyStatus()
+ *   POST /api/rewards/claim-daily  → claimDaily()
+ *   GET  /api/rewards/achievements → achievements()
+ *   POST /api/rewards/claim        → claimAchievement()
  */
 class RewardController extends BaseApiController
 {

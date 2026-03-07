@@ -6,7 +6,7 @@ use App\Kernel\BaseApiController;
 use App\Kernel\BaseController;
 
 /**
- * ProfileController â€” JSON API for profile photo upload and fun fact update.
+ * ProfileController — JSON API for profile photo upload and fun fact update.
  * Ported from legacy moe/user/update_profile.php.
  */
 class ProfileController extends BaseApiController

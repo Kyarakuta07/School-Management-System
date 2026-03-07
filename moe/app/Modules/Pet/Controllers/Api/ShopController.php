@@ -13,10 +13,10 @@ use CodeIgniter\HTTP\ResponseInterface;
  * Ported from legacy moe/user/api/controllers/ShopController.php
  * 
  * Endpoints:
- *   GET  /api/shop           â†’ index()     (get shop items)
- *   GET  /api/shop/inventory â†’ inventory() (get user inventory)
- *   POST /api/shop/buy       â†’ buy()       (buy item)
- *   POST /api/shop/use       â†’ useItem()   (use item on pet)
+ *   GET  /api/shop           → index()     (get shop items)
+ *   GET  /api/shop/inventory → inventory() (get user inventory)
+ *   POST /api/shop/buy       → buy()       (buy item)
+ *   POST /api/shop/use       → useItem()   (use item on pet)
  */
 class ShopController extends BaseApiController
 {

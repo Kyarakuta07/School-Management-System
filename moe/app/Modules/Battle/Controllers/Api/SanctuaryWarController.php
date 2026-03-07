@@ -13,9 +13,9 @@ use App\Config\GameConfig;
  * Ported from legacy SanctuaryWarController.php
  *
  * Endpoints:
- * GET /api/war/status Ã¢â€ â€™ status()
- * POST /api/war/battle Ã¢â€ â€™ battle()
- * GET /api/war/results Ã¢â€ â€™ results()
+ * GET /api/war/status → status()
+ * POST /api/war/battle → battle()
+ * GET /api/war/results → results()
  */
 class SanctuaryWarController extends BaseApiController
 {

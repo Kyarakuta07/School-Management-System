@@ -79,7 +79,7 @@
             reruntuhan ini.</p>
         <p>Silakan coba beberapa saat lagi.</p>
         <?php
-        // Smart redirect: if session exists â†’ beranda, otherwise â†’ login
+        // Smart redirect: if session exists → beranda, otherwise → login
         $safeUrl = !empty($_SESSION['id_nethera'] ?? null)
             ? base_url('beranda')
             : base_url('login');
