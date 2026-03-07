@@ -282,7 +282,7 @@ class Arena1v1Service extends BaseArenaService
 
             // 4. Reward Distribution & Rank Points (ELO)
             $attackerRp = (int) ($attacker['rank_points'] ?? 1000);
-            $defenderRp = (int) ($defender['rank_points'] ?? 1000);
+            $defenderRp = $defender ? (int) ($defender['rank_points'] ?? 1000) : 1000;
 
             $eloChange = 0;
             $newRp = $attackerRp;
