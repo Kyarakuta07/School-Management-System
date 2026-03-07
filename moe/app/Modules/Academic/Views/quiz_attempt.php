@@ -10,7 +10,7 @@
         <?= esc($quiz['title']) ?> - Quiz
     </title>
     <link rel="stylesheet" href="<?= asset_v('css/shared/global.css') ?>">
-    <link rel="stylesheet" href="<?= base_url('user/css/user/beranda_style.css') ?>">
+    <link rel="stylesheet" href="<?= asset_v('user/css/user/beranda_style.css') ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <?= csrf_meta() ?>
     <style>

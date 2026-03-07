@@ -26,7 +26,7 @@
     <?php // Extra CSS ?>
     <?php if (!empty($extraCss)): ?>
         <?php foreach ($extraCss as $css): ?>
-            <link rel="stylesheet" href="<?= base_url('css/admin/' . $css) ?>" />
+            <link rel="stylesheet" href="<?= asset_v('css/admin/' . $css) ?>" />
         <?php endforeach; ?>
     <?php endif; ?>
 
