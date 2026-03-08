@@ -134,7 +134,7 @@ class BattleRepository
             $this->db->table('battle_participants')->insert([
                 'battle_id' => $sessionId,
                 'user_id' => $oppPet['user_id'] ?? 0,
-                'pet_id' => $oppPet['id'] ?? -1,
+                'pet_id' => (($oppPet['id'] ?? 0) > 0) ? $oppPet['id'] : null,
                 'team_index' => 1, // 1 = Opponent Team
                 'is_ai' => ($oppPet['is_ai'] ?? false) ? 1 : 0
             ]);

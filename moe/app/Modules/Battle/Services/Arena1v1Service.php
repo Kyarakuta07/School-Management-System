@@ -205,6 +205,11 @@ class Arena1v1Service extends BaseArenaService
         $attacker = $this->getPetForBattle($attackerPetId);
         $defender = ($defenderPetId > 0) ? $this->getPetForBattle($defenderPetId) : null;
 
+        // For AI opponents, load cached data from session so rewards scale with AI level
+        if (!$defender && $defenderPetId <= 0) {
+            $defender = \Config\Services::session()->get('ai_defender_1v1');
+        }
+
         if (!$attacker || $attacker['user_id'] != $userId) {
             throw new \RuntimeException("Unauthorized or invalid attacker pet");
         }
