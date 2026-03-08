@@ -65,3 +65,18 @@ PET MOE/
 
 # Backup copies
 moe_backup/
+
+# Composer binary & setup
+composer.phar
+composer-setup.php
+
+# FTP deployment state
+.ftp-deploy-sync-state.json
+.ftpquota
+
+# IDE helper (dev-only, not for repo)
+_ide_helper.php
+
+# CI4 scaffold (unused)
+moe/builds
+moe/preload.php
